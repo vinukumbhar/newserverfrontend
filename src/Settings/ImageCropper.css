@@ -1,0 +1,27 @@
+.ImageCropper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .crop-container {
+    position: relative;
+    width: 400px;
+    height: 300px;
+    background: #333;
+    overflow: hidden;
+    border-radius: 8px;
+  }
+  
+  .controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  #zoom-range {
+    width: 200px;
+  }
+  
