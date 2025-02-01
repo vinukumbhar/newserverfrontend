@@ -320,7 +320,7 @@ function Sidebar() {
       setRightDrawerContent(label);
       setIsRightDrawerOpen(true);
     }
-    if (label === "Jobs" ) {
+    if (label === "Jobs") {
       setIsDrawerOpen(false);
     }
   };
@@ -335,8 +335,6 @@ function Sidebar() {
   useEffect(() => {
     document.body.className = theme; // Apply the theme to the body
   }, [theme]);
-
-  
 
   //Logout
   const { logindata, setLoginData } = useContext(LoginContext);
@@ -457,8 +455,6 @@ function Sidebar() {
         }
         // console.log(userData)
         setUserid(result._id);
-
-        
       });
   };
 
@@ -510,10 +506,9 @@ function Sidebar() {
 
   //     });
   // };
-  
+
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const toggleDropdown = () => setDropdownOpen(!isDropdownOpen);
-
 
   const [croppedImage, setCroppedImage] = useState(""); // The cropped image
 
@@ -524,12 +519,21 @@ function Sidebar() {
       .then((response) => {
         const imageUrl = response.data.imageUrl;
         setCroppedImage(imageUrl); // Set the last uploaded image URL as the profile picture
-        console.log("viayak",imageUrl)
+        console.log("viayak", imageUrl);
       })
       .catch((error) => {
         console.error("Error fetching last image:", error);
       });
   }, []);
+  const getInitials = (name) => {
+    if (!name) return "";
+    const nameParts = name.split(" ");
+    return nameParts
+      .map((part) => part[0])
+      .join("")
+      .toUpperCase();
+  };
+
   return (
     <div className="grid-container">
       <header className="header">
@@ -584,20 +588,30 @@ function Sidebar() {
                   onClick={toggleDropdown}
                   style={{ display: "flex", alignItems: "center", gap: "2px" }}
                 >
-                  
                   <StyledBadge
-                  overlap="circular"
-                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                  variant="dot"
-                >
-                 <Avatar
-                    alt="User Name"
-                    src={croppedImage  || "default_image_url"}
-                    sx={{ width: 40, height: 40 }}
-                  />
-                </StyledBadge>
-                  <Box>
-                    <Typography style={{ fontWeight: "bold",fontSize: "12px", }}>
+                    overlap="circular"
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    variant="dot"
+                  >
+                    <Avatar
+                      alt={username}
+                      src={croppedImage || ""}
+                      sx={{
+                        width: 40,
+                        height: 40,
+                        backgroundColor: "#f5f5f5",
+                        fontSize: "16px",
+                        fontWeight: "bold",
+                        color: "#555",
+                      }}
+                    >
+                      {!croppedImage && getInitials(username)}
+                    </Avatar>
+                  </StyledBadge>
+                  <Box ml={2}>
+                    <Typography
+                      style={{ fontWeight: "bold", fontSize: "12px" }}
+                    >
                       {username}
                     </Typography>
                     <Typography style={{ fontSize: "10px", color: "#666" }}>
@@ -609,66 +623,145 @@ function Sidebar() {
             </Link>
           </Box>
           {isDropdownOpen && (
+            // <Box
+            //   sx={{
+            //     position: "absolute",
+            //     top: "100px",
+            //     right: "0",
+            //     width: "230px",
+            //     backgroundColor: "#fff",
+            //     border: "1px solid #ddd",
+            //     mr:'20px',
+            //     borderRadius: "8px",
+            //     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+            //     zIndex: 10,
+            //   }}
+            // >
+            //   <Box
+            //     sx={{
+            //       padding: "15px",
+            //       display: "flex",
+            //       alignItems: "center",
+            //       gap: "15px",
+            //     }}
+            //   >
+            //      <StyledBadge
+            //       overlap="circular"
+            //       anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            //       variant="dot"
+            //     >
+            //       <Avatar
+            //         alt="User Name"
+            //         src={croppedImage  || "default_image_url"}
+            //         sx={{ width: 40, height: 40 }}
+            //       />
+            //     </StyledBadge>
+            //     <Box>
+            //     <Typography style={{ fontWeight: "bold",fontSize: "12px", }}>
+            //         {username}
+            //       </Typography>
+            //       <Typography sx={{ fontSize: "10px", color: "#666" }}>
+            //         {userEmail}
+            //       </Typography>
+            //     </Box>
+            //   </Box>
+            //   <hr sx={{ margin: "0" }} />
+            //   <Box sx={{ padding: "15px" }}>
+            //     <Box
+            //       sx={{
+            //         marginTop: "5px",
+            //         color: "red",
+            //         display: "flex",
+            //         alignItems: "center",
+            //         cursor: "pointer",
+            //       }}
+            //       onClick={logoutuser}
+            //     >
+            //       <AiOutlineLogout style={{ marginRight: "10px" }} />
+            //       <Typography>Log out</Typography>
+            //     </Box>
+            //   </Box>
+            // </Box>
             <Box
               sx={{
                 position: "absolute",
-                top: "80px",
-                right: "0",
-                width: "230px",
+                top: "100px",
+                right: "20px",
+                width: "250px",
                 backgroundColor: "#fff",
                 border: "1px solid #ddd",
-                borderRadius: "8px",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                borderRadius: "10px",
+                boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.1)",
                 zIndex: 10,
+                overflow: "hidden",
               }}
             >
               <Box
                 sx={{
-                  padding: "15px",
+                  padding: "16px",
                   display: "flex",
                   alignItems: "center",
-                  gap: "15px",
+                  gap: "12px",
                 }}
               >
-                 <StyledBadge
+                <StyledBadge
                   overlap="circular"
                   anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                   variant="dot"
                 >
                   <Avatar
-                    alt="User Name"
-                    src="http://127.0.0.1/uploads/6797241fbcd21bf230190e1a/adminuser.png"
-                    sx={{ width: 30, height: 30 }}
-                  />
+                    alt={username}
+                    src={croppedImage || ""}
+                    sx={{
+                      width: 30,
+                      height: 30,
+                      backgroundColor: "#f5f5f5",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                      color: "#555",
+                    }}
+                  >
+                    {!croppedImage && getInitials(username)}
+                  </Avatar>
                 </StyledBadge>
                 <Box>
-                <Typography style={{ fontWeight: "bold",fontSize: "12px", }}>
+                  <Typography
+                    sx={{ fontWeight: "600", fontSize: "13px", color: "#333" }}
+                  >
                     {username}
                   </Typography>
-                  <Typography sx={{ fontSize: "10px", color: "#666" }}>
+                  <Typography sx={{ fontSize: "11px", color: "#777" }}>
                     {userEmail}
                   </Typography>
                 </Box>
               </Box>
-              <hr sx={{ margin: "0" }} />
-              <Box sx={{ padding: "15px" }}>
+
+              <Box sx={{ borderTop: "1px solid #eee" }} />
+
+              <Box sx={{ padding: "14px" }}>
                 <Box
                   sx={{
-                    marginTop: "5px",
-                    color: "red",
                     display: "flex",
                     alignItems: "center",
+                    gap: "10px",
                     cursor: "pointer",
+                    color: "red",
+                    fontWeight: "500",
+                    padding: "8px",
+                    borderRadius: "6px",
+                    transition: "background 0.3s",
+                    "&:hover": {
+                      backgroundColor: "#f8d7da",
+                    },
                   }}
                   onClick={logoutuser}
                 >
-                  <AiOutlineLogout style={{ marginRight: "10px" }} />
-                  <Typography>Log out</Typography>
+                  <AiOutlineLogout size={18} />
+                  <Typography sx={{ fontSize: "13px" }}>Log out</Typography>
                 </Box>
               </Box>
             </Box>
           )}
-         
         </Box>
       </header>
 
@@ -816,7 +909,6 @@ function Sidebar() {
             className="sidebar-contents"
             sx={{ mt: 2, height: "85vh", overflowY: "auto" }}
           >
-            
             <List sx={{ cursor: "pointer" }}>
               {sidebarItems.map((item) => {
                 const isActiveMenu =
@@ -829,7 +921,6 @@ function Sidebar() {
 
                 return (
                   <Box key={item._id}>
-                  
                     <ListItem
                       onClick={() => handleToggleSubmenu(item._id, item.label)}
                       component={Link}
@@ -881,7 +972,7 @@ function Sidebar() {
                         </ListItemIcon>
                       )}
                     </ListItem>
-                   
+
                     {item.submenu.length > 0 && (
                       <Collapse in={openMenu === item._id}>
                         <List component="div" disablePadding>
@@ -976,8 +1067,11 @@ function Sidebar() {
               alignItems: "center",
             }}
           >
-            <Typography  fontWeight="bold" sx={{display:'flex', alignItems:'center', gap:1}}>
-            <FaPlus /> New 
+            <Typography
+              fontWeight="bold"
+              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+            >
+              <FaPlus /> New
             </Typography>
             <RxCross2
               onClick={handleDrawerClose}

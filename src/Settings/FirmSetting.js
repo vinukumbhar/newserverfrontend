@@ -973,7 +973,16 @@ const FirmSetting = () => {
                 </Box>
 
                 <Box display="flex" justifyContent="flex-start" padding={2}>
-                  <Button onClick={Contactdetails} variant="contained">
+                  <Button onClick={Contactdetails} variant="contained"  sx={{
+                          backgroundColor: "var(--color-save-btn)", // Normal background
+      
+                          "&:hover": {
+                            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          },
+                          borderRadius: "15px",
+                          width: "80px",
+                          mt: 2,
+                        }}>
                     Save
                   </Button>
                 </Box>
@@ -1004,7 +1013,16 @@ const FirmSetting = () => {
                 </Box>
 
                 <Box display="flex" justifyContent="flex-start" padding={2}>
-                  <Button onClick={AboutUs} variant="contained">
+                  <Button onClick={AboutUs} variant="contained"  sx={{
+                          backgroundColor: "var(--color-save-btn)", // Normal background
+      
+                          "&:hover": {
+                            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          },
+                          borderRadius: "15px",
+                          width: "80px",
+                          mt: 2,
+                        }}>
                     Save
                   </Button>
                 </Box>
@@ -1076,7 +1094,16 @@ const FirmSetting = () => {
                   </Box>
 
                   <Box display="flex" justifyContent="flex-start" padding={2}>
-                    <Button onClick={TwoFactorAuthentication} variant="contained">
+                    <Button onClick={TwoFactorAuthentication} variant="contained"  sx={{
+                          backgroundColor: "var(--color-save-btn)", // Normal background
+      
+                          "&:hover": {
+                            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          },
+                          borderRadius: "15px",
+                          width: "80px",
+                          mt: 2,
+                        }}>
                       Save
                     </Button>
                   </Box>
@@ -1100,7 +1127,16 @@ const FirmSetting = () => {
                   </Box>
 
                   <Box display="flex" justifyContent="flex-start" padding={2}>
-                    <Button onClick={chat} variant="contained">
+                    <Button onClick={chat} variant="contained"  sx={{
+                          backgroundColor: "var(--color-save-btn)", // Normal background
+      
+                          "&:hover": {
+                            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          },
+                          borderRadius: "15px",
+                          width: "80px",
+                          mt: 2,
+                        }}>
                       Save
                     </Button>
                   </Box>
@@ -1200,7 +1236,16 @@ const FirmSetting = () => {
 
                 <Box>
                   <Box display="flex" justifyContent="flex-start" padding={2}>
-                    <Button onClick={SocialMediaLinks} variant="contained">
+                    <Button onClick={SocialMediaLinks} variant="contained"  sx={{
+                          backgroundColor: "var(--color-save-btn)", // Normal background
+      
+                          "&:hover": {
+                            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          },
+                          borderRadius: "15px",
+                          width: "80px",
+                          mt: 2,
+                        }}>
                       Save
                     </Button>
                   </Box>
@@ -1217,7 +1262,16 @@ const FirmSetting = () => {
                 <Box sx={{ m: 2, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", border: "2px dotted black", p: 3, gap: 2 }} onDrop={handleDrop} onDragOver={handleDragOver}>
                   <Typography>Drag & Drop file here</Typography>
 
-                  <Button variant="contained" onClick={handleButtonClick}>
+                  <Button variant="contained" onClick={handleButtonClick}  sx={{
+                          backgroundColor: "var(--color-save-btn)", // Normal background
+      
+                          "&:hover": {
+                            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          },
+                          borderRadius: "15px",
+                          // width: "80px",
+                          // mt: 2,
+                        }}>
                     Browse Files
                   </Button>
 
@@ -1263,7 +1317,16 @@ const FirmSetting = () => {
                     <TextField fullWidth name="Time Zone" placeholder="Time Zone" size="small" id="Time Zone" />
                   </Box>
                   <Box display="flex" justifyContent="flex-start" padding={2}>
-                    <Button onClick={InternationalSettings} variant="contained">
+                    <Button onClick={InternationalSettings} variant="contained"  sx={{
+                          backgroundColor: "var(--color-save-btn)", // Normal background
+      
+                          "&:hover": {
+                            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          },
+                          borderRadius: "15px",
+                          width: "80px",
+                          mt: 2,
+                        }}>
                       Save
                     </Button>
                   </Box>
@@ -1296,7 +1359,16 @@ const FirmSetting = () => {
 
                 <Box>
                   <Box display="flex" justifyContent="flex-start" padding={2}>
-                    <Button onClick={ContactNameFormatting} variant="contained">
+                    <Button onClick={ContactNameFormatting} variant="contained"  sx={{
+                          backgroundColor: "var(--color-save-btn)", // Normal background
+      
+                          "&:hover": {
+                            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          },
+                          borderRadius: "15px",
+                          width: "80px",
+                          mt: 2,
+                        }}>
                       Save
                     </Button>
                   </Box>
@@ -1334,7 +1406,16 @@ const FirmSetting = () => {
 
                 <Box>
                   <Box display="flex" justifyContent="flex-start" padding={2}>
-                    <Button onClick={Signatures} variant="contained">
+                    <Button onClick={Signatures} variant="contained"  sx={{
+                          backgroundColor: "var(--color-save-btn)", // Normal background
+      
+                          "&:hover": {
+                            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          },
+                          borderRadius: "15px",
+                          width: "80px",
+                          mt: 2,
+                        }}>
                       Save
                     </Button>
                   </Box>
@@ -1374,7 +1455,16 @@ const FirmSetting = () => {
                 </Box>
                 <Box>
                   <Box display="flex" justifyContent="flex-start" padding={2}>
-                    <Button onClick={teammember} variant="contained">
+                    <Button onClick={teammember} variant="contained"  sx={{
+                          backgroundColor: "var(--color-save-btn)", // Normal background
+      
+                          "&:hover": {
+                            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          },
+                          borderRadius: "15px",
+                          width: "80px",
+                          mt: 2,
+                        }}>
                       Save
                     </Button>
                   </Box>
@@ -1427,7 +1517,16 @@ const FirmSetting = () => {
 
                 <Box>
                   <Box display="flex" justifyContent="flex-start" padding={2}>
-                    <Button onClick={EditorAccess} variant="contained">
+                    <Button onClick={EditorAccess} variant="contained"  sx={{
+                          backgroundColor: "var(--color-save-btn)", // Normal background
+      
+                          "&:hover": {
+                            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          },
+                          borderRadius: "15px",
+                          width: "80px",
+                          mt: 2,
+                        }}>
                       Save
                     </Button>
                   </Box>
@@ -1464,7 +1563,16 @@ const FirmSetting = () => {
 
                 <Box>
                   <Box display="flex" justifyContent="flex-start" padding={2}>
-                    <Button variant="contained">Save</Button>
+                    <Button variant="contained"  sx={{
+                          backgroundColor: "var(--color-save-btn)", // Normal background
+      
+                          "&:hover": {
+                            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          },
+                          borderRadius: "15px",
+                          width: "80px",
+                          mt: 2,
+                        }}>Save</Button>
                   </Box>
                 </Box>
               </Box>
@@ -1500,7 +1608,16 @@ const FirmSetting = () => {
 
                 <Box>
                   <Box display="flex" justifyContent="flex-start" padding={2}>
-                    <Button onClick={SystemGeneratedEmails} variant="contained">
+                    <Button onClick={SystemGeneratedEmails} variant="contained"  sx={{
+                          backgroundColor: "var(--color-save-btn)", // Normal background
+      
+                          "&:hover": {
+                            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          },
+                          borderRadius: "15px",
+                          width: "80px",
+                          mt: 2,
+                        }}>
                       Save
                     </Button>
                   </Box>
@@ -1537,7 +1654,16 @@ const FirmSetting = () => {
 
                 <Box>
                   <Box display="flex" justifyContent="flex-start" padding={2}>
-                    <Button onClick={SendingLimit} variant="contained">
+                    <Button onClick={SendingLimit} variant="contained"  sx={{
+                          backgroundColor: "var(--color-save-btn)", // Normal background
+      
+                          "&:hover": {
+                            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          },
+                          borderRadius: "15px",
+                          width: "80px",
+                          mt: 2,
+                        }}>
                       Save
                     </Button>
                   </Box>
@@ -1563,7 +1689,16 @@ const FirmSetting = () => {
 
                 <Box>
                   <Box display="flex" justifyContent="flex-start" padding={2}>
-                    <Button onClick={ClientPortalSettingst} variant="contained">
+                    <Button onClick={ClientPortalSettingst} variant="contained"  sx={{
+                          backgroundColor: "var(--color-save-btn)", // Normal background
+      
+                          "&:hover": {
+                            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          },
+                          borderRadius: "15px",
+                          width: "80px",
+                          mt: 2,
+                        }}>
                       Save
                     </Button>
                   </Box>
@@ -1646,7 +1781,16 @@ const FirmSetting = () => {
 
                 <Box>
                   <Box display="flex" justifyContent="flex-start" padding={2}>
-                    <Button variant="contained">Save</Button>
+                    <Button variant="contained"  sx={{
+                          backgroundColor: "var(--color-save-btn)", // Normal background
+      
+                          "&:hover": {
+                            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          },
+                          borderRadius: "15px",
+                          width: "80px",
+                          mt: 2,
+                        }}>Save</Button>
                   </Box>
                 </Box>
               </Box>

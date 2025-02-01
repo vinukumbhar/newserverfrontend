@@ -33,6 +33,11 @@ import { toast } from "react-toastify";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Avatar from "@mui/material/Avatar";
+import Badge from "@mui/material/Badge";
+import Stack from "@mui/material/Stack";
+// import axios from "axios";
+import ImageCropper from "../Settings/ImageCropper";
 const UpdateTeamMember = () => {
   const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
   const WINDOWS_PORT = process.env.REACT_APP_SERVER_URI;
@@ -48,17 +53,19 @@ const UpdateTeamMember = () => {
   const [logindetails, setLoginDetails] = useState(false);
   const [phonenumber, setPhoneNumber] = useState("");
   const handleLoginDetails = () => {
-    setLoginDetails(true); // Set to true to show the text
+    setLoginDetails(!logindetails); // Set to true to show the text
   };
-
+const handleCloseLoginDetials=()=>{
+  setLoginDetails(!logindetails);
+}
   // const handleOpen = () => {
   //   setOpen(true);
   //   setEditable(true); // Enable editing when modal is opened
   // };
   const handleEditClick = () => {
-    setIsEditable(true);
-    setShowSaveButtons(true);
-    setOpen(true);
+    setIsEditable(!isEditable);
+    setShowSaveButtons(!showSaveButtons);
+    // setOpen(true);
   };
   const handleCancelButtonClick = () => {
     setShowSaveButtons(false);
@@ -268,7 +275,7 @@ const UpdateTeamMember = () => {
   //   let data = JSON.stringify({
   //     targetLabel: targetLabel,
   //     newPermission: newPermission,
-    
+
   //   });
 
   //   let config = {
@@ -290,7 +297,6 @@ const UpdateTeamMember = () => {
   //       console.log(error);
   //     });
   // };
-
 
   const handleUpdateTeamMember = () => {
     if (firstName !== "" && firstNameValidation !== "") {
@@ -650,6 +656,85 @@ const UpdateTeamMember = () => {
     setSelectedFile(null);
   };
 
+  const StyledBadge = styled(Badge)(({ theme }) => ({
+    "& .MuiBadge-badge": {
+      backgroundColor: "#44b700", // Green color for active status
+      color: "#44b700",
+      width: 12,
+      height: 12,
+      borderRadius: "50%",
+      border: "2px solid white", // White border to separate it from the avatar
+    },
+  }));
+  const [image, setImage] = useState(null); // The original image
+  const [croppedImage, setCroppedImage] = useState(""); // The cropped image
+
+  // Fetch the last uploaded image when the page loads
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1/lastimage")
+      .then((response) => {
+        const imageUrl = response.data.imageUrl;
+        setCroppedImage(imageUrl); // Set the last uploaded image URL as the profile picture
+        console.log("viayak",imageUrl)
+      })
+      .catch((error) => {
+        console.error("Error fetching last image:", error);
+      });
+  }, []);
+  // const imageUrlWithCacheBuster = `${croppedImage}`;
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImage(reader.result); // Set the base64 image data
+        console.log("vinayak",reader.result)
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCroppedImage = (cropped) => {
+    setCroppedImage(cropped); // Set the cropped image data
+    setImage(null); // Hide the cropper
+  };
+
+  const handleSubmit = async () => {
+    if (croppedImage) {
+      try {
+        // Convert the blob URL to a Blob object
+        const response = await fetch(croppedImage);
+        const blob = await response.blob();
+
+        // Create a File object (optional: you can give it a name and MIME type)
+        const file = new File([blob], "cropped_image.jpg", { type: blob.type });
+
+        // Prepare FormData
+        const formData = new FormData();
+        formData.append("image", file); // Add the File object
+
+        // Make POST request using axios
+        axios
+          .post("http://127.0.0.1/userprofilepic", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then((response) => {
+            console.log("Image uploaded successfully:", response.data);
+          })
+          .catch((error) => {
+            console.error("Error uploading image:", error);
+          });
+      } catch (error) {
+        console.error("Error converting blob URL to Blob:", error);
+      }
+    } else {
+      console.error("No cropped image to send!");
+    }
+  };
   return (
     <Box sx={{ padding: 3 }}>
       <Box display={"flex"} alignItems={"center"} mb={1} gap={2}>
@@ -669,193 +754,169 @@ const UpdateTeamMember = () => {
               <Typography>
                 <b>Personal details</b>
               </Typography>
-
-              <Box
-                sx={{
-                  width: 120,
-                  height: 120,
-                  borderRadius: "50%",
-                  overflow: "hidden",
-                  border: "2px solid #d0d0d9",
-                }}
-              >
-                {profilePicture && (
-                  <img
-                    src={profilePicture} // Ensure this URL is accessible from the client
-                    alt="Profile"
-                    style={{
-                      width: "100%", // Set width to 100% of the container
-                      height: "100%", // Set height to 100% of the container
-                      objectFit: "contain", // Cover the entire area without distortion
-                    }}
+              <StyledBadge
+                  overlap="circular"
+                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                  variant="dot"
+                >
+                  <Avatar
+                    alt="User Name"
+                    src={croppedImage  || "default_image_url"}
+                    sx={{ width: 40, height: 40 }}
                   />
-                )}
-              </Box>
-
+                </StyledBadge>
               <Box>
                 <IconButton onClick={handleEditClick}>
                   <BorderColorIcon sx={{ color: "#1976d3" }} />
                 </IconButton>
               </Box>
-              {/* <Modal open={open} onClose={handleClose}>
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    bgcolor: "background.paper",
-                    borderRadius: 2,
-                    boxShadow: 24,
-                    p: 4,
-                    textAlign: "center",
-                  }}
-                >
+            </Box>
+            {isEditable && (
+              <Box>
+                <Box sx={{ display: "flex", gap: 2 }} mt={2}>
                   <Box>
-                    <Button variant="contained" component="label" startIcon={<CloudUploadIcon />} sx={{ mb: 2 }}>
-                      Upload Photo
-                      <input type="file" accept="image/*" hidden onChange={handleFileChange} />
-                    </Button>
-
-                    {selectedFile && (
-                      <Box mt={2}>
-                        <Typography variant="body2">Selected file: {selectedFile.name}</Typography>
-                        <Button variant="outlined" startIcon={<DeleteIcon />} onClick={handleDelete} sx={{ mt: 2 }}>
-                          Delete
-                        </Button>
-                      </Box>
-                    )}
+                    <Typography>First Name</Typography>
+                    <TextField
+                      value={firstName}
+                      margin="normal"
+                      onChange={(e) => setFirstName(e.target.value)}
+                      placeholder="First Name"
+                      fullWidth
+                      size="small"
+                      disabled={!isEditable}
+                    />
                   </Box>
-                  <Button variant="contained" onClick={handleClose} sx={{ mt: 3 }}>
-                    Close
-                  </Button>
-                </Box>
-              </Modal> */}
-              <Modal open={open} onClose={handleClose}>
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: "50%",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    bgcolor: "background.paper",
-                    borderRadius: 2,
-                    boxShadow: 24,
-                    p: 4,
-                    textAlign: "center",
-                  }}
-                >
                   <Box>
+                    <Typography>Middle Name</Typography>
+                    <TextField
+                      value={middleName}
+                      margin="normal"
+                      onChange={(e) => setMiddleName(e.target.value)}
+                      placeholder="Middle Name"
+                      fullWidth
+                      size="small"
+                      disabled={!isEditable}
+                    />
+                  </Box>
+                  <Box>
+                    <Typography>Last Name</Typography>
+                    <TextField
+                      value={lastName}
+                      margin="normal"
+                      onChange={(e) => setLastName(e.target.value)}
+                      placeholder="Last Name"
+                      fullWidth
+                      size="small"
+                      disabled={!isEditable}
+                    />
+                  </Box>
+                </Box>
+                <Box>
+                  <Typography>Phone Number</Typography>
+                  <TextField
+                    margin="normal"
+                    value={phonenumber}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                    placeholder="Phone Number"
+                    fullWidth
+                    size="small"
+                    disabled={!isEditable}
+                  />
+                </Box>
+
+
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  minHeight="100vh"
+                  sx={{ bgcolor: "#f5f5f5" }}
+                >
+                  <Typography variant="h4" gutterBottom>
+                    React Easy Crop with Avatar
+                  </Typography>
+
+                  {croppedImage ? (
+                    <Avatar
+                      src={croppedImage}
+                      sx={{ width: 120, height: 120, mb: 2 }}
+                    />
+                  ) : (
+                    <Avatar sx={{ width: 120, height: 120, mb: 2 }} />
+                  )}
+
+                  {!image && (
                     <Button
                       variant="contained"
                       component="label"
-                      startIcon={<CloudUploadIcon />}
                       sx={{ mb: 2 }}
                     >
-                      Upload Photo
+                      Upload Image
                       <input
                         type="file"
                         accept="image/*"
+                        onChange={handleImageChange}
                         hidden
-                        onChange={handleFileChange}
                       />
                     </Button>
+                  )}
 
-                    {error && (
-                      <Typography variant="body2" color="error">
-                        {error}
-                      </Typography>
-                    )}
+                  {image && (
+                    <ImageCropper
+                      image={image}
+                      onCroppedImage={handleCroppedImage}
+                    />
+                  )}
 
-                    {selectedFile && !error && (
-                      <Box mt={2}>
-                        <Typography variant="body2">
-                          Selected file: {selectedFile.name}
-                        </Typography>
-                        <Button
-                          variant="outlined"
-                          startIcon={<DeleteIcon />}
-                          onClick={handleDelete}
-                          sx={{ mt: 2 }}
-                        >
-                          Delete
-                        </Button>
-                      </Box>
-                    )}
-                  </Box>
-                  <Button
-                    variant="contained"
-                    onClick={handleClose}
-                    sx={{ mt: 3 }}
-                  >
-                    Close
-                  </Button>
+                  {croppedImage && (
+                    <Button
+                      variant="contained"
+                      sx={{ mt: 2 }}
+                      onClick={handleSubmit}
+                    >
+                      Submit Image
+                    </Button>
+                  )}
                 </Box>
-              </Modal>
-            </Box>
+                {showSaveButtons && (
+                  <Box display="flex" alignItems="center" gap={2} mt={2}>
+                    <Button
+                      variant="contained"
+                      onClick={handleSaveButtonClick}
+                      sx={{
+                        backgroundColor: "var(--color-save-btn)", // Normal background
 
-            <Box sx={{ display: "flex", gap: 2 }} mt={2}>
-              <Box>
-                <Typography>First Name</Typography>
-                <TextField
-                  value={firstName}
-                  margin="normal"
-                  onChange={(e) => setFirstName(e.target.value)}
-                  placeholder="First Name"
-                  fullWidth
-                  size="small"
-                  disabled={!isEditable}
-                />
-              </Box>
-              <Box>
-                <Typography>Middle Name</Typography>
-                <TextField
-                  value={middleName}
-                  margin="normal"
-                  onChange={(e) => setMiddleName(e.target.value)}
-                  placeholder="Middle Name"
-                  fullWidth
-                  size="small"
-                  disabled={!isEditable}
-                />
-              </Box>
-              <Box>
-                <Typography>Last Name</Typography>
-                <TextField
-                  value={lastName}
-                  margin="normal"
-                  onChange={(e) => setLastName(e.target.value)}
-                  placeholder="Last Name"
-                  fullWidth
-                  size="small"
-                  disabled={!isEditable}
-                />
-              </Box>
-            </Box>
-            <Box>
-              <Typography>Phone Number</Typography>
-              <TextField
-                margin="normal"
-                value={phonenumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="Phone Number"
-                fullWidth
-                size="small"
-                disabled={!isEditable}
-              />
-            </Box>
-
-            {showSaveButtons && (
-              <Box display="flex" alignItems="center" gap={2} mt={2}>
-                <Button variant="contained" onClick={handleSaveButtonClick}>
-                  Save
-                </Button>
-                <Button variant="outlined" onClick={handleCancelButtonClick}>
-                  Cancel
-                </Button>
+                        "&:hover": {
+                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        },
+                        borderRadius: "15px",
+                        width: "80px",
+                      }}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      onClick={handleCancelButtonClick}
+                      sx={{
+                        borderColor: "var(--color-border-cancel-btn)", // Normal background
+                        color: "var(--color-save-btn)",
+                        "&:hover": {
+                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          color: "#fff",
+                          border: "none",
+                        },
+                        width: "80px",
+                        borderRadius: "15px",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </Box>
+                )}
               </Box>
             )}
-
             <Box
               display={"flex"}
               alignItems={"center"}
@@ -932,12 +993,31 @@ const UpdateTeamMember = () => {
                   </Box>
                 </Box>
                 <Box mt={2} display="flex" alignItems="center" gap={3}>
-                  <Button variant="contained" onClick={updatePassword}>
+                  <Button variant="contained" onClick={updatePassword} sx={{
+                        backgroundColor: "var(--color-save-btn)", // Normal background
+
+                        "&:hover": {
+                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        },
+                        borderRadius: "15px",
+                        width: "80px",
+                      }}>
                     Save
                   </Button>
                   <Button
                     variant="outlined"
-
+                    sx={{
+                      borderColor: "var(--color-border-cancel-btn)", // Normal background
+                      color: "var(--color-save-btn)",
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        color: "#fff",
+                        border: "none",
+                      },
+                      width: "80px",
+                      borderRadius: "15px",
+                    }}
+                    onClick={handleCloseLoginDetials}
                     // Adding right margin to separate buttons
                   >
                     Cancel
@@ -1107,7 +1187,7 @@ const UpdateTeamMember = () => {
                                     }}
                                   >
                                     <Switch
-                                    onChange={handleSwitchPayments}
+                                      onChange={handleSwitchPayments}
                                       // onChange={(checked) => {
                                       //   handleSwitchPayments(checked);
                                       //   updateSidebarData(
@@ -1822,11 +1902,31 @@ const UpdateTeamMember = () => {
                     <Button
                       variant="contained"
                       onClick={handleUpdateTeamMember}
-                      color="primary"
+                      sx={{
+                        backgroundColor: "var(--color-save-btn)", // Normal background
+    
+                        "&:hover": {
+                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        },
+                        borderRadius: "15px",
+                        width: "80px",
+                        mt: 2,
+                      }}
                     >
                       Save
                     </Button>
-                    <Button variant="outlined" onClick={handleNewDrawerClose}>
+                    <Button variant="outlined" onClick={handleNewDrawerClose} sx={{
+                    borderColor: "var(--color-border-cancel-btn)", // Normal background
+                    color: "var(--color-save-btn)",
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                      color: "#fff",
+                      border: "none",
+                    },
+                    width: "80px",
+                    borderRadius: "15px",
+                    mt: 2,
+                  }}>
                       Cancel
                     </Button>
                   </Box>

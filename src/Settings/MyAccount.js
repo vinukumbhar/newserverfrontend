@@ -113,7 +113,7 @@ const MyAccount = () => {
       console.error("Error fetching data:", error);
     }
   };
-
+const [username,setUserName]= useState("")
   const fetchAdminData = async (email) => {
     try {
       const url = `${LOGIN_API}/admin/adminsignup/adminbyemail/${email}`;
@@ -130,8 +130,7 @@ const MyAccount = () => {
       setLastName(data.admin[0].lastName);
       setPhoneNumber(data.admin[0].phoneNumber);
       setEmail(data.admin[0].email);
-      const profilePicFilename = data.admin[0].profilePicture.split("\\").pop(); // Extract filename
-      setProfilePicture(`${LOGIN_API}/uploads/${profilePicFilename}`);
+      setUserName(data.admin[0].firmName)
       console.log(profilePicture);
     } catch (error) {
       console.error("Error fetching email templates:", error);
@@ -1210,6 +1209,14 @@ const MyAccount = () => {
       console.error("No cropped image to send!");
     }
   };
+  const getInitials = (name) => {
+    if (!name) return "";
+    const nameParts = name.split(" ");
+    return nameParts
+      .map((part) => part[0])
+      .join("")
+      .toUpperCase();
+  };
   return (
     <>
       <Box>
@@ -1226,11 +1233,20 @@ const MyAccount = () => {
                   anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                   variant="dot"
                 >
-                  <Avatar
-                    alt="User Name"
-                    src={croppedImage  || "default_image_url"}
-                    sx={{ width: 40, height: 40 }}
-                  />
+                 <Avatar
+                      alt={username}
+                      src={croppedImage || ""}
+                      sx={{
+                        width: 40,
+                        height: 40,
+                        backgroundColor: "#f5f5f5",
+                        fontSize: "16px",
+                        fontWeight: "bold",
+                        color: "#555",
+                      }}
+                    >
+                      {!croppedImage && getInitials(username)}
+                    </Avatar>
                 </StyledBadge>
               </Box>
 
@@ -1539,10 +1555,20 @@ const MyAccount = () => {
                         type="submit"
                         variant="contained"
                         color="primary"
+                        // sx={{
+                        //   mt: 2,
+                        //   width: isSmallScreen ? "100%" : "auto",
+                        //   borderRadius: "10px",
+                        // }}
                         sx={{
+                          backgroundColor: "var(--color-save-btn)", // Normal background
+      
+                          "&:hover": {
+                            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          },
+                          borderRadius: "15px",
+                          width: "80px",
                           mt: 2,
-                          width: isSmallScreen ? "100%" : "auto",
-                          borderRadius: "10px",
                         }}
                         onClick={handleUpdatePasswordClick}
                       >
@@ -1553,10 +1579,22 @@ const MyAccount = () => {
                         variant="outlined"
                         color="primary"
                         onClick={handleCloseAlert}
+                        // sx={{
+                        //   mt: 2,
+                        //   width: isSmallScreen ? "100%" : "auto",
+                        //   borderRadius: "10px",
+                        // }}
                         sx={{
+                          borderColor: "var(--color-border-cancel-btn)", // Normal background
+                          color: "var(--color-save-btn)",
+                          "&:hover": {
+                            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                            color: "#fff",
+                            border: "none",
+                          },
+                          width: "80px",
+                          borderRadius: "15px",
                           mt: 2,
-                          width: isSmallScreen ? "100%" : "auto",
-                          borderRadius: "10px",
                         }}
                       >
                         Cancel

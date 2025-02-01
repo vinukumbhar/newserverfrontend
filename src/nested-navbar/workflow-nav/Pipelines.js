@@ -574,7 +574,7 @@ const Pipeline = ({ pipeline, jobData, moveJob,fetchJobList, data }) => {
   
       // Refresh job list and navigate to archived jobs page
       fetchJobList(data); // Refresh job data
-      navigate(`/accountsdash/workflow/${data}/archivedjobs`);
+      navigate(`/clients/accounts/accountsdash/workflow/${data}/archivedjobs`);
     } catch (error) {
       console.error("Error archiving jobs:", error);
       toast.error("Failed to archive some jobs");

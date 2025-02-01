@@ -206,7 +206,7 @@ const ArchivedJobs = () => {
       .then((result) => {
         console.log("Active result:", result);
         toast.success("Job activated  successfully");
-        navigate(`/accountsdash/workflow/${data}/activejobs`)
+        navigate(`/clients/accounts/accountsdash/workflow/${data}/activejobs`)
         setJobData((prevJobs) =>
           prevJobs.filter((job) => job.id !== selectedJobId)
         ); // Remove archived job from the table
