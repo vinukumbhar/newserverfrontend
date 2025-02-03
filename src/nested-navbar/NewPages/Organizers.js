@@ -485,11 +485,11 @@ useEffect(() => {
                   backgroundColor: "#96C9F4",
                 }}
               >
-                <Box>
+                {/* <Box>
                   <Typography fontWeight="bold">Organizer View</Typography>
                   <Typography>The client sees your organizer like this</Typography>
-                </Box>
-                <Button variant="text" onClick={handleClosePreview}>
+                </Box> */}
+                <Button variant="text" onClick={handleClosePreview} sx={{ml:'auto'}}>
                   Back to edit
                 </Button>
               </Box>

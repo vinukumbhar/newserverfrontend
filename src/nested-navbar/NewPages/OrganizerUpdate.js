@@ -832,8 +832,9 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 // import Select from "react-select";
 import { toast } from "react-toastify";
-import { FormGroup, Autocomplete, Container, Box, Typography, FormControl, Select, InputLabel, MenuItem, TextField, FormControlLabel, Checkbox, Radio, RadioGroup, Button, FormLabel, Grid, Paper, LinearProgress, Tooltip } from "@mui/material"; // Make sure you have MUI installed
+import { IconButton,Table, TableBody, TableCell, TableContainer, TableHead, TableRow,FormGroup, Autocomplete, Container, Box, Typography, FormControl, Select, InputLabel, MenuItem, TextField, FormControlLabel, Checkbox, Radio, RadioGroup, Button, FormLabel, Grid, Paper, LinearProgress, Tooltip } from "@mui/material"; // Make sure you have MUI installed
 import { Link } from "react-router-dom";
+import { ExpandMore, ExpandLess } from '@mui/icons-material';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from 'dayjs';
@@ -843,7 +844,7 @@ const CreateOrganizerUpdate = ({ OrganizerData, onClose }) => {
   const { data } = useParams();
   const [selectedAccounts, setSelectedAccounts] = useState([]);
   const [selectedOrganizerTemplate, setSelectedOrganizerTemplate] = useState(null);
-
+  const [expandedSection, setExpandedSection] = useState(null); 
   const [organizerName, setOrganizerName] = useState("");
 
   const [organizerTemp, setOrganizerTemp] = useState(null);
@@ -865,7 +866,7 @@ const CreateOrganizerUpdate = ({ OrganizerData, onClose }) => {
       .then((response) => response.json())
       .then((result) => {
         const selectedOrganizer = result.organizerAccountWise.find((org) => org._id === OrganizerData);
-        console.log(selectedOrganizer);
+        console.log("fdfd",selectedOrganizer);
         setOrganizerTemp(selectedOrganizer);
 
         setSelectedAccounts(selectedOrganizer.accountid.accountName)
@@ -874,29 +875,25 @@ const CreateOrganizerUpdate = ({ OrganizerData, onClose }) => {
         setOrganizerName(selectedOrganizer.organizertemplateid.organizerName);
         setSections(selectedOrganizer.sections);
 
+// Loop through the sections and form elements to log text and textvalue
+selectedOrganizer.sections.forEach((section) => {
+  console.log(`Section: ${section.name} - ${section.text}`);
+  section.formElements.forEach((formElement) => {
+    console.log(`Form Element: ${formElement.text}`);
+    console.log(`Text Value: ${formElement.textvalue}`);
+  });
+});
 
-
-        selectedOrganizer.sections.forEach(section => {
-          section.formElements.forEach(formElement => {
-            console.log(formElement.options.selected);
-          });
-        });
+        // selectedOrganizer.sections.forEach(section => {
+        //   section.formElements.forEach(formElement => {
+        //     console.log(formElement.options.selected);
+        //   });
+        // });
       })
       .catch((error) => console.error(error));
   };
 
 
-  // const handleNext = () => {
-  //   if (currentSectionIndex < sections.length - 1) {
-  //     setCurrentSectionIndex(currentSectionIndex + 1); // Move to the next section
-  //   }
-  // };
-
-  // const handleBack = () => {
-  //   if (currentSectionIndex > 0) {
-  //     setCurrentSectionIndex(currentSectionIndex - 1); // Move to the previous section
-  //   }
-  // };
   console.log(organizerTemp);
   const handleOrganizerFormClose = () => {
     onClose();
@@ -1422,289 +1419,357 @@ const CreateOrganizerUpdate = ({ OrganizerData, onClose }) => {
       fileInputRef.current.click(); // Programmatically click the file input
     }
   };
+  const handleToggleSection = (sectionId) => {
+    setExpandedSection((prevExpandedSection) =>
+      prevExpandedSection === sectionId ? null : sectionId
+    );
+  };
   return (
-    <Container>
-      <Paper elevation={3} style={{ padding: "20px" }}>
-        <Typography variant="h6" gutterBottom>
-          Update Organizer
-        </Typography>
+    // <Container>
+    //   <Paper elevation={3} style={{ padding: "20px" }}>
+    //     <Typography variant="h6" gutterBottom>
+    //       Update Organizer
+    //     </Typography>
 
-        <TextField
-          value={selectedAccounts}
-          size="small"
-          fullWidth
-          margin="normal"
-          variant="outlined"
-        />
-        <TextField
-          value={selectedOrganizerTemplate}
-          size="small"
-          fullWidth
-          margin="normal"
-          variant="outlined"
-        />
+    //     <TextField
+    //       value={selectedAccounts}
+    //       size="small"
+    //       fullWidth
+    //       margin="normal"
+    //       variant="outlined"
+    //     />
+    //     <TextField
+    //       value={selectedOrganizerTemplate}
+    //       size="small"
+    //       fullWidth
+    //       margin="normal"
+    //       variant="outlined"
+    //     />
 
-        <TextField
-          fullWidth
-          variant="outlined"
-          size="small"
-          placeholder="Organizer Name"
-          value={organizerName}
-          onChange={(e) => setOrganizerName(e.target.value)}
-          style={{ marginBottom: "10px" }}
-          margin="normal"
-        />
+    //     <TextField
+    //       fullWidth
+    //       variant="outlined"
+    //       size="small"
+    //       placeholder="Organizer Name"
+    //       value={organizerName}
+    //       onChange={(e) => setOrganizerName(e.target.value)}
+    //       style={{ marginBottom: "10px" }}
+    //       margin="normal"
+    //     />
 
-        {/* Render Sections */}
-        <Typography variant="h6" style={{ marginTop: "20px" }}>
-          Sections
-        </Typography>
+    //     {/* Render Sections */}
+    //     <Typography variant="h6" style={{ marginTop: "20px" }}>
+    //       Sections
+    //     </Typography>
 
-        {visibleSections.map(
-          (section, sectionIndex) =>
-            sectionIndex === activeStep && (
-              <Box key={section.text}>
-                {section.formElements.map(
-                  (element) =>
-                    shouldShowElement(element) && (
+    //     {visibleSections.map(
+    //       (section, sectionIndex) =>
+    //         sectionIndex === activeStep && (
+    //           <Box key={section.text}>
+    //             {section.formElements.map(
+    //               (element) =>
+    //                 shouldShowElement(element) && (
 
-                      <Box key={element.text}>
-                        {(element.type === "Free Entry" || element.type === "Number" || element.type === "Email") && (
-                          <Box>
-                            <Typography fontSize="18px" mb={1} mt={1}>
-                              {element.text}
-                            </Typography>
-                            <TextField
-                              variant="outlined"
-                              size="small"
-                              multiline
-                              fullWidth
-                              // margin='normal'
-                              placeholder={`${element.type} Answer`}
-                              inputProps={{
-                                type: element.type === "Free Entry" ? "text" : element.type.toLowerCase(),
-                              }}
-                              maxRows={8}
-                              style={{ display: "block", marginTop: "15px" }}
-                              value={inputValues[element.text] || element.textvalue || ""}
-                              onChange={(e) => handleInputChange(e, element.text)}
-                            />
-                          </Box>
-                        )}
+    //                   <Box key={element.text}>
+    //                     {(element.type === "Free Entry" || element.type === "Number" || element.type === "Email") && (
+    //                       <Box>
+    //                         <Typography fontSize="18px" mb={1} mt={1}>
+    //                           {element.text}
+    //                         </Typography>
+    //                         <TextField
+    //                           variant="outlined"
+    //                           size="small"
+    //                           multiline
+    //                           fullWidth
+    //                           // margin='normal'
+    //                           placeholder={`${element.type} Answer`}
+    //                           inputProps={{
+    //                             type: element.type === "Free Entry" ? "text" : element.type.toLowerCase(),
+    //                           }}
+    //                           maxRows={8}
+    //                           style={{ display: "block", marginTop: "15px" }}
+    //                           value={inputValues[element.text] || element.textvalue || ""}
+    //                           onChange={(e) => handleInputChange(e, element.text)}
+    //                         />
+    //                       </Box>
+    //                     )}
 
-                        {/* {element.type === "Radio Buttons" && (
-                          <Box>
-                            <Typography fontSize="18px" mb={1} mt={1}>
-                              {element.text}
-                            </Typography>
-                            <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-                              {element.options.map((option) => (
-                                <Button key={option.text}
-                                  variant={radioValues[element.text] === option.text || option.selected ? "contained" : "outlined"}
+    //                     {/* {element.type === "Radio Buttons" && (
+    //                       <Box>
+    //                         <Typography fontSize="18px" mb={1} mt={1}>
+    //                           {element.text}
+    //                         </Typography>
+    //                         <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+    //                           {element.options.map((option) => (
+    //                             <Button key={option.text}
+    //                               variant={radioValues[element.text] === option.text || option.selected ? "contained" : "outlined"}
 
-                                  onClick={() => handleRadioChange(option.text, element.text)}>
-                                  {option.text}
-                                </Button>
-                              ))}
-                            </Box>
-                          </Box>
-                        )} */}
-                        {element.type === "Radio Buttons" && (
-                          <Box>
-                            <Typography fontSize="18px" mb={1} mt={1}>
-                              {element.text}
-                            </Typography>
-                            <FormControl>
-                              <RadioGroup
-                                value={radioValues[element.text] || ""}
-                                onChange={(event) => handleRadioChange(event.target.value, element.text)}
-                              >
-                                {element.options.map((option) => (
-                                  <FormControlLabel
-                                    key={option.text}
-                                    value={option.text}
-                                    control={<Radio checked={radioValues[element.text] === option.text || option.selected || false} />}
-                                    label={option.text}
-                                  />
-                                ))}
-                              </RadioGroup>
-                            </FormControl>
-                          </Box>
-                        )}
+    //                               onClick={() => handleRadioChange(option.text, element.text)}>
+    //                               {option.text}
+    //                             </Button>
+    //                           ))}
+    //                         </Box>
+    //                       </Box>
+    //                     )} */}
+    //                     {element.type === "Radio Buttons" && (
+    //                       <Box>
+    //                         <Typography fontSize="18px" mb={1} mt={1}>
+    //                           {element.text}
+    //                         </Typography>
+    //                         <FormControl>
+    //                           <RadioGroup
+    //                             value={radioValues[element.text] || ""}
+    //                             onChange={(event) => handleRadioChange(event.target.value, element.text)}
+    //                           >
+    //                             {element.options.map((option) => (
+    //                               <FormControlLabel
+    //                                 key={option.text}
+    //                                 value={option.text}
+    //                                 control={<Radio checked={radioValues[element.text] === option.text || option.selected || false} />}
+    //                                 label={option.text}
+    //                               />
+    //                             ))}
+    //                           </RadioGroup>
+    //                         </FormControl>
+    //                       </Box>
+    //                     )}
 
-                        {element.type === "Checkboxes" && (
-                          <div>
-                            <Typography variant="body1">{element.text}</Typography>
-                            {element.options.map((option, oIndex) => (
+    //                     {element.type === "Checkboxes" && (
+    //                       <div>
+    //                         <Typography variant="body1">{element.text}</Typography>
+    //                         {element.options.map((option, oIndex) => (
 
-                              <FormControlLabel
+    //                           <FormControlLabel
 
-                                key={option.text || oIndex}
-                                control={
+    //                             key={option.text || oIndex}
+    //                             control={
 
-                                  <Checkbox
+    //                               <Checkbox
 
-                                    // checked={checkboxValues[option.selected]}
-                                    checked={checkboxValues[element.text || element.selected]?.includes(option.text) || option.selected}
-                                    onChange={(e) => handleCheckboxChange(option.text, element.text, e.target.checked)}
-                                  />
-                                }
-                                label={option.text}
-                              />
-                            ))}
-                          </div>
-                        )}
-                        {element.type === "Yes/No" && (
-                          <Box>
-                            <Typography fontSize="18px">{element.text}</Typography>
-                            <Box sx={{ display: "flex", gap: 1 }}>
-                              {element.options.map((option) => (
-                                <Button key={option.text} variant={selectedValue === option.text ? "contained" : "outlined"} onClick={(event) => handleChange(event, element.text)}>
-                                  {option.text}
-                                </Button>
-                              ))}
-                            </Box>
-                          </Box>
-                        )}
+    //                                 // checked={checkboxValues[option.selected]}
+    //                                 checked={checkboxValues[element.text || element.selected]?.includes(option.text) || option.selected}
+    //                                 onChange={(e) => handleCheckboxChange(option.text, element.text, e.target.checked)}
+    //                               />
+    //                             }
+    //                             label={option.text}
+    //                           />
+    //                         ))}
+    //                       </div>
+    //                     )}
+    //                     {element.type === "Yes/No" && (
+    //                       <Box>
+    //                         <Typography fontSize="18px">{element.text}</Typography>
+    //                         <Box sx={{ display: "flex", gap: 1 }}>
+    //                           {element.options.map((option) => (
+    //                             <Button key={option.text} variant={selectedValue === option.text ? "contained" : "outlined"} onClick={(event) => handleChange(event, element.text)}>
+    //                               {option.text}
+    //                             </Button>
+    //                           ))}
+    //                         </Box>
+    //                       </Box>
+    //                     )}
 
-                        {/* {element.type === "Dropdown" && (
-                          <Box>
-                            <Typography fontSize="18px">{element.text}</Typography>
-                            <FormControl fullWidth>
-                              <Select value={selectedDropdownValue || (element.options.find(option => option.selected)?.text || '')} onChange={(event) => handleDropdownValueChange(event, element.text)} size="small">
-                                {element.options.map((option) => (
-                                  <MenuItem key={option.text} value={option.text}>
-                                    {option.text}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
-                        )} */}
+    //                     {/* {element.type === "Dropdown" && (
+    //                       <Box>
+    //                         <Typography fontSize="18px">{element.text}</Typography>
+    //                         <FormControl fullWidth>
+    //                           <Select value={selectedDropdownValue || (element.options.find(option => option.selected)?.text || '')} onChange={(event) => handleDropdownValueChange(event, element.text)} size="small">
+    //                             {element.options.map((option) => (
+    //                               <MenuItem key={option.text} value={option.text}>
+    //                                 {option.text}
+    //                               </MenuItem>
+    //                             ))}
+    //                           </Select>
+    //                         </FormControl>
+    //                       </Box>
+    //                     )} */}
 
-                        {element.type === "Dropdown" && (
-                          <Box>
-                            <Typography fontSize="18px">{element.text}</Typography>
-                            <FormControl fullWidth>
-                              <Autocomplete
-                                value={selectedDropdownValue || (element.options.find(option => option.selected)?.text || '')}
-                                onChange={(event, newValue) => handleDropdownValueChange(event, element, newValue)}
-                                options={element.options.map(option => option.text)}
-                                renderInput={(params) => <TextField {...params} variant="outlined" size="small" />}
-                                disableClearable
-                                isOptionEqualToValue={(option, value) => option === value}
-                                getOptionLabel={(option) => option}
-                              />
-                            </FormControl>
-                          </Box>
-                        )}
+    //                     {element.type === "Dropdown" && (
+    //                       <Box>
+    //                         <Typography fontSize="18px">{element.text}</Typography>
+    //                         <FormControl fullWidth>
+    //                           <Autocomplete
+    //                             value={selectedDropdownValue || (element.options.find(option => option.selected)?.text || '')}
+    //                             onChange={(event, newValue) => handleDropdownValueChange(event, element, newValue)}
+    //                             options={element.options.map(option => option.text)}
+    //                             renderInput={(params) => <TextField {...params} variant="outlined" size="small" />}
+    //                             disableClearable
+    //                             isOptionEqualToValue={(option, value) => option === value}
+    //                             getOptionLabel={(option) => option}
+    //                           />
+    //                         </FormControl>
+    //                       </Box>
+    //                     )}
 
-                        {element.type === "Date" && (
-                          <Box>
-                            <Typography fontSize="18px">{element.text}</Typography>
-                            <DatePicker
-                              format="DD/MM/YYYY"
-                              sx={{ width: "100%", backgroundColor: "#fff" }}
-                              selected={startDate}
-                              onChange={handleStartDateChange}
-                              renderInput={(params) => <TextField {...params} size="small" />}
-                              onOpen={() =>
-                                setAnsweredElements((prevAnswered) => ({
-                                  ...prevAnswered,
-                                  [element.text]: true,
-                                }))
-                              }
-                            />
-                          </Box>
-                        )}
-                        {/* File Upload */}
-                        {element.type === "File Upload" && (
-                          <Box>
-                            <Typography fontSize="18px" mb={1} mt={2}>
-                              {element.text}
-                            </Typography>
+    //                     {element.type === "Date" && (
+    //                       <Box>
+    //                         <Typography fontSize="18px">{element.text}</Typography>
+    //                         <DatePicker
+    //                           format="DD/MM/YYYY"
+    //                           sx={{ width: "100%", backgroundColor: "#fff" }}
+    //                           selected={startDate}
+    //                           onChange={handleStartDateChange}
+    //                           renderInput={(params) => <TextField {...params} size="small" />}
+    //                           onOpen={() =>
+    //                             setAnsweredElements((prevAnswered) => ({
+    //                               ...prevAnswered,
+    //                               [element.text]: true,
+    //                             }))
+    //                           }
+    //                         />
+    //                       </Box>
+    //                     )}
+    //                     {/* File Upload */}
+    //                     {element.type === "File Upload" && (
+    //                       <Box>
+    //                         <Typography fontSize="18px" mb={1} mt={2}>
+    //                           {element.text}
+    //                         </Typography>
 
-                            {/* <Tooltip title="Unavailable in preview mode" placement="top">
-                              <Box sx={{ position: "relative", width: "100%" }}>
-                                <TextField
-                                  variant="outlined"
-                                  size="small"
-                                  fullWidth
-                                  // margin="normal"
-                                  disabled
-                                  placeholder="Add Document"
-                                  sx={{
-                                    cursor: "not-allowed",
-                                    "& .MuiInputBase-input": {
-                                      pointerEvents: "none",
-                                      cursor: "not-allowed",
-                                    },
-                                  }}
-                                />
-                              </Box>
-                            </Tooltip> */}
-                            <Button component="label" variant="outlined" tabIndex={-1} startIcon={<CloudUploadIcon />} onClick={triggerFileInput}>
-                              Upload files
-                            </Button>
-                            <input
-                              type="file"
-                              ref={fileInputRef}
-                              style={{ display: "none" }} // Hide the input element
-                              onChange={handleFileUpload} // Handle file selection
-                            />
-                            {message && <p>{message}</p>}
-                          </Box>
-                        )}
-                        {element.type === "Text Editor" && (
-                          <Box mt={2} mb={2}>
-                            <Typography>{stripHtmlTags(element.text)}</Typography>
-                          </Box>
-                        )}
-                      </Box>
-                    )
-                )}
-              </Box>
-            )
-        )}
+    //                         {/* <Tooltip title="Unavailable in preview mode" placement="top">
+    //                           <Box sx={{ position: "relative", width: "100%" }}>
+    //                             <TextField
+    //                               variant="outlined"
+    //                               size="small"
+    //                               fullWidth
+    //                               // margin="normal"
+    //                               disabled
+    //                               placeholder="Add Document"
+    //                               sx={{
+    //                                 cursor: "not-allowed",
+    //                                 "& .MuiInputBase-input": {
+    //                                   pointerEvents: "none",
+    //                                   cursor: "not-allowed",
+    //                                 },
+    //                               }}
+    //                             />
+    //                           </Box>
+    //                         </Tooltip> */}
+    //                         <Button component="label" variant="outlined" tabIndex={-1} startIcon={<CloudUploadIcon />} onClick={triggerFileInput}>
+    //                           Upload files
+    //                         </Button>
+    //                         <input
+    //                           type="file"
+    //                           ref={fileInputRef}
+    //                           style={{ display: "none" }} // Hide the input element
+    //                           onChange={handleFileUpload} // Handle file selection
+    //                         />
+    //                         {message && <p>{message}</p>}
+    //                       </Box>
+    //                     )}
+    //                     {element.type === "Text Editor" && (
+    //                       <Box mt={2} mb={2}>
+    //                         <Typography>{stripHtmlTags(element.text)}</Typography>
+    //                       </Box>
+    //                     )}
+    //                   </Box>
+    //                 )
+    //             )}
+    //           </Box>
+    //         )
+    //     )}
 
-        <Grid
-          container
-          spacing={2}
-          style={{ marginTop: "20px", marginLeft: "3px" }}
-          display="flex"
-          gap={3}
-          alignItems="center"
-        >
-          <Box mt={3} display="flex" gap={3} alignItems="center">
-            <Button disabled={activeStep === 0} onClick={handleBack} variant="contained">
-              Back
-            </Button>
-            <Button onClick={handleNext} disabled={activeStep === totalSteps - 1} variant="contained">
-              Next
-            </Button>
+    //     <Grid
+    //       container
+    //       spacing={2}
+    //       style={{ marginTop: "20px", marginLeft: "3px" }}
+    //       display="flex"
+    //       gap={3}
+    //       alignItems="center"
+    //     >
+    //       <Box mt={3} display="flex" gap={3} alignItems="center">
+    //         <Button disabled={activeStep === 0} onClick={handleBack} variant="contained">
+    //           Back
+    //         </Button>
+    //         <Button onClick={handleNext} disabled={activeStep === totalSteps - 1} variant="contained">
+    //           Next
+    //         </Button>
+    //       </Box>
+    //     </Grid>
+    //     <Grid
+    //       container
+    //       spacing={2}
+    //       style={{ marginTop: "20px", marginLeft: "3px" }}
+    //       display="flex"
+    //       gap={3}
+    //       alignItems="center"
+    //     >
+    //       <Grid>
+    //         <Button variant="contained" color="primary" onClick={createOrganizerOfAccount}>
+    //           Save
+    //         </Button>
+    //       </Grid>
+    //       <Grid>
+    //         <Button variant="outlined" color="secondary" onClick={handleOrganizerFormClose}>
+    //           Cancel
+    //         </Button>
+    //       </Grid>
+    //     </Grid>
+    //   </Paper>
+    // </Container>
+    // <div>
+    //   {sections.length > 0 ? (
+    //     sections.map((section) => (
+    //       <div key={section.id} style={{ marginBottom: '20px' }}>
+    //         <h3>{section.name}</h3>
+    //         <table border="1" style={{ width: '100%', marginBottom: '10px' }}>
+    //           <thead>
+    //             <tr>
+    //               <th>Questions</th>
+    //               <th>Answer</th>
+    //             </tr>
+    //           </thead>
+    //           <tbody>
+    //             {section.formElements.map((formElement) => (
+    //               <tr key={formElement.id}>
+    //                 <td>{formElement.text}</td>
+    //                 <td>{formElement.textvalue || "N/A"}</td>
+    //               </tr>
+    //             ))}
+    //           </tbody>
+    //         </table>
+    //       </div>
+    //     ))
+    //   ) : (
+    //     <p>Loading sections...</p>
+    //   )}
+    // </div>
+    <Box>
+    {sections.length > 0 ? (
+      sections.map((section) => (
+        <Box key={section.id} sx={{ marginBottom: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography variant="h5" sx={{ flexGrow: 1 }}>{section.name}</Typography>
+            <IconButton onClick={() => handleToggleSection(section.id)}>
+              {expandedSection === section.id ? <ExpandLess /> : <ExpandMore />}
+            </IconButton>
           </Box>
-        </Grid>
-        <Grid
-          container
-          spacing={2}
-          style={{ marginTop: "20px", marginLeft: "3px" }}
-          display="flex"
-          gap={3}
-          alignItems="center"
-        >
-          <Grid>
-            <Button variant="contained" color="primary" onClick={createOrganizerOfAccount}>
-              Save
-            </Button>
-          </Grid>
-          <Grid>
-            <Button variant="outlined" color="secondary" onClick={handleOrganizerFormClose}>
-              Cancel
-            </Button>
-          </Grid>
-        </Grid>
-      </Paper>
-    </Container>
+          {expandedSection === section.id && (
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="form elements table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell><strong>Questions</strong></TableCell>
+                    <TableCell align="left"><strong>Answer</strong></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {section.formElements.map((formElement) => (
+                    <TableRow key={formElement.id}>
+                      <TableCell>{formElement.text}</TableCell>
+                      <TableCell>{formElement.textvalue || "N/A"}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </Box>
+      ))
+    ) : (
+      <Typography variant="body1">Loading sections...</Typography>
+    )}
+  </Box>
   );
 
 

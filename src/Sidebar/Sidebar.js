@@ -177,7 +177,7 @@ function Sidebar() {
                 (subItem) =>
                   !(
                     (subItem.label === "Tags" && !manageTags) ||
-                    (subItem.label === "Service" && !manageServices) ||
+                    (subItem.label === "Services" && !manageServices) ||
                     (subItem.label === "Pipeline Templates" &&
                       !managePipelines) ||
                     (subItem.label === "Firm Templates" && !manageTemplates) ||
@@ -191,7 +191,7 @@ function Sidebar() {
             // If the parent item is NewTags and manageTags is false, exclude it
             if (
               (item.label === "Tags" && !manageTags) ||
-              (item.label === "Service" && !manageServices) ||
+              (item.label === "Services" && !manageServices) ||
               (item.label === "Pipeline Templates" && !managePipelines) ||
               (item.label === "Firm Templates" && !manageTemplates) ||
               (item.label === "Contacts" && !viewAllContacts) ||
@@ -515,7 +515,7 @@ function Sidebar() {
   // Fetch the last uploaded image when the page loads
   useEffect(() => {
     axios
-      .get("http://127.0.0.1/lastimage")
+      .get(`${LOGIN_API}/lastimage`)
       .then((response) => {
         const imageUrl = response.data.imageUrl;
         setCroppedImage(imageUrl); // Set the last uploaded image URL as the profile picture
