@@ -40,7 +40,7 @@ const [loading, setLoading] = useState(true); // Loader state
 
       const loaderDelay = new Promise((resolve) => setTimeout(resolve, 1000));
       try {
-        const url = `${API_KEY}:8005/foldertemp/folder`;
+        const url = `${API_KEY}/foldertemp/folder`;
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Failed to fetch folder templates");

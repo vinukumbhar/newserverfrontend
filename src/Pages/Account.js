@@ -639,10 +639,32 @@ const FixedColumnTable = () => {
       })
       .catch((error) => console.error(error));
   };
-
+  const handleDeleteSelected = async () => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete the selected contacts?"
+    );
+    if (isConfirmed) {
+      try {
+        await Promise.all(
+          selected.map((id) =>
+            axios.delete(`${ACCOUNT_API}/accounts/accountdetails/${id}`)
+          )
+        );
+        setAccountData((prevContacts) =>
+          prevContacts.filter((account) => !selected.includes(account.id))
+        );
+        toast.success("Selected accounts deleted successfully!")
+        setSelected([]); // Clear the selected contacts
+        // alert;
+      } catch (error) {
+        console.error("Delete API Error:", error);
+        toast.error("Failed to delete selected contacts");
+      }
+    }
+  };
   return (
     <>
-      <div style={{ display: "flex",  }}>
+      <div style={{ display: "flex" }}>
         <Box>
           <Box
             // className="client-document-nav"
@@ -709,7 +731,6 @@ const FixedColumnTable = () => {
               </Typography>
             </Box>
           </Box>
-         
 
           <Outlet />
         </Box>
@@ -727,8 +748,8 @@ const FixedColumnTable = () => {
               gap: "12px",
               padding: "10px",
               // marginBottom: "20px",
-              borderBottom: "1px solid #ddd",
-              backgroundColor: "#f5f5f5",
+              // borderBottom: "1px solid #ddd",
+              // backgroundColor: "#f5f5f5",
             }}
           >
             <Button
@@ -986,8 +1007,6 @@ const FixedColumnTable = () => {
             Tags
           </MenuItem>
         </Menu>
-
-        
       </div>
       {loading ? (
         <Box
@@ -1002,460 +1021,604 @@ const FixedColumnTable = () => {
         </Box>
       ) : userRole === "Admin" || accountData.length > 0 ? (
         <Box>
-          <Box sx={{display:'flex',alignItems:'center',gap:3}}>
-          <Box sx={{ width:'50px',padding:'4px 8px',cursor:'pointer',color: "#3f51b5" }} onClick={handleFilterButtonClick}>
-            {/* <Button variant="text" > */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 3, mt: 1 }}>
+            <Box
+              sx={{
+                width: "50px",
+                padding: "4px 8px",
+                cursor: "pointer",
+                color: "#3f51b5",
+              }}
+              onClick={handleFilterButtonClick}
+            >
+              {/* <Button variant="text" > */}
               {/* Filter Options */}
               Filters
-            {/* </Button> */}
-          </Box>
-          <Box  >
-             <Button variant="contained" color="primary"  sx={{
-                            backgroundColor: 'var(--color-save-btn)',  // Normal background
-                           
-                            '&:hover': {
-                              backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                            },
-                           width:'80px',borderRadius:'15px'
-                          }}>
-                           Imports
-                          </Button>
-          </Box>
-          {/* Account Name Filter */}
-        {showFilters.accountName && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              // marginBottom: "10px",
-            }}
-          >
-            <TextField
-              name="accountName"
-              value={filters.accountName}
-              onChange={handleFilterChange}
-              placeholder="Filter by Account Name"
-              variant="outlined"
-              size="small"
-              style={{ marginRight: "10px" }}
-            />
-            <DeleteIcon
-              onClick={() => clearFilter("accountName")}
-              style={{ cursor: "pointer", color: "red" }}
-            />
-          </div>
-        )}
+              {/* </Button> */}
+            </Box>
 
-        {/* Type Filter */}
-        {showFilters.type && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              // marginBottom: "10px",
-            }}
-          >
-            <FormControl
-              variant="outlined"
-              size="small"
-              style={{ marginRight: "10px", width: "150px" }}
-            >
-              <InputLabel>Type</InputLabel>
-              <Select
-                name="type"
-                value={filters.type}
-                onChange={handleFilterChange}
-                label="Type"
+            <Box>
+              <Button
+                variant="contained"
+                color="primary"
+                sx={{
+                  backgroundColor: "var(--color-save-btn)", // Normal background
+
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                  },
+                  width: "80px",
+                  borderRadius: "15px",
+                }}
               >
-                <MenuItem value="">All</MenuItem>
-                <MenuItem value="Individual">Individual</MenuItem>
-                <MenuItem value="Company">Company</MenuItem>
-              </Select>
-            </FormControl>
-            <DeleteIcon
-              onClick={() => clearFilter("type")}
-              style={{ cursor: "pointer", color: "red" }}
-            />
-          </div>
-        )}
-        {/* Team Member Filter */}
-        {showFilters.teamMember && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              // marginBottom: "10px",
-            }}
-          >
-            <FormControl
-              variant="outlined"
-              size="small"
-              style={{ marginRight: "10px", width: "150px" }}
-            >
-              <InputLabel>Team Member</InputLabel>
-              <Select
-                name="teamMember"
-                value={filters.teamMember}
-                onChange={handleFilterChange}
-                label="Team Member"
-              >
-                <MenuItem value="">All</MenuItem>
-                {teamMemberOptions.map((member) => (
-                  <MenuItem key={member} value={member}>
-                    {member}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <DeleteIcon
-              onClick={() => clearFilter("teamMember")}
-              style={{ cursor: "pointer", color: "red" }}
-            />
-          </div>
-        )}
-        {/* Tags Filter */}
-        {showFilters.tags && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              // marginBottom: "10px",
-            }}
-          >
-            <Autocomplete
-              multiple
-              options={uniqueTags}
-              value={filters.tags || []}
-              onChange={(e, newValue) =>
-                handleMultiSelectChange("tags", newValue)
-              }
-              getOptionLabel={(option) => option.tagName}
-              filterSelectedOptions
-              renderOption={(props, option) => (
-                <li
-                  {...props}
-                  style={{
-                    backgroundColor: option.tagColour,
-                    color: "#fff",
-                    padding: "2px 8px",
-                    borderRadius: "8px",
-                    textAlign: "center",
-                    marginBottom: "5px",
-                    fontSize: "10px",
-                    width: `${calculateWidth(option.tagName)}px`,
-                    marginLeft: "5px",
-                    cursor: "pointer",
-                  }}
-                >
-                  {option.tagName}
-                </li>
+                Imports
+              </Button>
+            </Box>
+            <Box>
+              {selected.length > 0 && (
+                <IconButton onClick={handleDeleteSelected} sx={{ color: "red" }}>
+                <DeleteIcon />
+              </IconButton>
               )}
-              renderTags={(selected, getTagProps) =>
-                selected.map((option, index) => (
-                  <Chip
-                    key={option.value}
-                    label={option.tagName}
-                    style={{
-                      backgroundColor: option.tagColour,
-                      color: "#fff",
-                      cursor: "pointer",
-                      // borderRadius: "8px",
-                      fontSize: "12px",
-                      margin: "2px",
-                    }}
-                    {...getTagProps({ index })}
-                  />
-                ))
-              }
-              renderInput={(params) => (
+            </Box>
+            {/* Account Name Filter */}
+            {showFilters.accountName && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  // marginBottom: "10px",
+                }}
+              >
                 <TextField
-                  {...params}
+                  name="accountName"
+                  value={filters.accountName}
+                  onChange={handleFilterChange}
+                  placeholder="Filter by Account Name"
                   variant="outlined"
-                  placeholder="Filter by Tags"
                   size="small"
-                  style={{ width: "250px" }}
+                  style={{ marginRight: "10px" }}
                 />
-              )}
-              style={{ marginRight: "10px", width: "250px" }}
-            />
-            <DeleteIcon
-              onClick={() => clearFilter("tags")}
-              style={{ cursor: "pointer", color: "red" }}
-            />
-          </div>
-        )}
-        </Box>
-        
-<TableContainer
-  component={Paper}
-sx={{mt:2}}
->
-  <Table style={{ tableLayout: "fixed", width: "100%" }}>
-    <TableHead>
-      <TableRow >
-        <TableCell
-          padding="checkbox"
-          style={{
-            position: "sticky",
-            left: 0,
-            zIndex: 1,
-            background: "#fff",
-            fontSize: "2px", // Set a professional font size
-            fontWeight: "bold",
-            textAlign: "center",
-          }}
-        >
-          <Checkbox
-            checked={selected.length === accountData.length}
-            onChange={() => {
-              if (selected.length === accountData.length) {
-                setSelected([]);
-              } else {
-                const allSelected = accountData.map((item) => item.id);
-                setSelected(allSelected);
-              }
-            }}
-          />
-        </TableCell>
-        <TableCell
-          onClick={() => {
-            if (sortBy === "Name") {
-              setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-            } else {
-              setSortBy("Name");
-              setSortOrder("asc");
-            }
-          }}
-          style={{
-            cursor: "pointer",
-            position: "sticky",
-            left: 50,
-            zIndex: 1,
-            background: "#fff",
-            fontSize: "12px",
-            fontWeight: "bold",
-            padding: "16px", // Add more padding for better spacing
-          }}
-          width="200"
-        >
-          Account Name{" "}
-          {sortBy === "Name" && (sortOrder === "asc" ? "▲" : "▼")}
-        </TableCell>
-        <TableCell style={{ fontSize: "12px", fontWeight: "bold", padding: "16px" }} width="100">
-          Type
-        </TableCell>
-        <TableCell style={{ fontSize: "12px", fontWeight: "bold", padding: "16px" }} width="250">
-          Email
-        </TableCell>
-        <TableCell style={{ fontSize: "12px", fontWeight: "bold", padding: "16px" }} width="100" height="60">
-          Team Members
-        </TableCell>
-        <TableCell style={{ fontSize: "12px", fontWeight: "bold", padding: "16px" }} width="100">
-          Tags
-        </TableCell>
-        <TableCell style={{ fontSize: "12px", fontWeight: "bold", padding: "16px" }} width="100">
-          Invoices
-        </TableCell>
-        <TableCell style={{ fontSize: "12px", fontWeight: "bold", padding: "16px" }} width="100">
-          Proposals
-        </TableCell>
-        <TableCell style={{ fontSize: "12px", fontWeight: "bold", padding: "16px" }} width="100">
-          Chats
-        </TableCell>
-        <TableCell style={{ fontSize: "12px", fontWeight: "bold", padding: "16px" }} width="100">
-          Pending Organizers
-        </TableCell>
-      </TableRow>
-    </TableHead>
-    <TableBody>
-      {paginatedData.map((row) => {
-        const isSelected = selected.indexOf(row.id) !== -1;
-        return (
-          <TableRow
-            key={row.id}
-            hover
-            onClick={() => handleSelect(row.id)}
-            role="checkbox"
-            tabIndex={-1}
-            selected={isSelected}
-            style={{
-              cursor: "pointer",
-              transition: "background-color 0.3s ease",
-              '&:hover': {
-                backgroundColor: "#f4f4f4", // Add hover effect
-              },
-            }}
-          >
-            <TableCell
-              padding="checkbox"
-              style={{
-                position: "sticky",
-                left: 0,
-                zIndex: 1,
-                background: "#fff",
-                fontSize: "12px",
-                textAlign: "center",
-                padding: "4px 8px", lineHeight: "1" 
-                // padding: "2px", // Adjust padding for better spacing
-              }}
-            >
-              <Checkbox checked={isSelected} />
-            </TableCell>
-            <TableCell
-              style={{
-                position: "sticky",
-                left: 50,
-                zIndex: 1,
-                background: "#fff",
-                fontSize: "12px",
-                fontWeight: "normal",
-                // padding: "12px 16px", // Add padding for better spacing
-              }}
-            >
-              <Link
-                to={`/clients/accounts/accountsdash/overview/${row.id}`}
-                style={{ textDecoration: "none", color: "#3f51b5" }}
+                <DeleteIcon
+                  onClick={() => clearFilter("accountName")}
+                  style={{ cursor: "pointer", color: "red" }}
+                />
+              </div>
+            )}
+
+            {/* Type Filter */}
+            {showFilters.type && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  // marginBottom: "10px",
+                }}
               >
-                {row.Name}
-              </Link>
-            </TableCell>
-            <TableCell style={{ fontSize: "12px", padding: "4px 8px", lineHeight: "1"  }}>{row.Type}</TableCell>
-            <TableCell style={{ fontSize: "12px", padding: "4px 8px", lineHeight: "1"  }}>
-              {row.Follow ? (() => {
-                const emails = row.Follow.split(",").map((email) => email.trim());
-                return (
-                  <Tooltip title={emails.join("\n")} arrow placement="top">
-                    <Typography sx={{ cursor: "pointer", fontSize: "12px" }}>
-                      {emails[0]}{" "}
-                      {emails.length > 1 ? `+${emails.length - 1}` : ""}
-                    </Typography>
-                  </Tooltip>
-                );
-              })() : ""}
-            </TableCell>
-            <TableCell style={{ fontSize: "12px",padding: "4px 8px", lineHeight: "1"  }}>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <AvatarGroup max={2}>
-                  {row.Team.map((member) => {
-                    const size = 25;
-                    const initials = member.username
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")
-                      .toUpperCase();
-                    return (
-                      <Tooltip key={member._id} title={member.username} placement="top">
-                        {member.avatar ? (
-                          <Avatar
-                            alt={member.username}
-                            src={member.avatar}
-                            sx={{ width: size, height: size }}
-                          />
-                        ) : (
-                          <Avatar
-                            sx={{
-                              width: size,
-                              height: size,
-                              backgroundColor: "#3f51b5",
-                              color: "#fff",
-                              fontSize: `${size * 0.4}px`,
-                            }}
-                          >
-                            {initials}
-                          </Avatar>
-                        )}
-                      </Tooltip>
-                    );
-                  })}
-                </AvatarGroup>
-              </Box>
-            </TableCell>
-            <TableCell style={{ fontSize: "12px", padding: "4px 8px", lineHeight: "1"  }}>
-              {Array.isArray(row.Tags) && row.Tags.length > 0 ? (
-                row.Tags.length > 1 ? (
-                  <Tooltip
-                    title={
-                      <div>
-                        {row.Tags.map((tag) => (
-                          <div
-                            key={tag._id}
-                            style={{
-                              background: tag.tagColour,
-                              color: "#fff",
-                              borderRadius: "8px",
-                              padding: "2px 8px",
-                              marginBottom: "2px",
-                              fontSize: "10px",
-                            }}
-                          >
-                            {tag.tagName}
-                          </div>
-                        ))}
-                      </div>
-                    }
-                    placement="top"
+                <FormControl
+                  variant="outlined"
+                  size="small"
+                  style={{ marginRight: "10px", width: "150px" }}
+                >
+                  <InputLabel>Type</InputLabel>
+                  <Select
+                    name="type"
+                    value={filters.type}
+                    onChange={handleFilterChange}
+                    label="Type"
                   >
-                    <span
+                    <MenuItem value="">All</MenuItem>
+                    <MenuItem value="Individual">Individual</MenuItem>
+                    <MenuItem value="Company">Company</MenuItem>
+                  </Select>
+                </FormControl>
+                <DeleteIcon
+                  onClick={() => clearFilter("type")}
+                  style={{ cursor: "pointer", color: "red" }}
+                />
+              </div>
+            )}
+            {/* Team Member Filter */}
+            {showFilters.teamMember && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  // marginBottom: "10px",
+                }}
+              >
+                <FormControl
+                  variant="outlined"
+                  size="small"
+                  style={{ marginRight: "10px", width: "150px" }}
+                >
+                  <InputLabel>Team Member</InputLabel>
+                  <Select
+                    name="teamMember"
+                    value={filters.teamMember}
+                    onChange={handleFilterChange}
+                    label="Team Member"
+                  >
+                    <MenuItem value="">All</MenuItem>
+                    {teamMemberOptions.map((member) => (
+                      <MenuItem key={member} value={member}>
+                        {member}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <DeleteIcon
+                  onClick={() => clearFilter("teamMember")}
+                  style={{ cursor: "pointer", color: "red" }}
+                />
+              </div>
+            )}
+            {/* Tags Filter */}
+            {showFilters.tags && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  // marginBottom: "10px",
+                }}
+              >
+                <Autocomplete
+                  multiple
+                  options={uniqueTags}
+                  value={filters.tags || []}
+                  onChange={(e, newValue) =>
+                    handleMultiSelectChange("tags", newValue)
+                  }
+                  getOptionLabel={(option) => option.tagName}
+                  filterSelectedOptions
+                  renderOption={(props, option) => (
+                    <li
+                      {...props}
                       style={{
-                        background: row.Tags[0].tagColour, 
+                        backgroundColor: option.tagColour,
                         color: "#fff",
-                        borderRadius: "8px",
                         padding: "2px 8px",
+                        borderRadius: "8px",
+                        textAlign: "center",
+                        marginBottom: "5px",
                         fontSize: "10px",
+                        width: `${calculateWidth(option.tagName)}px`,
+                        marginLeft: "5px",
                         cursor: "pointer",
                       }}
                     >
-                      {row.Tags[0].tagName}
-                    </span>
-                  </Tooltip>
-                ) : (
-                  row.Tags.map((tag) => (
-                    <span
-                      key={tag._id}
+                      {option.tagName}
+                    </li>
+                  )}
+                  renderTags={(selected, getTagProps) =>
+                    selected.map((option, index) => (
+                      <Chip
+                        key={option.value}
+                        label={option.tagName}
+                        style={{
+                          backgroundColor: option.tagColour,
+                          color: "#fff",
+                          cursor: "pointer",
+                          // borderRadius: "8px",
+                          fontSize: "12px",
+                          margin: "2px",
+                        }}
+                        {...getTagProps({ index })}
+                      />
+                    ))
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant="outlined"
+                      placeholder="Filter by Tags"
+                      size="small"
+                      style={{ width: "250px" }}
+                    />
+                  )}
+                  style={{ marginRight: "10px", width: "250px" }}
+                />
+                <DeleteIcon
+                  onClick={() => clearFilter("tags")}
+                  style={{ cursor: "pointer", color: "red" }}
+                />
+              </div>
+            )}
+          </Box>
+
+          <TableContainer component={Paper} sx={{ mt: 2 }}>
+            <Table style={{ tableLayout: "fixed", width: "100%" }}>
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    padding="checkbox"
+                    style={{
+                      position: "sticky",
+                      left: 0,
+                      zIndex: 1,
+                      background: "#fff",
+                      fontSize: "2px", // Set a professional font size
+                      fontWeight: "bold",
+                      textAlign: "center",
+                    }}
+                  >
+                    <Checkbox
+                      checked={selected.length === accountData.length}
+                      onChange={() => {
+                        if (selected.length === accountData.length) {
+                          setSelected([]);
+                        } else {
+                          const allSelected = accountData.map(
+                            (item) => item.id
+                          );
+                          setSelected(allSelected);
+                        }
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell
+                    onClick={() => {
+                      if (sortBy === "Name") {
+                        setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+                      } else {
+                        setSortBy("Name");
+                        setSortOrder("asc");
+                      }
+                    }}
+                    style={{
+                      cursor: "pointer",
+                      position: "sticky",
+                      left: 50,
+                      zIndex: 1,
+                      background: "#fff",
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px", // Add more padding for better spacing
+                    }}
+                    width="200"
+                  >
+                    Account Name{" "}
+                    {sortBy === "Name" && (sortOrder === "asc" ? "▲" : "▼")}
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100"
+                  >
+                    Type
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="250"
+                  >
+                    Email
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100"
+                    height="60"
+                  >
+                    Team Members
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100"
+                  >
+                    Tags
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100"
+                  >
+                    Invoices
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100"
+                  >
+                    Proposals
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100"
+                  >
+                    Chats
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100"
+                  >
+                    Pending Organizers
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {paginatedData.map((row) => {
+                  const isSelected = selected.indexOf(row.id) !== -1;
+                  return (
+                    <TableRow
+                      key={row.id}
+                      hover
+                      onClick={() => handleSelect(row.id)}
+                      role="checkbox"
+                      tabIndex={-1}
+                      selected={isSelected}
                       style={{
-                        background: tag.tagColour,
-                        color: "#fff",
-                        borderRadius: "8px",
-                        padding: "2px 8px",
-                        fontSize: "10px",
-                        marginLeft: "3px",
+                        cursor: "pointer",
+                        transition: "background-color 0.3s ease",
+                        "&:hover": {
+                          backgroundColor: "#f4f4f4", // Add hover effect
+                        },
                       }}
                     >
-                      {tag.tagName}
-                    </span>
-                  ))
-                )
-              ) : null}
-              {Array.isArray(row.Tags) && row.Tags.length > 1 && (
-                <span
-                  style={{
-                    marginLeft: "5px",
-                    fontSize: "10px",
-                    color: "#555",
-                  }}
-                >
-                  +{row.Tags.length - 1}
-                </span>
-              )}
-            </TableCell>
-            <TableCell style={{ fontSize: "12px", padding: "4px 8px", lineHeight: "1"  }}>
-              {row.Invoices}
-            </TableCell>
-            <TableCell style={{ fontSize: "12px", padding: "4px 8px", lineHeight: "1"  }}>
-              {row.Proposals}
-            </TableCell>
-            <TableCell style={{ fontSize: "12px", padding: "4px 8px", lineHeight: "1"  }}>
-              {row.Unreadchats}
-            </TableCell>
-            <TableCell style={{ fontSize: "12px", padding: "4px 8px", lineHeight: "1"  }}>
-              {row.Pendingorganizers}
-            </TableCell>
-          </TableRow>
-        );
-      })}
-    </TableBody>
-  </Table>
-</TableContainer>
+                      <TableCell
+                        padding="checkbox"
+                        style={{
+                          position: "sticky",
+                          left: 0,
+                          zIndex: 1,
+                          background: "#fff",
+                          fontSize: "12px",
+                          textAlign: "center",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                          // padding: "2px", // Adjust padding for better spacing
+                        }}
+                      >
+                        <Checkbox checked={isSelected} />
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          position: "sticky",
+                          left: 50,
+                          zIndex: 1,
+                          background: "#fff",
+                          fontSize: "12px",
+                          fontWeight: "normal",
+                          // padding: "12px 16px", // Add padding for better spacing
+                        }}
+                      >
+                        <Link
+                          to={`/clients/accounts/accountsdash/overview/${row.id}`}
+                          style={{ textDecoration: "none", color: "#3f51b5" }}
+                        >
+                          {row.Name}
+                        </Link>
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}
+                      >
+                        {row.Type}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}
+                      >
+                        {row.Follow
+                          ? (() => {
+                              const emails = row.Follow.split(",").map(
+                                (email) => email.trim()
+                              );
+                              return (
+                                <Tooltip
+                                  title={emails.join("\n")}
+                                  arrow
+                                  placement="top"
+                                >
+                                  <Typography
+                                    sx={{ cursor: "pointer", fontSize: "12px" }}
+                                  >
+                                    {emails[0]}{" "}
+                                    {emails.length > 1
+                                      ? `+${emails.length - 1}`
+                                      : ""}
+                                  </Typography>
+                                </Tooltip>
+                              );
+                            })()
+                          : ""}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}
+                      >
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                          <AvatarGroup max={2}>
+                            {row.Team.map((member) => {
+                              const size = 25;
+                              const initials = member.username
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")
+                                .toUpperCase();
+                              return (
+                                <Tooltip
+                                  key={member._id}
+                                  title={member.username}
+                                  placement="top"
+                                >
+                                  {member.avatar ? (
+                                    <Avatar
+                                      alt={member.username}
+                                      src={member.avatar}
+                                      sx={{ width: size, height: size }}
+                                    />
+                                  ) : (
+                                    <Avatar
+                                      sx={{
+                                        width: size,
+                                        height: size,
+                                        backgroundColor: "#3f51b5",
+                                        color: "#fff",
+                                        fontSize: `${size * 0.4}px`,
+                                      }}
+                                    >
+                                      {initials}
+                                    </Avatar>
+                                  )}
+                                </Tooltip>
+                              );
+                            })}
+                          </AvatarGroup>
+                        </Box>
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}
+                      >
+                        {Array.isArray(row.Tags) && row.Tags.length > 0 ? (
+                          row.Tags.length > 1 ? (
+                            <Tooltip
+                              title={
+                                <div>
+                                  {row.Tags.map((tag) => (
+                                    <div
+                                      key={tag._id}
+                                      style={{
+                                        background: tag.tagColour,
+                                        color: "#fff",
+                                        borderRadius: "8px",
+                                        padding: "2px 8px",
+                                        marginBottom: "2px",
+                                        fontSize: "10px",
+                                      }}
+                                    >
+                                      {tag.tagName}
+                                    </div>
+                                  ))}
+                                </div>
+                              }
+                              placement="top"
+                            >
+                              <span
+                                style={{
+                                  background: row.Tags[0].tagColour,
+                                  color: "#fff",
+                                  borderRadius: "8px",
+                                  padding: "2px 8px",
+                                  fontSize: "10px",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                {row.Tags[0].tagName}
+                              </span>
+                            </Tooltip>
+                          ) : (
+                            row.Tags.map((tag) => (
+                              <span
+                                key={tag._id}
+                                style={{
+                                  background: tag.tagColour,
+                                  color: "#fff",
+                                  borderRadius: "8px",
+                                  padding: "2px 8px",
+                                  fontSize: "10px",
+                                  marginLeft: "3px",
+                                }}
+                              >
+                                {tag.tagName}
+                              </span>
+                            ))
+                          )
+                        ) : null}
+                        {Array.isArray(row.Tags) && row.Tags.length > 1 && (
+                          <span
+                            style={{
+                              marginLeft: "5px",
+                              fontSize: "10px",
+                              color: "#555",
+                            }}
+                          >
+                            +{row.Tags.length - 1}
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}
+                      >
+                        {row.Invoices}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}
+                      >
+                        {row.Proposals}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}
+                      >
+                        {row.Unreadchats}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}
+                      >
+                        {row.Pendingorganizers}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
 
           <TablePagination
             rowsPerPageOptions={[5, 10, 15]}
@@ -1724,7 +1887,8 @@ export default FixedColumnTable;
   /* <TableCell>{row.Lastlogin}</TableCell> */
 }
 
-  {/* <TableContainer
+{
+  /* <TableContainer
             component={Paper}
             style={{ width: "100%", overflowX: "auto" }}
           >
@@ -1975,4 +2139,5 @@ export default FixedColumnTable;
                 })}
               </TableBody>
             </Table>
-          </TableContainer> */}
+          </TableContainer> */
+}

@@ -1,9 +1,29 @@
 import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import CloseIcon from "@mui/icons-material/Close";
-import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+} from "material-react-table";
 import { format, formatDistanceToNow } from "date-fns";
-import { Menu, Switch, FormControlLabel, InputLabel, InputAdornment, Button, Box, Typography, Drawer, Chip, Divider, Stack, Select, MenuItem, Paper, IconButton } from "@mui/material";
+import {
+  Menu,
+  Switch,
+  FormControlLabel,
+  InputLabel,
+  InputAdornment,
+  Button,
+  Box,
+  Typography,
+  Drawer,
+  Chip,
+  Divider,
+  Stack,
+  Select,
+  MenuItem,
+  Paper,
+  IconButton,
+} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useMediaQuery } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -18,6 +38,19 @@ import { toast } from "react-toastify";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  // Paper,
+  // IconButton,
+  // Menu,
+  // MenuItem,
+  Checkbox,
+} from "@mui/material";
 import { GoDotFill } from "react-icons/go";
 const Example = ({ charLimit = 4000 }) => {
   const JOBS_API = process.env.REACT_APP_ADD_JOBS_URL;
@@ -49,15 +82,25 @@ const Example = ({ charLimit = 4000 }) => {
   };
   const fetchData = async () => {
     try {
-      const jobListResponse = await axios.get(`${JOBS_API}/workflow/jobs/job/joblist/list/${isActiveTrue}`);
+      const jobListResponse = await axios.get(
+        `${JOBS_API}/workflow/jobs/job/joblist/list/${isActiveTrue}`
+      );
       const formattedData = jobListResponse.data.jobList.map((job) => ({
         ...job,
         // StartDate: format(new Date(job.StartDate), "MMMM dd, yyyy"),
         // DueDate: format(new Date(job.DueDate), "MMMM dd, yyyy"),
-        StartDate: job.StartDate ? format(new Date(job.StartDate), "MMMM dd, yyyy") : "",
-        DueDate: job.DueDate ? format(new Date(job.DueDate), "MMMM dd, yyyy") : "",
-        updatedAt: formatDistanceToNow(new Date(job.updatedAt), { addSuffix: true }),
-        JobAssignee: Array.isArray(job.JobAssignee) ? job.JobAssignee.join(", ") : job.JobAssignee,
+        StartDate: job.StartDate
+          ? format(new Date(job.StartDate), "MMMM dd, yyyy")
+          : "",
+        DueDate: job.DueDate
+          ? format(new Date(job.DueDate), "MMMM dd, yyyy")
+          : "",
+        updatedAt: formatDistanceToNow(new Date(job.updatedAt), {
+          addSuffix: true,
+        }),
+        JobAssignee: Array.isArray(job.JobAssignee)
+          ? job.JobAssignee.join(", ")
+          : job.JobAssignee,
         // clientfacingstatus: job.ClientFacingStatus?.statusName,
         clientfacingstatus: {
           statusName: job.ClientFacingStatus?.statusName || "",
@@ -111,7 +154,9 @@ const Example = ({ charLimit = 4000 }) => {
 
   const fetchPipelineDataid = async (piplineid) => {
     try {
-      const response = await fetch(`${PIPELINE_API}/workflow/pipeline/pipeline/${piplineid}`);
+      const response = await fetch(
+        `${PIPELINE_API}/workflow/pipeline/pipeline/${piplineid}`
+      );
       const data = await response.json();
 
       setPipelineIdData(data.pipeline);
@@ -196,7 +241,8 @@ const Example = ({ charLimit = 4000 }) => {
     const textWidth = label.length * 8;
     return Math.min(textWidth, 200);
   };
-  const calculateWidthOptions = (label) => `${Math.max(label.length * 8, 90)}px`;
+  const calculateWidthOptions = (label) =>
+    `${Math.max(label.length * 8, 90)}px`;
   const tagoptions = tags.map((tag) => ({
     value: tag._id,
     label: tag.tagName,
@@ -310,7 +356,8 @@ const Example = ({ charLimit = 4000 }) => {
         const clientStatusData = {
           value: data.jobList.ClientFacingStatus._id,
           label: data.jobList.ClientFacingStatus.clientfacingName,
-          clientfacingColour: data.jobList.ClientFacingStatus.clientfacingColour,
+          clientfacingColour:
+            data.jobList.ClientFacingStatus.clientfacingColour,
         };
 
         setSelectedjob(clientStatusData);
@@ -404,158 +451,210 @@ const Example = ({ charLimit = 4000 }) => {
         toast.error("An error occurred while submitting the form"); // Display error toast
       });
   };
-
-  const handleDeleteJob = (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this job? This action cannot be undone.");
-    if (!confirmDelete) return;
-    setjobid(id);
-    const requestOptions = {
-      method: "DELETE",
-      redirect: "follow",
-    };
-
-    fetch(`${JOBS_API}/workflow/jobs/job/` + id, requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to delete item");
-        }
-        return response.json();
-      })
-      .then((result) => {
-        // console.log(result);
-        toast.success("Job deleted successfully");
-        fetchData();
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.error("Failed to delete item");
-      });
+  const handleDelete = () => {
+    handleClose();
+    handleDeleteJob(selectedJob);
+    console.log("Deleted:", selectedJob);
   };
+  // const handleDeleteJob = (id) => {
+  //   console.log(id);
+  //   const confirmDelete = window.confirm(
+  //     "Are you sure you want to delete this job? This action cannot be undone."
+  //   );
+  //   if (!confirmDelete) return;
+  //   setjobid(id);
+  //   const requestOptions = {
+  //     method: "DELETE",
+  //     redirect: "follow",
+  //   };
+
+  //   fetch(`${JOBS_API}/workflow/jobs/job/` + id, requestOptions)
+  //     .then((response) => {
+  //       if (!response.ok) {
+  //         throw new Error("Failed to delete item");
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((result) => {
+  //       // console.log(result);
+  //       toast.success("Job deleted successfully");
+  //       fetchData();
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       toast.error("Failed to delete item");
+  //     });
+  // };
   // console.log(selectedTags);
-  const columns = useMemo(
-    () => [
-      {
-        accessorKey: "Name",
-        header: "Name",
 
-        Cell: ({ row }) => (
-          <span style={{ cursor: "pointer", color: "blue" }} onClick={() => handleClick(row.original.id)}>
-            {row.original.Name}
-          </span>
-        ),
-      },
 
-      { accessorKey: "JobAssignee", header: "Job Assignee", size: 150 },
-      {
-        accessorKey: "Pipeline",
-        header: "Pipeline",
-        size: 200,
-      },
-      {
-        accessorKey: "Stage",
-        header: "Stage",
-        size: 150,
-      },
-      {
-        accessorKey: "Account",
-        header: "Account",
-        size: 150,
-      },
-      {
-        accessorKey: "clientfacingstatus",
-        header: "client-facing status",
-        size: 200,
-        Cell: ({ row }) => {
-          const { statusName, statusColor } = row.original.clientfacingstatus || {}; // Use default destructuring to handle undefined
-          return (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              {statusName && <GoDotFill style={{ color: statusColor, fontSize: "25px" }} />}
-              <span>{statusName}</span>
-            </Box>
-          );
-        },
-      },
-      // clientfacingstatus
-      {
-        accessorKey: "StartDate",
-        header: "Start Date",
-        size: 150,
-        // Cell: ({ value }) => (value === "null" ? "null" : value),
-      },
-      {
-        accessorKey: "DueDate",
-        header: "Due Date",
-        size: 150,
-        // Cell: ({ value }) => (value === "null" ? "null" : value),
-      },
-      {
-        accessorKey: "updatedAt",
-        header: "Time in current stage",
-        size: 150,
-      },
-      {
-        accessorKey: "Settings",
-        header: "Settings",
-        size: 100,
-        Cell: ({ row }) => {
-          const [anchorEl, setAnchorEl] = useState(null);
 
-          const handleMenuClick = (event) => {
-            setAnchorEl(event.currentTarget);
-          };
+  const handleDeleteJob = async () => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete the selected jobs? This action cannot be undone."
+    );
+    if (isConfirmed) {
+      try {
+        // Make delete requests for each selected job
+        await Promise.all(
+          selected.map((id) =>
+            fetch(`${JOBS_API}/workflow/jobs/job/` + id, {
+              method: "DELETE",
+              redirect: "follow",
+            })
+          )
+        );
+  
+        // Optionally, you can remove the deleted jobs from the UI (if needed)
+        // If you're using jobData in state, for example:
+        // setJobData((prevJobs) => prevJobs.filter((job) => !selected.includes(job.id)));
+  
+        toast.success("Job deleted successfully!");
+        setSelected([]); // Clear the selected jobs
+        fetchData(); // Refresh the data after deletion
+      } catch (error) {
+        console.error("Delete API Error:", error);
+        toast.error("Failed to delete selected jobs");
+      }
+    }
+  };
+  
+  
+  // const columns = useMemo(
+  //   () => [
+  //     {
+  //       accessorKey: "Name",
+  //       header: "Name",
 
-          const handleClose = () => {
-            setAnchorEl(null);
-          };
+  //       Cell: ({ row }) => (
+  //         <span style={{ cursor: "pointer", color: "blue" }} onClick={() => handleClick(row.original.id)}>
+  //           {row.original.Name}
+  //         </span>
+  //       ),
+  //     },
 
-          const handleArchive = () => {
-            handleClose();
-            handleSubmit(row.original.id);
-            console.log("Archived:", row.original.id);
-          };
+  //     { accessorKey: "JobAssignee", header: "Job Assignee", size: 150 },
+  //     {
+  //       accessorKey: "Pipeline",
+  //       header: "Pipeline",
+  //       size: 200,
+  //     },
+  //     {
+  //       accessorKey: "Stage",
+  //       header: "Stage",
+  //       size: 150,
+  //     },
+  //     {
+  //       accessorKey: "Account",
+  //       header: "Account",
+  //       size: 150,
+  //     },
+  //     {
+  //       accessorKey: "clientfacingstatus",
+  //       header: "client-facing status",
+  //       size: 200,
+  //       Cell: ({ row }) => {
+  //         const { statusName, statusColor } = row.original.clientfacingstatus || {}; // Use default destructuring to handle undefined
+  //         return (
+  //           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+  //             {statusName && <GoDotFill style={{ color: statusColor, fontSize: "25px" }} />}
+  //             <span>{statusName}</span>
+  //           </Box>
+  //         );
+  //       },
+  //     },
+  //     // clientfacingstatus
+  //     {
+  //       accessorKey: "StartDate",
+  //       header: "Start Date",
+  //       size: 150,
+  //       // Cell: ({ value }) => (value === "null" ? "null" : value),
+  //     },
+  //     {
+  //       accessorKey: "DueDate",
+  //       header: "Due Date",
+  //       size: 150,
+  //       // Cell: ({ value }) => (value === "null" ? "null" : value),
+  //     },
+  //     {
+  //       accessorKey: "updatedAt",
+  //       header: "Time in current stage",
+  //       size: 150,
+  //     },
+  //     {
+  //       accessorKey: "Settings",
+  //       header: "Settings",
+  //       size: 100,
+  //       Cell: ({ row }) => {
+  //         const [anchorEl, setAnchorEl] = useState(null);
 
-          const handleDelete = () => {
-            handleClose();
-            handleDeleteJob(row.original.id);
-            // Add logic to delete by ID here
-            console.log("Deleted:", row.original.id);
-          };
+  //         const handleMenuClick = (event) => {
+  //           setAnchorEl(event.currentTarget);
+  //         };
 
-          return (
-            <>
-              <IconButton onClick={handleMenuClick}>
-                <MoreVertIcon />
-              </IconButton>
-              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-                <MenuItem onClick={handleArchive}>{isActiveTrue ? "Archive " : "Make Active"}</MenuItem>
-                <MenuItem onClick={handleDelete}>Delete</MenuItem>
-              </Menu>
-            </>
-          );
-        },
-      },
-    ],
-    [optionpipeline, accountOptions]
-  );
+  //         const handleClose = () => {
+  //           setAnchorEl(null);
+  //         };
 
-  const table = useMaterialReactTable({
-    columns,
-    data: jobData,
-    enableBottomToolbar: true,
-    enableStickyHeader: true,
-    columnFilterDisplayMode: "custom",
-    enableRowSelection: true,
-    enablePagination: true,
-    muiTableContainerProps: { sx: { maxHeight: "400px" } },
-    initialState: {
-      columnPinning: { left: ["mrt-row-select", "Name"] },
-    },
-    muiTableBodyCellProps: {
-      sx: (theme) => ({
-        backgroundColor: theme.palette.mode === "dark" ? theme.palette.grey[900] : theme.palette.grey[50],
-      }),
-    },
-  });
+  //         const handleArchive = () => {
+  //           handleClose();
+  //           handleSubmit(row.original.id);
+  //           console.log("Archived:", row.original.id);
+  //         };
+
+  //         const handleDelete = () => {
+  //           handleClose();
+  //           handleDeleteJob(row.original.id);
+  //           // Add logic to delete by ID here
+  //           console.log("Deleted:", row.original.id);
+  //         };
+
+  //         return (
+  //           <>
+  //             <IconButton onClick={handleMenuClick}>
+  //               <MoreVertIcon />
+  //             </IconButton>
+  //             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+  //               <MenuItem onClick={handleArchive}>{isActiveTrue ? "Archive " : "Make Active"}</MenuItem>
+  //               <MenuItem onClick={handleDelete}>Delete</MenuItem>
+  //             </Menu>
+  //           </>
+  //         );
+  //       },
+  //     },
+  //   ],
+  //   [optionpipeline, accountOptions]
+  // );
+
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleMenuClick = (event, id) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedJob(id);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSelectedJob(null);
+  };
+
+  // const table = useMaterialReactTable({
+  //   columns,
+  //   data: jobData,
+  //   enableBottomToolbar: true,
+  //   enableStickyHeader: true,
+  //   columnFilterDisplayMode: "custom",
+  //   enableRowSelection: true,
+  //   enablePagination: true,
+  //   muiTableContainerProps: { sx: { maxHeight: "400px" } },
+  //   initialState: {
+  //     columnPinning: { left: ["mrt-row-select", "Name"] },
+  //   },
+  //   muiTableBodyCellProps: {
+  //     sx: (theme) => ({
+  //       backgroundColor: theme.palette.mode === "dark" ? theme.palette.grey[900] : theme.palette.grey[50],
+  //     }),
+  //   },
+  // });
 
   const handleSaveClick = () => {
     const myHeaders = new Headers();
@@ -693,7 +792,9 @@ const Example = ({ charLimit = 4000 }) => {
   const [clientFacingJobs, setClientFacingJobs] = useState([]);
   const fetchClientFacingJobsData = async () => {
     try {
-      const response = await fetch(`${CLIENT_FACING_API}/workflow/clientfacingjobstatus/`);
+      const response = await fetch(
+        `${CLIENT_FACING_API}/workflow/clientfacingjobstatus/`
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -721,14 +822,18 @@ const Example = ({ charLimit = 4000 }) => {
     if (newValue && newValue.value) {
       const clientjobId = newValue.value;
       try {
-        const response = await fetch(`${CLIENT_FACING_API}/workflow/clientfacingjobstatus/${clientjobId}`);
+        const response = await fetch(
+          `${CLIENT_FACING_API}/workflow/clientfacingjobstatus/${clientjobId}`
+        );
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
 
         console.log(data);
-        setClientDescription(data.clientfacingjobstatuses.clientfacingdescription);
+        setClientDescription(
+          data.clientfacingjobstatuses.clientfacingdescription
+        );
         console.log(data.clientfacingjobstatuses.clientfacingdescription);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -772,6 +877,40 @@ const Example = ({ charLimit = 4000 }) => {
     setAnchorElDecription(event.currentTarget);
     setShowDropdownDescription(!showDropdownDescription);
   };
+  const [selectedRows, setSelectedRows] = useState({});
+
+  // Handle individual checkbox changes
+  const handleCheckboxChange = (id) => {
+    setSelectedRows((prevState) => ({
+      ...prevState,
+      [id]: !prevState[id],
+    }));
+  };
+
+  // Handle the "select all" checkbox change
+  const handleSelectAllChange = (event) => {
+    const checked = event.target.checked;
+    const newSelectedRows = checked
+      ? jobData.reduce((acc, row) => {
+          acc[row.id] = true;
+          return acc;
+        }, {})
+      : {};
+
+    setSelectedRows(newSelectedRows);
+  };
+
+  const [selected, setSelected] = useState([]);
+  const handleSelect = (id) => {
+    const currentIndex = selected.indexOf(id);
+    const newSelected =
+      currentIndex === -1
+        ? [...selected, id]
+        : selected.filter((item) => item !== id);
+    setSelected(newSelected);
+    // Log all selected row IDs
+    // console.log("Selected IDs:", newSelected); // Log all selected IDs
+  };
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -791,7 +930,15 @@ const Example = ({ charLimit = 4000 }) => {
             },
           }}
         >
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px", ml: 1 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "20px",
+              ml: 1,
+            }}
+          >
             <Typography sx={{ fontWeight: "bold" }} variant="h6">
               Edit Job
             </Typography>
@@ -809,7 +956,9 @@ const Example = ({ charLimit = 4000 }) => {
                 getOptionLabel={(option) => option.label}
                 value={selectedPipeline}
                 onChange={(event, newValue) => handlePipelineChange(newValue)}
-                isOptionEqualToValue={(option, value) => option.value === value.value}
+                isOptionEqualToValue={(option, value) =>
+                  option.value === value.value
+                }
                 renderOption={(props, option) => (
                   <Box
                     component="li"
@@ -819,7 +968,15 @@ const Example = ({ charLimit = 4000 }) => {
                     {option.label}
                   </Box>
                 )}
-                renderInput={(params) => <TextField {...params} sx={{ backgroundColor: "#fff" }} placeholder="Pipeline" variant="outlined" size="small" />}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    sx={{ backgroundColor: "#fff" }}
+                    placeholder="Pipeline"
+                    variant="outlined"
+                    size="small"
+                  />
+                )}
                 sx={{ width: "100%", marginTop: "8px" }}
                 clearOnEscape // Enable clearable functionality
               />
@@ -834,8 +991,16 @@ const Example = ({ charLimit = 4000 }) => {
                 value={selectedTags} // Selected tags
                 onChange={handleTagChange}
                 getOptionLabel={(option) => option.label} // Assuming your tags have a 'label' property
-                isOptionEqualToValue={(option, value) => option.value === value.value} // Customize equality check
-                renderInput={(params) => <TextField {...params} variant="outlined" placeholder="Select tags..." />}
+                isOptionEqualToValue={(option, value) =>
+                  option.value === value.value
+                } // Customize equality check
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    placeholder="Select tags..."
+                  />
+                )}
                 filterSelectedOptions // Prevents duplicates in selection
                 renderOption={(props, option) => (
                   <MenuItem
@@ -893,8 +1058,16 @@ const Example = ({ charLimit = 4000 }) => {
                     {option.label}
                   </Box>
                 )}
-                renderInput={(params) => <TextField {...params} variant="outlined" placeholder="Assignees" />}
-                isOptionEqualToValue={(option, value) => option.value === value.value}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    placeholder="Assignees"
+                  />
+                )}
+                isOptionEqualToValue={(option, value) =>
+                  option.value === value.value
+                }
               />
             </Box>
             <Box>
@@ -904,7 +1077,9 @@ const Example = ({ charLimit = 4000 }) => {
                 getOptionLabel={(option) => option.label}
                 value={selectedstage}
                 onChange={(event, newValue) => handleStageChange(newValue)}
-                isOptionEqualToValue={(option, value) => option.value === value.value}
+                isOptionEqualToValue={(option, value) =>
+                  option.value === value.value
+                }
                 renderOption={(props, option) => (
                   <Box
                     component="li"
@@ -914,13 +1089,24 @@ const Example = ({ charLimit = 4000 }) => {
                     {option.label}
                   </Box>
                 )}
-                renderInput={(params) => <TextField {...params} sx={{ backgroundColor: "#fff" }} placeholder="Select stages" variant="outlined" size="small" />}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    sx={{ backgroundColor: "#fff" }}
+                    placeholder="Select stages"
+                    variant="outlined"
+                    size="small"
+                  />
+                )}
                 clearOnEscape // Enable clearable functionality
                 sx={{ width: "100%", marginTop: "8px" }}
               />
             </Box>
             <Box mt={2}>
-              <Priority onPriorityChange={handlePriorityChange} selectedPriority={priority} />
+              <Priority
+                onPriorityChange={handlePriorityChange}
+                selectedPriority={priority}
+              />
             </Box>
 
             <Typography>Start Date</Typography>
@@ -945,24 +1131,59 @@ const Example = ({ charLimit = 4000 }) => {
               renderInput={(params) => <TextField {...params} size="small" />}
             />
             <Box mt={2}>
-              <Editor initialContent={description} onChange={handleEditorChange} />
+              <Editor
+                initialContent={description}
+                onChange={handleEditorChange}
+              />
             </Box>
 
             <Box mt={2}>
               <Box style={{ display: "flex", alignItems: "center" }}>
                 {/* <EditCalendarRoundedIcon sx={{ fontSize: '120px', color: '#c6c7c7', }} /> */}
-                <Box style={{ display: "flex", flexDirection: "column", gap: "8px", width: "100%" }}>
-                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <Box
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px",
+                    width: "100%",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
                     <Typography variant="body">
                       <b>Client-facing status</b>
                     </Typography>
-                    <FormControlLabel control={<Switch onChange={(event) => handleClientFacing(event.target.checked)} checked={clientFacingStatus} color="primary" />} label="Show in Client portal" />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          onChange={(event) =>
+                            handleClientFacing(event.target.checked)
+                          }
+                          checked={clientFacingStatus}
+                          color="primary"
+                        />
+                      }
+                      label="Show in Client portal"
+                    />
                   </Box>
                   <Box>
                     {clientFacingStatus && (
                       <>
                         <Typography>Job name for client</Typography>
-                        <TextField fullWidth name="subject" value={inputText + selectedJobShortcut} onChange={handlechatsubject} placeholder="Job name for client" size="small" sx={{ background: "#fff", mt: 2 }} />
+                        <TextField
+                          fullWidth
+                          name="subject"
+                          value={inputText + selectedJobShortcut}
+                          onChange={handlechatsubject}
+                          placeholder="Job name for client"
+                          size="small"
+                          sx={{ background: "#fff", mt: 2 }}
+                        />
 
                         <Box mt={2}>
                           <Typography>Status</Typography>
@@ -973,7 +1194,9 @@ const Example = ({ charLimit = 4000 }) => {
                             value={selectedjob}
                             onChange={handleJobChange}
                             getOptionLabel={(option) => option.label}
-                            isOptionEqualToValue={(option, value) => option.value === value.value}
+                            isOptionEqualToValue={(option, value) =>
+                              option.value === value.value
+                            }
                             renderOption={(props, option) => (
                               <Box component="li" {...props}>
                                 {/* Color dot */}
@@ -997,11 +1220,17 @@ const Example = ({ charLimit = 4000 }) => {
                                 InputProps={{
                                   ...params.InputProps,
                                   startAdornment:
-                                    params.inputProps.value && clientFacingJobs.length > 0 ? (
+                                    params.inputProps.value &&
+                                    clientFacingJobs.length > 0 ? (
                                       <Chip
                                         size="small"
                                         style={{
-                                          backgroundColor: clientFacingJobs.find((job) => job.clientfacingName === params.inputProps.value)?.clientfacingColour, // Set color from selection
+                                          backgroundColor:
+                                            clientFacingJobs.find(
+                                              (job) =>
+                                                job.clientfacingName ===
+                                                params.inputProps.value
+                                            )?.clientfacingColour, // Set color from selection
                                           marginRight: 8,
                                           marginLeft: 2,
                                           borderRadius: "50%",
@@ -1015,7 +1244,9 @@ const Example = ({ charLimit = 4000 }) => {
                           />
                         </Box>
                         <Box sx={{ position: "relative", mt: 2 }}>
-                          <InputLabel sx={{ color: "black" }}>Description</InputLabel>
+                          <InputLabel sx={{ color: "black" }}>
+                            Description
+                          </InputLabel>
                           <TextField
                             fullWidth
                             size="small"
@@ -1028,7 +1259,15 @@ const Example = ({ charLimit = 4000 }) => {
                             InputProps={{
                               endAdornment: (
                                 <InputAdornment position="end">
-                                  <Typography sx={{ color: "gray", fontSize: "12px", position: "absolute", bottom: "15px", right: "15px" }}>
+                                  <Typography
+                                    sx={{
+                                      color: "gray",
+                                      fontSize: "12px",
+                                      position: "absolute",
+                                      bottom: "15px",
+                                      right: "15px",
+                                    }}
+                                  >
                                     {charCount}/{charLimit}
                                   </Typography>
                                 </InputAdornment>
@@ -1044,36 +1283,51 @@ const Example = ({ charLimit = 4000 }) => {
             </Box>
 
             <Box mt={5} display="flex" alignItems="center" gap={2}>
-              <Button variant="contained" onClick={handleSaveExitClick}  sx={{
-            backgroundColor: 'var(--color-save-btn)',  // Normal background
-           
-            '&:hover': {
-              backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-            },
-           borderRadius:'15px'
-          }}>
+              <Button
+                variant="contained"
+                onClick={handleSaveExitClick}
+                sx={{
+                  backgroundColor: "var(--color-save-btn)", // Normal background
+
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                  },
+                  borderRadius: "15px",
+                }}
+              >
                 Save & Exit
               </Button>
-              <Button variant="contained" onClick={handleSaveClick}  sx={{
-            backgroundColor: 'var(--color-save-btn)',  // Normal background
-           
-            '&:hover': {
-              backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-            },
-           width:'80px',borderRadius:'15px'
-          }}>
+              <Button
+                variant="contained"
+                onClick={handleSaveClick}
+                sx={{
+                  backgroundColor: "var(--color-save-btn)", // Normal background
+
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                  },
+                  width: "80px",
+                  borderRadius: "15px",
+                }}
+              >
                 Save
               </Button>
-              <Button variant="outlined" onClick={handleFormClose}  sx={{
-                    borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                   color:'var(--color-save-btn)',
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      color:'#fff',
-                      border:"none"
-                    },
-                    width:'80px',borderRadius:'15px',ml:2
-                  }}>
+              <Button
+                variant="outlined"
+                onClick={handleFormClose}
+                sx={{
+                  borderColor: "var(--color-border-cancel-btn)", // Normal background
+                  color: "var(--color-save-btn)",
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                    color: "#fff",
+                    border: "none",
+                  },
+                  width: "80px",
+                  borderRadius: "15px",
+                  ml: 2,
+                }}
+              >
                 Cancel
               </Button>
             </Box>
@@ -1106,43 +1360,296 @@ const Example = ({ charLimit = 4000 }) => {
             },
           }}
         >
-            <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Box sx={{ display: "flex", alignItems: "center" ,gap:2}}>
             <Typography
-             style={{
-              backgroundColor:
-                activeButton === "active" ? "var(--color-save-btn)" : "transparent",
-              color: activeButton === "active" ? "white" : "black",
-              fontWeight: activeButton === "active" ? "bold" : "normal",
-              padding: "4px 8px",
-              borderRadius: "10px",
-              fontSize: "14px",
-              cursor: "pointer",
-            }}
+              style={{
+                backgroundColor:
+                  activeButton === "active"
+                    ? "var(--color-save-btn)"
+                    : "transparent",
+                color: activeButton === "active" ? "white" : "black",
+                fontWeight: activeButton === "active" ? "bold" : "normal",
+                padding: "4px 8px",
+                borderRadius: "10px",
+                fontSize: "14px",
+                cursor: "pointer",
+              }}
               onClick={handleActiveClick}
             >
               Active
             </Typography>
 
             <Typography
-             style={{
-              backgroundColor:
-                activeButton === "archived" ? "var(--color-save-btn)" : "transparent",
-              color: activeButton === "archived" ? "white" : "black",
-              fontWeight: activeButton === "archived" ? "bold" : "normal",
-              padding: "4px 8px",
-              borderRadius: "10px",
-              fontSize: "14px",
-              cursor: "pointer",
-            }}
+              style={{
+                backgroundColor:
+                  activeButton === "archived"
+                    ? "var(--color-save-btn)"
+                    : "transparent",
+                color: activeButton === "archived" ? "white" : "black",
+                fontWeight: activeButton === "archived" ? "bold" : "normal",
+                padding: "4px 8px",
+                borderRadius: "10px",
+                fontSize: "14px",
+                cursor: "pointer",
+              }}
               onClick={handleArchivedClick}
             >
               Archived
             </Typography>
-          </Box>
+            <Box>
+            {selected.length > 0 && (
+  <IconButton
+    sx={{ color: "red" }}
+    onClick={handleDeleteJob}// Pass selected job IDs
+  >
+    <DeleteIcon />
+  </IconButton>
+)}
+
         </Box>
-        <Stack direction={isMobile ? "column-reverse" : "column"} gap="8px">
+          </Box>
+         
+        </Box>
+        {/* <Stack direction={isMobile ? "column-reverse" : "column"} gap="8px">
           <MaterialReactTable columns={columns} table={table} />
-        </Stack>
+        </Stack> */}
+        
+        <TableContainer component={Paper} sx={{ maxHeight: "85vh" }}>
+          <Table  style={{ tableLayout: "fixed", width: "100%" }}>
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  padding="checkbox"
+                  style={{
+                    position: "sticky",
+                    left: 0,
+                    zIndex: 1,
+                    background: "#fff",
+                    fontSize: "2px", // Set a professional font size
+                    fontWeight: "bold",
+                    textAlign: "center",
+                  }}
+                >
+                  <Checkbox
+                    checked={selected.length === jobData.length}
+                    onChange={() => {
+                      if (selected.length === jobData.length) {
+                        setSelected([]);
+                      } else {
+                        const allSelected = jobData.map((item) => item.id);
+                        setSelected(allSelected);
+                      }
+                    }}
+                  />
+                </TableCell>
+                <TableCell style={{
+                      cursor: "pointer",
+                      position: "sticky",
+                      left: 50,
+                      zIndex: 1,
+                      background: "#fff",
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px", // Add more padding for better spacing
+                    }}
+                    width="200">Name</TableCell>
+                <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Job Assignee</TableCell>
+                <TableCell   style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100"
+                    height="60">Pipeline</TableCell>
+                <TableCell style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Stage</TableCell>
+                <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Account</TableCell>
+                <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="200">Client-Facing Status</TableCell>
+                <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Start Date</TableCell>
+                <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Due Date</TableCell>
+                <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="200">Time in Current Stage</TableCell>
+                <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Settings</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {jobData.map((row) => {
+                const isSelected = selected.indexOf(row.id) !== -1;
+                return (
+                  <TableRow
+                    key={row.id}
+                    hover
+                    onClick={() => handleSelect(row.id)}
+                    role="checkbox"
+                    tabIndex={-1}
+                    selected={isSelected}
+                    style={{
+                      cursor: "pointer",
+                      transition: "background-color 0.3s ease",
+                      "&:hover": {
+                        backgroundColor: "#f4f4f4", // Add hover effect
+                      },
+                    }}
+                  >
+                    <TableCell
+                      padding="checkbox"
+                      style={{
+                        position: "sticky",
+                        left: 0,
+                        zIndex: 1,
+                        background: "#fff",
+                        fontSize: "12px",
+                        textAlign: "center",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                        // padding: "2px", // Adjust padding for better spacing
+                      }}
+                    >
+                      <Checkbox checked={isSelected}  />
+                    </TableCell>
+                    <TableCell  style={{
+                          position: "sticky",
+                          left: 50,
+                          zIndex: 1,
+                          background: "#fff",
+                          fontSize: "12px",
+                          fontWeight: "normal",
+                          // padding: "12px 16px", // Add padding for better spacing
+                        }}>
+                      <span
+                        style={{ cursor: "pointer", color: "#3f51b5" }}
+                        // onClick={() => handleClick(row.id)}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent row click action when clicking on name
+                          handleClick(row.id);
+                        }}
+                      >
+                        {row.Name}
+                      </span>
+                    </TableCell>
+                    <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{row.JobAssignee}</TableCell>
+                    <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{row.Pipeline}</TableCell>
+                    <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{row.Stage}</TableCell>
+                    <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{row.Account}</TableCell>
+                    <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>
+                      {row.clientfacingstatus?.statusName && (
+                        <span
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "8px",
+                          }}
+                        >
+                          <GoDotFill
+                            style={{
+                              color: row.clientfacingstatus.statusColor,
+                              fontSize: "20px",
+                            }}
+                          />
+                          {row.clientfacingstatus.statusName}
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{row.StartDate}</TableCell>
+                    <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{row.DueDate}</TableCell>
+                    <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{row.updatedAt}</TableCell>
+                    <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>
+                      <IconButton
+                        onClick={(event) => handleMenuClick(event, row.id)}
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                      <Menu
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl && selectedJob === row.id)}
+                        onClose={handleClose}
+                      >
+                        <MenuItem onClick={handleArchivedClick}>
+                          {isActiveTrue ? "Archive" : "Make Active"}
+                        </MenuItem>
+                        <MenuItem onClick={handleDelete}>Delete</MenuItem>
+                      </Menu>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </LocalizationProvider>
     </>
   );

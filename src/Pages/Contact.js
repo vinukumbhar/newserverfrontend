@@ -223,7 +223,8 @@ const filteredData = useMemo(() => {
         setContactData((prevContacts) =>
           prevContacts.filter((contact) => contact.id !== id)
         );
-        alert("Contact deleted successfully!");
+        // alert("Contact deleted successfully!");
+        toast.success("Contact deleted successfully!")
       } catch (error) {
         console.error("Delete API Error:", error);
         alert("Failed to delete contact");
