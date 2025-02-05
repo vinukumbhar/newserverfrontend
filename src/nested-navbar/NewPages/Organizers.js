@@ -195,9 +195,11 @@ useEffect(() => {
 
   const [selectedOrganizer, SetSelectedOrganizer] = useState({});
   const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
+    const [showForm, setShowForm] = useState(false);
   const handleEdit = (_id) => {
     SetSelectedOrganizer(_id);
-    setPreviewDialogOpen(true);
+    setShowForm(true);
+    // setPreviewDialogOpen(true);
   };
   const handleClosePreview = () => {
     setPreviewDialogOpen(false); // Close the dialog
@@ -370,6 +372,7 @@ useEffect(() => {
           </Typography>
           </Box>
   </Box>
+{!showForm ? (
       <Paper>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
@@ -467,39 +470,11 @@ useEffect(() => {
             ))}
           </TableBody>
         </Table>
-      </Paper>
+      </Paper>):(
+<Box> <OrganizerUpdate OrganizerData={selectedOrganizer} onClose={handleClosePreview} /></Box>
+      )
+    }
 
-      <Dialog open={previewDialogOpen} onClose={handleClosePreview} fullScreen>
-        <DialogContent>
-          <Box>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  border: "2px solid #3FA2F6",
-                  p: 2,
-                  mb: 3,
-                  borderRadius: "10px",
-                  backgroundColor: "#96C9F4",
-                }}
-              >
-                {/* <Box>
-                  <Typography fontWeight="bold">Organizer View</Typography>
-                  <Typography>The client sees your organizer like this</Typography>
-                </Box> */}
-                <Button variant="text" onClick={handleClosePreview} sx={{ml:'auto'}}>
-                  Back to edit
-                </Button>
-              </Box>
-
-              {/* Make sure that selectedOrganizer is not undefined or null */}
-              <OrganizerUpdate OrganizerData={selectedOrganizer} onClose={handleClosePreview} />
-            </LocalizationProvider>
-          </Box>
-        </DialogContent>
-      </Dialog>
     </Box>
   );
 };

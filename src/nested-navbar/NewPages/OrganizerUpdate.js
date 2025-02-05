@@ -832,12 +832,13 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 // import Select from "react-select";
 import { toast } from "react-toastify";
-import { IconButton,Table, TableBody, TableCell, TableContainer, TableHead, TableRow,FormGroup, Autocomplete, Container, Box, Typography, FormControl, Select, InputLabel, MenuItem, TextField, FormControlLabel, Checkbox, Radio, RadioGroup, Button, FormLabel, Grid, Paper, LinearProgress, Tooltip } from "@mui/material"; // Make sure you have MUI installed
+import {Drawer, IconButton,Table, TableBody, TableCell, TableContainer, TableHead, TableRow,FormGroup, Autocomplete, Container, Box, Typography, FormControl, Select, InputLabel, MenuItem, TextField, FormControlLabel, Checkbox, Radio, RadioGroup, Button, FormLabel, Grid, Paper, LinearProgress, Tooltip } from "@mui/material"; // Make sure you have MUI installed
 import { Link } from "react-router-dom";
 import { ExpandMore, ExpandLess } from '@mui/icons-material';
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from 'dayjs';
+import { RxCross2 } from "react-icons/rx";
 const CreateOrganizerUpdate = ({ OrganizerData, onClose }) => {
 
   const ORGANIZER_TEMP_API = process.env.REACT_APP_ORGANIZER_TEMP_URL;
@@ -1424,6 +1425,18 @@ selectedOrganizer.sections.forEach((section) => {
       prevExpandedSection === sectionId ? null : sectionId
     );
   };
+  const [drawerOpen, setDrawerOpen] = useState(false);  // State to manage Drawer visibility
+  const [drawerContent, setDrawerContent] = useState('');  // State to store content for Drawer
+
+  const handleOpenDrawer = (content) => {
+    console.log('Opening Drawer with content:', content); // Debugging log
+    setDrawerContent(content);
+    setDrawerOpen(true);
+  };
+
+  const handleCloseDrawer = () => {
+    setDrawerOpen(false);
+  };
   return (
     // <Container>
     //   <Paper elevation={3} style={{ padding: "20px" }}>
@@ -1739,7 +1752,7 @@ selectedOrganizer.sections.forEach((section) => {
       sections.map((section) => (
         <Box key={section.id} sx={{ marginBottom: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Typography variant="h5" sx={{ flexGrow: 1 }}>{section.name}</Typography>
+            <Typography  sx={{ flexGrow: 1 }} onClick={() => handleToggleSection(section.id)}>{section.name}</Typography>
             <IconButton onClick={() => handleToggleSection(section.id)}>
               {expandedSection === section.id ? <ExpandLess /> : <ExpandMore />}
             </IconButton>
@@ -1753,14 +1766,35 @@ selectedOrganizer.sections.forEach((section) => {
                     <TableCell align="left"><strong>Answer</strong></TableCell>
                   </TableRow>
                 </TableHead>
-                <TableBody>
+                {/* <TableBody>
                   {section.formElements.map((formElement) => (
                     <TableRow key={formElement.id}>
                       <TableCell>{formElement.text}</TableCell>
                       <TableCell>{formElement.textvalue || "N/A"}</TableCell>
                     </TableRow>
                   ))}
-                </TableBody>
+                </TableBody> */}
+                 <TableBody>
+                    {section.formElements.map((formElement) => (
+                      <TableRow key={formElement.id}>
+                        <TableCell>
+                          {formElement.type === 'Text Editor' ? 'Text Block' : formElement.text}
+                        </TableCell>
+                        <TableCell>
+                          {formElement.type === 'Text Editor' ? (
+                            <Box
+                              sx={{ cursor: 'pointer', color: 'blue' }}
+                              onClick={() => handleOpenDrawer(formElement.text)}  // Pass content to Drawer
+                            >
+                              Display
+                            </Box>
+                          ) : (
+                            formElement.textvalue || "N/A"
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
               </Table>
             </TableContainer>
           )}
@@ -1769,6 +1803,24 @@ selectedOrganizer.sections.forEach((section) => {
     ) : (
       <Typography variant="body1">Loading sections...</Typography>
     )}
+     {/* Drawer Component */}
+     <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={handleCloseDrawer}
+      >
+        <Box sx={{ width: 600, padding: 2 }}>
+          <Box sx={{display:'flex',alignItems:'center',justifyContent:'space-between'}}>
+          <Typography >Text Block Content</Typography>
+          <RxCross2 style={{cursor:'pointer'}}onClick={handleCloseDrawer}/>
+          </Box>
+         
+          <Box sx={{ marginTop: 1 }}>
+            {/* Display the content */}
+            <div dangerouslySetInnerHTML={{ __html: drawerContent }} />
+          </Box>
+        </Box>
+      </Drawer>
   </Box>
   );
 
