@@ -407,36 +407,82 @@ const Invoice = () => {
               }}>
         New Invoice
       </Button>
-      <Paper>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+   
+        <TableContainer component={Paper} sx={{ overflow: "visible" }}>
+        <Table sx={{width:'100%'}} >
           <TableHead>
             <TableRow>
-              <TableCell>
-                <strong>Invoice #</strong>
+              <TableCell style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100">
+               Invoice #
               </TableCell>
-              <TableCell>
-                <strong>Status</strong>
+              <TableCell style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100">
+              Status
               </TableCell>
-              <TableCell>
-                <strong>Posted</strong>
+              <TableCell style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100">
+           Posted
               </TableCell>
-              <TableCell>
-                <strong>Total</strong>
+              <TableCell style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100">
+                Total
               </TableCell>
-              <TableCell>
-                <strong>Amount P...</strong>
+              <TableCell style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100">
+                Amount Paid
               </TableCell>
-              <TableCell>
-                <strong>Balance D...</strong>
+              <TableCell style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100">
+                Balance due
               </TableCell>
-              <TableCell>
-                <strong>Last PAI..</strong>
+              <TableCell style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100">
+              Last Paid
               </TableCell>
-              <TableCell>
-                <strong>Description</strong>
+              <TableCell style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="250">
+               Description
               </TableCell>
-              <TableCell>
-                <strong>Locked D...</strong>
+              <TableCell style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100">
+               Settings
               </TableCell>
             </TableRow>
           </TableHead>
@@ -502,19 +548,65 @@ const Invoice = () => {
             {Array.isArray(accountInvoicesData) ? (
               accountInvoicesData.map((row) => (
                 <TableRow key={row._id}>
-                  <TableCell>
-                    <Typography sx={{ color: "#2c59fa", cursor: "pointer", fontWeight: "bold" }} onClick={() => handleEdit(row._id)}>
+                  <TableCell style={{
+                   fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                    cursor: "pointer",
+                    color: "#3f51b5", 
+                  }} onClick={() => handleEdit(row._id)}>
+                    {/* <Typography sx={{ cursor: "pointer",
+                      color: "#3f51b5", }} > */}
                       {row.invoicenumber}
-                    </Typography>
+                    {/* </Typography> */}
                   </TableCell>
-                  <TableCell></TableCell>
-                  <TableCell>{row.createdAt}</TableCell>
-                  <TableCell>${row.summary.total}</TableCell>
-                  <TableCell>${}</TableCell>
-                  <TableCell>${row.summary.total} </TableCell>
-                  <TableCell> </TableCell>
+                  <TableCell style={{
+                    fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                    cursor: "pointer",
+                  }}></TableCell>
+                  <TableCell style={{
+                    fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                    cursor: "pointer",
+                  }}>{new Intl.DateTimeFormat("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  }).format(new Date(row.createdAt))}</TableCell>
+                  <TableCell style={{
+                    fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                    cursor: "pointer",
+                  }}>${row.summary.total}</TableCell>
+                  <TableCell style={{
+                    fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                    cursor: "pointer",
+                  }}>${}</TableCell>
+                  <TableCell style={{
+                    fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                    cursor: "pointer",
+                  }}>${row.summary.total} </TableCell>
+                  <TableCell style={{
+                    fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                    cursor: "pointer",
+                  }}> </TableCell>
                   <TableCell>{row.description}</TableCell>
-                  <TableCell sx={{ textAlign: "end" }}>
+                  <TableCell style={{
+                    fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                    cursor: "pointer",
+                  }}>
                     <IconButton onClick={() => toggleMenu(row._id)} style={{ color: "#2c59fa" }}>
                       <CiMenuKebab style={{ fontSize: "25px" }} />
                       {openMenuId === row._id && (
@@ -562,7 +654,8 @@ const Invoice = () => {
             )}
           </TableBody>
         </Table>
-      </Paper>
+        </TableContainer>
+    
 
       <Drawer
         anchor="right"

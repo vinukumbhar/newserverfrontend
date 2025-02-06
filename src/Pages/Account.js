@@ -1307,7 +1307,7 @@ const FixedColumnTable = () => {
             )}
           </Box>
 
-          <TableContainer component={Paper} sx={{ mt: 2 }}>
+          <TableContainer  sx={{ mt: 2 }}>
             <Table style={{ tableLayout: "fixed", width: "100%" }}>
               <TableHead>
                 <TableRow>

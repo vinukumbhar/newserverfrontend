@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import {
- Button, Typography, Box
+ Button, Typography, Box,TableContainer
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import { useNavigate,useParams } from "react-router-dom";
@@ -181,7 +181,7 @@ const Proposals = () => {
               }}>
         New Proposals 
       </Button>
-      <Paper>
+      {/* <Paper>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -270,7 +270,247 @@ const Proposals = () => {
             ))}
           </TableBody>
         </Table>
-      </Paper>
+      </Paper> */}
+      <TableContainer component={Paper} sx={{ overflow: "visible" }}>
+        <Table sx={{ width: "100%" }}>
+          <TableHead>
+            <TableRow>
+              <TableCell
+                style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100"
+              >
+                Client Name
+              </TableCell>
+              <TableCell
+                style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="200"
+              >
+                Proposal Name
+              </TableCell>
+              <TableCell
+                style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100"
+              >
+                Status
+              </TableCell>
+              <TableCell
+                style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100"
+              >
+                Payment
+              </TableCell>
+              <TableCell
+                style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100"
+              >
+                Auth
+              </TableCell>
+              <TableCell
+                style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100"
+              >
+                Invoicing
+              </TableCell>
+              <TableCell
+                style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100"
+              >
+                Date
+              </TableCell>
+              <TableCell
+                style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100"
+              >
+                Signed
+              </TableCell>
+              <TableCell
+                style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100"
+              >
+                Settings
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {ProposalsTemplates.map((row) => (
+              <TableRow key={row._id}>
+                <TableCell>
+                  <Typography
+                    style={{
+                      fontSize: "12px",
+                      padding: "4px 8px",
+                      lineHeight: "1",
+                      cursor: "pointer",
+                      color: "#3f51b5",
+                    }}
+                    // onClick={() =>
+                    //   handleAccountDash(row._id, row.accountid._id)
+                    // }
+                  >
+                    {row.accountid.accountName}
+                  </Typography>
+                </TableCell>
+                <TableCell>
+                  <Typography
+                    style={{
+                      fontSize: "12px",
+                      padding: "4px 8px",
+                      lineHeight: "1",
+                      cursor: "pointer",
+                      color: "#3f51b5",
+                    }}
+                    onClick={() => handleEdit(row._id, row.accountid._id)}
+                  >
+                    {row.proposalname}
+                  </Typography>
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                    cursor: "pointer",
+                  }}
+                >
+                  a
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                    cursor: "pointer",
+                  }}
+                >
+                  b
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                    cursor: "pointer",
+                  }}
+                >
+                  c
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                    cursor: "pointer",
+                  }}
+                >
+                  d
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                    cursor: "pointer",
+                  }}
+                >
+                  {/* {row.createdAt}
+                   */}
+                  {new Intl.DateTimeFormat("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  }).format(new Date(row.createdAt))}
+                </TableCell>
+                <TableCell></TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                  }}
+                >
+                  <IconButton
+                    onClick={() => toggleMenu(row._id)}
+                    style={{ color: "#2c59fa" }}
+                  >
+                    <CiMenuKebab style={{ fontSize: "25px" }} />
+                    {openMenuId === row._id && (
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          zIndex: 1,
+                          backgroundColor: "#fff",
+                          boxShadow: 1,
+                          borderRadius: 1,
+                          p: 1,
+                          left: "20px",
+
+                          m: 2,
+                          top: "10px",
+                          textAlign: "start",
+                        }}
+                      >
+                        <Typography
+                          sx={{ fontSize: "12px", fontWeight: "bold" }}
+                          onClick={() => handleEdit(row._id)}
+                        >
+                          Edit   
+                        </Typography>
+                        <Typography
+                          sx={{
+                            fontSize: "12px",
+                            color: "red",
+                            fontWeight: "bold",
+                          }}
+                          onClick={() => handleDelete(row._id)}
+                        >
+                          Delete
+                        </Typography>
+                        
+                      </Box>
+                    )}
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Box>
 
 

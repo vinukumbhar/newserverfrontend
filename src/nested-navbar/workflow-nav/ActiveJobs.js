@@ -1,37 +1,3 @@
-// import React, { useEffect, useState } from "react";
-// import { useParams } from "react-router-dom";
-// import { Box } from "@mui/material";
-// const ActiveJobs = () => {
-//   const JOBS_API = process.env.REACT_APP_ADD_JOBS_URL;
-//   const [jobData, setJobData] = useState([]);
-//   const { data } = useParams();
-
-//   useEffect(() => {
-//     fetchJobList(data);
-//   }, [data]);
-
-//   const fetchJobList = (data) => {
-//     const url = `${JOBS_API}/workflow/jobs/job/joblist/list/true/${data}`;
-
-//     fetch(url)
-//       .then((response) => response.json())
-//       .then((result) => {
-//         console.log(result)
-//         setJobData(result.jobList || []);
-       
-//       })
-//       .catch((error) => {
-//         console.error("Error fetching job list:", error);
-//       });
-//   };
-//   return (
-//    <Box></Box>
-//   )
-// }
-
-// export default ActiveJobs
-
-
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
@@ -169,31 +135,98 @@ const ActiveJobs = () => {
   return (
     <Box sx={{ padding: 2 }}>
       <TableContainer component={Paper}>
-        <Table>
+        <Table sx={{width:'100%'}}>
           <TableHead>
             <TableRow>
-              <TableCell><strong>Name</strong></TableCell>
-              <TableCell><strong>Job Assignee(s)</strong></TableCell>
-              <TableCell><strong>Pipeline</strong></TableCell>
-              <TableCell><strong>Stage</strong></TableCell>
-           
-              <TableCell><strong>Starts In</strong></TableCell>
-              <TableCell><strong>Due In</strong></TableCell>
-              <TableCell><strong>Status</strong></TableCell>
-              <TableCell><strong>Settings</strong></TableCell>
+              <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="200">Name</TableCell>
+              <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="200">Job Assignee(s)</TableCell>
+              <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="200">Pipeline</TableCell>
+              <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Stage</TableCell>
+              <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Starts In</TableCell>
+              <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Due In</TableCell>
+              <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Status</TableCell>
+              <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Settings</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {jobData.map((job) => (
               <TableRow key={job.id}>
-                <TableCell>{job.Name}</TableCell>
-                <TableCell>{job.JobAssignee.join(", ")}</TableCell>
-                <TableCell>{job.Pipeline}</TableCell>
-                <TableCell>{job.Stage.join(", ")}</TableCell>
+                <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{job.Name}</TableCell>
+                <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{job.JobAssignee.join(", ")}</TableCell>
+                <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{job.Pipeline}</TableCell>
+                <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{job.Stage.join(", ")}</TableCell>
                
-                <TableCell>{formatDate(job.StartDate)}</TableCell>
-                <TableCell>{formatDate(job.DueDate)}</TableCell>
-<TableCell>
+                <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{formatDate(job.StartDate)}</TableCell>
+                <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{formatDate(job.DueDate)}</TableCell>
+<TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>
                   {job.ClientFacingStatus ? (
                     <Box
                       sx={{
@@ -214,7 +247,11 @@ const ActiveJobs = () => {
                     ""
                   )}
                 </TableCell>
-                 <TableCell>
+                 <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>
                   <IconButton
                      onClick={(event) => handleSettingsClick(event, job.id)}
                     aria-label="Settings"

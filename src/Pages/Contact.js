@@ -477,57 +477,135 @@ const filteredData = useMemo(() => {
           </IconButton>
         )}
       </Box>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="contact table">
+      <TableContainer >
+        <Table sx={{  width: "100%" }} aria-label="contact table">
           <TableHead>
             <TableRow>
-              <TableCell padding="checkbox">
+              <TableCell  padding="checkbox"
+                    style={{
+                      position: "sticky",
+                      left: 0,
+                      zIndex: 1,
+                      background: "#fff",
+                      fontSize: "2px", // Set a professional font size
+                      fontWeight: "bold",
+                      textAlign: "center",
+                    }}>
                 <Checkbox
                   checked={selectedContacts.length === contactData.length}
                   onChange={handleSelectAll}
                 />
               </TableCell>
-              <TableCell onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
+              <TableCell onClick={() => handleSort("name")} style={{
+                      cursor: "pointer",
+                     
+                      left: 50,
+                      // zIndex: 1,
+                      background: "#fff",
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px", // Add more padding for better spacing
+                    }}
+                    width="200">
               Name {getSortIcon("name")}
             </TableCell>
-            <TableCell onClick={() => handleSort("email")} style={{ cursor: "pointer" }}>
+            <TableCell onClick={() => handleSort("email")} style={{cursor: "pointer",
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="150">
               Email {getSortIcon("email")}
             </TableCell>
-              <TableCell>
+              <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="250">
                 Phone Numbers {/* No sorting for this column */}
               </TableCell>
-              <TableCell>Tags</TableCell>
+              <TableCell  style={{ cursor: "pointer",
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Tags</TableCell>
               <TableCell
               onClick={() => handleSort("companyName")}
-              style={{ cursor: "pointer" }}
+              style={{ cursor: "pointer",
+                fontSize: "12px",
+                fontWeight: "bold",
+                padding: "16px",
+              }}
+              width="200"
             >
               Company Name {getSortIcon("companyName")}
             </TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="50">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {filteredData.map((contact) => (
-              <TableRow key={contact.id}>
-                <TableCell padding="checkbox">
+              <TableRow key={contact.id}  role="checkbox"  hover  tabIndex={-1}  style={{
+                cursor: "pointer",
+                transition: "background-color 0.3s ease",
+                "&:hover": {
+                  backgroundColor: "#f4f4f4", // Add hover effect
+                },
+              }}>
+                <TableCell padding="checkbox" style={{
+                          position: "sticky",
+                          left: 0,
+                          zIndex: 1,
+                          background: "#fff",
+                          fontSize: "12px",
+                          textAlign: "center",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                          // padding: "2px", // Adjust padding for better spacing
+                        }}>
                   <Checkbox
                     checked={selectedContacts.includes(contact.id)}
                     onChange={(e) => handleCheckboxChange(e, contact.id)}
                   />
                 </TableCell>
                 <TableCell
-                  sx={{ cursor: "pointer", color: "blue" }}
+                 style={{
+                  cursor: "pointer", color: "#3f51b5" ,
+                  // position: "sticky",
+                  left: 50,
+                  zIndex: 1,
+                  background: "#fff",
+                  fontSize: "12px",
+                  fontWeight: "normal",
+                  // padding: "12px 16px", // Add padding for better spacing
+                }}
+                  // sx={{ }}
                   onClick={() => handleClick(contact.id)}
                 >
                   {contact.name}
                 </TableCell>
-                <TableCell>{contact.email}</TableCell>
+                <TableCell  style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{contact.email}</TableCell>
                 <TableCell>
                   {contact.phoneNumbers.flat().map((phoneObj, index) => (
                     <div key={index}>{phoneObj.phone || phoneObj}</div>
                   ))}
                 </TableCell>
-                <TableCell>
+                <TableCell   style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>
                     {contact.tags && contact.tags.flat().length > 0 && (
                     <Tooltip
                       title={
@@ -575,8 +653,16 @@ const filteredData = useMemo(() => {
                     </Tooltip>
                   )}
                 </TableCell>
-                <TableCell>{contact.companyName}</TableCell>
-                <TableCell>
+                <TableCell   style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{contact.companyName}</TableCell>
+                <TableCell   style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>
                   <IconButton
                     onClick={() => handleDelete(contact.id)}
                     sx={{ color: "red" }}

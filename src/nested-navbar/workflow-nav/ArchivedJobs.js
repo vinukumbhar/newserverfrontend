@@ -1,47 +1,3 @@
-// import React from 'react'
-
-// const ArchivedJobs = () => {
-//   return (
-//     <div>ArchivedJobs</div>
-//   )
-// }
-
-// export default ArchivedJobs
-
-// import React, { useEffect, useState } from "react";
-// import { useParams } from "react-router-dom";
-// import { Box } from "@mui/material";
-// const ActiveJobs = () => {
-//   const JOBS_API = process.env.REACT_APP_ADD_JOBS_URL;
-//   const [jobData, setJobData] = useState([]);
-//   const { data } = useParams();
-
-//   useEffect(() => {
-//     fetchJobList(data);
-//   }, [data]);
-
-//   const fetchJobList = (data) => {
-//     const url = `${JOBS_API}/workflow/jobs/job/joblist/list/true/${data}`;
-
-//     fetch(url)
-//       .then((response) => response.json())
-//       .then((result) => {
-//         console.log(result)
-//         setJobData(result.jobList || []);
-       
-//       })
-//       .catch((error) => {
-//         console.error("Error fetching job list:", error);
-//       });
-//   };
-//   return (
-//    <Box></Box>
-//   )
-// }
-
-// export default ActiveJobs
-
-
 import React, { useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import {
@@ -105,64 +61,6 @@ const ArchivedJobs = () => {
   };
 
   
-  // const handleActive = () => {
-  //   if (!selectedJobId) return;
-
-  //   const myHeaders = new Headers();
-  //   myHeaders.append("Content-Type", "application/json");
-
-  //   const raw = JSON.stringify({ active: false });
-
-  //   const requestOptions = {
-  //     method: "PATCH",
-  //     headers: myHeaders,
-  //     body: raw,
-  //     redirect: "follow",
-  //   };
-
-  //   const archiveUrl = `http://127.0.0.1:7550/workflow/jobs/job/${selectedJobId}`;
-
-  //   fetch(archiveUrl, requestOptions)
-  //     .then((response) => response.json())
-  //     .then((result) => {
-  //       console.log("Archive result:", result);
-  //       setJobData((prevJobs) =>
-  //         prevJobs.filter((job) => job.id !== selectedJobId)
-  //       ); // Remove archived job from the table
-  //       handleClose();
-  //       fetchJobList(data)
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error archiving job:", error);
-  //       handleClose();
-  //     });
-  // };
-
-  // const handleDelete = () => {
-  //   if (!selectedJobId) return;
-
-  //   const requestOptions = {
-  //     method: "DELETE",
-  //     redirect: "follow",
-  //   };
-
-  //   const deleteUrl = `http://127.0.0.1:7550/workflow/jobs/job/${selectedJobId}`;
-
-  //   fetch(deleteUrl, requestOptions)
-  //     .then((response) => response.json())
-  //     .then((result) => {
-  //       console.log("Delete result:", result);
-  //       setJobData((prevJobs) =>
-  //         prevJobs.filter((job) => job.id !== selectedJobId)
-  //       ); // Remove deleted job from the table
-  //       handleClose();
-  //       fetchJobList(data)
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error deleting job:", error);
-  //       handleClose();
-  //     });
-  // };
   const [actionType, setActionType] = useState(""); // Archive or Delete
   const [isDialogOpen, setIsDialogOpen] = useState(false); // Dialog state
   const openConfirmationDialog = (type) => {
@@ -243,7 +141,7 @@ const ArchivedJobs = () => {
   };
   return (
     <Box sx={{ padding: 2 }}>
-      <TableContainer component={Paper}>
+      {/* <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
@@ -290,6 +188,136 @@ const ArchivedJobs = () => {
                   )}
                 </TableCell>
                  <TableCell>
+                  <IconButton
+                     onClick={(event) => handleSettingsClick(event, job.id)}
+                    aria-label="Settings"
+                  >
+                    <MoreVertIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer> */}
+       <TableContainer component={Paper}>
+        <Table sx={{width:'100%'}}>
+          <TableHead>
+            <TableRow>
+              <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="200">Name</TableCell>
+              <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="200">Job Assignee(s)</TableCell>
+              <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="200">Pipeline</TableCell>
+              <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Stage</TableCell>
+              <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Starts In</TableCell>
+              <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Due In</TableCell>
+              <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Status</TableCell>
+              <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Settings</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {jobData.map((job) => (
+              <TableRow key={job.id}>
+                <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{job.Name}</TableCell>
+                <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{job.JobAssignee.join(", ")}</TableCell>
+                <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{job.Pipeline}</TableCell>
+                <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{job.Stage.join(", ")}</TableCell>
+               
+                <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{formatDate(job.StartDate)}</TableCell>
+                <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>{formatDate(job.DueDate)}</TableCell>
+<TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>
+                  {job.ClientFacingStatus ? (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
+                      <GoDotFill
+                        style={{
+                          color: job.ClientFacingStatus.statusColor,
+                          fontSize: "25px",
+                        }}
+                      />
+                      <span>{job.ClientFacingStatus.statusName}</span>
+                    </Box>
+                  ) : (
+                    ""
+                  )}
+                </TableCell>
+                 <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>
                   <IconButton
                      onClick={(event) => handleSettingsClick(event, job.id)}
                     aria-label="Settings"

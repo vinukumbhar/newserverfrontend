@@ -42,6 +42,7 @@ import { CiDiscount1 } from "react-icons/ci";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { RiCloseLine } from "react-icons/ri";
 import "./invoices.css";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { toast } from "react-toastify";
 import {
   MaterialReactTable,
@@ -638,7 +639,9 @@ const Invoices = ({ charLimit = 4000 }) => {
       //   "Wed May 08 2024 00:00:00 GMT+0530 (India Standard Time)",
       // scheduleinvoicetime: "12.00",
       scheduleinvoicedate: new Date(), // Current date and time
-      scheduleinvoicetime: new Date().toLocaleTimeString('en-US', { hour12: false }), 
+      scheduleinvoicetime: new Date().toLocaleTimeString("en-US", {
+        hour12: false,
+      }),
       payInvoicewithcredits: payInvoice,
       reminders: reminders,
       scheduleinvoice: scheduledInvoice,
@@ -700,99 +703,111 @@ const Invoices = ({ charLimit = 4000 }) => {
 
   const [tempIdget, setTempIdGet] = useState("");
   const [openMenuId, setOpenMenuId] = useState(null);
+  //  const [anchorEl, setAnchorEl] = useState(null); // Anchor element for menu
+  // const [selectedJobId, setSelectedJobId] = useState(null); // Store selected Job ID
+  const handleSettingsClick = (event, invoiceId) => {
+    setAnchorEl(event.currentTarget); // Open the menu
+    setTempIdGet(invoiceId); // Store the selected job ID
+  };
+  const handleCloseMenu = () => {
+    setAnchorEl(null); // Close the menu
+  };
   const toggleMenu = (_id) => {
     setOpenMenuId(openMenuId === _id ? null : _id);
     setTempIdGet(_id);
   };
+  // tempIdget
   const handleEdit = (_id) => {
     navigate("Updateinvoice/" + _id);
   };
 
-  const columns = useMemo(
-    () => [
-      {
-        accessorKey: "invoicenumber",
-        header: "Invoice Number",
-        Cell: ({ row }) => (
-          <Typography
-            sx={{ color: "#2c59fa", cursor: "pointer", fontWeight: "bold" }}
-            onClick={() => handleEdit(row.original._id)}
-          >
-            {row.original.invoicenumber}
-          </Typography>
-        ),
-      },
+  // const columns = useMemo(
+  //   () => [
+  //     {
+  //       accessorKey: "invoicenumber",
+  //       header: "Invoice Number",
+  //       Cell: ({ row }) => (
+  //         <Typography
+  //           sx={{ color: "#2c59fa", cursor: "pointer", fontWeight: "bold" }}
+  //           onClick={() => handleEdit(row.original._id)}
+  //         >
+  //           {row.original.invoicenumber}
+  //         </Typography>
+  //       ),
+  //     },
 
-      {
-        accessorKey: "Setting",
-        header: "Setting",
-        Cell: ({ row }) => (
-          <IconButton
-            onClick={() => toggleMenu(row.original._id)}
-            style={{ color: "#2c59fa" }}
-          >
-            <CiMenuKebab style={{ fontSize: "25px" }} />
-            {openMenuId === row.original._id && (
-              <Box
-                sx={{
-                  position: "absolute",
-                  zIndex: 1,
-                  backgroundColor: "#fff",
-                  boxShadow: 1,
-                  borderRadius: 1,
-                  p: 1,
-                  left: "30px",
-                  m: 2,
-                }}
-              >
-                <Typography
-                  sx={{ fontSize: "12px", fontWeight: "bold" }}
-                  onClick={() => handleEdit(row.original._id)}
-                >
-                  Edit
-                </Typography>
-                <Typography
-                  sx={{ fontSize: "12px", color: "red", fontWeight: "bold" }}
-                  onClick={() => handleDelete(row.original._id)}
-                >
-                  Delete
-                </Typography>
-              </Box>
-            )}
-          </IconButton>
-        ),
-      },
-    ],
-    [openMenuId]
-  );
+  //     {
+  //       accessorKey: "Setting",
+  //       header: "Setting",
+  //       Cell: ({ row }) => (
+  //         <IconButton
+  //           onClick={() => toggleMenu(row.original._id)}
+  //           style={{ color: "#2c59fa" }}
+  //         >
+  //           <CiMenuKebab style={{ fontSize: "25px" }} />
+  //           {openMenuId === row.original._id && (
+  //             <Box
+  //               sx={{
+  //                 position: "absolute",
+  //                 zIndex: 1,
+  //                 backgroundColor: "#fff",
+  //                 boxShadow: 1,
+  //                 borderRadius: 1,
+  //                 p: 1,
+  //                 left: "30px",
+  //                 m: 2,
+  //               }}
+  //             >
+  //               <Typography
+  //                 sx={{ fontSize: "12px", fontWeight: "bold" }}
+  //                 onClick={() => handleEdit(row.original._id)}
+  //               >
+  //                 Edit
+  //               </Typography>
+  //               <Typography
+  //                 sx={{ fontSize: "12px", color: "red", fontWeight: "bold" }}
+  //                 onClick={() => handleDelete(row.original._id)}
+  //               >
+  //                 Delete
+  //               </Typography>
+  //             </Box>
+  //           )}
+  //         </IconButton>
+  //       ),
+  //     },
+  //   ],
+  //   [openMenuId]
+  // );
 
-  const table = useMaterialReactTable({
-    columns,
-    data: billingInvoice,
-    enableBottomToolbar: true,
-    enableStickyHeader: true,
-    columnFilterDisplayMode: "custom", // Render own filtering UI
-    enableRowSelection: true, // Enable row selection
-    enablePagination: true,
-    muiTableContainerProps: { sx: { maxHeight: "400px" } },
-    initialState: {
-      columnPinning: {
-        left: ["mrt-row-select", "tagName"],
-        right: ["settings"],
-      },
-    },
-    muiTableBodyCellProps: {
-      sx: (theme) => ({
-        backgroundColor:
-          theme.palette.mode === "dark-theme"
-            ? theme.palette.grey[900]
-            : theme.palette.grey[50],
-      }),
-    },
-  });
+  // const table = useMaterialReactTable({
+  //   columns,
+  //   data: billingInvoice,
+  //   enableBottomToolbar: true,
+  //   enableStickyHeader: true,
+  //   columnFilterDisplayMode: "custom", // Render own filtering UI
+  //   enableRowSelection: true, // Enable row selection
+  //   enablePagination: true,
+  //   muiTableContainerProps: { sx: { maxHeight: "400px" } },
+  //   initialState: {
+  //     columnPinning: {
+  //       left: ["mrt-row-select", "tagName"],
+  //       right: ["settings"],
+  //     },
+  //   },
+  //   muiTableBodyCellProps: {
+  //     sx: (theme) => ({
+  //       backgroundColor:
+  //         theme.palette.mode === "dark-theme"
+  //           ? theme.palette.grey[900]
+  //           : theme.palette.grey[50],
+  //     }),
+  //   },
+  // });
 
   const handleDelete = (_id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this invoice? This action cannot be undone.");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this invoice? This action cannot be undone."
+    );
     if (!confirmDelete) return;
     const requestOptions = {
       method: "DELETE",
@@ -1147,18 +1162,115 @@ const Invoices = ({ charLimit = 4000 }) => {
 
   return (
     <Box>
-      <Button type="button" variant="contained" onClick={handleOpen} sx={{
-                backgroundColor: 'var(--color-save-btn)',  // Normal background
-               
-                '&:hover': {
-                  backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                },
-                borderRadius:'15px'
-              }}>
+      <Button
+        type="button"
+        variant="contained"
+        onClick={handleOpen}
+        sx={{
+          backgroundColor: "var(--color-save-btn)", // Normal background
+
+          "&:hover": {
+            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+          },
+          borderRadius: "15px",
+        }}
+      >
         Create Invoice
       </Button>
+      {/* <MaterialReactTable columns={columns} table={table} /> */}
       <Box sx={{ marginTop: 3 }}>
-        <MaterialReactTable columns={columns} table={table} />
+
+      <TableContainer component={Paper} sx={{ overflow: "visible" }}>
+
+        <Table style={{ width: "100%" }}>
+          <TableHead>
+            <TableRow>
+              <TableCell style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Invoice Number</TableCell>
+              <TableCell style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Settings</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {billingInvoice.map((row) => {
+              return (
+                <TableRow key={row._id}>
+                  <TableCell
+                    style={{
+                    
+                      fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                      fontWeight: "normal",
+                      cursor: "pointer", color: "#3f51b5" 
+                    }}
+                    onClick={() => handleEdit(row._id)}
+                  >
+                    {row.invoicenumber}
+                  </TableCell>
+                  <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>
+                    <IconButton
+                      onClick={() => toggleMenu(row._id)}
+                      style={{ color: "#2c59fa" }}
+                    >
+                      <CiMenuKebab style={{ fontSize: "25px" }} />
+                      {openMenuId === row._id && (
+                        <Box
+                          sx={{
+                            position: "absolute",
+                            zIndex: 1,
+                            backgroundColor: "#fff",
+                            boxShadow: 1,
+                            borderRadius: 1,
+                            p: 1,
+                            left: "20px",
+
+                            m: 2,
+                            top: "10px",
+                            textAlign: "start",
+                          }}
+                        >
+                          {/* <Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>Publice to Marketplace</Typography> */}
+                          <Typography
+                            sx={{ fontSize: "12px", fontWeight: "bold" }}
+                            onClick={() => handleEdit(row._id)}
+                          >
+                            Edit
+                          </Typography>
+                          {/* <Typography sx={{ fontSize: '12px', fontWeight: 'bold' }} onClick={() => handleDuplicateTemplate(row._id)}>Duplicate</Typography> */}
+                          <Typography
+                            sx={{
+                              fontSize: "12px",
+                              color: "red",
+                              fontWeight: "bold",
+                            }}
+                            onClick={() => handleDelete(row._id)}
+                          >
+                            Delete
+                          </Typography>
+                        </Box>
+                      )}
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
       </Box>
       <Drawer
         anchor="right"
@@ -1438,12 +1550,12 @@ const Invoices = ({ charLimit = 4000 }) => {
                   color="primary"
                   onClick={createinvoice}
                   sx={{
-                    backgroundColor: 'var(--color-save-btn)',  // Normal background
-                   
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                    backgroundColor: "var(--color-save-btn)", // Normal background
+
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                     },
-                    borderRadius:'15px'
+                    borderRadius: "15px",
                   }}
                 >
                   Save & Exit
@@ -1649,12 +1761,13 @@ const Invoices = ({ charLimit = 4000 }) => {
                 color="primary"
                 onClick={toggleDropdown}
                 sx={{
-                  backgroundColor: 'var(--color-save-btn)',  // Normal background
-                 
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                  backgroundColor: "var(--color-save-btn)", // Normal background
+
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                   },
-                  mt:2,borderRadius:'15px'
+                  mt: 2,
+                  borderRadius: "15px",
                 }}
               >
                 Add Shortcode
@@ -2021,26 +2134,32 @@ const Invoices = ({ charLimit = 4000 }) => {
                 color="primary"
                 onClick={createinvoice}
                 sx={{
-                  backgroundColor: 'var(--color-save-btn)',  // Normal background
-                 
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                  backgroundColor: "var(--color-save-btn)", // Normal background
+
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                   },
-                  width:'80px',borderRadius:'15px'
-                }} 
+                  width: "80px",
+                  borderRadius: "15px",
+                }}
               >
                 Save
               </Button>
-              <Button variant="outlined" onClick={handleClose} sx={{
-                  borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                 color:'var(--color-save-btn)',
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                    color:'#fff',
-                    border:"none"
+              <Button
+                variant="outlined"
+                onClick={handleClose}
+                sx={{
+                  borderColor: "var(--color-border-cancel-btn)", // Normal background
+                  color: "var(--color-save-btn)",
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                    color: "#fff",
+                    border: "none",
                   },
-                  width:'80px',borderRadius:'15px'
-                }}>
+                  width: "80px",
+                  borderRadius: "15px",
+                }}
+              >
                 Cancel
               </Button>
             </Box>
@@ -2274,12 +2393,14 @@ const Invoices = ({ charLimit = 4000 }) => {
                   color="primary"
                   onClick={setCategoryFormOpen}
                   sx={{
-                    backgroundColor: 'var(--color-save-btn)',  // Normal background
-                   
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                    backgroundColor: "var(--color-save-btn)", // Normal background
+
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                     },
-                    borderRadius:'15px',mt: 4, ml: 1
+                    borderRadius: "15px",
+                    mt: 4,
+                    ml: 1,
                   }}
                 >
                   Create category
@@ -2344,12 +2465,13 @@ const Invoices = ({ charLimit = 4000 }) => {
                       color="primary"
                       onClick={createCategory}
                       sx={{
-                        backgroundColor: 'var(--color-save-btn)',  // Normal background
-                       
-                        '&:hover': {
-                          backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                        backgroundColor: "var(--color-save-btn)", // Normal background
+
+                        "&:hover": {
+                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                         },
-                        width:'80px',borderRadius:'15px'
+                        width: "80px",
+                        borderRadius: "15px",
                       }}
                     >
                       Create
@@ -2358,14 +2480,15 @@ const Invoices = ({ charLimit = 4000 }) => {
                       variant="outlined"
                       onClick={handleCategoryFormClose}
                       sx={{
-                        borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                       color:'var(--color-save-btn)',
-                        '&:hover': {
-                          backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                          color:'#fff',
-                          border:"none"
+                        borderColor: "var(--color-border-cancel-btn)", // Normal background
+                        color: "var(--color-save-btn)",
+                        "&:hover": {
+                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          color: "#fff",
+                          border: "none",
                         },
-                        width:'80px',borderRadius:'15px'
+                        width: "80px",
+                        borderRadius: "15px",
                       }}
                     >
                       Cancel
@@ -2387,26 +2510,32 @@ const Invoices = ({ charLimit = 4000 }) => {
                   color="primary"
                   onClick={createservicetemp}
                   sx={{
-                    backgroundColor: 'var(--color-save-btn)',  // Normal background
-                   
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                    backgroundColor: "var(--color-save-btn)", // Normal background
+
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                     },
-                    width:'80px',borderRadius:'15px'
+                    width: "80px",
+                    borderRadius: "15px",
                   }}
                 >
                   Save
                 </Button>
-                <Button variant="outlined" onClick={handleNewDrawerClose} sx={{
-                  borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                 color:'var(--color-save-btn)',
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                    color:'#fff',
-                    border:"none"
-                  },
-                  width:'80px',borderRadius:'15px'
-                }}>
+                <Button
+                  variant="outlined"
+                  onClick={handleNewDrawerClose}
+                  sx={{
+                    borderColor: "var(--color-border-cancel-btn)", // Normal background
+                    color: "var(--color-save-btn)",
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                      color: "#fff",
+                      border: "none",
+                    },
+                    width: "80px",
+                    borderRadius: "15px",
+                  }}
+                >
                   Cancel
                 </Button>
               </Box>
@@ -2466,26 +2595,37 @@ const Invoices = ({ charLimit = 4000 }) => {
             ml: 3,
           }}
         >
-          <Button variant="contained" color="primary" onClick={createCategory} sx={{
-                backgroundColor: 'var(--color-save-btn)',  // Normal background
-               
-                '&:hover': {
-                  backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                },
-                width:'80px',borderRadius:'15px'
-              }} >
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={createCategory}
+            sx={{
+              backgroundColor: "var(--color-save-btn)", // Normal background
+
+              "&:hover": {
+                backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+              },
+              width: "80px",
+              borderRadius: "15px",
+            }}
+          >
             Create
           </Button>
-          <Button variant="outlined" onClick={handleCategoryFormClose} sx={{
-                  borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                 color:'var(--color-save-btn)',
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                    color:'#fff',
-                    border:"none"
-                  },
-                  width:'80px',borderRadius:'15px'
-                }}>
+          <Button
+            variant="outlined"
+            onClick={handleCategoryFormClose}
+            sx={{
+              borderColor: "var(--color-border-cancel-btn)", // Normal background
+              color: "var(--color-save-btn)",
+              "&:hover": {
+                backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                color: "#fff",
+                border: "none",
+              },
+              width: "80px",
+              borderRadius: "15px",
+            }}
+          >
             Cancel
           </Button>
         </Box>
@@ -2622,26 +2762,36 @@ const Invoices = ({ charLimit = 4000 }) => {
               <Box
                 sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}
               >
-                <Button variant="contained" onClick={handleSaveChanges} sx={{
-                backgroundColor: 'var(--color-save-btn)',  // Normal background
-               
-                '&:hover': {
-                  backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                },
-               width:'80px',borderRadius:'15px'
-              }}>
+                <Button
+                  variant="contained"
+                  onClick={handleSaveChanges}
+                  sx={{
+                    backgroundColor: "var(--color-save-btn)", // Normal background
+
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                    },
+                    width: "80px",
+                    borderRadius: "15px",
+                  }}
+                >
                   Save
                 </Button>
-                <Button variant="outlined" onClick={handleEditDrawerClose} sx={{
-                  borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                 color:'var(--color-save-btn)',
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                    color:'#fff',
-                    border:"none"
-                  },
-                  width:'80px',borderRadius:'15px'
-                }}>
+                <Button
+                  variant="outlined"
+                  onClick={handleEditDrawerClose}
+                  sx={{
+                    borderColor: "var(--color-border-cancel-btn)", // Normal background
+                    color: "var(--color-save-btn)",
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                      color: "#fff",
+                      border: "none",
+                    },
+                    width: "80px",
+                    borderRadius: "15px",
+                  }}
+                >
                   {" "}
                   Cancel
                 </Button>

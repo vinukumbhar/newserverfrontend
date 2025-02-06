@@ -51,6 +51,7 @@ import {
   // MenuItem,
   Checkbox,
 } from "@mui/material";
+import TablePagination from "@mui/material/TablePagination";
 import { GoDotFill } from "react-icons/go";
 const Example = ({ charLimit = 4000 }) => {
   const JOBS_API = process.env.REACT_APP_ADD_JOBS_URL;
@@ -911,6 +912,18 @@ const Example = ({ charLimit = 4000 }) => {
     // Log all selected row IDs
     // console.log("Selected IDs:", newSelected); // Log all selected IDs
   };
+// Pagination State
+const [page, setPage] = useState(0);
+const [rowsPerPage, setRowsPerPage] = useState(5)
+  // Handle Pagination Change
+const handleChangePage = (event, newPage) => {
+  setPage(newPage);
+};
+
+const handleChangeRowsPerPage = (event) => {
+  setRowsPerPage(parseInt(event.target.value, 10));
+  setPage(0);
+};
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -1413,8 +1426,8 @@ const Example = ({ charLimit = 4000 }) => {
         {/* <Stack direction={isMobile ? "column-reverse" : "column"} gap="8px">
           <MaterialReactTable columns={columns} table={table} />
         </Stack> */}
-        
-        <TableContainer component={Paper} sx={{ maxHeight: "85vh" }}>
+        {/* component={Paper} */}
+        <TableContainer  sx={{ maxHeight: "85vh" }}>
           <Table  style={{ tableLayout: "fixed", width: "100%" }}>
             <TableHead>
               <TableRow>
@@ -1650,6 +1663,15 @@ const Example = ({ charLimit = 4000 }) => {
             </TableBody>
           </Table>
         </TableContainer>
+        <TablePagination
+      rowsPerPageOptions={[5, 10, 25]}
+      component="div"
+      count={jobData.length}
+      rowsPerPage={rowsPerPage}
+      page={page}
+      onPageChange={handleChangePage}
+      onRowsPerPageChange={handleChangeRowsPerPage}
+    />
       </LocalizationProvider>
     </>
   );

@@ -42,6 +42,7 @@ import {
   differenceInHours,
   differenceInDays,
 } from "date-fns";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Priority from "../Templates/Priority/Priority";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Editor from "../Templates/Texteditor/Editor";
@@ -2434,15 +2435,45 @@ const Pipeline = ({ charLimit = 4000 }) => {
               Pipeline List
             </Typography>
             <TableContainer component={Paper}>
-              <Table>
+              <Table style={{  width: "100%" }}>
                 <TableHead>
                   <TableRow>
-                    <TableCell>PIPELINE NAME</TableCell>
-                    <TableCell>JOBS</TableCell>
-                    <TableCell>SCHEDULE</TableCell>
-                    <TableCell>START DATE</TableCell>
-                    <TableCell>END DATE</TableCell>
-                    <TableCell></TableCell>
+                    <TableCell style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Pipeline Name</TableCell>
+                    <TableCell style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Jobs</TableCell>
+                    <TableCell style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Schedule</TableCell>
+                    <TableCell style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Start Date</TableCell>
+                    <TableCell style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">End Date</TableCell>
+                    <TableCell style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Setting</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -2450,19 +2481,47 @@ const Pipeline = ({ charLimit = 4000 }) => {
                     <TableRow key={index} hover>
                       <TableCell
                         onClick={() => handleBoardsList(pipeline)}
-                        sx={{
-                          color: "primary.main",
-                          cursor: "pointer",
-                          fontWeight: "bold",
+                        style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                          cursor: "pointer", color: "#3f51b5"
                         }}
                       >
                         {pipeline.pipelineName}
                       </TableCell>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
-                      <TableCell></TableCell>
+                      <TableCell  style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}></TableCell>
+                      <TableCell  style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}></TableCell>
+                      <TableCell  style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}></TableCell>
+                      <TableCell  style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}></TableCell>
+                       <TableCell style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}>
+                      <IconButton
+                        // onClick={(event) => handleMenuClick(event, row.id)}
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                     
+                    </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

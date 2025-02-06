@@ -12,7 +12,7 @@ import {MaterialReactTable,useMaterialReactTable} from 'material-react-table';
 import { CiMenuKebab } from "react-icons/ci";
 
 import { CircularProgress } from "@mui/material";
-
+import TablePagination from "@mui/material/TablePagination";
 
 const Service = () => {
 
@@ -194,6 +194,7 @@ const Service = () => {
           }
           const data = await response.json();
           setServiceTemplates(data.serviceTemplate);
+          console.log(data.serviceTemplate)
          
         } catch (error) {
           console.error("Error fetching service templates:", error);
@@ -204,6 +205,25 @@ const Service = () => {
           setLoading(false); // Stop loader
         }
       };
+      // Pagination state
+const [page, setPage] = useState(0);
+const [rowsPerPage, setRowsPerPage] = useState(5);
+
+// Handle page change
+const handleChangePage = (event, newPage) => {
+  setPage(newPage);
+};
+
+// Handle rows per page change
+const handleChangeRowsPerPage = (event) => {
+  setRowsPerPage(parseInt(event.target.value, 10));
+  setPage(0); // Reset to first page
+};
+      // Get paginated data
+const paginatedServices = ServiceTemplates.slice(
+  page * rowsPerPage,
+  page * rowsPerPage + rowsPerPage
+);
       const [tempIdget, setTempIdGet] = useState("");
       const [openMenuId, setOpenMenuId] = useState(null);
       const toggleMenu = (_id) => {
@@ -269,89 +289,89 @@ const Service = () => {
         }
       };
       
-      const columns = [
-        {
-          accessorKey: 'serviceName', // Access the template name
-          header: 'Name',
-          Cell: ({ row }) => (
-            <Typography
-              sx={{ color: "#2c59fa", cursor: "pointer", fontWeight: 'bold' }}
-              onClick={() => handleEdit(row.original._id)}
-            >
-              {row.original.serviceName}
-            </Typography>
-          ),
-        },
-        {
-            accessorKey: 'description', // Access the template name
-            header: 'Description',
-        },
-        {
-            accessorKey: 'rate', // Access the template name
-            header: 'Rate',
-        },
-        {
-            accessorKey: 'ratetype', // Access the template name
-            header: 'Rate Type',
-        },
-        // {
-        //     accessorKey: 'tax', // Access the tax
-        //     header: 'Tax',
-        //     Cell: ({ row }) => (
-        //       <Checkbox
-        //         checked={row.original.tax} // Display as checked if tax is true
-        //         // disabled // Make it non-interactive
-        //         color="primary"
-        //       />
-        //     ),
-        //   },
-        {
-            accessorKey: 'category', // Access the template name
-            header: 'Category',
-            Cell: ({ row }) => {
-                // Find the category name based on the category ID
-                const category = categoryData.find((cat) => cat._id === row.original.category);
-                return <Typography>{category ? category.categoryName : "N/A"}</Typography>;
-              },
-        },
-        {
-          accessorKey: 'settings', // Add settings column
-          header: 'Settings',
-          Cell: ({ row }) => (
-            <IconButton onClick={() => toggleMenu(row.original._id)} style={{ color: "#2c59fa" }}>
-              <CiMenuKebab style={{ fontSize: "25px" }} />
-              {openMenuId === row.original._id && (
-                <Box sx={{ position: 'absolute', zIndex: 1, backgroundColor: '#fff', boxShadow: 1, borderRadius: 1, p: 1, left: '30px', m: 2 }}>
-                  <Typography sx={{ fontSize: '12px', fontWeight: 'bold' }} onClick={() => {
-                    handleEdit(row.original._id);
+      // const columns = [
+      //   {
+      //     accessorKey: 'serviceName', // Access the template name
+      //     header: 'Name',
+      //     Cell: ({ row }) => (
+      //       <Typography
+      //         sx={{ color: "#2c59fa", cursor: "pointer", fontWeight: 'bold' }}
+      //         onClick={() => handleEdit(row.original._id)}
+      //       >
+      //         {row.original.serviceName}
+      //       </Typography>
+      //     ),
+      //   },
+      //   {
+      //       accessorKey: 'description', // Access the template name
+      //       header: 'Description',
+      //   },
+      //   {
+      //       accessorKey: 'rate', // Access the template name
+      //       header: 'Rate',
+      //   },
+      //   {
+      //       accessorKey: 'ratetype', // Access the template name
+      //       header: 'Rate Type',
+      //   },
+      //   // {
+      //   //     accessorKey: 'tax', // Access the tax
+      //   //     header: 'Tax',
+      //   //     Cell: ({ row }) => (
+      //   //       <Checkbox
+      //   //         checked={row.original.tax} // Display as checked if tax is true
+      //   //         // disabled // Make it non-interactive
+      //   //         color="primary"
+      //   //       />
+      //   //     ),
+      //   //   },
+      //   {
+      //       accessorKey: 'category', // Access the template name
+      //       header: 'Category',
+      //       Cell: ({ row }) => {
+      //           // Find the category name based on the category ID
+      //           const category = categoryData.find((cat) => cat._id === row.original.category);
+      //           return <Typography>{category ? category.categoryName : "N/A"}</Typography>;
+      //         },
+      //   },
+      //   {
+      //     accessorKey: 'settings', // Add settings column
+      //     header: 'Settings',
+      //     Cell: ({ row }) => (
+      //       <IconButton onClick={() => toggleMenu(row.original._id)} style={{ color: "#2c59fa" }}>
+      //         <CiMenuKebab style={{ fontSize: "25px" }} />
+      //         {openMenuId === row.original._id && (
+      //           <Box sx={{ position: 'absolute', zIndex: 1, backgroundColor: '#fff', boxShadow: 1, borderRadius: 1, p: 1, left: '30px', m: 2 }}>
+      //             <Typography sx={{ fontSize: '12px', fontWeight: 'bold' }} onClick={() => {
+      //               handleEdit(row.original._id);
                    
-                  }} >Edit</Typography>
-                  <Typography sx={{ fontSize: '12px', color: 'red', fontWeight: 'bold' }} onClick={() => handleDelete(row.original._id)}>Delete</Typography>
-                </Box>
-              )}
-            </IconButton>
+      //             }} >Edit</Typography>
+      //             <Typography sx={{ fontSize: '12px', color: 'red', fontWeight: 'bold' }} onClick={() => handleDelete(row.original._id)}>Delete</Typography>
+      //           </Box>
+      //         )}
+      //       </IconButton>
     
-          ),
-        },
-      ];
-      const table = useMaterialReactTable({
-        columns,
-        data:ServiceTemplates,
-        enableBottomToolbar: true,
-        enableStickyHeader: true,
-        columnFilterDisplayMode: "custom", // Render own filtering UI
-        enableRowSelection: true, // Enable row selection
-        enablePagination: true,
-        muiTableContainerProps: { sx: { maxHeight: "400px" } },
-        initialState: {
-            columnPinning: { left: ["mrt-row-select", "Name"], },
-          },
-        muiTableBodyCellProps: {
-          sx: (theme) => ({
-            backgroundColor: theme.palette.mode === "dark-theme" ? theme.palette.grey[900] : theme.palette.grey[50],
-          }),
-        },
-      });
+      //     ),
+      //   },
+      // ];
+      // const table = useMaterialReactTable({
+      //   columns,
+      //   data:ServiceTemplates,
+      //   enableBottomToolbar: true,
+      //   enableStickyHeader: true,
+      //   columnFilterDisplayMode: "custom", // Render own filtering UI
+      //   enableRowSelection: true, // Enable row selection
+      //   enablePagination: true,
+      //   muiTableContainerProps: { sx: { maxHeight: "400px" } },
+      //   initialState: {
+      //       columnPinning: { left: ["mrt-row-select", "Name"], },
+      //     },
+      //   muiTableBodyCellProps: {
+      //     sx: (theme) => ({
+      //       backgroundColor: theme.palette.mode === "dark-theme" ? theme.palette.grey[900] : theme.palette.grey[50],
+      //     }),
+      //   },
+      // });
     return (
         <Box>
             <Button onClick={setIsNewDrawerOpen} variant="contained" color="primary"   sx={{
@@ -366,7 +386,210 @@ const Service = () => {
             </Button>
             <Box>
            {loading ? (
-             <Box sx={{display:'flex',alignItems:'center', justifyContent:'center'}}> <CircularProgress style={{fontSize:'300px', color:'blue'}}/></Box>):( <MaterialReactTable columns={columns} table={table} />)
+             <Box sx={{display:'flex',alignItems:'center', justifyContent:'center'}}> <CircularProgress style={{fontSize:'300px', color:'blue'}}/></Box>
+            ):(
+              <Box>
+               {/* <MaterialReactTable columns={columns} table={table} /> */}
+              
+
+              <TableContainer component={Paper} sx={{ overflow: "visible" }}>
+                      <Table sx={{ width: "100%" }}>
+                        <TableHead>
+                          <TableRow>
+                            <TableCell
+                              style={{
+                                fontSize: "12px",
+                                fontWeight: "bold",
+                                padding: "16px",
+                              }}
+                              width="150"
+                            >
+                              Name
+                            </TableCell>
+                            <TableCell
+                              style={{
+                                fontSize: "12px",
+                                fontWeight: "bold",
+                                padding: "16px",
+                              }}
+                              width="150"
+                            >
+                              Description
+                            </TableCell>
+                            <TableCell
+                              style={{
+                                fontSize: "12px",
+                                fontWeight: "bold",
+                                padding: "16px",
+                              }}
+                              width="100"
+                            >
+                              Rate
+                            </TableCell>
+                            <TableCell
+                              style={{
+                                fontSize: "12px",
+                                fontWeight: "bold",
+                                padding: "16px",
+                              }}
+                              width="100"
+                            >
+                              Rate Type
+                            </TableCell>
+                            
+                            <TableCell
+                              style={{
+                                fontSize: "12px",
+                                fontWeight: "bold",
+                                padding: "16px",
+                              }}
+                              width="150"
+                            >
+                              Category
+                            </TableCell>
+                           
+                          
+                            <TableCell
+                              style={{
+                                fontSize: "12px",
+                                fontWeight: "bold",
+                                padding: "16px",
+                              }}
+                              width="100"
+                            >
+                              Settings
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {ServiceTemplates.map((row) => (
+                            <TableRow key={row._id}>
+                              <TableCell>
+                                <Typography
+                                  style={{
+                                    fontSize: "12px",
+                                    padding: "4px 8px",
+                                    lineHeight: "1",
+                                    cursor: "pointer",
+                                    color: "#3f51b5",
+                                  }}
+                                  onClick={() => handleEdit(row._id)}
+                                >
+                                  {row.serviceName}
+                                </Typography>
+                              </TableCell>
+                              <TableCell>
+                                <Typography
+                                  style={{
+                                    fontSize: "12px",
+                                    padding: "4px 8px",
+                                    lineHeight: "1",
+                                    cursor: "pointer",
+                                    color: "#3f51b5",
+                                  }}
+                                  onClick={() => handleEdit(row._id, row.accountid._id)}
+                                >
+                                  {row.description}
+                                </Typography>
+                              </TableCell>
+                              <TableCell
+                                style={{
+                                  fontSize: "12px",
+                                  padding: "4px 8px",
+                                  lineHeight: "1",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                {row.rate}
+                              </TableCell>
+                              <TableCell
+                                style={{
+                                  fontSize: "12px",
+                                  padding: "4px 8px",
+                                  lineHeight: "1",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                {row.ratetype}
+                              </TableCell>
+                              <TableCell
+                                style={{
+                                  fontSize: "12px",
+                                  padding: "4px 8px",
+                                  lineHeight: "1",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                {row.category.categoryName}
+                              </TableCell>
+                             
+                           
+                              <TableCell
+                                style={{
+                                  fontSize: "12px",
+                                  padding: "4px 8px",
+                                  lineHeight: "1",
+                                }}
+                              >
+                                <IconButton
+                                  onClick={() => toggleMenu(row._id)}
+                                  style={{ color: "#2c59fa" }}
+                                >
+                                  <CiMenuKebab />
+                                  {openMenuId === row._id && (
+                                    <Box
+                                      sx={{
+                                        position: "absolute",
+                                        zIndex: 1,
+                                        backgroundColor: "#fff",
+                                        boxShadow: 1,
+                                        borderRadius: 1,
+                                        p: 1,
+                                        left: "20px",
+              
+                                        m: 2,
+                                        top: "10px",
+                                        textAlign: "start",
+                                      }}
+                                    >
+                                      <Typography
+                                        sx={{ fontSize: "12px", fontWeight: "bold" }}
+                                        onClick={() => handleEdit(row._id)}
+                                      >
+                                        Edit   
+                                      </Typography>
+                                      <Typography
+                                        sx={{
+                                          fontSize: "12px",
+                                          color: "red",
+                                          fontWeight: "bold",
+                                        }}
+                                        onClick={() => handleDelete(row._id)}
+                                      >
+                                        Delete
+                                      </Typography>
+                                      
+                                    </Box>
+                                  )}
+                                </IconButton>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                     
+                    </TableContainer>
+                    <TablePagination
+      rowsPerPageOptions={[5, 10, 25,30,35,40,45,50]}
+      component="div"
+      count={ServiceTemplates.length}
+      rowsPerPage={rowsPerPage}
+      page={page}
+      onPageChange={handleChangePage}
+      onRowsPerPageChange={handleChangeRowsPerPage}
+    />
+              </Box>
+              )
            }
             {/* <MaterialReactTable
             columns={columns}

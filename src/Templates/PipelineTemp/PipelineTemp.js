@@ -21,6 +21,8 @@ import {
   MenuItem,
   Card,
   CardContent,
+  TableContainer,
+  Table, TableBody, TableCell, TableHead, TableRow,
 } from "@mui/material";
 import { AiOutlineSearch } from "react-icons/ai";
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -3133,7 +3135,91 @@ const PipelineTemp = () => {
             Create Pipeline
           </Button>
 
-          <MaterialReactTable columns={columns} table={table} />
+          {/* <MaterialReactTable columns={columns} table={table} /> */}
+          <TableContainer component={Paper} sx={{ overflow: "visible" }}>
+        <Table sx={{width:'100%'}} >
+          <TableHead>
+            <TableRow>
+              <TableCell style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="250">
+               Pipeline Name
+              </TableCell>
+              
+              <TableCell style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100">
+                Settings
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {pipelineData.map((row) => (
+              <TableRow key={row._id}>
+                <TableCell>
+                  <Typography style={{
+                      fontSize: "12px",
+                      padding: "4px 8px",
+                      lineHeight: "1",
+                      cursor: "pointer",
+                      color: "#3f51b5",
+                    }}
+                  onClick={() => handleEdit(row._id)}>
+                    {row.pipelineName}
+                  </Typography>
+                </TableCell>
+               
+                <TableCell style={{
+                    fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                    cursor: "pointer",
+                  }}>
+                  <IconButton onClick={() => toggleMenu(row._id)} style={{ color: "#2c59fa" }}>
+                    <CiMenuKebab style={{ fontSize: "25px" }} />
+                    {openMenuId === row._id && (
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          zIndex: 1,
+                          backgroundColor: "#fff",
+                          boxShadow: 1,
+                          borderRadius: 1,
+                          p: 1,
+                          left: "20px",
+
+                          m: 2,
+                          top: "10px",
+                          textAlign: "start",
+                        }}
+                      >
+                        {/* <Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>Publice to Marketplace</Typography> */}
+                       
+                        <Typography sx={{ fontSize: "12px", fontWeight: "bold" }} onClick={() => handleEdit(row._id)}>
+                         Edit 
+                        </Typography>
+                        <Typography sx={{ fontSize: "12px", color: "red", fontWeight: "bold" }} onClick={() => handleDelete(row._id)}>
+                          Delete
+                        </Typography>
+                       
+                        
+                        
+                      </Box>
+                    )}
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        </TableContainer>
+
         </Box>
       ) : (
         <Box

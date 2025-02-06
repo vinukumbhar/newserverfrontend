@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Dialog, DialogContent, Box, Button, IconButton, Typography, Table, TableBody, TableCell, TableHead, TableRow, Paper, Chip } from "@mui/material";
+import { Dialog, DialogContent, Box, Button, IconButton, Typography, Table, TableBody, TableCell, TableHead, TableRow, Paper, Chip, TableContainer } from "@mui/material";
 import { CiMenuKebab } from "react-icons/ci";
 import { useNavigate, useParams, useRouteLoaderData } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -373,27 +373,58 @@ useEffect(() => {
           </Box>
   </Box>
 {!showForm ? (
-      <Paper>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      // <Paper>
+      <TableContainer component={Paper} sx={{ overflow: "visible" }}>
+        <Table sx={{width:'100%'}} >
           <TableHead>
             <TableRow>
-              <TableCell>
-                <strong>Name</strong>
+              <TableCell style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="250">
+                Name
               </TableCell>
-              <TableCell>
-                <strong>Last Updated</strong>
+              <TableCell style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100">
+               Last Updated
               </TableCell>
-              <TableCell>
-                <strong>Status</strong>
+              <TableCell style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100">
+                Status
               </TableCell>
-              <TableCell>
-                <strong>Progress</strong>
+              <TableCell style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100">
+                Progress
               </TableCell>
-              <TableCell>
-                <strong>Seal</strong>
+              <TableCell style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100">
+                Seal
               </TableCell>
-              <TableCell>
-                <strong></strong>
+              <TableCell style={{
+                  fontSize: "12px",
+                  fontWeight: "bold",
+                  padding: "16px",
+                }}
+                width="100">
+                Settings
               </TableCell>
             </TableRow>
           </TableHead>
@@ -401,24 +432,72 @@ useEffect(() => {
             {organizerTemplatesData.map((row) => (
               <TableRow key={row._id}>
                 <TableCell>
-                  <Typography sx={{ color: "#2c59fa", cursor: "pointer", fontWeight: "bold" }} onClick={() => handleEdit(row._id)}>
+                  <Typography style={{
+                      fontSize: "12px",
+                      padding: "4px 8px",
+                      lineHeight: "1",
+                      cursor: "pointer",
+                      color: "#3f51b5",
+                    }}
+                  onClick={() => handleEdit(row._id)}>
                     {row.organizertemplateid.organizerName}
                   </Typography>
                 </TableCell>
-                <TableCell>{row.updatedAt}</TableCell>
-                <TableCell>
+                <TableCell style={{
+                    fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                    cursor: "pointer",
+                    // {row.updatedAt}
+                  }}>   {new Intl.DateTimeFormat("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  }).format(new Date(row.updatedAt))}</TableCell>
+                <TableCell style={{
+                    fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                    cursor: "pointer",
+                  }}>
                   <Chip
                     label={row.issubmited ? "Completed" : "Pending"}
                     color={row.issubmited ? "success" : "default"}
                     sx={{
                       backgroundColor: row.issubmited ? "green" : "grey",
-                      color: "white",
+                      // color: "white",
+                      color: "#fff",
+                                  // borderRadius: "15px",
+                                  // padding: "1px 1px",
+                                  fontSize: "11px",
                     }}
                   />
                 </TableCell>
-                <TableCell>{row.organizertemplateid.sections.length}</TableCell> {/* Show the number of sections */}
-                <TableCell>{row.issealed ? <Chip label="Sealed" color="primary" /> : null}</TableCell>
-                <TableCell sx={{ textAlign: "end" }}>
+                <TableCell style={{
+                    fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                    cursor: "pointer",
+                  }}>{row.organizertemplateid.sections.length}</TableCell> {/* Show the number of sections */}
+                <TableCell style={{
+                    fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                    cursor: "pointer",
+                  }}>{row.issealed ? <Chip label="Sealed" color="primary" sx={{
+                    // backgroundColor: row.issubmited ? "green" : "grey",
+                    // color: "white",
+                    color: "#fff",
+                                // borderRadius: "15px",
+                                // padding: "1px 1px",
+                                fontSize: "11px",
+                  }} /> : null}</TableCell>
+                <TableCell style={{
+                    fontSize: "12px",
+                    padding: "4px 8px",
+                    lineHeight: "1",
+                    cursor: "pointer",
+                  }}>
                   <IconButton onClick={() => toggleMenu(row._id)} style={{ color: "#2c59fa" }}>
                     <CiMenuKebab style={{ fontSize: "25px" }} />
                     {openMenuId === row._id && (
@@ -470,7 +549,7 @@ useEffect(() => {
             ))}
           </TableBody>
         </Table>
-      </Paper>):(
+        </TableContainer> ):(
 <Box> <OrganizerUpdate OrganizerData={selectedOrganizer} onClose={handleClosePreview} /></Box>
       )
     }
