@@ -723,7 +723,7 @@ const TeamMember = () => {
             </Button>
           </Box>
         </Box>
-        <Divider sx={{ my: 2, margin: "20px" }} />
+        {/* <Divider sx={{ my: 2, margin: "20px" }} /> */}
         <Outlet />
       </Box>
 

@@ -539,11 +539,9 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Container>
+      <Box p={2}>
         <Box
-          sx={{
-            mt: 2,
-          }}
+          
         >
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <Typography variant="h6" gutterBottom>
@@ -928,7 +926,7 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
             </Button>
           </Box>
         </Box>
-      </Container>
+      </Box>
     </LocalizationProvider>
   );
 };

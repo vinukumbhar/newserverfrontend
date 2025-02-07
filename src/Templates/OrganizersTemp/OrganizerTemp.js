@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Section from './organizertempSection';
 import { toast } from 'react-toastify';
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, TableContainer } from "@mui/material";
 import 'react-toastify/dist/ReactToastify.css';
 import {ListItemText,ListItem,List,Popover,
   Box, Button, TextField, IconButton, Typography, Alert, Table, TableBody, TableCell, TableHead, TableRow, Paper, Dialog,
   DialogContent,
   Drawer, InputLabel,
   LinearProgress, Select, MenuItem, Tooltip,
-  FormControl, FormControlLabel, Switch, FormGroup
+  FormControl, FormControlLabel, Switch, FormGroup,TablePagination
 } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import { CiMenuKebab } from "react-icons/ci";
@@ -917,10 +917,30 @@ const OrganizersTemp = () => {
   };
   const [daysuntilNextReminder, setDaysuntilNextReminder] = useState('3');
   const [noOfReminder, setNoOfReminder] = useState(1);
+  
+  
+  
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+  
+  
+     const handleChangePage = (_, newPage) => {
+      setPage(newPage);
+    };
+  
+    const handleChangeRowsPerPage = (event) => {
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
+    };
+     // Compute paginated tasks
+     const paginatedOrganizers = organizerTemplatesData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  
+  
+  
   return (
     <Box p={3}>
       {!showOrganizerTemplateForm && (
-        <Box sx={{ mt: 2 }}>
+        <Box >
 
           <Button variant="contained" onClick={handleCreateInvoiceClick} sx={{
               backgroundColor: 'var(--color-save-btn)',  // Normal background
@@ -928,31 +948,63 @@ const OrganizersTemp = () => {
               '&:hover': {
                 backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
               },
-              borderRadius:'15px', 
+              borderRadius:'15px', mb:2
             }}>Create Template</Button>
           {/* <MaterialReactTable columns={columns} table={table} /> */}
-          <Paper>
-            {loading ? (<Box sx={{display:'flex',alignItems:'center', justifyContent:'center'}}> <CircularProgress style={{fontSize:'300px', color:'blue'}}/></Box>):( <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <Box>
+            {loading ? (<Box sx={{display:'flex',alignItems:'center', justifyContent:'center'}}> <CircularProgress style={{fontSize:'300px', color:'blue'}}/></Box>
+          ):( 
+          <Box>
+
+          <TableContainer component={Paper} sx={{ overflow: "visible" }}> 
+         
+          <Table sx={{ width:'100%' }} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell><strong>Template Name</strong></TableCell>
-                  <TableCell><strong>Used in Pipelines</strong></TableCell>
-                  <TableCell><strong></strong></TableCell>
+                  <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="200">Template Name</TableCell>
+                  <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Used in Pipelines</TableCell>
+                  <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Settings</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {organizerTemplatesData.map((row) => (
+                {paginatedOrganizers.map((row) => (
                   <TableRow key={row._id}>
                     <TableCell>
                       <Typography
-                        sx={{ color: '#2c59fa', cursor: 'pointer', fontWeight: 'bold' }}
+                       style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                        cursor: "pointer",
+                        color: "#3f51b5",
+                      }}
                         onClick={() => handleEdit(row._id)}
                       >
                         {row.templatename}
                       </Typography>
                     </TableCell>
                     <TableCell></TableCell>
-                    <TableCell sx={{ textAlign: 'end' }}>
+                    <TableCell  style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                        cursor: "pointer",
+                      }}>
                       <IconButton onClick={() => toggleMenu(row._id)} style={{ color: '#2c59fa' }}>
                         <CiMenuKebab style={{ fontSize: '25px' }} />
                         {openMenuId === row._id && (
@@ -991,9 +1043,22 @@ const OrganizersTemp = () => {
                   </TableRow>
                 ))}
               </TableBody>
-            </Table>)}
-           
-          </Paper>
+            </Table>
+            </TableContainer>
+            <TablePagination
+rowsPerPageOptions={[5, 10, 25]}
+component="div"
+count={organizerTemplatesData.length}
+rowsPerPage={rowsPerPage}
+page={page}
+onPageChange={handleChangePage}
+onRowsPerPageChange={handleChangeRowsPerPage}
+/>
+            </Box>
+            )}
+            
+          
+          </Box>
 
         </Box>
       )}

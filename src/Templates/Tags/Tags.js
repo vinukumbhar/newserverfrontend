@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useMemo ,useContext} from 'react';
 import './tag.css'
-import { Box, Button, Typography, Drawer, Select, MenuItem, IconButton, TextField,Alert } from '@mui/material';
+import {  TableContainer,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,TablePagination,Box, Button, Typography, Drawer, Select, MenuItem, IconButton, TextField,Alert } from '@mui/material';
 import { FiSettings } from "react-icons/fi";
 import { CiMenuKebab } from "react-icons/ci";
 import { useTheme } from '@mui/material/styles';
@@ -359,7 +365,30 @@ const Tags = () => {
     
   });
 
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5); // Default rows per page
 
+  const handleChangePage = (event, newPage) => setPage(newPage);
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  const [searchTerm, setSearchTerm] = useState(""); // New state for search
+
+  // Handle search input change
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+    setPage(0); // Reset pagination on search
+  };
+   // Filter tags based on search term
+   const filteredTags = tags.filter((tag) =>
+    tag.tagName.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  // Slice data for pagination after filtering
+  const paginatedTags = filteredTags.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+ // Slice data for pagination
+//  const paginatedTags = tags.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   return (
     <div className="tag-container">
       <Box
@@ -371,7 +400,18 @@ const Tags = () => {
         }}
       >
         <Typography variant="h6">Tags</Typography>
-        <Button variant="contained" onClick={handleDrawerOpen}  sx={{
+        <Box sx={{display:'flex', alignItems:'center', gap:3}}>
+          {/* Search Input */}
+   <TextField
+        placeholder="Search Tag "
+        variant="outlined"
+        size="small"
+        // fullWidth
+        margin="normal"
+        value={searchTerm}
+        onChange={handleSearchChange}
+      />
+       <Button variant="contained" onClick={handleDrawerOpen}  sx={{
                   backgroundColor: 'var(--color-save-btn)',  // Normal background
                  
                   '&:hover': {
@@ -379,11 +419,178 @@ const Tags = () => {
                   },
   borderRadius:'15px', 
                 }} >Add Tag</Button>
+        </Box>
+       
       </Box>
 
 <Box >
 {loading ? (
-  <Box sx={{display:'flex',alignItems:'center', justifyContent:'center'}}> <CircularProgress style={{fontSize:'300px', color:'blue'}}/></Box>):( <MaterialReactTable columns={columns} table={table} />)
+  <Box sx={{display:'flex',alignItems:'center', justifyContent:'center'}}> <CircularProgress style={{fontSize:'300px', color:'blue'}}/></Box>
+  ):( 
+  // <MaterialReactTable columns={columns} table={table} />
+<Box>
+   
+  <TableContainer component={Paper} sx={{  overflowY: "auto" }}>
+      <Table sx={{ width: "100%" }} stickyHeader>
+        <TableHead>
+          <TableRow>
+            <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Tag</TableCell>
+            <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Accounts</TableCell>
+            <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Archived Accounts</TableCell>
+            <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Pending Tasks</TableCell>
+            <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Completed Tasks</TableCell>
+            <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100">Pipelines</TableCell>
+            <TableCell  style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                     
+                    }}
+                    width="100">
+              <FiSettings />
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {paginatedTags.map((row) => (
+            <TableRow key={row._id}>
+              {/* Tag Name with Color */}
+              <TableCell>
+                <span
+                  style={{
+                    backgroundColor: row.tagColour,
+                    color: "#fff",
+                    borderRadius: "60px",
+                    padding: "0.1rem 0.8rem",
+                    fontSize: "10px",
+                  }}
+                >
+                  {row.tagName}
+                </span>
+              </TableCell>
+              <TableCell style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                        cursor: "pointer",
+                        
+                      }}>{row.count}</TableCell>
+              <TableCell style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                        cursor: "pointer",
+                      }}>{row.archivedAccounts}</TableCell>
+              <TableCell style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                        cursor: "pointer",
+                      }}>{row.pendingTasks}</TableCell>
+              <TableCell style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                        cursor: "pointer",
+                      }}>{row.completedTasks}</TableCell>
+              <TableCell style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                        cursor: "pointer",
+                        
+                      }}>{row.pipelines}</TableCell>
+
+              {/* Settings (Menu) */}
+              <TableCell style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                        cursor: "pointer",
+                      }}>
+                <IconButton onClick={() => toggleMenu(row._id)} style={{ color: "#2c59fa" }}>
+                  <CiMenuKebab  />
+                </IconButton>
+                {openMenuId === row._id && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      zIndex: 1,
+                      backgroundColor: "#fff",
+                      boxShadow: 1,
+                      borderRadius: 1,
+                      p: 1,
+                      // left: "30px",
+                      m: 2,
+                    }}
+                  >
+                    <Typography
+                      sx={{ fontSize: "12px", fontWeight: "bold",cursor:'pointer' }}
+                      onClick={() => {
+                        handleEdit(row._id);
+                        handleUpdateDrawerOpen();
+                      }}
+                    >
+                      Edit
+                    </Typography>
+                    <Typography
+                      sx={{ fontSize: "12px", color: "red", fontWeight: "bold",cursor:'pointer' }}
+                      onClick={() => handleDelete(row._id)}
+                    >
+                      Delete
+                    </Typography>
+                  </Box>
+                )}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      
+    </TableContainer>
+    {/* Pagination */}
+    <TablePagination
+    component="div"
+    count={tags.length}
+    page={page}
+    onPageChange={handleChangePage}
+    rowsPerPage={rowsPerPage}
+    onRowsPerPageChange={handleChangeRowsPerPage}
+    rowsPerPageOptions={[5, 10, 25]}
+  />
+  </Box>
+  )
 }
       </Box>
       <Drawer

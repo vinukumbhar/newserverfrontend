@@ -19,7 +19,14 @@ import {
   IconButton,
   Alert,
   Checkbox,
-  
+  TableContainer,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Paper,
+  TablePagination
 } from '@mui/material';
 import Editor from '../Texteditor/Editor';
 import { CiMenuKebab } from "react-icons/ci";
@@ -588,8 +595,23 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
     return isValid;
   };
 
+
+   const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+  
+  
+     const handleChangePage = (_, newPage) => {
+      setPage(newPage);
+    };
+  
+    const handleChangeRowsPerPage = (event) => {
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
+    };
+     // Compute paginated tasks
+     const paginatedChats = chatTemplates.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   return (
-    <Container>
+    <Box>
       {!showForm ? (
         <Box sx={{ mt: 2 }}>
           <Button variant="contained" color="primary" onClick={handleCreateChat} sx={{
@@ -609,7 +631,123 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
             table={table}
           /> */}
           {loading ? (
-            <Box sx={{display:'flex',alignItems:'center', justifyContent:'center'}}> <CircularProgress style={{fontSize:'300px', color:'blue'}}/></Box>):( <MaterialReactTable columns={columns} table={table} />)
+            <Box sx={{display:'flex',alignItems:'center', justifyContent:'center'}}> <CircularProgress style={{fontSize:'300px', color:'blue'}}/></Box>
+          ):(
+            //  <MaterialReactTable columns={columns} table={table} />
+           <Box>
+           <TableContainer component={Paper} sx={{ overflow: "visible" }}>
+                       <Table sx={{ width: "100%" }}>
+                         <TableHead>
+                           <TableRow>
+                             <TableCell
+                               style={{
+                                 fontSize: "12px",
+                                 fontWeight: "bold",
+                                 padding: "16px",
+                               }}
+                               width="250"
+                             >
+                               Name
+                             </TableCell>
+           
+                             <TableCell
+                               style={{
+                                 fontSize: "12px",
+                                 fontWeight: "bold",
+                                 padding: "16px",
+                               }}
+                               width="100"
+                             >
+                               Settings
+                             </TableCell>
+                           </TableRow>
+                         </TableHead>
+                         <TableBody>
+                           {paginatedChats.map((row) => (
+                             <TableRow key={row._id}>
+                               <TableCell>
+                                 <Typography
+                                   style={{
+                                     fontSize: "12px",
+                                     padding: "4px 8px",
+                                     lineHeight: "1",
+                                     cursor: "pointer",
+                                     color: "#3f51b5",
+                                   }}
+                                   onClick={() => handleEdit(row._id)}
+                                 >
+                                   {row.templatename}
+                                 </Typography>
+                               </TableCell>
+           
+                               <TableCell
+                                 style={{
+                                   fontSize: "12px",
+                                   padding: "4px 8px",
+                                   lineHeight: "1",
+                                   cursor: "pointer",
+                                 }}
+                               >
+                                 <IconButton
+                                   onClick={() => toggleMenu(row._id)}
+                                   style={{ color: "#2c59fa" }}
+                                 >
+                                   <CiMenuKebab />
+                                   {openMenuId === row._id && (
+                                     <Box
+                                       sx={{
+                                         position: "absolute",
+                                         zIndex: 1,
+                                         backgroundColor: "#fff",
+                                         boxShadow: 1,
+                                         borderRadius: 1,
+                                         p: 1,
+                                         left: "20px",
+           
+                                         m: 2,
+                                         top: "10px",
+                                         textAlign: "start",
+                                       }}
+                                     >
+                                       {/* <Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>Publice to Marketplace</Typography> */}
+           
+                                       <Typography
+                                         sx={{ fontSize: "12px", fontWeight: "bold" }}
+                                         onClick={() => handleEdit(row._id)}
+                                       >
+                                         Edit 
+                                       </Typography>
+                                       <Typography
+                                         sx={{
+                                           fontSize: "12px",
+                                           color: "red",
+                                           fontWeight: "bold",
+                                         }}
+                                         onClick={() => handleDelete(row._id)}
+                                       >
+                                         Delete
+                                       </Typography>
+                                     </Box>
+                                   )}
+                                 </IconButton>
+                               </TableCell>
+                             </TableRow>
+                           ))}
+                         </TableBody>
+                       </Table>
+                     </TableContainer>
+           
+           <TablePagination
+           rowsPerPageOptions={[5, 10, 25]}
+           component="div"
+           count={chatTemplates.length}
+           rowsPerPage={rowsPerPage}
+           page={page}
+           onPageChange={handleChangePage}
+           onRowsPerPageChange={handleChangeRowsPerPage}
+           />
+           </Box>
+          )
           }
         </Box>
       ) : (
@@ -959,7 +1097,7 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
           </Box>
         </Box>
       )}
-    </Container>
+    </Box>
   );
 };
 

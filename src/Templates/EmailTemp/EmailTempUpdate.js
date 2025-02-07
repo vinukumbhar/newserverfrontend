@@ -609,8 +609,8 @@ const EmailTempUpdate = () => {
 
 
     return (
-        <Container>
-            <Box sx={{ mt: 2 }}>
+        <Box p={2}>
+            <Box >
                 <Typography variant="h6" gutterBottom>
                     Edit Email Template
                 </Typography>
@@ -871,7 +871,7 @@ const EmailTempUpdate = () => {
                 </Grid>
 
             </Box>
-        </Container>
+        </Box>
     );
 };
 

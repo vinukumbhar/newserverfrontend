@@ -849,8 +849,8 @@ const InvoiceTempUpdate = () => {
     setOpen(false);
   };
   return (
-    <Container>
-      <Box sx={{ mt: 2 }}>
+    <Box p={2}>
+      
         <Box>
           <form>
             <Box>
@@ -1500,7 +1500,7 @@ const InvoiceTempUpdate = () => {
             </Box>
           </form>
         </Box>
-      </Box>
+      
       {/* save as nwe service */}
       <Drawer
         anchor="right"
@@ -1839,7 +1839,7 @@ const InvoiceTempUpdate = () => {
           </Box>
         </Box>
       </Drawer>
-    </Container>
+    </Box>
   );
 };
 

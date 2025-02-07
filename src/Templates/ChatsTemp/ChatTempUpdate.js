@@ -461,9 +461,9 @@ const ChatTempUpdate = () => {
     }, [templateName ,inputText ,description ,selecteduser,daysuntilNextReminder,noOfReminder,absoluteDate]); 
        
     return (
-        <Container>
+        <Box p={2}>
 
-            <Box sx={{ mt: 2 }}>
+           
                 <Box>
                     <form>
                         <Box>
@@ -752,9 +752,9 @@ const ChatTempUpdate = () => {
                         </Box>
                     </form>
                 </Box>
-            </Box>
+         
 
-        </Container>
+        </Box>
     );
 };
 

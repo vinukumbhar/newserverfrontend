@@ -22,7 +22,12 @@ import {
   Card,
   CardContent,
   TableContainer,
-  Table, TableBody, TableCell, TableHead, TableRow,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TablePagination
 } from "@mui/material";
 import { AiOutlineSearch } from "react-icons/ai";
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -1177,14 +1182,18 @@ const PipelineTemp = () => {
                 Add Conditions
               </Button>
 
-              <Button variant="contained" onClick={handleSaveAutomation(index)} sx={{
-                backgroundColor: 'var(--color-save-btn)',  // Normal background
-               
-                '&:hover': {
-                  backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                },
-                borderRadius:'15px', 
-              }}>
+              <Button
+                variant="contained"
+                onClick={handleSaveAutomation(index)}
+                sx={{
+                  backgroundColor: "var(--color-save-btn)", // Normal background
+
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                  },
+                  borderRadius: "15px",
+                }}
+              >
                 Save Automation
               </Button>
             </Grid>
@@ -1257,12 +1266,13 @@ const PipelineTemp = () => {
                     disabled={!isAnyCheckboxChecked}
                     onClick={handleAddTags}
                     sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                      backgroundColor: "var(--color-save-btn)", // Normal background
+
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                       },
-                      borderRadius:'15px', width:'80px'
+                      borderRadius: "15px",
+                      width: "80px",
                     }}
                   >
                     Add
@@ -1272,14 +1282,15 @@ const PipelineTemp = () => {
                     color="primary"
                     onClick={handleGoBack}
                     sx={{
-                      borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                     color:'var(--color-save-btn)',
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                        color:'#fff',
-                        border:"none"
+                      borderColor: "var(--color-border-cancel-btn)", // Normal background
+                      color: "var(--color-save-btn)",
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        color: "#fff",
+                        border: "none",
                       },
-                      width:'80px',borderRadius:'15px'
+                      width: "80px",
+                      borderRadius: "15px",
                     }}
                   >
                     Cancel
@@ -1338,14 +1349,18 @@ const PipelineTemp = () => {
                 Add Conditions
               </Button>
             </Grid>
-            <Button variant="contained" onClick={handleSaveAutomation(index)} sx={{
-                backgroundColor: 'var(--color-save-btn)',  // Normal background
-               
-                '&:hover': {
-                  backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+            <Button
+              variant="contained"
+              onClick={handleSaveAutomation(index)}
+              sx={{
+                backgroundColor: "var(--color-save-btn)", // Normal background
+
+                "&:hover": {
+                  backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                 },
-                borderRadius:'15px', 
-              }}>
+                borderRadius: "15px",
+              }}
+            >
               Save Automation
             </Button>
 
@@ -1418,12 +1433,13 @@ const PipelineTemp = () => {
                     disabled={!isAnyCheckboxChecked}
                     onClick={handleAddTags}
                     sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                      backgroundColor: "var(--color-save-btn)", // Normal background
+
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                       },
-                      borderRadius:'15px', width:'80px'
+                      borderRadius: "15px",
+                      width: "80px",
                     }}
                   >
                     Add
@@ -1433,14 +1449,15 @@ const PipelineTemp = () => {
                     color="primary"
                     onClick={handleGoBack}
                     sx={{
-                      borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                     color:'var(--color-save-btn)',
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                        color:'#fff',
-                        border:"none"
+                      borderColor: "var(--color-border-cancel-btn)", // Normal background
+                      color: "var(--color-save-btn)",
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        color: "#fff",
+                        border: "none",
                       },
-                      width:'80px',borderRadius:'15px'
+                      width: "80px",
+                      borderRadius: "15px",
                     }}
                   >
                     Cancel
@@ -1503,12 +1520,12 @@ const PipelineTemp = () => {
                 variant="contained"
                 onClick={handleSaveAutomation(stageSelected)}
                 sx={{
-                  backgroundColor: 'var(--color-save-btn)',  // Normal background
-                 
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                  backgroundColor: "var(--color-save-btn)", // Normal background
+
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                   },
-                  borderRadius:'15px', 
+                  borderRadius: "15px",
                 }}
               >
                 Save Automation
@@ -1584,12 +1601,13 @@ const PipelineTemp = () => {
                     disabled={!isAnyCheckboxChecked}
                     onClick={handleAddTags}
                     sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                      backgroundColor: "var(--color-save-btn)", // Normal background
+
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                       },
-                      borderRadius:'15px', width:'80px'
+                      borderRadius: "15px",
+                      width: "80px",
                     }}
                   >
                     Add
@@ -1599,14 +1617,15 @@ const PipelineTemp = () => {
                     color="primary"
                     onClick={handleGoBack}
                     sx={{
-                      borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                     color:'var(--color-save-btn)',
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                        color:'#fff',
-                        border:"none"
+                      borderColor: "var(--color-border-cancel-btn)", // Normal background
+                      color: "var(--color-save-btn)",
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        color: "#fff",
+                        border: "none",
                       },
-                      width:'80px',borderRadius:'15px'
+                      width: "80px",
+                      borderRadius: "15px",
                     }}
                   >
                     Cancel
@@ -1669,12 +1688,12 @@ const PipelineTemp = () => {
                 variant="contained"
                 onClick={handleSaveAutomation(stageSelected)}
                 sx={{
-                  backgroundColor: 'var(--color-save-btn)',  // Normal background
-                 
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                  backgroundColor: "var(--color-save-btn)", // Normal background
+
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                   },
-                  borderRadius:'15px', 
+                  borderRadius: "15px",
                 }}
               >
                 Save Automation
@@ -1750,12 +1769,13 @@ const PipelineTemp = () => {
                     disabled={!isAnyCheckboxChecked}
                     onClick={handleAddTags}
                     sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                      backgroundColor: "var(--color-save-btn)", // Normal background
+
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                       },
-                      borderRadius:'15px', width:'80px'
+                      borderRadius: "15px",
+                      width: "80px",
                     }}
                   >
                     Add
@@ -1765,14 +1785,15 @@ const PipelineTemp = () => {
                     color="primary"
                     onClick={handleGoBack}
                     sx={{
-                      borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                     color:'var(--color-save-btn)',
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                        color:'#fff',
-                        border:"none"
+                      borderColor: "var(--color-border-cancel-btn)", // Normal background
+                      color: "var(--color-save-btn)",
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        color: "#fff",
+                        border: "none",
                       },
-                      width:'80px',borderRadius:'15px'
+                      width: "80px",
+                      borderRadius: "15px",
                     }}
                   >
                     Cancel
@@ -1898,12 +1919,12 @@ const PipelineTemp = () => {
                 variant="contained"
                 onClick={handleSaveTagsAutomation(stageSelected)}
                 sx={{
-                  backgroundColor: 'var(--color-save-btn)',  // Normal background
-                 
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                  backgroundColor: "var(--color-save-btn)", // Normal background
+
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                   },
-                  borderRadius:'15px', 
+                  borderRadius: "15px",
                 }}
               >
                 Save Automation
@@ -1979,12 +2000,13 @@ const PipelineTemp = () => {
                     disabled={!isAnyCheckboxChecked}
                     onClick={handleAddTags}
                     sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                      backgroundColor: "var(--color-save-btn)", // Normal background
+
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                       },
-                      borderRadius:'15px', width:'80px'
+                      borderRadius: "15px",
+                      width: "80px",
                     }}
                   >
                     Add
@@ -1994,14 +2016,15 @@ const PipelineTemp = () => {
                     color="primary"
                     onClick={handleGoBack}
                     sx={{
-                      borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                     color:'var(--color-save-btn)',
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                        color:'#fff',
-                        border:"none"
+                      borderColor: "var(--color-border-cancel-btn)", // Normal background
+                      color: "var(--color-save-btn)",
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        color: "#fff",
+                        border: "none",
                       },
-                      width:'80px',borderRadius:'15px'
+                      width: "80px",
+                      borderRadius: "15px",
                     }}
                   >
                     Cancel
@@ -2063,12 +2086,12 @@ const PipelineTemp = () => {
                 variant="contained"
                 onClick={handleSaveAutomation(stageSelected)}
                 sx={{
-                  backgroundColor: 'var(--color-save-btn)',  // Normal background
-                 
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                  backgroundColor: "var(--color-save-btn)", // Normal background
+
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                   },
-                  borderRadius:'15px', 
+                  borderRadius: "15px",
                 }}
               >
                 Save Automation
@@ -2144,12 +2167,13 @@ const PipelineTemp = () => {
                     disabled={!isAnyCheckboxChecked}
                     onClick={handleAddTags}
                     sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                      backgroundColor: "var(--color-save-btn)", // Normal background
+
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                       },
-                      borderRadius:'15px', width:'80px'
+                      borderRadius: "15px",
+                      width: "80px",
                     }}
                   >
                     Add
@@ -2159,14 +2183,15 @@ const PipelineTemp = () => {
                     color="primary"
                     onClick={handleGoBack}
                     sx={{
-                      borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                     color:'var(--color-save-btn)',
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                        color:'#fff',
-                        border:"none"
+                      borderColor: "var(--color-border-cancel-btn)", // Normal background
+                      color: "var(--color-save-btn)",
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        color: "#fff",
+                        border: "none",
                       },
-                      width:'80px',borderRadius:'15px'
+                      width: "80px",
+                      borderRadius: "15px",
                     }}
                   >
                     Cancel
@@ -2270,12 +2295,12 @@ const PipelineTemp = () => {
                 variant="contained"
                 onClick={handleEditSaveAutomation(defaultValueInvoice, index)}
                 sx={{
-                  backgroundColor: 'var(--color-save-btn)',  // Normal background
-                 
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                  backgroundColor: "var(--color-save-btn)", // Normal background
+
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                   },
-                  borderRadius:'15px', 
+                  borderRadius: "15px",
                 }}
               >
                 Save Automation
@@ -2350,12 +2375,13 @@ const PipelineTemp = () => {
                     disabled={!isAnyCheckboxChecked}
                     onClick={handleAddTags}
                     sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                      backgroundColor: "var(--color-save-btn)", // Normal background
+
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                       },
-                      borderRadius:'15px', width:'80px'
+                      borderRadius: "15px",
+                      width: "80px",
                     }}
                   >
                     Add
@@ -2365,14 +2391,15 @@ const PipelineTemp = () => {
                     color="primary"
                     onClick={handleGoBack}
                     sx={{
-                      borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                     color:'var(--color-save-btn)',
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                        color:'#fff',
-                        border:"none"
+                      borderColor: "var(--color-border-cancel-btn)", // Normal background
+                      color: "var(--color-save-btn)",
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        color: "#fff",
+                        border: "none",
                       },
-                      width:'80px',borderRadius:'15px'
+                      width: "80px",
+                      borderRadius: "15px",
                     }}
                   >
                     Cancel
@@ -2438,12 +2465,12 @@ const PipelineTemp = () => {
                 variant="contained"
                 onClick={handleSaveAutomation(stageSelected)}
                 sx={{
-                  backgroundColor: 'var(--color-save-btn)',  // Normal background
-                 
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                  backgroundColor: "var(--color-save-btn)", // Normal background
+
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                   },
-                  borderRadius:'15px', 
+                  borderRadius: "15px",
                 }}
               >
                 Save Automation
@@ -2519,12 +2546,13 @@ const PipelineTemp = () => {
                     disabled={!isAnyCheckboxChecked}
                     onClick={handleAddTags}
                     sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                      backgroundColor: "var(--color-save-btn)", // Normal background
+
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                       },
-                      borderRadius:'15px', width:'80px'
+                      borderRadius: "15px",
+                      width: "80px",
                     }}
                   >
                     Add
@@ -2534,14 +2562,15 @@ const PipelineTemp = () => {
                     color="primary"
                     onClick={handleGoBack}
                     sx={{
-                      borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                     color:'var(--color-save-btn)',
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                        color:'#fff',
-                        border:"none"
+                      borderColor: "var(--color-border-cancel-btn)", // Normal background
+                      color: "var(--color-save-btn)",
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        color: "#fff",
+                        border: "none",
                       },
-                      width:'80px',borderRadius:'15px'
+                      width: "80px",
+                      borderRadius: "15px",
                     }}
                   >
                     Cancel
@@ -3113,113 +3142,178 @@ const PipelineTemp = () => {
 
     return isValid;
   };
+  const [searchQuery, setSearchQuery] = useState("");
+  // Filter pipelineData based on searchQuery
+  const filteredPipelines = pipelineData.filter((row) =>
+    row.pipelineName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
+  const handleSearch = (event) => {
+    setSearchQuery(event.target.value);
+  };
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5); // Default rows per page
+
+  
+
+  // Pagination: Slice the filtered data
+  const paginatedPipelines = filteredPipelines.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   return (
-    <Container>
+    <Box>
       {!showForm ? (
         <Box sx={{ mt: 2 }}>
+
+          <Box sx={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
           <Button
             variant="contained"
             color="primary"
             onClick={handleCreatePipeline}
-           
             sx={{
-              backgroundColor: 'var(--color-save-btn)',  // Normal background
-             
-              '&:hover': {
-                backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+              backgroundColor: "var(--color-save-btn)", // Normal background
+
+              "&:hover": {
+                backgroundColor: "var(--color-save-hover-btn)", // Hover background color
               },
-              borderRadius:'15px', mb: 3
+              borderRadius: "15px",
+              mb: 3,
             }}
           >
             Create Pipeline
           </Button>
-
+          <TextField
+        placeholder="Search Pipeline"
+        // variant="outlined"
+        size="small"
+        // fullWidth
+        sx={{ marginBottom: 2,width:'300px' }}
+        value={searchQuery}
+        onChange={handleSearch}
+      />
+</Box>
           {/* <MaterialReactTable columns={columns} table={table} /> */}
+         
           <TableContainer component={Paper} sx={{ overflow: "visible" }}>
-        <Table sx={{width:'100%'}} >
-          <TableHead>
-            <TableRow>
-              <TableCell style={{
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  padding: "16px",
-                }}
-                width="250">
-               Pipeline Name
-              </TableCell>
-              
-              <TableCell style={{
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  padding: "16px",
-                }}
-                width="100">
-                Settings
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {pipelineData.map((row) => (
-              <TableRow key={row._id}>
-                <TableCell>
-                  <Typography style={{
+            <Table sx={{ width: "100%" }}>
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    style={{
                       fontSize: "12px",
-                      padding: "4px 8px",
-                      lineHeight: "1",
-                      cursor: "pointer",
-                      color: "#3f51b5",
+                      fontWeight: "bold",
+                      padding: "16px",
                     }}
-                  onClick={() => handleEdit(row._id)}>
-                    {row.pipelineName}
-                  </Typography>
-                </TableCell>
-               
-                <TableCell style={{
-                    fontSize: "12px",
-                    padding: "4px 8px",
-                    lineHeight: "1",
-                    cursor: "pointer",
-                  }}>
-                  <IconButton onClick={() => toggleMenu(row._id)} style={{ color: "#2c59fa" }}>
-                    <CiMenuKebab style={{ fontSize: "25px" }} />
-                    {openMenuId === row._id && (
-                      <Box
-                        sx={{
-                          position: "absolute",
-                          zIndex: 1,
-                          backgroundColor: "#fff",
-                          boxShadow: 1,
-                          borderRadius: 1,
-                          p: 1,
-                          left: "20px",
+                    width="250"
+                  >
+                    Pipeline Name
+                  </TableCell>
 
-                          m: 2,
-                          top: "10px",
-                          textAlign: "start",
+                  <TableCell
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="100"
+                  >
+                    Settings
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {paginatedPipelines.map((row) => (
+                  <TableRow key={row._id}>
+                    <TableCell>
+                      <Typography
+                        style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                          cursor: "pointer",
+                          color: "#3f51b5",
                         }}
+                        onClick={() => handleEdit(row._id)}
                       >
-                        {/* <Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>Publice to Marketplace</Typography> */}
-                       
-                        <Typography sx={{ fontSize: "12px", fontWeight: "bold" }} onClick={() => handleEdit(row._id)}>
-                         Edit 
-                        </Typography>
-                        <Typography sx={{ fontSize: "12px", color: "red", fontWeight: "bold" }} onClick={() => handleDelete(row._id)}>
-                          Delete
-                        </Typography>
-                       
-                        
-                        
-                      </Box>
-                    )}
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        </TableContainer>
+                        {row.pipelineName}
+                      </Typography>
+                    </TableCell>
 
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <IconButton
+                        onClick={() => toggleMenu(row._id)}
+                        style={{ color: "#2c59fa" }}
+                      >
+                        <CiMenuKebab />
+                        {openMenuId === row._id && (
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              zIndex: 1,
+                              backgroundColor: "#fff",
+                              boxShadow: 1,
+                              borderRadius: 1,
+                              p: 1,
+                              left: "20px",
+
+                              m: 2,
+                              top: "10px",
+                              textAlign: "start",
+                            }}
+                          >
+                            {/* <Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>Publice to Marketplace</Typography> */}
+
+                            <Typography
+                              sx={{ fontSize: "12px", fontWeight: "bold" }}
+                              onClick={() => handleEdit(row._id)}
+                            >
+                              Edit 
+                            </Typography>
+                            <Typography
+                              sx={{
+                                fontSize: "12px",
+                                color: "red",
+                                fontWeight: "bold",
+                              }}
+                              onClick={() => handleDelete(row._id)}
+                            >
+                              Delete
+                            </Typography>
+                          </Box>
+                        )}
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <TablePagination
+        component="div"
+        count={filteredPipelines.length} // Total count after filtering
+        page={page}
+        onPageChange={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        rowsPerPageOptions={[5, 10, 25,30,40,50]} // Rows per page options
+      />
         </Box>
       ) : (
         <Box
@@ -3620,12 +3714,12 @@ const PipelineTemp = () => {
                     startIcon={<LuPlusCircle />}
                     onClick={handleAddStage}
                     sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                      backgroundColor: "var(--color-save-btn)", // Normal background
+
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                       },
-                      borderRadius:'15px', 
+                      borderRadius: "15px",
                     }}
                   >
                     Add stage
@@ -5451,12 +5545,16 @@ const PipelineTemp = () => {
                                                               );
                                                             }}
                                                             sx={{
-                                                              backgroundColor: 'var(--color-save-btn)',  // Normal background
-                                                             
-                                                              '&:hover': {
-                                                                backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                                                              backgroundColor:
+                                                                "var(--color-save-btn)", // Normal background
+
+                                                              "&:hover": {
+                                                                backgroundColor:
+                                                                  "var(--color-save-hover-btn)", // Hover background color
                                                               },
-                                                              borderRadius:'15px', width:'80px'
+                                                              borderRadius:
+                                                                "15px",
+                                                              width: "80px",
                                                             }}
                                                           >
                                                             Add
@@ -5468,14 +5566,19 @@ const PipelineTemp = () => {
                                                               handleEditGoBack
                                                             }
                                                             sx={{
-                                                              borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                                                             color:'var(--color-save-btn)',
-                                                              '&:hover': {
-                                                                backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                                                                color:'#fff',
-                                                                border:"none"
+                                                              borderColor:
+                                                                "var(--color-border-cancel-btn)", // Normal background
+                                                              color:
+                                                                "var(--color-save-btn)",
+                                                              "&:hover": {
+                                                                backgroundColor:
+                                                                  "var(--color-save-hover-btn)", // Hover background color
+                                                                color: "#fff",
+                                                                border: "none",
                                                               },
-                                                              width:'80px',borderRadius:'15px'
+                                                              width: "80px",
+                                                              borderRadius:
+                                                                "15px",
                                                             }}
                                                           >
                                                             Cancel
@@ -5741,12 +5844,16 @@ const PipelineTemp = () => {
                                                               );
                                                             }}
                                                             sx={{
-                                                              backgroundColor: 'var(--color-save-btn)',  // Normal background
-                                                             
-                                                              '&:hover': {
-                                                                backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                                                              backgroundColor:
+                                                                "var(--color-save-btn)", // Normal background
+
+                                                              "&:hover": {
+                                                                backgroundColor:
+                                                                  "var(--color-save-hover-btn)", // Hover background color
                                                               },
-                                                              borderRadius:'15px', width:'80px'
+                                                              borderRadius:
+                                                                "15px",
+                                                              width: "80px",
                                                             }}
                                                           >
                                                             Add
@@ -5758,14 +5865,19 @@ const PipelineTemp = () => {
                                                               handleEditGoBack
                                                             }
                                                             sx={{
-                                                              borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                                                             color:'var(--color-save-btn)',
-                                                              '&:hover': {
-                                                                backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                                                                color:'#fff',
-                                                                border:"none"
+                                                              borderColor:
+                                                                "var(--color-border-cancel-btn)", // Normal background
+                                                              color:
+                                                                "var(--color-save-btn)",
+                                                              "&:hover": {
+                                                                backgroundColor:
+                                                                  "var(--color-save-hover-btn)", // Hover background color
+                                                                color: "#fff",
+                                                                border: "none",
                                                               },
-                                                              width:'80px',borderRadius:'15px'
+                                                              width: "80px",
+                                                              borderRadius:
+                                                                "15px",
                                                             }}
                                                           >
                                                             Cancel
@@ -5809,12 +5921,14 @@ const PipelineTemp = () => {
                                     // sx={{ }}
                                     onClick={() => handleEditSaveAutomation()}
                                     sx={{
-                                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                                     
-                                      '&:hover': {
-                                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                                      backgroundColor: "var(--color-save-btn)", // Normal background
+
+                                      "&:hover": {
+                                        backgroundColor:
+                                          "var(--color-save-hover-btn)", // Hover background color
                                       },
-                                      borderRadius:'15px', marginTop: 2 
+                                      borderRadius: "15px",
+                                      marginTop: 2,
                                     }}
                                   >
                                     Save Automation
@@ -6077,12 +6191,12 @@ const PipelineTemp = () => {
                         startIcon={<LuPlusCircle />}
                         onClick={handleAddStage}
                         sx={{
-                          backgroundColor: 'var(--color-save-btn)',  // Normal background
-                         
-                          '&:hover': {
-                            backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                          backgroundColor: "var(--color-save-btn)", // Normal background
+
+                          "&:hover": {
+                            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                           },
-                          borderRadius:'15px', 
+                          borderRadius: "15px",
                         }}
                       >
                         Add stage
@@ -6096,15 +6210,14 @@ const PipelineTemp = () => {
                 >
                   <Button
                     variant="contained"
-                
                     onClick={createPipe}
                     sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                      backgroundColor: "var(--color-save-btn)", // Normal background
+
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                       },
-                      borderRadius:'15px', 
+                      borderRadius: "15px",
                     }}
                   >
                     Save & exit
@@ -6114,26 +6227,32 @@ const PipelineTemp = () => {
                     color="primary"
                     onClick={createSavePipe}
                     sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                      backgroundColor: "var(--color-save-btn)", // Normal background
+
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                       },
-                      borderRadius:'15px', width:'80px'
+                      borderRadius: "15px",
+                      width: "80px",
                     }}
                   >
                     Save
                   </Button>
-                  <Button variant="outlined" onClick={handleClosePipelineTemp} sx={{
-                  borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                 color:'var(--color-save-btn)',
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                    color:'#fff',
-                    border:"none"
-                  },
-                  width:'80px',borderRadius:'15px'
-                }}>
+                  <Button
+                    variant="outlined"
+                    onClick={handleClosePipelineTemp}
+                    sx={{
+                      borderColor: "var(--color-border-cancel-btn)", // Normal background
+                      color: "var(--color-save-btn)",
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        color: "#fff",
+                        border: "none",
+                      },
+                      width: "80px",
+                      borderRadius: "15px",
+                    }}
+                  >
                     Cancel
                   </Button>
                 </Box>
@@ -6142,7 +6261,7 @@ const PipelineTemp = () => {
           </Box>
         </Box>
       )}
-    </Container>
+    </Box>
   );
 };
 

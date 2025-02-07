@@ -1181,8 +1181,8 @@ const Tasks = () => {
     };
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Container>
-                <Box sx={{ mt: 2 }}>
+            <Box p={2}>
+                <Box >
                     <Box>
                         <form>
                             <Box className='box-b'>
@@ -1503,7 +1503,7 @@ const Tasks = () => {
                     </Box>
                 </Box>
 
-            </Container>
+            </Box>
         </LocalizationProvider>
     );
 };

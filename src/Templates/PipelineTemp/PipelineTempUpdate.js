@@ -2048,14 +2048,10 @@ const PipelineTempUpdate = () => {
   };
 
   return (
-    <Container>
-      <Box sx={{ mt: 2 }}></Box>
+    <Box p={2}>
+      
 
-      <Box
-        sx={{
-          mt: 2,
-        }}
-      >
+     
         <Box>
           <form>
             <Box>
@@ -3703,8 +3699,8 @@ const PipelineTempUpdate = () => {
             </Box>
           </form>
         </Box>
-      </Box>
-    </Container>
+     
+    </Box>
   );
 };
 

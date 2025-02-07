@@ -194,7 +194,7 @@ const Clientfacing = () => {
   };
   console.log(jobId);
   return (
-    <Container>
+    <Box>
       <Box className="tag-container">
         <Box
           sx={{
@@ -470,7 +470,7 @@ const Clientfacing = () => {
           </Box>
         </Drawer>
       </Box>
-    </Container>
+    </Box>
   );
 };
 
