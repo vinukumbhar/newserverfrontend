@@ -257,9 +257,165 @@ const Info = () => {
   const handleCloseDrawerofAddContact = () => {
     setIsDrawerOpenForAddContact(false);
   };
+    const [newUserId, setNewUserId] = useState("");
+    const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
+    const CLIENT_PORT = process.env.REACT_APP_CLIENT_SERVER_URI;
+ const clientalldata = (userId, email, firstName, middleName, lastName) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      email: email,
+      firstName: firstName,
+      middleName: middleName,
+      lastName: lastName,
+      userid: userId,
+
+      // phoneNumber: phoneNumber,
+      accountName: accName,
+      password: "Demo@123",
+      cpassword: "Demo@123",
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+    console.log(raw);
+    const url = `${LOGIN_API}/admin/clientsignup/`;
+    console.log(url);
+    fetch(url, requestOptions)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((result) => {
+        console.log(result);
+        console.log(result.client._id);
+        // setClientIdUpdate(result.client._id)
+        // newUser(result.client._id);
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error("Error signing up. Please try again.");
+      });
+  };
+    const clientCreatedmail = (email, personalMessage, userid) => {
+      const port = window.location.port;
+      const urlportlogin = `${CLIENT_PORT}/updatepassword`;
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+  
+      const url = urlportlogin;
+      const raw = JSON.stringify({
+        email: email,
+        personalMessage: personalMessage,
+        url: url,
+        AccountId: userid,
+      });
+      console.log(raw);
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+  
+      const urlusersavedmail = `${LOGIN_API}/clientsavedemail/`;
+      console.log(urlusersavedmail);
+      fetch(urlusersavedmail, requestOptions)
+        .then((response) => response.json())
+  
+        .then((result) => {
+          console.log(result);
+          // createNewSidebarData()
+        })
+        .catch((error) => console.error(error));
+    };
+  const newUser = (accountid, email, firstName, middleName, lastName) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      username: firstName, // Use the first name as username
+      email, // Use the provided email
+      password: firstName, // Replace with a dynamic password logic if needed
+      role: "Client",
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    const url = `${LOGIN_API}/common/login/signup`;
+
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        console.log(result._id);
+        setNewUserId(result._id);
+        // Update account with the newly created user ID
+        updateAcountUserId(result._id, accountid);
+        clientalldata(result._id, email, firstName, middleName, lastName);
+        clientCreatedmail(email, '', result._id);
+        // Optional: Trigger user created email notification
+        // userCreatedmail();
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const updateAcountUserId = (UserId, accountuserid) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      userid: UserId,
+    });
+    console.log(raw);
+    const requestOptions = {
+      method: "PATCH",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    const Url = `${ACCOUNT_API}/accounts/accountdetails/${accountuserid}`;
+    console.log(Url);
+
+    fetch(Url, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+      })
+
+      .catch((error) => console.error(error));
+  };
 
   const handleLinkAccounts = () => {
     updateContactstoAccount(selectedContacts);
+    const filteredContacts = selectedContacts.filter(
+      (contact) => contact.login
+    );
+
+    console.log("Filtered Contacts:", filteredContacts);
+
+    filteredContacts.forEach((contact) => {
+      newUser(
+        contact.accountid,
+        contact.email,
+        contact.firstName,
+        contact.middleName,
+        contact.lastName
+      );
+    });
   };
   console.log(selectedContacts);
 

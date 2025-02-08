@@ -64,9 +64,7 @@ const Example = ({ charLimit = 4000 }) => {
   const isMobile = useMediaQuery("(max-width: 1000px)");
   const [jobData, setJobData] = useState([]);
   const [isActiveTrue, setIsActiveTrue] = useState(true);
-  useEffect(() => {
-    fetchData();
-  }, [isActiveTrue]);
+
   const [activeButton, setActiveButton] = useState("active");
 
   const handleActiveClick = () => {
@@ -81,6 +79,9 @@ const Example = ({ charLimit = 4000 }) => {
     fetchData();
     console.log("Archive action triggered.");
   };
+  useEffect(() => {
+    fetchData();
+  }, [isActiveTrue]);
   const fetchData = async () => {
     try {
       const jobListResponse = await axios.get(
@@ -488,8 +489,6 @@ const Example = ({ charLimit = 4000 }) => {
   // };
   // console.log(selectedTags);
 
-
-
   const handleDeleteJob = async () => {
     const isConfirmed = window.confirm(
       "Are you sure you want to delete the selected jobs? This action cannot be undone."
@@ -505,11 +504,11 @@ const Example = ({ charLimit = 4000 }) => {
             })
           )
         );
-  
+
         // Optionally, you can remove the deleted jobs from the UI (if needed)
         // If you're using jobData in state, for example:
         // setJobData((prevJobs) => prevJobs.filter((job) => !selected.includes(job.id)));
-  
+
         toast.success("Job deleted successfully!");
         setSelected([]); // Clear the selected jobs
         fetchData(); // Refresh the data after deletion
@@ -519,8 +518,7 @@ const Example = ({ charLimit = 4000 }) => {
       }
     }
   };
-  
-  
+
   // const columns = useMemo(
   //   () => [
   //     {
@@ -912,18 +910,21 @@ const Example = ({ charLimit = 4000 }) => {
     // Log all selected row IDs
     // console.log("Selected IDs:", newSelected); // Log all selected IDs
   };
-// Pagination State
-const [page, setPage] = useState(0);
-const [rowsPerPage, setRowsPerPage] = useState(5)
-  // Handle Pagination Change
-const handleChangePage = (event, newPage) => {
-  setPage(newPage);
-};
-
-const handleChangeRowsPerPage = (event) => {
-  setRowsPerPage(parseInt(event.target.value, 10));
-  setPage(0);
-};
+  // Pagination State
+ const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+  
+  
+     const handleChangePage = (_, newPage) => {
+      setPage(newPage);
+    };
+  
+    const handleChangeRowsPerPage = (event) => {
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
+    };
+     // Compute paginated tasks
+     const paginatedChats = jobData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -1373,7 +1374,7 @@ const handleChangeRowsPerPage = (event) => {
             },
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center" ,gap:2}}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <Typography
               style={{
                 backgroundColor:
@@ -1410,25 +1411,25 @@ const handleChangeRowsPerPage = (event) => {
               Archived
             </Typography>
             <Box>
-            {selected.length > 0 && (
-  <IconButton
-    sx={{ color: "red" }}
-    onClick={handleDeleteJob}// Pass selected job IDs
-  >
-    <DeleteIcon />
-  </IconButton>
-)}
-
-        </Box>
+              {selected.length > 0 && (
+                <IconButton
+                  sx={{ color: "red" }}
+                  onClick={handleDeleteJob} // Pass selected job IDs
+                >
+                  <DeleteIcon />
+                </IconButton>
+              )}
+            </Box>
           </Box>
-         
         </Box>
         {/* <Stack direction={isMobile ? "column-reverse" : "column"} gap="8px">
           <MaterialReactTable columns={columns} table={table} />
         </Stack> */}
         {/* component={Paper} */}
-        <TableContainer  sx={{ maxHeight: "85vh" }}>
-          <Table  style={{ tableLayout: "fixed", width: "100%" }}>
+        
+      </LocalizationProvider>
+      <TableContainer component={Paper}>
+          <Table style={{ tableLayout: "fixed", width: "100%" }}>
             <TableHead>
               <TableRow>
                 <TableCell
@@ -1455,76 +1456,116 @@ const handleChangeRowsPerPage = (event) => {
                     }}
                   />
                 </TableCell>
-                <TableCell style={{
-                      cursor: "pointer",
-                      position: "sticky",
-                      left: 50,
-                      zIndex: 1,
-                      background: "#fff",
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px", // Add more padding for better spacing
-                    }}
-                    width="200">Name</TableCell>
-                <TableCell  style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="100">Job Assignee</TableCell>
-                <TableCell   style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="100"
-                    height="60">Pipeline</TableCell>
-                <TableCell style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="100">Stage</TableCell>
-                <TableCell  style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="100">Account</TableCell>
-                <TableCell  style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="200">Client-Facing Status</TableCell>
-                <TableCell  style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="100">Start Date</TableCell>
-                <TableCell  style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="100">Due Date</TableCell>
-                <TableCell  style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="200">Time in Current Stage</TableCell>
-                <TableCell  style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="100">Settings</TableCell>
+                <TableCell
+                  style={{
+                    cursor: "pointer",
+                    position: "sticky",
+                    left: 50,
+                    zIndex: 1,
+                    background: "#fff",
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px", // Add more padding for better spacing
+                  }}
+                  width="200"
+                >
+                  Name
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px",
+                  }}
+                  width="100"
+                >
+                  Job Assignee
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px",
+                  }}
+                  width="100"
+                  height="60"
+                >
+                  Pipeline
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px",
+                  }}
+                  width="100"
+                >
+                  Stage
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px",
+                  }}
+                  width="100"
+                >
+                  Account
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px",
+                  }}
+                  width="200"
+                >
+                  Client-Facing Status
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px",
+                  }}
+                  width="100"
+                >
+                  Start Date
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px",
+                  }}
+                  width="100"
+                >
+                  Due Date
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px",
+                  }}
+                  width="200"
+                >
+                  Time in Current Stage
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px",
+                  }}
+                  width="100"
+                >
+                  Settings
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {jobData.map((row) => {
+              {paginatedChats.map((row) => {
                 const isSelected = selected.indexOf(row.id) !== -1;
                 return (
                   <TableRow
@@ -1556,17 +1597,19 @@ const handleChangeRowsPerPage = (event) => {
                         // padding: "2px", // Adjust padding for better spacing
                       }}
                     >
-                      <Checkbox checked={isSelected}  />
+                      <Checkbox checked={isSelected} />
                     </TableCell>
-                    <TableCell  style={{
-                          position: "sticky",
-                          left: 50,
-                          zIndex: 1,
-                          background: "#fff",
-                          fontSize: "12px",
-                          fontWeight: "normal",
-                          // padding: "12px 16px", // Add padding for better spacing
-                        }}>
+                    <TableCell
+                      style={{
+                        position: "sticky",
+                        left: 50,
+                        zIndex: 1,
+                        background: "#fff",
+                        fontSize: "12px",
+                        fontWeight: "normal",
+                        // padding: "12px 16px", // Add padding for better spacing
+                      }}
+                    >
                       <span
                         style={{ cursor: "pointer", color: "#3f51b5" }}
                         // onClick={() => handleClick(row.id)}
@@ -1578,31 +1621,49 @@ const handleChangeRowsPerPage = (event) => {
                         {row.Name}
                       </span>
                     </TableCell>
-                    <TableCell style={{
-                          fontSize: "12px",
-                          padding: "4px 8px",
-                          lineHeight: "1",
-                        }}>{row.JobAssignee}</TableCell>
-                    <TableCell style={{
-                          fontSize: "12px",
-                          padding: "4px 8px",
-                          lineHeight: "1",
-                        }}>{row.Pipeline}</TableCell>
-                    <TableCell style={{
-                          fontSize: "12px",
-                          padding: "4px 8px",
-                          lineHeight: "1",
-                        }}>{row.Stage}</TableCell>
-                    <TableCell style={{
-                          fontSize: "12px",
-                          padding: "4px 8px",
-                          lineHeight: "1",
-                        }}>{row.Account}</TableCell>
-                    <TableCell style={{
-                          fontSize: "12px",
-                          padding: "4px 8px",
-                          lineHeight: "1",
-                        }}>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                      }}
+                    >
+                      {row.JobAssignee}
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                      }}
+                    >
+                      {row.Pipeline}
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                      }}
+                    >
+                      {row.Stage}
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                      }}
+                    >
+                      {row.Account}
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                      }}
+                    >
                       {row.clientfacingstatus?.statusName && (
                         <span
                           style={{
@@ -1621,26 +1682,40 @@ const handleChangeRowsPerPage = (event) => {
                         </span>
                       )}
                     </TableCell>
-                    <TableCell style={{
-                          fontSize: "12px",
-                          padding: "4px 8px",
-                          lineHeight: "1",
-                        }}>{row.StartDate}</TableCell>
-                    <TableCell style={{
-                          fontSize: "12px",
-                          padding: "4px 8px",
-                          lineHeight: "1",
-                        }}>{row.DueDate}</TableCell>
-                    <TableCell style={{
-                          fontSize: "12px",
-                          padding: "4px 8px",
-                          lineHeight: "1",
-                        }}>{row.updatedAt}</TableCell>
-                    <TableCell style={{
-                          fontSize: "12px",
-                          padding: "4px 8px",
-                          lineHeight: "1",
-                        }}>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                      }}
+                    >
+                      {row.StartDate}
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                      }}
+                    >
+                      {row.DueDate}
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                      }}
+                    >
+                      {row.updatedAt}
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                      }}
+                    >
                       <IconButton
                         onClick={(event) => handleMenuClick(event, row.id)}
                       >
@@ -1664,15 +1739,14 @@ const handleChangeRowsPerPage = (event) => {
           </Table>
         </TableContainer>
         <TablePagination
-      rowsPerPageOptions={[5, 10, 25]}
-      component="div"
-      count={jobData.length}
-      rowsPerPage={rowsPerPage}
-      page={page}
-      onPageChange={handleChangePage}
-      onRowsPerPageChange={handleChangeRowsPerPage}
-    />
-      </LocalizationProvider>
+          rowsPerPageOptions={[1,2,5, 10, 25]}
+          component="div"
+          count={jobData.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
     </>
   );
 };

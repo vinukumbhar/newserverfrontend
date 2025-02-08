@@ -183,11 +183,15 @@ const filteredData = useMemo(() => {
   };
 
   // Pagination: Slice the contact data based on page and rowsPerPage
-  const paginatedData = contactData.slice(
-    page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
-  );
+  // const paginatedData = contactData.slice(
+  //   page * rowsPerPage,
+  //   page * rowsPerPage + rowsPerPage
+  // );
 
+   // Slice data based on pagination
+   const paginatedData = useMemo(() => {
+    return filteredData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  }, [filteredData, page, rowsPerPage]);
   const fetchContacts = async () => {
     try {
       const response = await axios.get(
@@ -551,7 +555,7 @@ const filteredData = useMemo(() => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredData.map((contact) => (
+            {paginatedData.map((contact) => (
               <TableRow key={contact.id}  role="checkbox"  hover  tabIndex={-1}  style={{
                 cursor: "pointer",
                 transition: "background-color 0.3s ease",

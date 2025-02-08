@@ -55,38 +55,38 @@ const CreateJob = ({ charLimit = 4000 }) => {
 //     console.log('No accountId cookie found');
 //   }
 // }, []);
-const [accName, setAccName] = useState('');
+// const [accName, setAccName] = useState('');
 
-useEffect(() => {
-  // Check if the accountId is stored in cookies
-  const accountIdFromCookies = Cookies.get('accountId');
+// useEffect(() => {
+//   // Check if the accountId is stored in cookies
+//   const accountIdFromCookies = Cookies.get('accountId');
 
-  if (accountIdFromCookies) {
-    // If the cookie exists, use the accountId for the API call
-    const requestOptions = {
-      method: "GET",
-      redirect: "follow",
-    };
+//   if (accountIdFromCookies) {
+//     // If the cookie exists, use the accountId for the API call
+//     const requestOptions = {
+//       method: "GET",
+//       redirect: "follow",
+//     };
 
-    const url = `${ACCOUNT_API}/accounts/accountdetails/accountdetailslist/listbyid/`;
+//     const url = `${ACCOUNT_API}/accounts/accountdetails/accountdetailslist/listbyid/`;
 
-    // Fetch account details using the accountId from cookies
-    fetch(url + accountIdFromCookies, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
+//     // Fetch account details using the accountId from cookies
+//     fetch(url + accountIdFromCookies, requestOptions)
+//       .then((response) => response.json())
+//       .then((result) => {
+//         console.log(result);
 
-        // Assuming the result has the account name in accountlist.Name
-        // setAccName(result.accountlist.Name);
+//         // Assuming the result has the account name in accountlist.Name
+//         // setAccName(result.accountlist.Name);
         
-        // Remove the cookie after use
-        Cookies.remove('accountId');
-      })
-      .catch((error) => console.error(error));
-  } else {
-    console.log('No accountId cookie found');
-  }
-}, []);
+//         // Remove the cookie after use
+//         Cookies.remove('accountId');
+//       })
+//       .catch((error) => console.error(error));
+//   } else {
+//     console.log('No accountId cookie found');
+//   }
+// }, []);
   const { logindata } = useContext(LoginContext);
   const [loginuserid, setLoginUserId] = useState("");
 
@@ -1524,10 +1524,26 @@ useEffect(() => {
           })}
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 5 }}>
-          <Button variant="contained" onClick={handleMove}>
+          <Button variant="contained" onClick={handleMove} sx={{
+                      backgroundColor: 'var(--color-save-btn)',  // Normal background
+                     
+                      '&:hover': {
+                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                      },
+                      borderRadius:'15px', width:'80px'
+                    }}>
             Move
           </Button>
-          <Button variant="outlined" onClick={() => setDrawerOpen(false)}>
+          <Button variant="outlined" onClick={() => setDrawerOpen(false)} sx={{
+                  borderColor: 'var(--color-border-cancel-btn)',  // Normal background
+                 color:'var(--color-save-btn)',
+                  '&:hover': {
+                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                    color:'#fff',
+                    border:"none"
+                  },
+                  width:'80px',borderRadius:'15px'
+                }}>
             Close
           </Button>
         </Box>
@@ -2087,11 +2103,27 @@ useEffect(() => {
             </Box>
 
             <Box sx={{ pt: 2, display: "flex", alignItems: "center", gap: 5 }}>
-              <Button variant="contained" color="primary" onClick={createjob}>
+              <Button variant="contained"  onClick={createjob} sx={{
+                      backgroundColor: 'var(--color-save-btn)',  // Normal background
+                     
+                      '&:hover': {
+                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                      },
+                      borderRadius:'15px', 
+                    }}>
                 Add
               </Button>
               <Link to="/">
-                <Button variant="outlined">Cancel</Button>
+                <Button variant="outlined" sx={{
+                  borderColor: 'var(--color-border-cancel-btn)',  // Normal background
+                 color:'var(--color-save-btn)',
+                  '&:hover': {
+                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                    color:'#fff',
+                    border:"none"
+                  },
+                  width:'80px',borderRadius:'15px'
+                }}>Cancel</Button>
               </Link>
             </Box>
           </Box>

@@ -69,7 +69,7 @@ const FixedColumnTable = () => {
   });
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5); // 5 rows per page
+  const [rowsPerPage, setRowsPerPage] = useState(1); // 5 rows per page
   const [filters, setFilters] = useState({
     accountName: "",
     type: "",
@@ -1702,7 +1702,7 @@ const FixedColumnTable = () => {
           </TableContainer>
 
           <TablePagination
-            rowsPerPageOptions={[5, 10, 15]}
+            rowsPerPageOptions={[1,2,5, 10, 15]}
             component="div"
             count={filteredData.length}
             rowsPerPage={rowsPerPage}

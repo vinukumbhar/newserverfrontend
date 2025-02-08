@@ -2066,10 +2066,18 @@ const handleOptionChange = (event, value) => {
                 type="submit"
                 variant="contained"
                 color="primary"
-                sx={{ borderRadius: "10px", mt: 3 }}
+                // sx={{ borderRadius: "10px", mt: 3 }}
                 onClick={() => {
                   handleOptionChange(null, "Contact Info");
                  
+                }}
+                sx={{
+                  backgroundColor: 'var(--color-save-btn)',  // Normal background
+                 
+                  '&:hover': {
+                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                  },
+                  borderRadius:'15px', mt:3
                 }}
               >
                 Continue
@@ -2416,10 +2424,26 @@ const handleOptionChange = (event, value) => {
                     </Box>
                   </DialogContent>
                   <DialogActions>
-                    <Button variant="contained" onClick={handleLinkAccounts}>
+                    <Button variant="contained" onClick={handleLinkAccounts} sx={{
+                      backgroundColor: 'var(--color-save-btn)',  // Normal background
+                     
+                      '&:hover': {
+                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                      },
+                      borderRadius:'15px', width:'80px'
+                    }}>
                       Add
                     </Button>
-                    <Button onClick={handleDialogClose} color="primary">
+                    <Button onClick={handleDialogClose} variant="outlined" color="primary" sx={{
+                  borderColor: 'var(--color-border-cancel-btn)',  // Normal background
+                 color:'var(--color-save-btn)',
+                  '&:hover': {
+                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                    color:'#fff',
+                    border:"none"
+                  },
+                  width:'80px',borderRadius:'15px'
+                }}>
                       Cancel
                     </Button>
                   </DialogActions>
@@ -3010,13 +3034,21 @@ const handleOptionChange = (event, value) => {
                 <Button
                   variant="contained"
                   color="primary"
-                  sx={{
-                    mt: 2,
-                    ml: 3,
-                    borderRadius: "10px",
-                  }}
+                  // sx={{
+                  //   mt: 2,
+                  //   ml: 3,
+                  //   borderRadius: "10px",
+                  // }}
                   onClick={() => {
                     handleOptionChange(null, "Account Info");
+                  }}
+                  sx={{
+                    backgroundColor: 'var(--color-save-btn)',  // Normal background
+                   
+                    '&:hover': {
+                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                    },
+                    borderRadius:'15px', width:'80px',mt:2,ml:3
                   }}
                 >
                   Back
@@ -3025,13 +3057,21 @@ const handleOptionChange = (event, value) => {
                   type="submit"
                   variant="contained"
                   color="primary"
-                  sx={{
-                    mt: 2,
+                  // sx={{
+                  //   mt: 2,
 
-                    borderRadius: "10px",
-                  }}
+                  //   borderRadius: "10px",
+                  // }}
                   // onClick={handlesubmitContact}
                   onClick={handleopendialog}
+                  sx={{
+                    backgroundColor: 'var(--color-save-btn)',  // Normal background
+                   
+                    '&:hover': {
+                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                    },
+                    borderRadius:'15px', mt:2
+                  }}
                 >
                   Create
                 </Button>
@@ -3040,10 +3080,20 @@ const handleOptionChange = (event, value) => {
                   variant="outlined"
                   color="primary"
                   // onClick={onClose}
-                  sx={{
-                    mt: 2,
+                  // sx={{
+                  //   mt: 2,
 
-                    borderRadius: "10px",
+                  //   borderRadius: "10px",
+                  // }}
+                  sx={{
+                    borderColor: 'var(--color-border-cancel-btn)',  // Normal background
+                   color:'var(--color-save-btn)',
+                    '&:hover': {
+                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                      color:'#fff',
+                      border:"none"
+                    },
+                    width:'80px',borderRadius:'15px',mt:2
                   }}
                 >
                   Cancel
