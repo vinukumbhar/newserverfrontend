@@ -225,6 +225,7 @@ const Tags = () => {
       tagName: tagName,
       tagColour: tagColour,
     });
+    console.log(raw)
     const requestOptions = {
       method: "POST",
       headers: myHeaders,

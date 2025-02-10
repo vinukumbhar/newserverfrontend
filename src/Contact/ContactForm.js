@@ -637,11 +637,19 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                         variant="contained"
                         color="primary"
                         onClick={sendingData}
+                        // sx={{
+                        //     mt: 2,
+                        //     width: isSmallScreen ? '100%' : 'auto',
+                        //     borderRadius: '10px',
+                        // }}
                         sx={{
-                            mt: 2,
-                            width: isSmallScreen ? '100%' : 'auto',
-                            borderRadius: '10px',
-                        }}
+                            backgroundColor: 'var(--color-save-btn)',  // Normal background
+                           
+                            '&:hover': {
+                              backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                            },
+                            borderRadius:'15px', mt:2,width: isSmallScreen ? '100%' : 'auto',
+                          }}
                     >
                         Create
                     </Button>
@@ -650,12 +658,21 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                         variant="outlined"
                         color="primary"
                         onClick={handleClose}
+                        // sx={{
+                        //     mt: 2,
+                        //     width: isSmallScreen ? '100%' : 'auto',
+                        //     borderRadius: '10px',
+                        // }}
                         sx={{
-                            mt: 2,
-                            width: isSmallScreen ? '100%' : 'auto',
-                            borderRadius: '10px',
-                        }}
-
+                            borderColor: 'var(--color-border-cancel-btn)',  // Normal background
+                           color:'var(--color-save-btn)',
+                            '&:hover': {
+                              backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                              color:'#fff',
+                              border:"none"
+                            },
+                            width: isSmallScreen ? '100%' : 'auto',borderRadius:'15px',mt:2
+                          }}
                     >
                         Cancel
                     </Button>
