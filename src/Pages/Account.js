@@ -68,8 +68,7 @@ const FixedColumnTable = () => {
     direction: "asc",
   });
 
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5); // 5 rows per page
+ 
   const [filters, setFilters] = useState({
     accountName: "",
     type: "",
@@ -307,6 +306,8 @@ const FixedColumnTable = () => {
     setIsManageTagsOpen(false);
     setIsManageTeamOpen(false);
   };
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5); // 5 rows per page
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -1187,7 +1188,7 @@ const FixedColumnTable = () => {
                   "&:hover": {
                     backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                   },
-                  width: "80px",
+                  // width: "80px",
                   borderRadius: "15px",
                 }}
               >
@@ -1460,7 +1461,7 @@ const FixedColumnTable = () => {
                       fontWeight: "bold",
                       padding: "16px",
                     }}
-                    width="100"
+                    width="200"
                   >
                     Tags
                   </TableCell>

@@ -23,7 +23,7 @@ import {
   Autocomplete,
   Switch,
   FormControlLabel,
-  Alert
+  Alert,
 } from "@mui/material";
 import { RxCross2 } from "react-icons/rx";
 import { useTheme } from "@mui/material/styles";
@@ -67,114 +67,109 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
   const [cZipPostalCode, SetCZipPostalCode] = useState("");
   const [activeStep, setActiveStep] = useState("Account Info");
 
-
   // validation
-const [accountNameError, setAccountNameError] = useState("");
-const [companyNameError, setCompanyNameError] = useState("");
-const [foldertemplateError, setFolderTemplateError] = useState("");
-const [firstNameError, setFirstNameError] = useState("");
-const [lastNameError, setLastNameError] = useState("");
-const [emailError, setEmaileError] = useState("");
-// const [companyfoldertemplateError, setCompanyFolderTemplateError] = useState("");
-const validateForm = () => {
-  let isValid = true;
-  if (!accountName) {
-    setAccountNameError("Account name is required");
+  const [accountNameError, setAccountNameError] = useState("");
+  const [companyNameError, setCompanyNameError] = useState("");
+  const [foldertemplateError, setFolderTemplateError] = useState("");
+  const [firstNameError, setFirstNameError] = useState("");
+  const [lastNameError, setLastNameError] = useState("");
+  const [emailError, setEmaileError] = useState("");
+  // const [companyfoldertemplateError, setCompanyFolderTemplateError] = useState("");
+  const validateForm = () => {
+    let isValid = true;
+    if (!accountName) {
+      setAccountNameError("Account name is required");
 
-    isValid = false;
-  } else {
-    setAccountNameError("");
-  }
- if (accountType === "Company"){
-    if (!companyname) {
-      setCompanyNameError("Company Name is required.");
       isValid = false;
     } else {
-      setCompanyNameError("");
+      setAccountNameError("");
     }
-  }
-  
-  if (!selectedTemplate) {
-    setFolderTemplateError("Folder Temaplte is required.");
-    isValid = false;
-  } else {
-    setFolderTemplateError("");
-  }
+    if (accountType === "Company") {
+      if (!companyname) {
+        setCompanyNameError("Company Name is required.");
+        isValid = false;
+      } else {
+        setCompanyNameError("");
+      }
+    }
 
-// selectedTemplate
-// Folder Temaplte is required
-
-  return isValid;
-};
-// const validateContactForm = () => {
-//   let isValid = true;
-//   if (!firstName) {
-//     setFirstNameError("First name is required");
-
-//     isValid = false;
-//   } else {
-//     setFirstNameError("");
-//   }
-
-//     if (!lastName) {
-//       setLastNameError("Last Name is required.");
-//       isValid = false;
-//     } else {
-//       setLastNameError("");
-//     }
- 
-  
-//   if (!email) {
-//     setEmaileError("Email is required.");
-//     isValid = false;
-//   } else {
-//     setEmaileError("");
-//   }
-
-// // selectedTemplate
-// // Folder Temaplte is required
-
-//   return isValid;
-// };
-  
-
-const validateContactForm = () => {
-  let isValid = true;
-
-  // Validate all contacts in the list
-  contacts.forEach((contact) => {
-    if (!contact.firstName || !contact.firstName.trim()) {
-      setFirstNameError("First name is required.");
+    if (!selectedTemplate) {
+      setFolderTemplateError("Folder Temaplte is required.");
       isValid = false;
     } else {
-      setFirstNameError("");
+      setFolderTemplateError("");
     }
 
-    if (!contact.lastName || !contact.lastName.trim()) {
-      setLastNameError("Last name is required.");
-      isValid = false;
-    } else {
-      setLastNameError("");
-    }
+    // selectedTemplate
+    // Folder Temaplte is required
 
-    if (!contact.email || !contact.email.trim()) {
-      setEmaileError("Email is required.");
-      isValid = false;
-    } else {
-      setEmaileError("");
-    }
-  });
+    return isValid;
+  };
+  // const validateContactForm = () => {
+  //   let isValid = true;
+  //   if (!firstName) {
+  //     setFirstNameError("First name is required");
 
-  return isValid;
-};
+  //     isValid = false;
+  //   } else {
+  //     setFirstNameError("");
+  //   }
 
+  //     if (!lastName) {
+  //       setLastNameError("Last Name is required.");
+  //       isValid = false;
+  //     } else {
+  //       setLastNameError("");
+  //     }
 
-const handleOptionChange = (event, value) => {
+  //   if (!email) {
+  //     setEmaileError("Email is required.");
+  //     isValid = false;
+  //   } else {
+  //     setEmaileError("");
+  //   }
 
+  // // selectedTemplate
+  // // Folder Temaplte is required
+
+  //   return isValid;
+  // };
+
+  const validateContactForm = () => {
+    let isValid = true;
+
+    // Validate all contacts in the list
+    contacts.forEach((contact) => {
+      if (!contact.firstName || !contact.firstName.trim()) {
+        setFirstNameError("First name is required.");
+        isValid = false;
+      } else {
+        setFirstNameError("");
+      }
+
+      if (!contact.lastName || !contact.lastName.trim()) {
+        setLastNameError("Last name is required.");
+        isValid = false;
+      } else {
+        setLastNameError("");
+      }
+
+      if (!contact.email || !contact.email.trim()) {
+        setEmaileError("Email is required.");
+        isValid = false;
+      } else {
+        setEmaileError("");
+      }
+    });
+
+    return isValid;
+  };
+
+  const handleOptionChange = (event, value) => {
     if (!validateForm()) {
       return; // Prevent form submission if validation fails
     }
-    
+
     setSelectedOption(value || event.target.value);
     setActiveStep(value || event.target.value);
     handleSubmit();
@@ -510,22 +505,18 @@ const handleOptionChange = (event, value) => {
       .catch((error) => console.error(error));
   };
 
-
-
   const handleSubmit = () => {
-  
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
     if (accountType === "Individual") {
       const raw = JSON.stringify({
-        clientType: accountType ,  // Default to empty string if null or undefined
-        accountName: accountName ,  // Default to empty string if null or undefined
-        tags: combinedValues || [],     // Default to an empty array if null or undefined
-        teamMember: combinedTeamMemberValues || [],  // Default to an empty array if null or undefined
-        foldertemplate: selectedTemplate?.value || null,  // Default to empty string if null or undefined
+        clientType: accountType, // Default to empty string if null or undefined
+        accountName: accountName, // Default to empty string if null or undefined
+        tags: combinedValues || [], // Default to an empty array if null or undefined
+        teamMember: combinedTeamMemberValues || [], // Default to an empty array if null or undefined
+        foldertemplate: selectedTemplate?.value || null, // Default to empty string if null or undefined
       });
-      
 
       const requestOptions = {
         method: "POST",
@@ -557,21 +548,18 @@ const handleOptionChange = (event, value) => {
           toast.error("An error occurred while submitting the form"); // Display error toast
         });
     } else if (accountType === "Company") {
-
-
       const raw = JSON.stringify({
-        clientType: accountType ,  // Default to empty string if null or undefined
-        accountName: accountName ,  // Default to empty string if null or undefined
-        tags: combinedValues || [],     // Default to an empty array if null or undefined
-        teamMember: combinedTeamMemberValues || [],  // Default to an empty array if null or undefined
-        companyName: companyname ,  // Default to empty string if null or undefined
-        country: selectedCountry || "",  // Default to empty string if null or undefined
-        streetAddress: cStreetAddress || "",  // Default to empty string if null or undefined
-        state: cStateProvince || "",  // Default to empty string if null or undefined
-        city: cCity || "",  // Default to empty string if null or undefined
-        postalCode: cZipPostalCode || "",  // Default to empty string if null or undefined
-        foldertemplate: selectedTemplate?.value || null,  // Default to empty string if null or undefined
-      
+        clientType: accountType, // Default to empty string if null or undefined
+        accountName: accountName, // Default to empty string if null or undefined
+        tags: combinedValues || [], // Default to an empty array if null or undefined
+        teamMember: combinedTeamMemberValues || [], // Default to an empty array if null or undefined
+        companyName: companyname, // Default to empty string if null or undefined
+        country: selectedCountry || "", // Default to empty string if null or undefined
+        streetAddress: cStreetAddress || "", // Default to empty string if null or undefined
+        state: cStateProvince || "", // Default to empty string if null or undefined
+        city: cCity || "", // Default to empty string if null or undefined
+        postalCode: cZipPostalCode || "", // Default to empty string if null or undefined
+        foldertemplate: selectedTemplate?.value || null, // Default to empty string if null or undefined
       });
       console.log(raw);
       const requestOptions = {
@@ -628,10 +616,9 @@ const handleOptionChange = (event, value) => {
 
     const raw = JSON.stringify({
       accountId: accountId,
-       foldertempId: foldertempId || null,
-
+      foldertempId: foldertempId || null,
     });
-   
+
     const requestOptions = {
       method: "POST",
       headers: myHeaders,
@@ -725,24 +712,23 @@ const handleOptionChange = (event, value) => {
 
     setContacts(updatedContacts);
 
+    // Dynamically validate first name and last name
+    if (name === "firstName" && !value.trim()) {
+      setFirstNameError("First name is required.");
+    } else if (name === "firstName") {
+      setFirstNameError("");
+    }
 
-     // Dynamically validate first name and last name
-  if (name === "firstName" && !value.trim()) {
-    setFirstNameError("First name is required.");
-  } else if (name === "firstName") {
-    setFirstNameError("");
-  }
-
-  if (name === "lastName" && !value.trim()) {
-    setLastNameError("Last name is required.");
-  } else if (name === "lastName") {
-    setLastNameError("");
-  }
-  if (name === "email" && !value.trim()) {
-    setEmaileError("Email is required.");
-  } else if (name === "email") {
-    setEmaileError("");
-  }
+    if (name === "lastName" && !value.trim()) {
+      setLastNameError("Last name is required.");
+    } else if (name === "lastName") {
+      setLastNameError("");
+    }
+    if (name === "email" && !value.trim()) {
+      setEmaileError("Email is required.");
+    } else if (name === "email") {
+      setEmaileError("");
+    }
   };
 
   const handleContactSwitchChange = (index, fieldName, checked) => {
@@ -965,7 +951,6 @@ const handleOptionChange = (event, value) => {
     }
 
     if (!contacts || contacts.length === 0) {
-     
       toast.error("There is no contact available! Enter atleast one contact");
       setIsModalVisible(false);
     } else {
@@ -973,7 +958,7 @@ const handleOptionChange = (event, value) => {
       setIsModalVisible(true);
     }
 
-    // 
+    //
   };
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -1197,7 +1182,6 @@ const handleOptionChange = (event, value) => {
 
   console.log(newUserId);
 
-  
   // const createNewSidebarData = ()=>{
   //   let data = JSON.stringify({
   //     "userrole": "client",
@@ -1289,17 +1273,17 @@ const handleOptionChange = (event, value) => {
   //     }
   //     ]
   //   });
-    
+
   //   let config = {
   //     method: 'post',
   //     maxBodyLength: Infinity,
   //     url: 'http://127.0.0.1:7000/api/create',
-  //     headers: { 
+  //     headers: {
   //       'Content-Type': 'application/json'
   //     },
   //     data : data
   //   };
-    
+
   //   axios.request(config)
   //   .then((response) => {
   //     console.log(JSON.stringify(response.data));
@@ -1307,7 +1291,7 @@ const handleOptionChange = (event, value) => {
   //   .catch((error) => {
   //     console.log(error);
   //   });
-    
+
   // }
   const clientCreatedmail = (email, personalMessage, userid) => {
     const port = window.location.port;
@@ -1502,10 +1486,18 @@ const handleOptionChange = (event, value) => {
                     </Box>
 
                     <Box>
-                    <InputLabel sx={{ color: "black", display: "flex", alignItems: "center" }}>
-          Account Name
-          <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
-        </InputLabel>
+                      <InputLabel
+                        sx={{
+                          color: "black",
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        Account Name
+                        <Typography sx={{ color: "red", ml: 0.5 }}>
+                          *
+                        </Typography>
+                      </InputLabel>
 
                       <TextField
                         size="small"
@@ -1515,7 +1507,7 @@ const handleOptionChange = (event, value) => {
                         onChange={(e) => {
                           const value = e.target.value;
                           setaccountName(value);
-                      
+
                           // Clear the error message when input is not empty
                           if (value.trim() !== "") {
                             setAccountNameError("");
@@ -1526,34 +1518,36 @@ const handleOptionChange = (event, value) => {
                         sx={{ mt: 1.5, backgroundColor: "#fff" }}
                         error={!!accountNameError}
                       />
-                       {!!accountNameError && (
-                                              <Alert
-                                                sx={{
-                                                  width: "96%",
-                                                  p: "0", // Adjust padding to control the size
-                                                  pl: "4%",
-                                                  height: "23px",
-                                                  borderRadius: "10px",
-                                                  borderTopLeftRadius: "0",
-                                                  borderTopRightRadius: "0",
-                                                  fontSize: "15px",
-                                                  display: "flex",
-                                                  alignItems: "center", // Center content vertically
-                                                  "& .MuiAlert-icon": {
-                                                    fontSize: "16px", // Adjust the size of the icon
-                                                    mr: "8px", // Add margin to the right of the icon
-                                                  },
-                                                }}
-                                                variant="filled"
-                                                severity="error"
-                                              >
-                                                {accountNameError}
-                                              </Alert>
-                                            )}
+                      {!!accountNameError && (
+                        <Alert
+                          sx={{
+                            width: "96%",
+                            p: "0", // Adjust padding to control the size
+                            pl: "4%",
+                            height: "23px",
+                            borderRadius: "10px",
+                            borderTopLeftRadius: "0",
+                            borderTopRightRadius: "0",
+                            fontSize: "15px",
+                            display: "flex",
+                            alignItems: "center", // Center content vertically
+                            "& .MuiAlert-icon": {
+                              fontSize: "16px", // Adjust the size of the icon
+                              mr: "8px", // Add margin to the right of the icon
+                            },
+                          }}
+                          variant="filled"
+                          severity="error"
+                        >
+                          {accountNameError}
+                        </Alert>
+                      )}
                     </Box>
 
                     <Box>
-                      <InputLabel sx={{ color: "black" ,mt:2}}>Tags</InputLabel>
+                      <InputLabel sx={{ color: "black", mt: 2 }}>
+                        Tags
+                      </InputLabel>
 
                       <Autocomplete
                         multiple
@@ -1621,12 +1615,19 @@ const handleOptionChange = (event, value) => {
                     </Box>
                     <Box mt={2}>
                       {/* <Typography>Folder Template</Typography> */}
-                      <InputLabel sx={{ color: "black", display: "flex", alignItems: "center" }}>
-                      Folder Template
-          <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
-        </InputLabel>
+                      <InputLabel
+                        sx={{
+                          color: "black",
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        Folder Template
+                        <Typography sx={{ color: "red", ml: 0.5 }}>
+                          *
+                        </Typography>
+                      </InputLabel>
                       <Autocomplete
-                      
                         options={optionfolder}
                         getOptionLabel={(option) => option.label}
                         value={selectedTemplate}
@@ -1647,39 +1648,39 @@ const handleOptionChange = (event, value) => {
                         )}
                         renderInput={(params) => (
                           <>
-                          <TextField
-                            {...params}
-                            sx={{ backgroundColor: "#fff" }}
-                            placeholder="select folder template"
-                            variant="outlined"
-                            size="small"
-                            error={!!foldertemplateError}
-                          />
-                           {!!foldertemplateError && (
-                                                        <Alert
-                                                          sx={{
-                                                            width: "96%",
-                                                            p: "0", // Adjust padding to control the size
-                                                            pl: "4%",
-                                                            height: "23px",
-                                                            borderRadius: "10px",
-                                                            borderTopLeftRadius: "0",
-                                                            borderTopRightRadius: "0",
-                                                            fontSize: "15px",
-                                                            display: "flex",
-                                                            alignItems: "center", // Center content vertically
-                                                            "& .MuiAlert-icon": {
-                                                              fontSize: "16px", // Adjust the size of the icon
-                                                              mr: "8px", // Add margin to the right of the icon
-                                                            },
-                                                          }}
-                                                          variant="filled"
-                                                          severity="error"
-                                                        >
-                                                          {foldertemplateError}
-                                                        </Alert>
-                                                      )}
-                                                      </>
+                            <TextField
+                              {...params}
+                              sx={{ backgroundColor: "#fff" }}
+                              placeholder="select folder template"
+                              variant="outlined"
+                              size="small"
+                              error={!!foldertemplateError}
+                            />
+                            {!!foldertemplateError && (
+                              <Alert
+                                sx={{
+                                  width: "96%",
+                                  p: "0", // Adjust padding to control the size
+                                  pl: "4%",
+                                  height: "23px",
+                                  borderRadius: "10px",
+                                  borderTopLeftRadius: "0",
+                                  borderTopRightRadius: "0",
+                                  fontSize: "15px",
+                                  display: "flex",
+                                  alignItems: "center", // Center content vertically
+                                  "& .MuiAlert-icon": {
+                                    fontSize: "16px", // Adjust the size of the icon
+                                    mr: "8px", // Add margin to the right of the icon
+                                  },
+                                }}
+                                variant="filled"
+                                severity="error"
+                              >
+                                {foldertemplateError}
+                              </Alert>
+                            )}
+                          </>
                         )}
                         sx={{ width: "100%", marginTop: "8px" }}
                         clearOnEscape // Enable clearable functionality
@@ -1693,10 +1694,18 @@ const handleOptionChange = (event, value) => {
                   <form>
                     <Box>
                       <Box>
-                      <InputLabel sx={{ color: "black", display: "flex", alignItems: "center" }}>
-          Account Name
-          <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
-          </InputLabel>
+                        <InputLabel
+                          sx={{
+                            color: "black",
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          Account Name
+                          <Typography sx={{ color: "red", ml: 0.5 }}>
+                            *
+                          </Typography>
+                        </InputLabel>
 
                         <TextField
                           value={accountName}
@@ -1704,7 +1713,7 @@ const handleOptionChange = (event, value) => {
                           onChange={(e) => {
                             const value = e.target.value;
                             setaccountName(value);
-                        
+
                             // Clear the error message when input is not empty
                             if (value.trim() !== "") {
                               setAccountNameError("");
@@ -1717,40 +1726,48 @@ const handleOptionChange = (event, value) => {
                           // helperText={pipelineNameError}
                           sx={{ mt: 1.5, backgroundColor: "#fff" }}
                         />
-                         {!!accountNameError && (
-                                                <Alert
-                                                  sx={{
-                                                    width: "96%",
-                                                    p: "0", // Adjust padding to control the size
-                                                    pl: "4%",
-                                                    height: "23px",
-                                                    borderRadius: "10px",
-                                                    borderTopLeftRadius: "0",
-                                                    borderTopRightRadius: "0",
-                                                    fontSize: "15px",
-                                                    display: "flex",
-                                                    alignItems: "center", // Center content vertically
-                                                    "& .MuiAlert-icon": {
-                                                      fontSize: "16px", // Adjust the size of the icon
-                                                      mr: "8px", // Add margin to the right of the icon
-                                                    },
-                                                  }}
-                                                  variant="filled"
-                                                  severity="error"
-                                                >
-                                                  {accountNameError}
-                                                </Alert>
-                                              )}
+                        {!!accountNameError && (
+                          <Alert
+                            sx={{
+                              width: "96%",
+                              p: "0", // Adjust padding to control the size
+                              pl: "4%",
+                              height: "23px",
+                              borderRadius: "10px",
+                              borderTopLeftRadius: "0",
+                              borderTopRightRadius: "0",
+                              fontSize: "15px",
+                              display: "flex",
+                              alignItems: "center", // Center content vertically
+                              "& .MuiAlert-icon": {
+                                fontSize: "16px", // Adjust the size of the icon
+                                mr: "8px", // Add margin to the right of the icon
+                              },
+                            }}
+                            variant="filled"
+                            severity="error"
+                          >
+                            {accountNameError}
+                          </Alert>
+                        )}
                       </Box>
 
                       <Box>
                         {/* <InputLabel sx={{ color: "black" }}>
                           Company Name
                         </InputLabel> */}
-                         <InputLabel sx={{ color: "black", display: "flex", alignItems: "center" }}>
-                         Company Name
-          <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
-          </InputLabel>
+                        <InputLabel
+                          sx={{
+                            color: "black",
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          Company Name
+                          <Typography sx={{ color: "red", ml: 0.5 }}>
+                            *
+                          </Typography>
+                        </InputLabel>
                         <TextField
                           fullWidth
                           size="small"
@@ -1762,39 +1779,38 @@ const handleOptionChange = (event, value) => {
                           onChange={(e) => {
                             const value = e.target.value;
                             setcompanyname(value);
-                        
+
                             // Clear the error message when input is not empty
                             if (value.trim() !== "") {
                               setCompanyNameError("");
                             }
                           }}
                           placeholder="Company Name"
-
                         />
                         {!!companyNameError && (
-                                                <Alert
-                                                  sx={{
-                                                    width: "96%",
-                                                    p: "0", // Adjust padding to control the size
-                                                    pl: "4%",
-                                                    height: "23px",
-                                                    borderRadius: "10px",
-                                                    borderTopLeftRadius: "0",
-                                                    borderTopRightRadius: "0",
-                                                    fontSize: "15px",
-                                                    display: "flex",
-                                                    alignItems: "center", // Center content vertically
-                                                    "& .MuiAlert-icon": {
-                                                      fontSize: "16px", // Adjust the size of the icon
-                                                      mr: "8px", // Add margin to the right of the icon
-                                                    },
-                                                  }}
-                                                  variant="filled"
-                                                  severity="error"
-                                                >
-                                                  {companyNameError}
-                                                </Alert>
-                                              )}
+                          <Alert
+                            sx={{
+                              width: "96%",
+                              p: "0", // Adjust padding to control the size
+                              pl: "4%",
+                              height: "23px",
+                              borderRadius: "10px",
+                              borderTopLeftRadius: "0",
+                              borderTopRightRadius: "0",
+                              fontSize: "15px",
+                              display: "flex",
+                              alignItems: "center", // Center content vertically
+                              "& .MuiAlert-icon": {
+                                fontSize: "16px", // Adjust the size of the icon
+                                mr: "8px", // Add margin to the right of the icon
+                              },
+                            }}
+                            variant="filled"
+                            severity="error"
+                          >
+                            {companyNameError}
+                          </Alert>
+                        )}
                       </Box>
 
                       <Box>
@@ -1867,10 +1883,18 @@ const handleOptionChange = (event, value) => {
                       </Box>
                     </Box>
                     <Box mt={2}>
-                    <InputLabel sx={{ color: "black", display: "flex", alignItems: "center" }}>
-                      Folder Template
-          <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
-        </InputLabel>
+                      <InputLabel
+                        sx={{
+                          color: "black",
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        Folder Template
+                        <Typography sx={{ color: "red", ml: 0.5 }}>
+                          *
+                        </Typography>
+                      </InputLabel>
                       <Autocomplete
                         options={optionfolder}
                         getOptionLabel={(option) => option.label}
@@ -1892,38 +1916,38 @@ const handleOptionChange = (event, value) => {
                         )}
                         renderInput={(params) => (
                           <>
-                          <TextField
-                            {...params}
-                            sx={{ backgroundColor: "#fff" }}
-                            placeholder="select folder template"
-                            variant="outlined"
-                            size="small"
-                            error={!!foldertemplateError}
-                          />
+                            <TextField
+                              {...params}
+                              sx={{ backgroundColor: "#fff" }}
+                              placeholder="select folder template"
+                              variant="outlined"
+                              size="small"
+                              error={!!foldertemplateError}
+                            />
                             {!!foldertemplateError && (
-                                                        <Alert
-                                                          sx={{
-                                                            width: "96%",
-                                                            p: "0", // Adjust padding to control the size
-                                                            pl: "4%",
-                                                            height: "23px",
-                                                            borderRadius: "10px",
-                                                            borderTopLeftRadius: "0",
-                                                            borderTopRightRadius: "0",
-                                                            fontSize: "15px",
-                                                            display: "flex",
-                                                            alignItems: "center", // Center content vertically
-                                                            "& .MuiAlert-icon": {
-                                                              fontSize: "16px", // Adjust the size of the icon
-                                                              mr: "8px", // Add margin to the right of the icon
-                                                            },
-                                                          }}
-                                                          variant="filled"
-                                                          severity="error"
-                                                        >
-                                                          {foldertemplateError}
-                                                        </Alert>
-                                                      )}
+                              <Alert
+                                sx={{
+                                  width: "96%",
+                                  p: "0", // Adjust padding to control the size
+                                  pl: "4%",
+                                  height: "23px",
+                                  borderRadius: "10px",
+                                  borderTopLeftRadius: "0",
+                                  borderTopRightRadius: "0",
+                                  fontSize: "15px",
+                                  display: "flex",
+                                  alignItems: "center", // Center content vertically
+                                  "& .MuiAlert-icon": {
+                                    fontSize: "16px", // Adjust the size of the icon
+                                    mr: "8px", // Add margin to the right of the icon
+                                  },
+                                }}
+                                variant="filled"
+                                severity="error"
+                              >
+                                {foldertemplateError}
+                              </Alert>
+                            )}
                           </>
                         )}
                         sx={{ width: "100%", marginTop: "8px" }}
@@ -2069,15 +2093,15 @@ const handleOptionChange = (event, value) => {
                 // sx={{ borderRadius: "10px", mt: 3 }}
                 onClick={() => {
                   handleOptionChange(null, "Contact Info");
-                 
                 }}
                 sx={{
-                  backgroundColor: 'var(--color-save-btn)',  // Normal background
-                 
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                  backgroundColor: "var(--color-save-btn)", // Normal background
+
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                   },
-                  borderRadius:'15px', mt:3
+                  borderRadius: "15px",
+                  mt: 3,
                 }}
               >
                 Continue
@@ -2105,7 +2129,7 @@ const handleOptionChange = (event, value) => {
                       alignItems: "center",
                       justifyContent: "space-between",
                       gap: "5px",
-                      cursor:'pointer'
+                      cursor: "pointer",
                     }}
                   >
                     <AddCircleOutlineIcon />
@@ -2424,26 +2448,37 @@ const handleOptionChange = (event, value) => {
                     </Box>
                   </DialogContent>
                   <DialogActions>
-                    <Button variant="contained" onClick={handleLinkAccounts} sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      },
-                      borderRadius:'15px', width:'80px'
-                    }}>
+                    <Button
+                      variant="contained"
+                      onClick={handleLinkAccounts}
+                      sx={{
+                        backgroundColor: "var(--color-save-btn)", // Normal background
+
+                        "&:hover": {
+                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        },
+                        borderRadius: "15px",
+                        width: "80px",
+                      }}
+                    >
                       Add
                     </Button>
-                    <Button onClick={handleDialogClose} variant="outlined" color="primary" sx={{
-                  borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                 color:'var(--color-save-btn)',
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                    color:'#fff',
-                    border:"none"
-                  },
-                  width:'80px',borderRadius:'15px'
-                }}>
+                    <Button
+                      onClick={handleDialogClose}
+                      variant="outlined"
+                      color="primary"
+                      sx={{
+                        borderColor: "var(--color-border-cancel-btn)", // Normal background
+                        color: "var(--color-save-btn)",
+                        "&:hover": {
+                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          color: "#fff",
+                          border: "none",
+                        },
+                        width: "80px",
+                        borderRadius: "15px",
+                      }}
+                    >
                       Cancel
                     </Button>
                   </DialogActions>
@@ -2479,12 +2514,19 @@ const handleOptionChange = (event, value) => {
                           {/* <InputLabel sx={{ color: "black" }}>
                             First Name
                           </InputLabel> */}
-                           <InputLabel sx={{ color: "black", display: "flex", alignItems: "center" }}>
-                           First Name
-          <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
-        </InputLabel>
+                          <InputLabel
+                            sx={{
+                              color: "black",
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            First Name
+                            <Typography sx={{ color: "red", ml: 0.5 }}>
+                              *
+                            </Typography>
+                          </InputLabel>
                           <TextField
-                           
                             fullWidth
                             name="firstName"
                             placeholder="First Name"
@@ -2493,33 +2535,31 @@ const handleOptionChange = (event, value) => {
                             error={!!firstNameError}
                             // helperText={pipelineNameError}
                             sx={{ mt: 1.5, backgroundColor: "#fff" }}
-                          
-                          
                           />
-                           {!!firstNameError && (
-                                                  <Alert
-                                                    sx={{
-                                                      width: "96%",
-                                                      p: "0", // Adjust padding to control the size
-                                                      pl: "4%",
-                                                      height: "23px",
-                                                      borderRadius: "10px",
-                                                      borderTopLeftRadius: "0",
-                                                      borderTopRightRadius: "0",
-                                                      fontSize: "11px",
-                                                      display: "flex",
-                                                      alignItems: "center", // Center content vertically
-                                                      "& .MuiAlert-icon": {
-                                                        fontSize: "16px", // Adjust the size of the icon
-                                                        mr: "8px", // Add margin to the right of the icon
-                                                      },
-                                                    }}
-                                                    variant="filled"
-                                                    severity="error"
-                                                  >
-                                                    {firstNameError}
-                                                  </Alert>
-                                                )}
+                          {!!firstNameError && (
+                            <Alert
+                              sx={{
+                                width: "96%",
+                                p: "0", // Adjust padding to control the size
+                                pl: "4%",
+                                height: "23px",
+                                borderRadius: "10px",
+                                borderTopLeftRadius: "0",
+                                borderTopRightRadius: "0",
+                                fontSize: "11px",
+                                display: "flex",
+                                alignItems: "center", // Center content vertically
+                                "& .MuiAlert-icon": {
+                                  fontSize: "16px", // Adjust the size of the icon
+                                  mr: "8px", // Add margin to the right of the icon
+                                },
+                              }}
+                              variant="filled"
+                              severity="error"
+                            >
+                              {firstNameError}
+                            </Alert>
+                          )}
                         </Box>
                         <Box>
                           <InputLabel sx={{ color: "black" }}>
@@ -2538,14 +2578,21 @@ const handleOptionChange = (event, value) => {
                           {/* <InputLabel sx={{ color: "black" }}>
                             Last Name
                           </InputLabel> */}
-                                <InputLabel sx={{ color: "black", display: "flex", alignItems: "center" }}>
-                                Last Name
-          <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
-        </InputLabel>
+                          <InputLabel
+                            sx={{
+                              color: "black",
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            Last Name
+                            <Typography sx={{ color: "red", ml: 0.5 }}>
+                              *
+                            </Typography>
+                          </InputLabel>
                           <TextField
                             fullWidth
                             name="lastName"
-                           
                             placeholder="Last name"
                             size="small"
                             onChange={(e) => handleContactInputChange(index, e)}
@@ -2554,30 +2601,30 @@ const handleOptionChange = (event, value) => {
                             sx={{ mt: 1.5, backgroundColor: "#fff" }}
                           />
 
-                           {!!lastNameError && (
-                                                  <Alert
-                                                    sx={{
-                                                      width: "96%",
-                                                      p: "0", // Adjust padding to control the size
-                                                      pl: "4%",
-                                                      height: "23px",
-                                                      borderRadius: "10px",
-                                                      borderTopLeftRadius: "0",
-                                                      borderTopRightRadius: "0",
-                                                      fontSize: "11px",
-                                                      display: "flex",
-                                                      alignItems: "center", // Center content vertically
-                                                      "& .MuiAlert-icon": {
-                                                        fontSize: "16px", // Adjust the size of the icon
-                                                        mr: "8px", // Add margin to the right of the icon
-                                                      },
-                                                    }}
-                                                    variant="filled"
-                                                    severity="error"
-                                                  >
-                                                    {lastNameError}
-                                                  </Alert>
-                                                )}
+                          {!!lastNameError && (
+                            <Alert
+                              sx={{
+                                width: "96%",
+                                p: "0", // Adjust padding to control the size
+                                pl: "4%",
+                                height: "23px",
+                                borderRadius: "10px",
+                                borderTopLeftRadius: "0",
+                                borderTopRightRadius: "0",
+                                fontSize: "11px",
+                                display: "flex",
+                                alignItems: "center", // Center content vertically
+                                "& .MuiAlert-icon": {
+                                  fontSize: "16px", // Adjust the size of the icon
+                                  mr: "8px", // Add margin to the right of the icon
+                                },
+                              }}
+                              variant="filled"
+                              severity="error"
+                            >
+                              {lastNameError}
+                            </Alert>
+                          )}
                         </Box>
                       </Box>
                       <Box>
@@ -2632,14 +2679,21 @@ const handleOptionChange = (event, value) => {
                       </Box>
                       <Box>
                         {/* <InputLabel sx={{ color: "black" }}>Email</InputLabel> */}
-                        <InputLabel sx={{ color: "black", display: "flex", alignItems: "center" }}>
-                        Email
-          <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
-        </InputLabel>
+                        <InputLabel
+                          sx={{
+                            color: "black",
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          Email
+                          <Typography sx={{ color: "red", ml: 0.5 }}>
+                            *
+                          </Typography>
+                        </InputLabel>
                         <TextField
                           fullWidth
                           name="email"
-                        
                           placeholder="Email"
                           size="small"
                           onChange={(e) => handleContactInputChange(index, e)}
@@ -2647,30 +2701,30 @@ const handleOptionChange = (event, value) => {
                           // helperText={pipelineNameError}
                           sx={{ mt: 1.5, backgroundColor: "#fff" }}
                         />
-                         {!!emailError && (
-                                                <Alert
-                                                  sx={{
-                                                    width: "96%",
-                                                    p: "0", // Adjust padding to control the size
-                                                    pl: "4%",
-                                                    height: "23px",
-                                                    borderRadius: "10px",
-                                                    borderTopLeftRadius: "0",
-                                                    borderTopRightRadius: "0",
-                                                    fontSize: "15px",
-                                                    display: "flex",
-                                                    alignItems: "center", // Center content vertically
-                                                    "& .MuiAlert-icon": {
-                                                      fontSize: "16px", // Adjust the size of the icon
-                                                      mr: "8px", // Add margin to the right of the icon
-                                                    },
-                                                  }}
-                                                  variant="filled"
-                                                  severity="error"
-                                                >
-                                                  {emailError}
-                                                </Alert>
-                                              )}
+                        {!!emailError && (
+                          <Alert
+                            sx={{
+                              width: "96%",
+                              p: "0", // Adjust padding to control the size
+                              pl: "4%",
+                              height: "23px",
+                              borderRadius: "10px",
+                              borderTopLeftRadius: "0",
+                              borderTopRightRadius: "0",
+                              fontSize: "15px",
+                              display: "flex",
+                              alignItems: "center", // Center content vertically
+                              "& .MuiAlert-icon": {
+                                fontSize: "16px", // Adjust the size of the icon
+                                mr: "8px", // Add margin to the right of the icon
+                              },
+                            }}
+                            variant="filled"
+                            severity="error"
+                          >
+                            {emailError}
+                          </Alert>
+                        )}
                       </Box>
                       {/* Switches for Login, Notify, and Email Sync */}
                       <Box sx={{ mt: 1 }}>
@@ -2690,7 +2744,7 @@ const handleOptionChange = (event, value) => {
                           }
                           label={
                             <Typography>
-                              Login 
+                              Login
                               {/* <Typography component="span" sx={{ color: "red" }}>*</Typography> */}
                             </Typography>
                           }
@@ -2711,7 +2765,7 @@ const handleOptionChange = (event, value) => {
                           }
                           label={
                             <Typography>
-                              Notify 
+                              Notify
                               {/* <Typography component="span" sx={{ color: "red" }}>*</Typography> */}
                             </Typography>
                           }
@@ -2732,7 +2786,7 @@ const handleOptionChange = (event, value) => {
                           }
                           label={
                             <Typography>
-                              Email Sync 
+                              Email Sync
                               {/* <Typography component="span" sx={{ color: "red" }}>*</Typography> */}
                             </Typography>
                           }
@@ -3043,12 +3097,15 @@ const handleOptionChange = (event, value) => {
                     handleOptionChange(null, "Account Info");
                   }}
                   sx={{
-                    backgroundColor: 'var(--color-save-btn)',  // Normal background
-                   
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                    backgroundColor: "var(--color-save-btn)", // Normal background
+
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                     },
-                    borderRadius:'15px', width:'80px',mt:2,ml:3
+                    borderRadius: "15px",
+                    width: "80px",
+                    mt: 2,
+                    ml: 3,
                   }}
                 >
                   Back
@@ -3065,12 +3122,13 @@ const handleOptionChange = (event, value) => {
                   // onClick={handlesubmitContact}
                   onClick={handleopendialog}
                   sx={{
-                    backgroundColor: 'var(--color-save-btn)',  // Normal background
-                   
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                    backgroundColor: "var(--color-save-btn)", // Normal background
+
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                     },
-                    borderRadius:'15px', mt:2
+                    borderRadius: "15px",
+                    mt: 2,
                   }}
                 >
                   Create
@@ -3086,14 +3144,16 @@ const handleOptionChange = (event, value) => {
                   //   borderRadius: "10px",
                   // }}
                   sx={{
-                    borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                   color:'var(--color-save-btn)',
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      color:'#fff',
-                      border:"none"
+                    borderColor: "var(--color-border-cancel-btn)", // Normal background
+                    color: "var(--color-save-btn)",
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                      color: "#fff",
+                      border: "none",
                     },
-                    width:'80px',borderRadius:'15px',mt:2
+                    width: "80px",
+                    borderRadius: "15px",
+                    mt: 2,
                   }}
                 >
                   Cancel
