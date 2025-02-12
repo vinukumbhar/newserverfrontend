@@ -421,13 +421,13 @@ const handleContactUpdated = () => {
     fetchContacts(); // Refetch contacts when updated
 };
   return (
-    <Box sx={{ position: "relative", width: 400, margin: "0 auto" }}>
+    <Box sx={{ position: "relative", width: 300, margin: "0 auto" }}>
       {/* Search Input */}
       <TextField
         value={searchQuery}
         onChange={handleSearchChange}
         placeholder="Search..."
-        variant="outlined"
+        // variant="outlined"
         size="small"
 
         fullWidth
@@ -572,7 +572,7 @@ const handleContactUpdated = () => {
               </List>
 
               {/* Global Search Link */}
-              <Box sx={{ p: 2, textAlign: "center" }}>
+              {/* <Box sx={{ p: 2, textAlign: "center" }}>
                 <Button
                   variant="text"
                   color="primary"
@@ -580,7 +580,7 @@ const handleContactUpdated = () => {
                 >
                   Global search
                 </Button>
-              </Box>
+              </Box> */}
             </>
           ) : (
             <Typography sx={{ p: 2, color: "gray", textAlign: "center" }}>

@@ -94,7 +94,7 @@ const ProposalsEls = () => {
   };
 
   return (
-    <Box sx={{ mt: 2 }}>
+    <Box >
       <Box>
         <Typography variant="h5" fontWeight="bold">
           Proposals & Els

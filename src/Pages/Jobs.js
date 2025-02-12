@@ -1354,9 +1354,9 @@ const Example = ({ charLimit = 4000 }) => {
             flexDirection: "row",
             justifyContent: "space-between", // Add this line
             alignItems: "center", // Vertically align items
-            mt: 5,
+            // mt: 5,
             width: "100%",
-            margin: "20px",
+            // margin: "20px",
             gap: "10px",
             "& a": {
               textDecoration: "none",

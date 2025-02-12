@@ -20,7 +20,7 @@ const UploadDocument = ({
   const [destinationPath, setDestinationPath] = useState("");
 
 
-  useEffect(() => {
+
     const fetchFolders = async () => {
       try {
         const url = `${API_KEY}/allFolders/${templateId}`;
@@ -49,10 +49,12 @@ const UploadDocument = ({
         setError(err.message || "An error occurred");
       }
     };
-
-    fetchFolders();
-  }, []);
-
+    useEffect(() => {
+      if (templateId) {
+        fetchFolders();
+      }
+    }, [templateId]);
+ 
   useEffect(() => {
     if (selectedFolderId) {
       console.log("The selected folder ID has been updated:", selectedFolderId);

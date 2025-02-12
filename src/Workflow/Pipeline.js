@@ -2291,6 +2291,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
               <Autocomplete
                 value={selectedPipelineOption}
                 onChange={handleSelectChange}
+                size="small"
                 options={optionpipeline}
                 getOptionLabel={(option) => option.label}
                 isOptionEqualToValue={(option, value) =>

@@ -276,16 +276,20 @@ import {
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useEffect, useState } from "react";
-
+// import { useParams } from "react-router-dom";
 export default function CreateFolder({
   setIsFolderFormOpen,
   isFolderFormOpen,
   templateId,
 }) {
+
+
   const [folderName, setFolderName] = useState("");
   const [selectedFolder, setSelectedFolder] = useState();
   const [subfolder, setSubfolder] = useState("blank");
-
+  useEffect(() => {
+    console.log(templateId);
+  }, [templateId]);
   const schema = yup.object().shape({
     folderName: yup.string().required("Folder name is required"),
     selectedFolder: yup.string().required("Select folder"),
@@ -303,12 +307,18 @@ export default function CreateFolder({
   const [newFolderName, setNewFolderName] = useState("");
   const [newFolderPath, setNewFolderPath] = useState("");
 
-  useEffect(() => {
+  // useEffect(() => {
     
 
-    fetchFolders();
-  }, []);
+  //   fetchFolders();
+  // }, []);
 
+  useEffect(() => {
+    if (templateId) {
+      fetchFolders();
+    }
+  }, [templateId]);
+  
   const fetchFolders = async () => {
     try {
       const url = `${API_KEY}/allFolders/${templateId}`;

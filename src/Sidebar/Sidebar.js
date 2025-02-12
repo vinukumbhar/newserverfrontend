@@ -1037,23 +1037,18 @@ function Sidebar() {
               })}
             </List>
 
-            <div className="bottom-content">
+            {/* <div className="bottom-content">
               <ul>
                 <li></li>
               </ul>
-            </div>
+            </div> */}
           </Box>
         </Box>
       </aside>
       <main className="main">
         <Box
           component="main"
-          sx={
-            {
-              // padding: 1,
-              // border: '2px solid red',
-            }
-          }
+         
         >
           <Outlet />
         </Box>

@@ -1132,10 +1132,11 @@ const AddJobs = ({
               sx={{ width: "100%", marginTop: "8px" }}
             />
           </Box>
-          <Box>
+          <Box mt={1}>
             <label className="job-input-label">Stage</label>
             <Autocomplete
               size="small"
+             
               options={stagesoptions}
               getOptionLabel={(option) => option.label}
               value={selectedStage}
@@ -1151,7 +1152,7 @@ const AddJobs = ({
               sx={{ width: "100%", marginTop: "8px" }}
             />
           </Box>
-          <Box mt={2}>
+          <Box mt={1}>
             <label className="job-input-label">Template</label>
             <Autocomplete
               options={optiontemp}
@@ -1183,7 +1184,7 @@ const AddJobs = ({
               clearOnEscape // Enable clearable functionality
             />
           </Box>
-          <Box mt={2}>
+          <Box mt={1}>
             <label className="job-input-label">Name</label>
             <TextField
               fullWidth
@@ -1195,7 +1196,7 @@ const AddJobs = ({
               sx={{ backgroundColor: "#fff" }}
             />
           </Box>
-          <Box mt={2}>
+          <Box mt={1}>
             <label className="job-input-label">Job Assignees</label>
             <Autocomplete
               multiple
@@ -1227,19 +1228,19 @@ const AddJobs = ({
               }
             />
           </Box>
-          <Box mt={2}>
+          <Box mt={1}>
             <Priority
               onPriorityChange={handlePriorityChange}
               selectedPriority={priority}
             />
           </Box>
-          <Box mt={2}>
+          <Box mt={2} >
             <Editor
               initialContent={description}
               onChange={handleEditorChange}
             />
           </Box>
-          <Box mt={2}>
+          <Box mt={8}>
             <Box
               display={"flex"}
               alignItems={"center"}
