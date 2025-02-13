@@ -110,7 +110,7 @@ export default function CreateFolder({
   const createFolderAPI = async (newFolderPath) => {
     try {
       const response = await axios.get(
-        `${API_KEY}:8005/createFolder/?path=uploads/FolderTemplates/${templateId}/${newFolderPath}&foldername=${newFolderName}`
+        `${API_KEY}/createFolder/?path=uploads/FolderTemplates/${templateId}/${newFolderPath}&foldername=${newFolderName}`
       );
       console.log("API Response:", response.data);
       return response.data;

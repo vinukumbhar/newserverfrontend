@@ -167,6 +167,7 @@ const AccountImport = () => {
           account.linkedContact3,
           account.linkedContact4,
         ].filter(Boolean),
+        foldertemplate: "678d08eb8ade166da76a0ffd",
       };
   
       try {
@@ -182,8 +183,19 @@ const AccountImport = () => {
           throw new Error(`Failed to save ${account.accountName}`);
         }
   
-        console.log(`Account ${account.accountName} saved successfully`);
-        successfullySavedAccounts.push(account);
+        // console.log(`Account ${account.accountName} saved successfully`);
+        // successfullySavedAccounts.push(account);
+        const result = await response.json();
+      console.log(`Account ${account.accountName} saved successfully`);
+
+      const newAccountId = result.newAccount._id;
+      successfullySavedAccounts.push(account);
+// Create folder structure for the account
+addFolderTemplate(newAccountId);
+      // Assign the folder template after creating the account
+      assignfoldertemp(newAccountId, "678d08eb8ade166da76a0ffd");
+
+      
       } catch (error) {
         console.error("Error saving account:", error);
       }
@@ -200,7 +212,51 @@ const AccountImport = () => {
     }
   };
   
+  const CLIENT_DOCS_API = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
+  const addFolderTemplate = (accountId) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
 
+    const raw = JSON.stringify({
+      accountId: accountId,
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+    console.log("test",raw);
+    console.log("Creating folder for account:", accountId);
+    fetch(`${CLIENT_DOCS_API}/clientdocs/clients`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => console.log(result))
+      .catch((error) => console.error(error));
+  };
+
+  const assignfoldertemp = (accountId, foldertempId) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      accountId: accountId,
+      foldertempId: foldertempId || null,
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    console.log("copy folders",raw);
+    fetch(`${CLIENT_DOCS_API}/clientdocs/accountfoldertemp`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => console.log(result))
+      .catch((error) => console.error(error));
+  };
   
 //   const handleSaveSelectedTags = async () => {
 //     try {

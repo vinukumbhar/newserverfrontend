@@ -284,34 +284,18 @@ export default function CreateFolder({
 }) {
 
 
-  const [folderName, setFolderName] = useState("");
-  const [selectedFolder, setSelectedFolder] = useState();
-  const [subfolder, setSubfolder] = useState("blank");
   useEffect(() => {
     console.log(templateId);
   }, [templateId]);
-  const schema = yup.object().shape({
-    folderName: yup.string().required("Folder name is required"),
-    selectedFolder: yup.string().required("Select folder"),
-  });
-
   const API_KEY = process.env.REACT_APP_FOLDER_URL;
-
   const handleFormClose = () => {
     setIsFolderFormOpen(false);
   };
-
   const [structFolder, setStructFolder] = useState(null);
   const [error, setError] = useState(null);
   const [selectedFolderId, setSelectedFolderId] = useState(null);
   const [newFolderName, setNewFolderName] = useState("");
   const [newFolderPath, setNewFolderPath] = useState("");
-
-  // useEffect(() => {
-    
-
-  //   fetchFolders();
-  // }, []);
 
   useEffect(() => {
     if (templateId) {
