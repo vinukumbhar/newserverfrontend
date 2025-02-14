@@ -282,7 +282,7 @@ function FolderTempEdit({templateId}) {
 
         /> 
 
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        {/* <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <IconButton
             component="label"
             htmlFor="folderInput"
@@ -300,7 +300,7 @@ function FolderTempEdit({templateId}) {
               style={{ display: "none" }} // Hide the input element
             />
           </label>
-        </Box>
+        </Box> */}
         {/* <UploadFolder
           isSendFolderForm={isSendFolderForm}
           setIsSendFolderForm={setIsSendFolderForm}
