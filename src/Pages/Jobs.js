@@ -70,22 +70,22 @@ const Example = ({ charLimit = 4000 }) => {
   const handleActiveClick = () => {
     setIsActiveTrue(true);
     setActiveButton("active");
-    fetchData();
+    fetchData(true);
     console.log("Active action triggered.");
   };
   const handleArchivedClick = () => {
     setIsActiveTrue(false);
     setActiveButton("archived");
-    fetchData();
+    fetchData(false);
     console.log("Archive action triggered.");
   };
   useEffect(() => {
-    fetchData();
+    fetchData(isActiveTrue);
   }, [isActiveTrue]);
-  const fetchData = async () => {
+  const fetchData = async (isActive) => {
     try {
       const jobListResponse = await axios.get(
-        `${JOBS_API}/workflow/jobs/job/joblist/list/${isActiveTrue}`
+        `${JOBS_API}/workflow/jobs/job/joblist/list/${isActive}`
       );
       const formattedData = jobListResponse.data.jobList.map((job) => ({
         ...job,
@@ -511,14 +511,48 @@ const Example = ({ charLimit = 4000 }) => {
 
         toast.success("Job deleted successfully!");
         setSelected([]); // Clear the selected jobs
-        fetchData(); // Refresh the data after deletion
+        fetchData(true); // Refresh the data after deletion
       } catch (error) {
         console.error("Delete API Error:", error);
         toast.error("Failed to delete selected jobs");
       }
     }
   };
-
+  const handleEditClick = (action) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+  
+    // Set "active" to false if "Archive" is selected, or true if "Make Active" is selected
+    const raw = JSON.stringify({
+      active: action === "Archive" ? false : true,
+    });
+  
+    const requestOptions = {
+      method: "PATCH",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+  
+    // Assuming you're passing the row.id or jobId to the function to update the specific job
+    fetch(`${JOBS_API}/workflow/jobs/job/${selectedJob}`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result)
+        setAnchorEl(null);
+        // setIsActiveTrue(action === "Archive" ? false : true);
+        // setActiveButton(action === "Archive" ? "archived" : "active")
+        // fetchData(action === "Archive" ? false : true);
+        if (action === "Archive") {
+          handleArchivedClick(); // Call the handleArchivedClick function
+        } else if (action === "Make Active") {
+          handleActiveClick(); // Call the handleActiveClick function
+        }
+        setSelectedJob(null);
+      })
+      .catch((error) => console.error(error));
+  };
+  
   // const columns = useMemo(
   //   () => [
   //     {
@@ -927,7 +961,7 @@ const Example = ({ charLimit = 4000 }) => {
      const paginatedChats = jobData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   return (
     <>
-      <LocalizationProvider dateAdapter={AdapterDayjs}>
+     
         <Drawer
           anchor="right"
           open={isDrawerOpen}
@@ -944,6 +978,7 @@ const Example = ({ charLimit = 4000 }) => {
             },
           }}
         >
+           <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Box
             sx={{
               display: "flex",
@@ -1346,6 +1381,7 @@ const Example = ({ charLimit = 4000 }) => {
               </Button>
             </Box>
           </Box>
+          </LocalizationProvider>
         </Drawer>
         <Box
           className="client-document-nav"
@@ -1390,7 +1426,7 @@ const Example = ({ charLimit = 4000 }) => {
               }}
               onClick={handleActiveClick}
             >
-              Active
+              Active Jobs
             </Typography>
 
             <Typography
@@ -1408,7 +1444,7 @@ const Example = ({ charLimit = 4000 }) => {
               }}
               onClick={handleArchivedClick}
             >
-              Archived
+              Archived Jobs
             </Typography>
             <Box>
               {selected.length > 0 && (
@@ -1422,12 +1458,8 @@ const Example = ({ charLimit = 4000 }) => {
             </Box>
           </Box>
         </Box>
-        {/* <Stack direction={isMobile ? "column-reverse" : "column"} gap="8px">
-          <MaterialReactTable columns={columns} table={table} />
-        </Stack> */}
-        {/* component={Paper} */}
         
-      </LocalizationProvider>
+ 
       <TableContainer component={Paper}>
           <Table style={{ tableLayout: "fixed", width: "100%" }}>
             <TableHead>
@@ -1726,9 +1758,12 @@ const Example = ({ charLimit = 4000 }) => {
                         open={Boolean(anchorEl && selectedJob === row.id)}
                         onClose={handleClose}
                       >
-                        <MenuItem onClick={handleArchivedClick}>
+                        {/* <MenuItem onClick={handleEditClick}>
                           {isActiveTrue ? "Archive" : "Make Active"}
-                        </MenuItem>
+                        </MenuItem> */}
+                        <MenuItem onClick={() => handleEditClick(isActiveTrue ? "Archive" : "Make Active")}>
+  {isActiveTrue ? "Archive" : "Make Active"}
+</MenuItem>
                         <MenuItem onClick={handleDelete}>Delete</MenuItem>
                       </Menu>
                     </TableCell>
@@ -1753,3 +1788,6 @@ const Example = ({ charLimit = 4000 }) => {
 
 export default Example;
 // {selectedJob && <UpdateJob selectedJob={selectedJob} handleClose={() => setIsDrawerOpen(false)} />}
+ {/* <Stack direction={isMobile ? "column-reverse" : "column"} gap="8px">
+          <MaterialReactTable columns={columns} table={table} />
+        </Stack> */}

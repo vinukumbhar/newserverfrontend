@@ -487,64 +487,7 @@ const Invoice = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* {
-            accountInvoicesData.map((row) => (
-              <TableRow key={row._id}>
-                <TableCell>
-                  <Typography sx={{ color: "#2c59fa", cursor: "pointer", fontWeight: "bold" }} onClick={() => handleEdit(row._id)}>
-                    {row.invoicenumber}
-                  </Typography>
-                </TableCell>
-                <TableCell></TableCell>
-                <TableCell>{row.createdAt}</TableCell>
-                <TableCell>${row.summary.total}</TableCell>
-                <TableCell>${}</TableCell> 
-                <TableCell>${row.summary.total} </TableCell>
-                <TableCell> </TableCell>
-                <TableCell>{row.description}</TableCell>
-                <TableCell sx={{ textAlign: "end" }}>
-                  <IconButton onClick={() => toggleMenu(row._id)} style={{ color: "#2c59fa" }}>
-                    <CiMenuKebab style={{ fontSize: "25px" }} />
-                    {openMenuId === row._id && (
-                      <Box
-                        sx={{
-                          position: "absolute",
-                          zIndex: 1,
-                          backgroundColor: "#fff",
-                          boxShadow: 1,
-                          borderRadius: 1,
-                          p: 1,
-                          
-                          right: "30px",
-                          m: 2,
-                          top: "10px",
-                          width: "150px",
-                          textAlign: "start",
-                        }}
-                      >
-                        <Typography sx={{ fontSize: "12px", fontWeight: "bold" }} onClick={() => handleEdit(row._id)}>
-                          Edit
-                        </Typography>
-
-                        <Typography sx={{ fontSize: "12px", fontWeight: "bold" }} onClick={() => handleDuplicate(row._id)}>
-                          Duplicate
-                        </Typography>
-                        <Typography sx={{ fontSize: "12px", fontWeight: "bold" }} onClick={() => handlePrint(row._id)}>
-                          Print
-                        </Typography>
-                        <Typography sx={{ fontSize: "12px", fontWeight: "bold" }} onClick={() => handleDownload(row._id)}>
-                          Download
-                        </Typography>
-
-                        <Typography sx={{ fontSize: "12px", color: "red", fontWeight: "bold" }} onClick={() => handleDelete(row._id)}>
-                          Delete
-                        </Typography>
-                      </Box>
-                    )}
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))} */}
+            
             {Array.isArray(accountInvoicesData) ? (
               accountInvoicesData.map((row) => (
                 <TableRow key={row._id}>
@@ -692,3 +635,63 @@ const Invoice = () => {
 };
 
 export default Invoice;
+
+
+{/* {
+            accountInvoicesData.map((row) => (
+              <TableRow key={row._id}>
+                <TableCell>
+                  <Typography sx={{ color: "#2c59fa", cursor: "pointer", fontWeight: "bold" }} onClick={() => handleEdit(row._id)}>
+                    {row.invoicenumber}
+                  </Typography>
+                </TableCell>
+                <TableCell></TableCell>
+                <TableCell>{row.createdAt}</TableCell>
+                <TableCell>${row.summary.total}</TableCell>
+                <TableCell>${}</TableCell> 
+                <TableCell>${row.summary.total} </TableCell>
+                <TableCell> </TableCell>
+                <TableCell>{row.description}</TableCell>
+                <TableCell sx={{ textAlign: "end" }}>
+                  <IconButton onClick={() => toggleMenu(row._id)} style={{ color: "#2c59fa" }}>
+                    <CiMenuKebab style={{ fontSize: "25px" }} />
+                    {openMenuId === row._id && (
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          zIndex: 1,
+                          backgroundColor: "#fff",
+                          boxShadow: 1,
+                          borderRadius: 1,
+                          p: 1,
+                          
+                          right: "30px",
+                          m: 2,
+                          top: "10px",
+                          width: "150px",
+                          textAlign: "start",
+                        }}
+                      >
+                        <Typography sx={{ fontSize: "12px", fontWeight: "bold" }} onClick={() => handleEdit(row._id)}>
+                          Edit
+                        </Typography>
+
+                        <Typography sx={{ fontSize: "12px", fontWeight: "bold" }} onClick={() => handleDuplicate(row._id)}>
+                          Duplicate
+                        </Typography>
+                        <Typography sx={{ fontSize: "12px", fontWeight: "bold" }} onClick={() => handlePrint(row._id)}>
+                          Print
+                        </Typography>
+                        <Typography sx={{ fontSize: "12px", fontWeight: "bold" }} onClick={() => handleDownload(row._id)}>
+                          Download
+                        </Typography>
+
+                        <Typography sx={{ fontSize: "12px", color: "red", fontWeight: "bold" }} onClick={() => handleDelete(row._id)}>
+                          Delete
+                        </Typography>
+                      </Box>
+                    )}
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))} */}

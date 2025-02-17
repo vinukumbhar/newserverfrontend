@@ -477,6 +477,9 @@ const CreateInvoice = ({ charLimit = 4000, onClose }) => {
         total: totalAmount,
       },
       active: "true",
+      paidAmount:"",
+      invoiceStatus:"",
+      balanceDueAmount:"",
     });
 
     // console.log(raw)
