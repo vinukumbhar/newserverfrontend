@@ -859,6 +859,9 @@ const CreateJob = ({ charLimit = 4000 }) => {
           taxTotal: invoiceData.summary.taxTotal || "",
           total: invoiceData.summary.total || "",
         },
+        paidAmount:"",
+      invoiceStatus:"Pending",
+      balanceDueAmount:"",
       });
       console.log("invoices", raw);
       const requestOptions = {

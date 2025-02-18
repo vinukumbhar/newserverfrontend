@@ -429,6 +429,9 @@ const Pipeline = ({ charLimit = 4000 }) => {
           taxTotal: invoiceData.summary.taxTotal || "",
           total: invoiceData.summary.total || "",
         },
+        paidAmount:"",
+      invoiceStatus:"Pending",
+      balanceDueAmount:"",
       });
 
       const requestOptions = {

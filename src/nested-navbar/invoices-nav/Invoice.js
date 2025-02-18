@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Checkbox, Autocomplete, Switch, FormControlLabel, Box, Button, Drawer, Typography, Chip, IconButton, Divider, Select, MenuItem, InputLabel, TextField, FormControl, FormLabel, InputAdornment, Popover, ListItem, List, ListItemText, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import { DialogActions,Dialog ,DialogTitle,Checkbox,DialogContent, Autocomplete, Switch, FormControlLabel, Box, Button, Drawer, Typography, Chip, IconButton, Divider, Select, MenuItem, InputLabel, TextField, FormControl, FormLabel, InputAdornment, Popover, ListItem, List, ListItemText, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
 import { CiMenuKebab } from "react-icons/ci";
 import { toast } from "react-toastify";
 import { useNavigate, useParams, useRouteLoaderData } from "react-router-dom";
@@ -80,7 +80,50 @@ const Invoice = () => {
         });
     }
   };
+  const [openDialog, setOpenDialog] = useState(false);
+const [selectedStatus, setSelectedStatus] = useState("");
+const [currentInvoice, setCurrentInvoice] = useState(null);
 
+const handleUpdateStatus = (invoiceNumber, status) => {
+  if (!invoiceNumber || !status) return;
+
+  fetch(`http://127.0.0.1/workflow/invoices/invoicestatus/${invoiceNumber}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ invoiceStatus: status }),
+  })
+    .then((response) => response.json())
+    .then((result) => {
+      console.log("Invoice status updated:", result);
+      // Optionally refresh data here
+    })
+    .catch((error) => console.error("Error updating invoice status:", error));
+};
+
+  // const handleUpdateStatus = (invoiceNumber) => {
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Content-Type", "application/json");
+  
+  //   const raw = JSON.stringify({
+  //     invoiceStatus: "Paid",
+  //   });
+  
+  //   const requestOptions = {
+  //     method: "PATCH",
+  //     headers: myHeaders,
+  //     body: raw,
+  //     redirect: "follow",
+  //   };
+  
+  //   fetch(`${INVOICES_API}/workflow/invoices/invoicestatus/${invoiceNumber}`, requestOptions)
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       console.log("Invoice status updated:", result);
+  //       // Optionally, refresh the invoice data
+  //     })
+  //     .catch((error) => console.error("Error updating invoice status:", error));
+  // };
+  
   //***********Invoice Create */
 
   const handleCreateInvoiceClick = () => {
@@ -508,7 +551,7 @@ const Invoice = () => {
                     padding: "4px 8px",
                     lineHeight: "1",
                     cursor: "pointer",
-                  }}></TableCell>
+                  }}>{row.invoiceStatus}</TableCell>
                   <TableCell style={{
                     fontSize: "12px",
                     padding: "4px 8px",
@@ -586,11 +629,32 @@ const Invoice = () => {
                           <Typography sx={{ fontSize: "12px", color: "red", fontWeight: "bold" }} onClick={() => handleDelete(row._id)}>
                             Delete
                           </Typography>
+                          {/* <Typography
+  sx={{ fontSize: "12px", fontWeight: "bold" }}
+  onClick={() => handleUpdateStatus(row.invoicenumber)}
+>
+  Update Status
+</Typography> */}
+<Typography
+  sx={{ fontSize: "12px", fontWeight: "bold" }}
+  onClick={() => {
+     setOpenDialog(true);
+    setCurrentInvoice(row.invoicenumber);
+   
+  }}
+>
+  Update Status
+</Typography>
+
+
+
+
                         </Box>
                       )}
                     </IconButton>
                   </TableCell>
                 </TableRow>
+                
               ))
             ) : (
               <div></div>
@@ -598,7 +662,29 @@ const Invoice = () => {
           </TableBody>
         </Table>
         </TableContainer>
-    
+        <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+  <DialogTitle>Update Invoice Status</DialogTitle>
+  <DialogContent>
+    <Autocomplete
+      options={["Paid", "Pending", "Overdue"]}
+      value={selectedStatus}
+      onChange={(event, newValue) => setSelectedStatus(newValue)}
+      renderInput={(params) => <TextField {...params} placeholder="Select Status" sx={{cursor:'pointer'}}/>}
+    />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+    <Button 
+      onClick={() => {
+        handleUpdateStatus(currentInvoice, selectedStatus);
+        setOpenDialog(false);
+      }} 
+      disabled={!selectedStatus}
+    >
+      Update
+    </Button>
+  </DialogActions>
+</Dialog>
 
       <Drawer
         anchor="right"

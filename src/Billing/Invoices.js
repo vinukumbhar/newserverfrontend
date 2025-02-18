@@ -655,6 +655,9 @@ const Invoices = ({ charLimit = 4000 }) => {
         total: totalAmount,
       },
       active: "true",
+      paidAmount:"",
+      invoiceStatus:"Pending",
+      balanceDueAmount:"",
     });
 
     // console.log(raw)

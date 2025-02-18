@@ -575,6 +575,9 @@ const AddJobs = ({
           taxTotal: invoiceData.summary.taxTotal || "",
           total: invoiceData.summary.total || "",
         },
+        paidAmount:"",
+      invoiceStatus:"Pending",
+      balanceDueAmount:"",
       });
 
       const requestOptions = {

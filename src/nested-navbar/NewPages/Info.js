@@ -1,10 +1,49 @@
-import { Box, ListItem, Chip, Autocomplete, Dialog, DialogActions, DialogContent, RadioGroup, Radio, DialogContentText, DialogTitle, FormControlLabel, FormControl, InputLabel, Grid, Card, CardContent, Typography, Divider, Button, IconButton, Switch, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import {
+  Box,
+  ListItem,
+  Chip,
+  Autocomplete,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  RadioGroup,
+  Radio,
+  DialogContentText,
+  DialogTitle,
+  FormControlLabel,
+  FormControl,
+  InputLabel,
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  Divider,
+  Button,
+  IconButton,
+  Switch,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { BiArchiveOut } from "react-icons/bi";
 import { LuUserCircle2 } from "react-icons/lu";
 import { MdEdit } from "react-icons/md";
 import { useParams } from "react-router-dom";
-import { Drawer, useMediaQuery, Menu, MenuItem, TextField, Select, Checkbox, ListItemText } from "@mui/material";
+import {
+  Drawer,
+  useMediaQuery,
+  Menu,
+  MenuItem,
+  TextField,
+  Select,
+  Checkbox,
+  ListItemText,
+} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ContactUpdateForm from "./contactupdate";
 import axios from "axios";
@@ -28,6 +67,82 @@ const Info = () => {
   const [accountDatabyid, setAccountDatabyid] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [open, setOpen] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [contactEmail, setContactEmail] = useState("");
+  const [contact, setContact] = useState(null);
+    const [personalMessage, setPersonalMessage] = useState("");
+  const handleSwitchChange = (contactData) => {
+    // setContactEmail(email);  // Set the email when the switch is checked
+    setContact(contactData);  
+    setOpenDialog(true);      // Open the dialog
+  };
+  const handleCloseDialog = () => {
+    setOpenDialog(false); // Close dialog
+  };
+  const handleMessageChange = (event) => {
+    setPersonalMessage(event.target.value); // Update personal message input
+  };
+  // const newUser = (accountid, email, firstName, middleName, lastName) => {
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Content-Type", "application/json");
+
+  //   const raw = JSON.stringify({
+  //     username: firstName, // Use the first name as username
+  //     email, // Use the provided email
+  //     password: firstName, // Replace with a dynamic password logic if needed
+  //     role: "Client",
+  //   });
+
+  //   const requestOptions = {
+  //     method: "POST",
+  //     headers: myHeaders,
+  //     body: raw,
+  //     redirect: "follow",
+  //   };
+
+  //   const url = `${LOGIN_API}/common/login/signup`;
+
+  //   fetch(url, requestOptions)
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       console.log(result);
+  //     })
+  //     .catch((error) => console.error(error));
+  // };
+
+  const handleSave = () => {
+    if (contact) {
+      console.log("contact",contact)
+      const { _id, email, firstName, middleName, lastName } = contact;
+      newUser(data, email, firstName, middleName, lastName);
+      updateContacts(_id)
+
+      setOpenDialog(false); // Close the dialog after saving
+    }
+  };
+  const updateContacts =(_id)=>{
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    
+    const raw = JSON.stringify({
+      "login": true
+    });
+    
+    const requestOptions = {
+      method: "PATCH",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow"
+    };
+    
+    fetch(`${CONTACT_API}/contacts/${_id}`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result)
+        fetchAccount();
+      })
+      .catch((error) => console.error(error));
+  }
   const handleMenuOpen = () => {
     setOpen(true);
   };
@@ -75,7 +190,10 @@ const Info = () => {
       redirect: "follow",
     };
 
-    fetch(`${ACCOUNT_API}/accounts/accountdetails/getAccountbyIdAll/${accountid}`, requestOptions)
+    fetch(
+      `${ACCOUNT_API}/accounts/accountdetails/getAccountbyIdAll/${accountid}`,
+      requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
@@ -111,7 +229,9 @@ const Info = () => {
   };
   const fetchContacts = async () => {
     try {
-      const response = await axios.get(`${CONTACT_API}/contacts/contactlist/list/`);
+      const response = await axios.get(
+        `${CONTACT_API}/contacts/contactlist/list/`
+      );
       setContactData(response.data.contactlist);
       console.log(response.data.contactlist);
     } catch (error) {
@@ -149,7 +269,12 @@ const Info = () => {
   };
 
   const handleDescriptionSave = () => {
-    console.log("Description saved for contact ID:", selectedContact, "Description:", description);
+    console.log(
+      "Description saved for contact ID:",
+      selectedContact,
+      "Description:",
+      description
+    );
     setContactDescription(description);
     updateDescriptiontoAccount(description);
     updateDescriptiontoContact(selectedContact, description);
@@ -217,7 +342,10 @@ const Info = () => {
       method: "DELETE",
       redirect: "follow",
     };
-    fetch(`${ACCOUNT_API}/accounts/accountdetails/removecontactfromaccount/${data}/${contactId}`, requestOptions)
+    fetch(
+      `${ACCOUNT_API}/accounts/accountdetails/removecontactfromaccount/${data}/${contactId}`,
+      requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
         handleContactUpdated();
@@ -238,7 +366,8 @@ const Info = () => {
   const [description, setDescription] = useState("");
   //********************Add Contacts */
   const [selectedContacts, setSelectedContacts] = useState([]);
-  const [isDrawerOpenForAddContact, setIsDrawerOpenForAddContact] = useState(false);
+  const [isDrawerOpenForAddContact, setIsDrawerOpenForAddContact] =
+    useState(false);
   const [filteredContacts, setFilteredContacts] = useState(contacts);
 
   // Effect to filter contacts based on search term
@@ -247,7 +376,11 @@ const Info = () => {
   };
 
   useEffect(() => {
-    setFilteredContacts(contactData.filter((contact) => contact.name.toLowerCase().includes(searchQuery.toLowerCase())));
+    setFilteredContacts(
+      contactData.filter((contact) =>
+        contact.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
   }, [searchQuery, contactData]);
 
   const handleAddContactDrawer = () => {
@@ -257,10 +390,10 @@ const Info = () => {
   const handleCloseDrawerofAddContact = () => {
     setIsDrawerOpenForAddContact(false);
   };
-    const [newUserId, setNewUserId] = useState("");
-    const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
-    const CLIENT_PORT = process.env.REACT_APP_CLIENT_SERVER_URI;
- const clientalldata = (userId, email, firstName, middleName, lastName) => {
+  const [newUserId, setNewUserId] = useState("");
+  const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
+  const CLIENT_PORT = process.env.REACT_APP_CLIENT_SERVER_URI;
+  const clientalldata = (userId, email, firstName, middleName, lastName) => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -304,39 +437,37 @@ const Info = () => {
         toast.error("Error signing up. Please try again.");
       });
   };
-    const clientCreatedmail = (email, personalMessage, userid) => {
-      const port = window.location.port;
-      const urlportlogin = `${CLIENT_PORT}/updatepassword`;
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-  
-      const url = urlportlogin;
-      const raw = JSON.stringify({
-        email: email,
-        personalMessage: personalMessage,
-        url: url,
-        AccountId: userid,
-      });
-      console.log(raw);
-      const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow",
-      };
-  
-      const urlusersavedmail = `${LOGIN_API}/clientsavedemail/`;
-      console.log(urlusersavedmail);
-      fetch(urlusersavedmail, requestOptions)
-        .then((response) => response.json())
-  
-        .then((result) => {
-          console.log(result);
-          // createNewSidebarData()
-        })
-        .catch((error) => console.error(error));
+  const clientCreatedmail = (email, personalMessage, userid) => {
+    const port = window.location.port;
+    const urlportlogin = `${CLIENT_PORT}/updatepassword`;
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const url = urlportlogin;
+    const raw = JSON.stringify({
+      email: email,
+      personalMessage: personalMessage,
+      url: url,
+      AccountId: userid,
+    });
+    console.log(raw);
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
     };
-  const newUser = (accountid, email, firstName, middleName, lastName) => {
+
+    const urlusersavedmail = `${LOGIN_API}/clientsavedemail/`;
+    console.log(urlusersavedmail);
+    fetch(urlusersavedmail, requestOptions)
+      .then((response) => response.json())
+
+ 
+      .catch((error) => console.error(error));
+  };
+  const newUser = (data, email, firstName, middleName, lastName) => {
+    console.log("acc",data)
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -363,9 +494,9 @@ const Info = () => {
         console.log(result._id);
         setNewUserId(result._id);
         // Update account with the newly created user ID
-        updateAcountUserId(result._id, accountid);
+        updateAcountUserId(result._id, data);
         clientalldata(result._id, email, firstName, middleName, lastName);
-        clientCreatedmail(email, '', result._id);
+        clientCreatedmail(email, "", result._id);
         // Optional: Trigger user created email notification
         // userCreatedmail();
       })
@@ -422,7 +553,9 @@ const Info = () => {
   const updateContactstoAccount = (selectedContacts) => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    const existingContactIds = accountDatabyid.contacts.map((contact) => contact._id);
+    const existingContactIds = accountDatabyid.contacts.map(
+      (contact) => contact._id
+    );
     // Combine existing contact IDs with the new ones
     const combinedContacts = [...existingContactIds, ...selectedContacts];
     console.log(combinedContacts);
@@ -436,7 +569,10 @@ const Info = () => {
       body: raw,
       redirect: "follow",
     };
-    fetch(`${ACCOUNT_API}/accounts/accountdetails/${accountDatabyid._id}`, requestOptions)
+    fetch(
+      `${ACCOUNT_API}/accounts/accountdetails/${accountDatabyid._id}`,
+      requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
@@ -453,7 +589,13 @@ const Info = () => {
         <Grid item xs={12} sm={6}>
           <Card sx={{ boxShadow: 3, borderRadius: 2, mr: 5 }}>
             <CardContent>
-              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
                 <Typography variant="h5" fontWeight="bold">
                   Account Details
                 </Typography>
@@ -476,25 +618,47 @@ const Info = () => {
                     },
                   }}
                 >
-                  <Accountupdate selectedAccount={accountDatabyid} onClose={() => setIsNewDrawerOpen(false)} />
+                  <Accountupdate
+                    selectedAccount={accountDatabyid}
+                    onClose={() => setIsNewDrawerOpen(false)}
+                  />
                 </Drawer>
               </Box>
               <Box sx={{ mt: 1 }}>
                 <Divider />
               </Box>
               <Box sx={{ mt: 2 }}>
-                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
                   <LuUserCircle2 style={{ width: "80px", height: "80px" }} />
                   <Box>
-                    <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>{accName}</Typography>
-                    <Typography sx={{ fontSize: "15px" }}>{usertype}</Typography>
+                    <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
+                      {accName}
+                    </Typography>
+                    <Typography sx={{ fontSize: "15px" }}>
+                      {usertype}
+                    </Typography>
                   </Box>
-                  <Button variant="outlined">Log in as account (read-only)</Button>
+                  <Button variant="outlined">
+                    Log in as account (read-only)
+                  </Button>
                 </Box>
               </Box>
               <Box mt={3}>
                 <Typography fontWeight="bold">Account Info</Typography>
-                <Box sx={{ display: "flex", alignItems: "center", gap: "20px", mt: 2 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "20px",
+                    mt: 2,
+                  }}
+                >
                   <Typography>Tags</Typography>
                   <Typography>
                     <Box sx={{ display: "flex", gap: "10px" }}>
@@ -518,9 +682,18 @@ const Info = () => {
                     </Box>
                   </Typography>
                 </Box>
-                <Box sx={{ display: "flex", alignItems: "center", gap: "20px", mt: 2 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "20px",
+                    mt: 2,
+                  }}
+                >
                   <Typography>Team Members</Typography>
-                  <Typography sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                  <Typography
+                    sx={{ display: "flex", alignItems: "center", gap: 2 }}
+                  >
                     {" "}
                     {teams &&
                       teams.map((team, index) => (
@@ -551,7 +724,13 @@ const Info = () => {
         <Grid item xs={12} sm={6}>
           <Card sx={{ boxShadow: 3, borderRadius: 2 }}>
             <CardContent>
-              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
                 <Typography variant="h5" fontWeight="bold">
                   Contacts
                 </Typography>
@@ -587,7 +766,10 @@ const Info = () => {
                   <Typography variant="h6" fontWeight="bold">
                     Link Contacts
                   </Typography>
-                  <IconButton onClick={handleCloseDrawerofAddContact} sx={{ color: "#1876d3" }}>
+                  <IconButton
+                    onClick={handleCloseDrawerofAddContact}
+                    sx={{ color: "#1876d3" }}
+                  >
                     <CloseIcon />
                   </IconButton>
                 </Box>
@@ -631,7 +813,9 @@ const Info = () => {
                     )}
                     fullWidth
                     disableClearable // Prevents clearing the input by clicking the clear button
-                    value={filteredContacts.filter((contact) => selectedContacts.includes(contact.id))} // Control the selected value
+                    value={filteredContacts.filter((contact) =>
+                      selectedContacts.includes(contact.id)
+                    )} // Control the selected value
                   />
                   {/* <Autocomplete
                     multiple
@@ -671,26 +855,36 @@ const Info = () => {
                     gap: 2,
                   }}
                 >
-                  <Button variant="contained"  onClick={handleLinkAccounts} sx={{
-                backgroundColor: 'var(--color-save-btn)',  // Normal background
-               
-                '&:hover': {
-                  backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                },
-               width:'80px',borderRadius:'15px'
-              }}>
+                  <Button
+                    variant="contained"
+                    onClick={handleLinkAccounts}
+                    sx={{
+                      backgroundColor: "var(--color-save-btn)", // Normal background
+
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                      },
+                      width: "80px",
+                      borderRadius: "15px",
+                    }}
+                  >
                     Link
                   </Button>
-                  <Button variant="outlined" onClick={handleCloseDrawerofAddContact} sx={{
-                    borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                   color:'var(--color-save-btn)',
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      color:'#fff',
-                      border:"none"
-                    },
-                    width:'80px',borderRadius:'15px'
-                  }}>
+                  <Button
+                    variant="outlined"
+                    onClick={handleCloseDrawerofAddContact}
+                    sx={{
+                      borderColor: "var(--color-border-cancel-btn)", // Normal background
+                      color: "var(--color-save-btn)",
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        color: "#fff",
+                        border: "none",
+                      },
+                      width: "80px",
+                      borderRadius: "15px",
+                    }}
+                  >
                     Cancel
                   </Button>
                 </Box>
@@ -714,23 +908,55 @@ const Info = () => {
 
                     <TableBody>
                       {contacts.map((contact) => {
-                        const { _id, contactName, email, login, notify, emailSync, description } = contact;
+                        const {
+                          _id,
+                          contactName,
+                          email,
+                          login,
+                          notify,
+                          emailSync,
+                          description,
+                        } = contact;
                         return (
                           <React.Fragment key={_id}>
                             <TableRow>
                               <TableCell colSpan={5}>
                                 <Box>
                                   {/* Contact Name and More Options Button */}
-                                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                    <Typography sx={{ fontWeight: "bold", fontSize: "15px", display: "inline-block", color: "#1976d2" }} onClick={() => handleClick(_id)}>
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    <Typography
+                                      sx={{
+                                        fontWeight: "bold",
+                                        fontSize: "15px",
+                                        display: "inline-block",
+                                        color: "#1976d2",
+                                      }}
+                                      onClick={() => handleClick(_id)}
+                                    >
                                       {contactName}
                                     </Typography>
-                                    <IconButton aria-label="more options" size="small" onClick={(e) => handleMenuClick(e, _id, contactName)}>
+                                    <IconButton
+                                      aria-label="more options"
+                                      size="small"
+                                      onClick={(e) =>
+                                        handleMenuClick(e, _id, contactName)
+                                      }
+                                    >
                                       <MoreVertIcon />
                                     </IconButton>
                                   </Box>
                                   <Typography
-                                    sx={{ fontSize: "14px", color: "#757575", marginTop: "4px" }} // Description styling
+                                    sx={{
+                                      fontSize: "14px",
+                                      color: "#757575",
+                                      marginTop: "4px",
+                                    }} // Description styling
                                   >
                                     {/* Display contactdescription if available, else fall back to description */}
                                     {description}
@@ -743,7 +969,12 @@ const Info = () => {
                             <TableRow>
                               <TableCell>{email}</TableCell>
                               <TableCell>
-                                <Switch checked={login} disabled />
+                                <Switch
+                                  checked={login}
+                                  // onChange={() => handleSwitchChange(contact)}
+                                  // disabled={login}
+                                  disabled
+                                />
                               </TableCell>
                               <TableCell>
                                 <Switch checked={notify} disabled />
@@ -763,7 +994,9 @@ const Info = () => {
                       open={menuOpen} // Use derived state here
                       onClose={handleMenuClose}
                     >
-                      <MenuItem onClick={handleEditDescription}>Edit Description</MenuItem>
+                      <MenuItem onClick={handleEditDescription}>
+                        Edit Description
+                      </MenuItem>
                       <MenuItem onClick={handleUnlink}>Unlink</MenuItem>
                     </Menu>
 
@@ -777,9 +1010,18 @@ const Info = () => {
                       }}
                     >
                       <DialogTitle id="form-dialog-title">
-                        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
+                        >
                           <Typography variant="h6">{`Description for: ${contactName}`}</Typography>
-                          <Button onClick={handleDescriptionCancel} color="secondary">
+                          <Button
+                            onClick={handleDescriptionCancel}
+                            color="secondary"
+                          >
                             X
                           </Button>
                         </Box>
@@ -788,13 +1030,68 @@ const Info = () => {
                         <Typography variant="h5" fontWeight="bold">
                           Description
                         </Typography>
-                        <TextField autoFocus margin="dense" type="text" fullWidth variant="outlined" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Enter description" data-test="contact-notes-input" />
+                        <TextField
+                          autoFocus
+                          margin="dense"
+                          type="text"
+                          fullWidth
+                          variant="outlined"
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                          placeholder="Enter description"
+                          data-test="contact-notes-input"
+                        />
                       </DialogContent>
                       <DialogActions>
                         <Button onClick={handleDescriptionSave} color="primary">
                           Save
                         </Button>
-                        <Button onClick={handleDescriptionCancel} color="primary">
+                        <Button
+                          onClick={handleDescriptionCancel}
+                          color="primary"
+                        >
+                          Cancel
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
+
+                    {/* client Poratl Modal */}
+                    <Dialog
+                      open={openDialog}
+                      onClose={handleCloseDialog}
+                      aria-labelledby="form-dialog-title"
+                      PaperProps={{
+                        style: { width: "800px" },
+                      }}
+                    >
+                      <DialogTitle >
+                        
+                          <Typography variant="h6">
+                            Add portal access
+                          </Typography>
+                          <Button onClick={handleCloseDialog} color="secondary">
+                            X
+                          </Button>
+                       
+                      </DialogTitle>
+                      <DialogContent>
+                        <p>
+                          You are adding portal access for the following users:
+                        </p>
+                        <div>{contact?.email}</div>
+                         <TextField
+                                            label="Personal message"
+                                            variant="outlined"
+                                            fullWidth
+                                            value={personalMessage}
+                                            onChange={handleMessageChange}
+                                            // onChange={(e) => handleContactInputChange(index, e)}
+                                            sx={{ mt: 2 }}
+                                          />
+                      </DialogContent>
+                      <DialogActions>
+                        <Button color="primary" onClick={handleSave}>Save</Button>
+                        <Button onClick={handleCloseDialog} color="primary">
                           Cancel
                         </Button>
                       </DialogActions>
@@ -807,8 +1104,21 @@ const Info = () => {
         </Grid>
       </Grid>
 
-      <Drawer anchor="right" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} sx={{ width: 600 }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px", ml: 1 }}>
+      <Drawer
+        anchor="right"
+        open={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        sx={{ width: 600 }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "20px",
+            ml: 1,
+          }}
+        >
           <Typography sx={{ fontWeight: "bold" }} variant="h6">
             Edit Contact
           </Typography>

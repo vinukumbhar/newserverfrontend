@@ -478,7 +478,7 @@ const CreateInvoice = ({ charLimit = 4000, onClose }) => {
       },
       active: "true",
       paidAmount:"",
-      invoiceStatus:"",
+      invoiceStatus:"Pending",
       balanceDueAmount:"",
     });
 
