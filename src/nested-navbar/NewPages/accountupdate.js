@@ -73,8 +73,10 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
   const fetchUserData = async () => {
     try {
       const url = `${LOGIN_API}/common/users/roles?roles=TeamMember,Admin`;
+      // const url = "http://68.251.138.236:8000/common/users/roles?roles=TeamMember,Admin"
       const response = await fetch(url);
       const data = await response.json();
+      console.log("teammember",data)
       setUserData(data);
     } catch (error) {
       console.error("Error fetching data:", error);

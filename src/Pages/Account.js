@@ -307,7 +307,7 @@ const FixedColumnTable = () => {
     setIsManageTeamOpen(false);
   };
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5); // 5 rows per page
+  const [rowsPerPage, setRowsPerPage] = useState(30); // 5 rows per page
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -1765,7 +1765,7 @@ const FixedColumnTable = () => {
           </TableContainer>
 
           <TablePagination
-            rowsPerPageOptions={[1,2,5, 10, 15]}
+            rowsPerPageOptions={[30,40,50,60,100]}
             component="div"
             count={filteredData.length}
             rowsPerPage={rowsPerPage}

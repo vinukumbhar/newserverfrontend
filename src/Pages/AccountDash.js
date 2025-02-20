@@ -42,7 +42,7 @@ const AccountsDash = () => {
   return (
     <Box>
       <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-        <Link to="/clients/accounts">
+        <Link to="/clients/accounts/activeaccounts">
           <IoArrowBackSharp style={{ fontSize: "25px" }} />
         </Link>
         <FaRegEye style={{ cursor: "pointer", color: "#007bff" }} />
@@ -84,6 +84,7 @@ const AccountsDash = () => {
           <NavLink to={`/clients/accounts/accountsdash/proposals/${data}`}> Proposals & ELs</NavLink>
           <NavLink to={`/clients/accounts/accountsdash/notes/${data}`}> Notes</NavLink>
           <NavLink to={`/clients/accounts/accountsdash/workflow/${data}/pipelines`}> Workflow</NavLink>
+          <NavLink to={`/clients/accounts/accountsdash/setpassword/${data}`}> Set Password</NavLink>
         </Box>
       </Box>
       <Box pl={3} pr={3}>

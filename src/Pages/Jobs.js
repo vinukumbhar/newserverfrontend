@@ -946,7 +946,7 @@ const Example = ({ charLimit = 4000 }) => {
   };
   // Pagination State
  const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(30);
   
   
      const handleChangePage = (_, newPage) => {
@@ -1383,7 +1383,7 @@ const Example = ({ charLimit = 4000 }) => {
           </Box>
           </LocalizationProvider>
         </Drawer>
-        <Box
+        {/* <Box
           className="client-document-nav"
           sx={{
             display: "flex",
@@ -1457,8 +1457,49 @@ const Example = ({ charLimit = 4000 }) => {
               )}
             </Box>
           </Box>
-        </Box>
-        
+        </Box> */}
+        <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        backgroundColor: "#EBF0F5", // Light grayish-blue background
+        borderRadius: "12px",
+        padding: "4px",
+        width: "fit-content",
+      }}
+    >
+      <Typography
+        onClick={handleActiveClick}
+        sx={{
+          backgroundColor: activeButton === "active" ? "#FFFFFF" : "transparent",
+          color: activeButton === "active" ? "var(--color-save-btn)" : "#333",
+          fontWeight: activeButton === "active" ? "bold" : "normal",
+          padding: "6px 12px",
+          borderRadius: "8px",
+          fontSize: "15px",
+          cursor: "pointer",
+          transition: "all 0.3s ease",
+        }}
+      >
+        Active
+      </Typography>
+
+      <Typography
+        onClick={handleArchivedClick}
+        sx={{
+          backgroundColor: activeButton === "archived" ? "#FFFFFF" : "transparent",
+          color: activeButton === "archived" ? "var(--color-save-btn)" : "#333",
+          fontWeight: activeButton === "archived" ? "bold" : "normal",
+          padding: "6px 12px",
+          borderRadius: "8px",
+          fontSize: "15px",
+          cursor: "pointer",
+          transition: "all 0.3s ease",
+        }}
+      >
+        Archived
+      </Typography>
+    </Box>
  
       <TableContainer component={Paper}>
           <Table style={{ tableLayout: "fixed", width: "100%" }}>
@@ -1585,7 +1626,17 @@ const Example = ({ charLimit = 4000 }) => {
                   Time in Current Stage
                 </TableCell>
                 <TableCell
+                  // style={{
+                  //   fontSize: "12px",
+                  //   fontWeight: "bold",
+                  //   padding: "16px",
+                  // }}
+                  // width="100"
                   style={{
+                    position: "sticky",
+                    right: 0,  // Stick to the right side
+                    zIndex: 2,  // Ensure it appears above other elements
+                    background: "#fff",
                     fontSize: "12px",
                     fontWeight: "bold",
                     padding: "16px",
@@ -1742,7 +1793,16 @@ const Example = ({ charLimit = 4000 }) => {
                       {row.updatedAt}
                     </TableCell>
                     <TableCell
+                      // style={{
+                      //   fontSize: "12px",
+                      //   padding: "4px 8px",
+                      //   lineHeight: "1",
+                      // }}
                       style={{
+                        position: "sticky",
+                        right: 0,  // Stick to the right side
+                        zIndex: 1,  // Keep it above the table content
+                        background: "#fff",
                         fontSize: "12px",
                         padding: "4px 8px",
                         lineHeight: "1",
@@ -1774,7 +1834,7 @@ const Example = ({ charLimit = 4000 }) => {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[1,2,5, 10, 25]}
+          rowsPerPageOptions={[30,40,50,60,100]}
           component="div"
           count={jobData.length}
           rowsPerPage={rowsPerPage}

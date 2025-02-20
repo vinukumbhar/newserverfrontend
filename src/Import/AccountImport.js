@@ -167,7 +167,8 @@ const AccountImport = () => {
           account.linkedContact3,
           account.linkedContact4,
         ].filter(Boolean),
-        foldertemplate: "678d08eb8ade166da76a0ffd",
+        // foldertemplate: "678d08eb8ade166da76a0ffd",
+        foldertemplate: "6773912803219905d58badaf"
       };
   
       try {

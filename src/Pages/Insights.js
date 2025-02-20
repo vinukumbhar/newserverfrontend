@@ -10,7 +10,8 @@ import {
   Button,
 } from "@mui/material";
 const Insights = () => {
-
+  const INVOICE_NEW = process.env.REACT_APP_INVOICES_URL;
+  const JOBS_API = process.env.REACT_APP_ADD_JOBS_URL;
   // jobs count
   const [jobCount, setJobCount] = useState(null);
   const [activeJobCount, setActiveJobCount] = useState(null);
@@ -25,7 +26,7 @@ const Insights = () => {
   });
   useEffect(() => {
     // Fetch job count from API
-    axios.get("http://127.0.0.1/workflow/jobs/jobscount")
+    axios.get(`${JOBS_API}/workflow/jobs/jobscount`)
       .then((response) => {
         setJobCount(response.data.count); // Assuming API returns { count: <job count> }
       })
@@ -34,7 +35,7 @@ const Insights = () => {
       });
 
        // Fetch count of active jobs
-    axios.get("http://127.0.0.1/workflow/jobs/activejobcounts")
+    axios.get(`${JOBS_API}/workflow/jobs/activejobcounts`)
     .then((response) => {
       setActiveJobCount(response.data.count);
     })
@@ -43,7 +44,7 @@ const Insights = () => {
     });
 
   // Fetch count of inactive jobs
-  axios.get("http://127.0.0.1/workflow/jobs/inactivejobcounts")
+  axios.get(`${JOBS_API}/workflow/jobs/inactivejobcounts`)
     .then((response) => {
       setInactiveJobCount(response.data.count);
     })
@@ -52,7 +53,7 @@ const Insights = () => {
     });
 
       // Fetch count of total invoices
-  axios.get("http://127.0.0.1/workflow/invoices/invoicecount")
+  axios.get(`${INVOICE_NEW}/workflow/invoices/invoicecount`)
   .then((response) => {
     setInvoiceCount(response.data.count);
   })
@@ -60,7 +61,7 @@ const Insights = () => {
     console.error("Error fetching inactive job count:", error);
   });
   axios
-      .get("http://127.0.0.1/workflow/invoices/invoicestatuscount")
+      .get(`${INVOICE_NEW}/workflow/invoices/invoicestatuscount`)
       .then((response) => {
         const data = response.data.invoiceCounts;
         
@@ -79,7 +80,7 @@ const Insights = () => {
       })
       .catch((error) => console.error("Error fetching invoice counts:", error));
       axios
-      .get("http://127.0.0.1/workflow/invoices/invoicesummary")
+      .get(`${INVOICE_NEW}/workflow/invoices/invoicesummary`)
       .then((response) => {
         const data = response.data.summary;
         let totalAmount = 0, paidAmount = 0, pendingAmount = 0, overdueAmount = 0;
@@ -201,59 +202,7 @@ const Insights = () => {
       
 
       </Box>
-      {/* <Box mt={3}>
-      <Typography gutterBottom variant="h5" component="div">
-        Invoices Amount
-      </Typography>
-      <Box mt={3}>
-        <Grid container spacing={2} justifyContent="center">
-          <Grid item xs={12} sm={3}>
-            <Card sx={{ width:'250px'}}>
-              <CardContent>
-                <Typography gutterBottom variant="h6" component="div">
-                  Total Amount
-                </Typography>
-                <Typography variant="body2" color="text.secondary"></Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} sm={3}>
-            <Card sx={{ width:'250px'}}>
-              <CardContent>
-                <Typography gutterBottom variant="h6" component="div">
-                  Pending Amount
-                </Typography>
-                <Typography variant="body2" color="text.secondary"></Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} sm={3}>
-            <Card sx={{ width:'250px'}}>
-              <CardContent>
-                <Typography gutterBottom variant="h6" component="div">
-                  Paid Amount
-                </Typography>
-                <Typography variant="body2" color="text.secondary"></Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={3}>
-      <Card sx={{ width:'250px'}}>
-        <CardContent>
-          <Typography gutterBottom variant="h6" component="div">
-            Overdue Amount
-          </Typography>
-          <Typography variant="body2" color="text.secondary"></Typography>
-        </CardContent>
-      </Card>
-    </Grid>
-        </Grid>
-      </Box>
       
-
-      </Box> */}
       <Box mt={3}>
       <Typography gutterBottom variant="h5">Invoices Amount</Typography>
       <Box mt={3}>

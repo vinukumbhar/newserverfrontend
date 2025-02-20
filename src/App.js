@@ -3,7 +3,9 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import SidebarComponent from "./Sidebar/Sidebar";
 import Insights from "./Pages/Insights";
-import Account from "./Pages/Account";
+import Account from "./Pages/Accounts/Accounts.js";
+import ActiveAccount from "./Pages/Accounts/ActiveAccounts.js"
+import ArchivedAccount from "./Pages/Accounts/ArchivedAccounts.js"
 import Contact from "./Pages/Contact";
 import ErrorPage from "./Pages/ErrorPage";
 import Tasks from "./Templates/Task/Tasks";
@@ -91,7 +93,7 @@ import TimeEntry from "./Pages/TimeEntry.js";
 import AccountImport from "./Import/AccountImport.js";
 import ContactImport from "./Import/ContactImport.js";
 import TagsImport from "./Import/TagsImport.js";
-
+import SetPassword from "./nested-navbar/NewPages/setPassword.js"
 const App = () => {
   return (
     <BrowserRouter>
@@ -105,7 +107,10 @@ const App = () => {
         <Route path="/" element={<SidebarComponent />}>
           <Route index element={<Insights />} />
           <Route path="/docs" element={<Docs />} />
-          <Route path="clients/accounts" element={<Account />} />
+          <Route path="/clients/accounts" element={<Account />} >
+          <Route path="activeaccounts" element={<ActiveAccount/>}/>
+          <Route path="archivedaccounts" element={<ArchivedAccount/>}/>
+          </Route>
           <Route path="clients/contacts" element={<Contact />} />
           <Route path="stages" element={<Stages />} />
           <Route path="firmtemp/tags" element={<NewTag/>}/>
@@ -202,6 +207,7 @@ const App = () => {
               <Route path="activejobs" element={<ActiveJobs />} />
               <Route path="archivedjobs" element={<ArchivedJobs />} />
             </Route>
+            <Route path="setpassword/:data" element={<SetPassword />} />
           </Route>
           <Route path="*" element={<ErrorPage />} />
         </Route>

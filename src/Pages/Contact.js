@@ -169,7 +169,7 @@ const filteredData = useMemo(() => {
 
   // Pagination states
    const [page, setPage] = useState(0);
-   const [rowsPerPage, setRowsPerPage] = useState(5);
+   const [rowsPerPage, setRowsPerPage] = useState(30);
 
     // Handle page change
   const handleChangePage = (event, newPage) => {
@@ -178,7 +178,7 @@ const filteredData = useMemo(() => {
 
   // Handle rows per page change
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 5));
+    setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0); // Reset to first page when changing rows per page
   };
 
@@ -687,7 +687,7 @@ const filteredData = useMemo(() => {
   onPageChange={handleChangePage}
   rowsPerPage={rowsPerPage}
   onRowsPerPageChange={handleChangeRowsPerPage}
-  rowsPerPageOptions={[5, 10, 25,30,35,40,45, 50]} // Added row options
+  rowsPerPageOptions={[30,40, 50,60,100]} // Added row options
   
 />
 
