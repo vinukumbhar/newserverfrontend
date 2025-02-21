@@ -72,7 +72,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
   const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
   const fetchUserData = async () => {
     try {
-      const url = `${LOGIN_API}/common/users/roles?roles=TeamMember,Admin`;
+      const url = `${LOGIN_API}/common/users/roles?roles=TeamMember`;
       // const url = "http://68.251.138.236:8000/common/users/roles?roles=TeamMember,Admin"
       const response = await fetch(url);
       const data = await response.json();

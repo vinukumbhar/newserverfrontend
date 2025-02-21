@@ -190,7 +190,8 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
   const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
   const fetchUserData = async () => {
     try {
-      const url = `${LOGIN_API}/common/users/roles?roles=TeamMember,Admin`;
+      // const url = `${LOGIN_API}/common/users/roles?roles=TeamMember,Admin`;
+      const url = `${LOGIN_API}/common/users/roles?roles=TeamMember`;
       const response = await fetch(url);
       const data = await response.json();
       setUserData(data);
@@ -813,6 +814,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
+    const password = `${firstName}@123`;
     const raw = JSON.stringify({
       email: email,
       firstName: firstName,
@@ -822,8 +824,8 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
 
       // phoneNumber: phoneNumber,
       accountName: accountName,
-      password: "Demo@123",
-      cpassword: "Demo@123",
+      password: password,
+      cpassword: password,
     });
 
     const requestOptions = {
@@ -845,6 +847,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
       .then((result) => {
         console.log(result);
         console.log(result.client._id);
+        
         // setClientIdUpdate(result.client._id)
         // newUser(result.client._id);
       })
@@ -856,11 +859,11 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
   const newUser = (accountid, email, firstName, middleName, lastName) => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-
+    const password = `${firstName}@123`;
     const raw = JSON.stringify({
       username: firstName, // Use the first name as username
       email, // Use the provided email
-      password: firstName, // Replace with a dynamic password logic if needed
+      password: password, // Replace with a dynamic password logic if needed
       role: "Client",
     });
 
@@ -882,7 +885,13 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
         // Update account with the newly created user ID
         updateAcountUserId(result._id, accountid);
         clientalldata(result._id, email, firstName, middleName, lastName);
-        clientCreatedmail(email, personalMessage, result._id);
+
+
+        // clientemail to activate client portal
+        // clientCreatedmail(email, personalMessage, result._id);
+
+
+        
         // Optional: Trigger user created email notification
         // userCreatedmail();
       })
@@ -936,7 +945,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
         // toast.success("Contact created successfully!");
         toast.success("Contact created successfully!");
 
-        navigate("/clients/accounts");
+        navigate("/clients/accounts/activeaccounts");
         // Handle successful submission (e.g., clear forms, show success message)
       })
       .catch((error) => {
