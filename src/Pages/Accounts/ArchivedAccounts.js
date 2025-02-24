@@ -88,43 +88,89 @@ const FixedColumnTable = () => {
   const [anchorE2, setAnchorE2] = useState(null);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState("");
+  // const fetchData = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const response = await axios.get(
+  //       `${ACCOUNT_API}/accounts/account/accountdetailslist/${isActiveTrue}`
+  //     );
+  //     let accountsListData = response.data.accountlist;
+  //     console.log("accounts", accountsListData);
+  //     // Retrieve team member data from localStorage
+  //     const storedData = JSON.parse(localStorage.getItem("teamMemberData"));
+  //     console.log("recived data", storedData);
+  //     const userRole = localStorage.getItem("userRole");
+  //     console.log("role is", userRole);
+  //     setUserRole(userRole);
+  //     // Check if the user is a TeamMember and if they have permission to view accounts (viewallAccounts = true)
+  //     //  const canViewAccounts = userRole === "TeamMember" && storedData.teammember?.viewallAccounts;
+  //     const canViewAccounts =
+  //       userRole === "Admin" || // Admins can always view accounts
+  //       (userRole === "TeamMember" && storedData.teammember?.viewallAccounts);
+
+  //     if (canViewAccounts) {
+  //       setAccountData(accountsListData);
+  //     } else {
+  //       setAccountData([]); // Clear account data if not permitted
+  //       // setAccountData(accountsListData);
+  //     }
+  //   } catch (error) {
+  //     console.log("Error:", error);
+  //   } finally {
+  //     setLoading(false); // Stop loader
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchData();
+  // }, [ACCOUNT_API, isActiveTrue]);
+
+  const [viewAllAccounts, setViewAllAccounts] = useState(false);
   const fetchData = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${ACCOUNT_API}/accounts/account/accountdetailslist/${isActiveTrue}`
-      );
-      let accountsListData = response.data.accountlist;
-      console.log("accounts", accountsListData);
-      // Retrieve team member data from localStorage
       const storedData = JSON.parse(localStorage.getItem("teamMemberData"));
-      console.log("recived data", storedData);
-      const userRole = localStorage.getItem("userRole");
-      console.log("role is", userRole);
-      setUserRole(userRole);
-      // Check if the user is a TeamMember and if they have permission to view accounts (viewallAccounts = true)
-      //  const canViewAccounts = userRole === "TeamMember" && storedData.teammember?.viewallAccounts;
-      const canViewAccounts =
-        userRole === "Admin" || // Admins can always view accounts
-        (userRole === "TeamMember" && storedData.teammember?.viewallAccounts);
+      console.log("Received stored teamMemberData:", storedData);
+const loginuserid = storedData?.teammember?.userid;
+      console.log("User role is:", userRole);
 
-      if (canViewAccounts) {
-        setAccountData(accountsListData);
-      } else {
-        setAccountData([]); // Clear account data if not permitted
-        // setAccountData(accountsListData);
+      let url = userRole === "Admin"
+      ? `${ACCOUNT_API}/accounts/account/accountdetailslist/${isActiveTrue}`
+      : `${ACCOUNT_API}/accounts/getaccounts/${loginuserid}/${isActiveTrue}`;
+      
+      const response = await axios.get(url);
+      console.log("API Response:", response.data.accountlist);
+
+      setAccountData(response.data.accountlist || []);
+
+      if (userRole === "TeamMember") {
+        setViewAllAccounts(storedData?.teammember?.viewallAccounts || false);
+        if (!storedData?.teammember?.viewallAccounts) {
+          setLoading(false);
+          return;
+        }
       }
     } catch (error) {
-      console.log("Error:", error);
+      console.error("Error fetching data:", error.response?.data || error);
     } finally {
-      setLoading(false); // Stop loader
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [ACCOUNT_API, isActiveTrue]);
+  
+  console.log(viewAllAccounts)
 
+  useEffect(() => {
+    const storedUserRole = localStorage.getItem("userRole");
+    console.log("Fetched userRole from localStorage:", storedUserRole);
+    setUserRole(storedUserRole);
+  }, []);
+
+  useEffect(() => {
+    if (userRole) {
+      fetchData();
+    }
+  }, [userRole]);
   const handleSelect = (id) => {
     const currentIndex = selected.indexOf(id);
     const newSelected =
@@ -1101,7 +1147,19 @@ const FixedColumnTable = () => {
           {" "}
           <CircularProgress style={{ fontSize: "300px", color: "blue" }} />
         </Box>
-      ) : userRole === "Admin" || accountData.length > 0 ? (
+      ): userRole === "TeamMember" && !viewAllAccounts ? (
+        <Typography
+          sx={{
+            textAlign: "center",
+            fontSize: "18px",
+            fontWeight: "bold",
+            color: "red",
+            marginTop: "20px",
+          }}
+        >
+          You do not have permission to view accounts.
+        </Typography>
+      ) : (accountData.length > 0 && (
         <Box>
           <Box sx={{ display: "flex", alignItems: "center", gap: 3, mt: 1 }}>
             <Box
@@ -1192,20 +1250,20 @@ const FixedColumnTable = () => {
               }}
             >
               <MenuItem onClick={handleArchiveAccount}>
-                
-                Activate Account
+                Active Account 
               </MenuItem>
               <MenuItem onClick={handleEditLoginNotifyEmailSync}>
                 Edit login notify emailSync
               </MenuItem>
-             <MenuItem onClick={handleDeleteClick}>
+              
+              <MenuItem onClick={handleDeleteClick}>
                             Delete
                            </MenuItem>
             </Menu>
+
           </div>
         )}
-         {/* Delete Confirmation Dialog */}
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <Box >
         <Box sx={{display:'flex',alignItems:'center', justifyContent:'space-between'}}>
         <DialogTitle>Delete Confirmation</DialogTitle>
@@ -1421,7 +1479,6 @@ const FixedColumnTable = () => {
               </div>
             )}
           </Box>
-
           <TableContainer  sx={{ mt: 2 }}>
             <Table style={{ tableLayout: "fixed", width: "100%" }}>
               <TableHead>
@@ -1826,14 +1883,8 @@ const FixedColumnTable = () => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Box>
-      ) : (
-        <Typography
-          variant="h6"
-          style={{ textAlign: "center", marginTop: "20px" }}
-        >
-          You do not have permission to view accounts.
-        </Typography>
-      )}
+      )
+      ) }
 
       <Drawer
         anchor="right"

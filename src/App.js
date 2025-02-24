@@ -34,7 +34,7 @@ import MyAccount from "./Settings/MyAccount";
 import Pipeline from "./Workflow/Pipeline";
 import WorkflowTask from "./Workflow/Tasks";
 import TeamMember from "./Users/TeamMember.js";
-import Jobs from "./Pages/Jobs.js";
+import Jobs from "./Pages/Jobs/Jobs.js";
 import PipelineTempUpdate from "./Templates/PipelineTemp/PipelineTempUpdate.js";
 import TasksUpdate from "./Templates/Task/TasksUpdate.js";
 import EmailTempUpdate from "./Templates/EmailTemp/EmailTempUpdate.js";
@@ -94,6 +94,8 @@ import AccountImport from "./Import/AccountImport.js";
 import ContactImport from "./Import/ContactImport.js";
 import TagsImport from "./Import/TagsImport.js";
 import SetPassword from "./nested-navbar/NewPages/setPassword.js"
+import ActiveJob from "./Pages/Jobs/ActiveJob.js"
+import ArchivedJob from "./Pages/Jobs/ArchiveJob.js";
 const App = () => {
   return (
     <BrowserRouter>
@@ -124,7 +126,10 @@ const App = () => {
           <Route path="billing/Invoices/Updateinvoice/:_id" element={<InvoiceUpdate />} />
           <Route path='billing/proposalsandels' element={<ProposalsELS/>}/>
           <Route path="workflow/tasks" element={<WorkflowTask />} />
-          <Route path="workflow/jobs" element={<Jobs />} />
+          <Route path="workflow/jobs" element={<Jobs />} >
+          <Route path="activejob" element={<ActiveJob/>}/>
+          <Route path="archivedjob" element={<ArchivedJob/>}/>
+          </Route>
           <Route path="workflow/pipelines" element={<Pipeline />} />
           <Route path="/organizerpreview" element={<PreviewOrganizer />} />
           <Route path="/import/accounts" element={<AccountImport/>}/>

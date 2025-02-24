@@ -88,16 +88,28 @@ const Pipeline = ({ charLimit = 4000 }) => {
   };
 
   useEffect(() => {
-    fetchPipelineData();
+    
     fetchJobData();
   }, []);
 
   const fetchPipelineData = async () => {
     setLoading(true);
     try {
-      const url = `${PIPELINE_API}/workflow/pipeline/pipelines`;
+
+      const storedData = JSON.parse(localStorage.getItem("teamMemberData"));
+      console.log("Received stored teamMemberData:", storedData);
+      const loginuserid = storedData?.teammember?.userid;
+      console.log("User role is:", userRole);
+
+
+      let url = userRole === "Admin"
+      ? `${PIPELINE_API}/workflow/pipeline/pipelines`
+      : `${PIPELINE_API}/workflow/pipeline/pipelines/${loginuserid}`;
+// ${JOBS_API}/workflow/jobs/joblist/pipelines/${loginuserid}/true
+// http://127.0.0.1/workflow/pipeline/pipelines/
       const response = await fetch(url);
       const data = await response.json();
+      console.log(data)
       setPipelineData(data.pipeline);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -105,19 +117,59 @@ const Pipeline = ({ charLimit = 4000 }) => {
       setLoading(false);
     }
   };
-
+  const [userRole, setUserRole] = useState("");
+  useEffect(() => {
+    const storedUserRole = localStorage.getItem("userRole");
+    console.log("Fetched userRole from localStorage:", storedUserRole);
+    setUserRole(storedUserRole);
+  }, []);
+  useEffect(() => {
+    if (userRole) {
+      fetchPipelineData();
+    }
+  }, [userRole]);
+      // const [userRole, setUserRole] = useState("");
+      useEffect(() => {
+        const storedUserRole = localStorage.getItem("userRole");
+        console.log("Fetched userRole from localStorage:", storedUserRole);
+        setUserRole(storedUserRole);
+      }, []);
+    useEffect(() => {
+      if (userRole) {
+        fetchJobData();
+      }
+    }, [userRole]);
   const fetchJobData = async () => {
+    // try {
+    //   const url = `${JOBS_API}/workflow/jobs/job/joblist/list/true`;
+      // const response = await fetch(url);
+      // const data = await response.json();
+      // setJobs(data.jobList);
+    //   console.log("result",data.jobList)
+    // } catch (error) {
+    //   console.error("Error fetching job data:", error);
+    // }
     try {
-      const url = `${JOBS_API}/workflow/jobs/job/joblist/list/true`;
+      const storedData = JSON.parse(localStorage.getItem("teamMemberData"));
+      console.log("Received stored teamMemberData:", storedData);
+      const loginuserid = storedData?.teammember?.userid;
+      console.log("User role is:", userRole);
+
+      let url = userRole === "Admin"
+      ? `${JOBS_API}/workflow/jobs/job/joblist/list/true`
+      : `${JOBS_API}/workflow/jobs/joblist/list/${loginuserid}/true`;
+      
       const response = await fetch(url);
       const data = await response.json();
       setJobs(data.jobList);
-      console.log("result",data.jobList)
+      console.log(data.jobList);
     } catch (error) {
-      console.error("Error fetching job data:", error);
+      console.error("Error fetching data:", error);
     }
   };
 
+  
+  
   const fetchStages = async (pipelineId) => {
     try {
       const url = `${PIPELINE_API}/workflow/pipeline/pipeline/${pipelineId}`;
@@ -2272,6 +2324,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
     };
     updateJobStage();
   };
+  console.log("pipeline",pipelineData)
   const optionpipeline = pipelineData.map((pipeline) => ({
     value: pipeline._id,
     label: pipeline.pipelineName,

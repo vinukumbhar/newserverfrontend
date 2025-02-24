@@ -102,6 +102,125 @@ const CSVReader = () => {
     );
   };
 
+
+  const handleDownloadCSV = (contacts) => {
+    try {
+      if (!contacts || contacts.length === 0) {
+        alert("No new contacts to download!");
+        return;
+      }
+
+      const filteredData = contacts.map(({ _id, contactName }) => ({
+        _id,
+        contactName,
+      }));
+      console.log("New Contacts for CSV:", filteredData);
+
+      const csv = Papa.unparse(filteredData);
+      const blob = new Blob([csv], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "new_contacts.csv";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url); // Clean up URL
+    } catch (error) {
+      console.error("Error generating CSV:", error);
+      alert("Error downloading CSV!");
+    }
+  };
+
+  return (
+    <div>
+      <Typography variant="h5" gutterBottom>
+       Import Contacts
+      </Typography>
+      <Box sx={{ display: "flex", alignItems: "center" ,gap:3}}>
+        <Button variant="contained" component="label">
+          Import Contacts
+          <input type="file" accept=".csv" hidden onChange={handleFileUpload} />
+        </Button>
+        {selectedContacts.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+          
+            onClick={handleSaveContact}
+          >
+            Save  Contacts
+          </Button>
+        )}
+        
+      </Box>
+      {contacts.length > 0 && (
+        <TableContainer component={Paper} style={{ marginTop: "20px" }}>
+          <Table>
+            <TableHead>
+              <TableRow style={{ backgroundColor: "#f5f5f5" }}>
+                <TableCell>
+                  <Checkbox
+                    checked={
+                      selectedContacts.length === contacts.length &&
+                      contacts.length > 0
+                    }
+                    onChange={handleSelectAll}
+                  />
+                </TableCell>
+                <TableCell>
+                  <strong>Contact Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>First Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Middle Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Last Name</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Email</strong>
+                </TableCell>
+                <TableCell>
+                  <strong>Phone Numbers</strong>
+                </TableCell>
+                
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {contacts.map((contact, index) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    <Checkbox
+                      checked={selectedContacts.includes(contact)}
+                      onChange={() => handleSelectContact(contact)}
+                    />
+                  </TableCell>
+                  <TableCell>{contact.contactName}</TableCell>
+                  <TableCell>{contact.firstName}</TableCell>
+                  <TableCell>{contact.middleName}</TableCell>
+                  <TableCell>{contact.lastName}</TableCell>
+                  <TableCell>{contact.email}</TableCell>
+                  <TableCell>{contact.phoneNumbers}</TableCell>
+
+                 
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
+    </div>
+  );
+};
+
+export default CSVReader;
+
+
+
+
   // const handleDownloadCSV = async () => {
   //   try {
   //     const response = await fetch(`${CONTACT_API}/contacts/`);
@@ -222,132 +341,3 @@ const CSVReader = () => {
   //     alert("Error downloading CSV!");
   //   }
   // };
-  const handleDownloadCSV = (contacts) => {
-    try {
-      if (!contacts || contacts.length === 0) {
-        alert("No new contacts to download!");
-        return;
-      }
-
-      const filteredData = contacts.map(({ _id, contactName }) => ({
-        _id,
-        contactName,
-      }));
-      console.log("New Contacts for CSV:", filteredData);
-
-      const csv = Papa.unparse(filteredData);
-      const blob = new Blob([csv], { type: "text/csv" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "new_contacts.csv";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url); // Clean up URL
-    } catch (error) {
-      console.error("Error generating CSV:", error);
-      alert("Error downloading CSV!");
-    }
-  };
-
-  return (
-    <div>
-      <Typography variant="h5" gutterBottom>
-       Import Contacts
-      </Typography>
-      <Box sx={{ display: "flex", alignItems: "center" ,gap:3}}>
-        <Button variant="contained" component="label">
-          Import Contacts
-          <input type="file" accept=".csv" hidden onChange={handleFileUpload} />
-        </Button>
-        {selectedContacts.length > 0 && (
-          <Button
-            variant="contained"
-            color="primary"
-          
-            onClick={handleSaveContact}
-          >
-            Save  Contacts
-          </Button>
-        )}
-        {/* <Button
-        variant="contained"
-        color="secondary"
-        style={{ marginLeft: "10px" }}
-        onClick={handleDownloadCSV}
-      >
-        Download Saved Contacts
-      </Button> */}
-      </Box>
-      {contacts.length > 0 && (
-        <TableContainer component={Paper} style={{ marginTop: "20px" }}>
-          <Table>
-            <TableHead>
-              <TableRow style={{ backgroundColor: "#f5f5f5" }}>
-                <TableCell>
-                  <Checkbox
-                    checked={
-                      selectedContacts.length === contacts.length &&
-                      contacts.length > 0
-                    }
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
-                <TableCell>
-                  <strong>Contact Name</strong>
-                </TableCell>
-                <TableCell>
-                  <strong>First Name</strong>
-                </TableCell>
-                <TableCell>
-                  <strong>Middle Name</strong>
-                </TableCell>
-                <TableCell>
-                  <strong>Last Name</strong>
-                </TableCell>
-                <TableCell>
-                  <strong>Email</strong>
-                </TableCell>
-                <TableCell>
-                  <strong>Phone Numbers</strong>
-                </TableCell>
-                {/* <TableCell><strong>Actions</strong></TableCell> */}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {contacts.map((contact, index) => (
-                <TableRow key={index}>
-                  <TableCell>
-                    <Checkbox
-                      checked={selectedContacts.includes(contact)}
-                      onChange={() => handleSelectContact(contact)}
-                    />
-                  </TableCell>
-                  <TableCell>{contact.contactName}</TableCell>
-                  <TableCell>{contact.firstName}</TableCell>
-                  <TableCell>{contact.middleName}</TableCell>
-                  <TableCell>{contact.lastName}</TableCell>
-                  <TableCell>{contact.email}</TableCell>
-                  <TableCell>{contact.phoneNumbers}</TableCell>
-
-                  {/* <TableCell>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleSaveContact(contact)}
-                    >
-                      Save
-                    </Button>
-                  </TableCell> */}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
-    </div>
-  );
-};
-
-export default CSVReader;

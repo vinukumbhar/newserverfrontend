@@ -203,6 +203,7 @@ const ActiveMember = () => {
         console.log(deleteUserResult);  // Logs the result of the user deletion
   
         toast.success("Team member and associated user deleted successfully!");
+        fetchData()
       } else {
         toast.error("No associated user found for this team member.");
       }
@@ -924,7 +925,7 @@ const ActiveMember = () => {
                   <TableCell>{member.has2FA ? "Enabled" : "Disabled"}</TableCell>
 
                   {/* Actions */}
-                  <TableCell>
+                  {/* <TableCell>
                     <IconButton onClick={() => toggleMenu(member.id)} style={{ color: "#2c59fa" }}>
                       <CiMenuKebab style={{ fontSize: "25px" }} />
                     </IconButton>
@@ -964,7 +965,56 @@ const ActiveMember = () => {
                         </Typography>
                       </Box>
                     )}
-                  </TableCell>
+                  </TableCell> */}
+
+                   <TableCell  style={{
+                                          fontSize: "12px",
+                                          padding: "4px 8px",
+                                          lineHeight: "1",
+                                          cursor: "pointer",
+                                        }}>
+                                        <IconButton onClick={() => toggleMenu(member.id)} style={{ color: '#2c59fa' }}>
+                                          <CiMenuKebab style={{ fontSize: '25px' }} />
+                                          {openMenuId === member.id && (
+                                            <Box
+                                              sx={{
+                                                position: 'absolute',
+                                                zIndex: 1,
+                                                backgroundColor: '#fff',
+                                                boxShadow: 1,
+                                                borderRadius: 1,
+                                                p: 1,
+                                                left:0,
+                                                // right: '10px',
+                                                m: 2,
+                                                top: '10px', textAlign: 'start'
+                                              }}
+                                            >
+                                             <Typography
+                          sx={{ fontSize: "12px", fontWeight: "bold" }}
+                          onClick={() => {
+                            handleEdit(member._id);
+                            handleUpdateDrawerOpen();
+                          }}
+                        >
+                          Edit
+                        </Typography>
+                        <Typography
+                          sx={{ fontSize: "12px", color: "red", fontWeight: "bold" }}
+                          onClick={() => handleDeleteMember(member.id)}
+                        >
+                          Deactivate
+                        </Typography>
+                        <Typography
+                          sx={{ fontSize: "12px", color: "red", fontWeight: "bold" }}
+                          onClick={() => handleTeamMemberDelete(member.id)}
+                        >
+                          Delete
+                        </Typography>
+                                            </Box>
+                                          )}
+                                        </IconButton>
+                                      </TableCell>
                 </TableRow>
               );
             })}

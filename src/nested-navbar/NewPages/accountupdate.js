@@ -610,7 +610,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
         const contactIds = data.newContacts.map((contact) => contact._id);
         updateContactstoAccount(contactIds);
         toast.success("Contact created successfully!");
-        navigate("/clients/accounts");
+        navigate("/clients/accounts/activeaccounts");
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -1525,9 +1525,10 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                   }}
                   onClick={handlesubmitContact}
                 >
-                  Create
+                  {/* Create */}
+                  Save
                 </Button>
-                <Button
+                {/* <Button
                   type="button"
                   variant="outlined"
                   color="primary"
@@ -1549,7 +1550,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                   }}
                 >
                   Cancel
-                </Button>
+                </Button> */}
               </Box>
             </Box>
           </>

@@ -620,7 +620,11 @@ const Info = () => {
                 >
                   <Accountupdate
                     selectedAccount={accountDatabyid}
-                    onClose={() => setIsNewDrawerOpen(false)}
+                    // onClose={() => setIsNewDrawerOpen(false)}
+                    onClose={() => {
+                      setIsNewDrawerOpen(false);
+                      fetchAccount(); // Call fetchAccount when the drawer closes
+                    }}
                   />
                 </Drawer>
               </Box>

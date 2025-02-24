@@ -79,14 +79,32 @@ const Example = ({ charLimit = 4000 }) => {
     fetchData(false);
     console.log("Archive action triggered.");
   };
+    const [userRole, setUserRole] = useState("");
+    useEffect(() => {
+      const storedUserRole = localStorage.getItem("userRole");
+      console.log("Fetched userRole from localStorage:", storedUserRole);
+      setUserRole(storedUserRole);
+    }, []);
   useEffect(() => {
-    fetchData(isActiveTrue);
-  }, [isActiveTrue]);
-  const fetchData = async (isActive) => {
+    if (userRole) {
+      fetchData();
+    }
+  }, [userRole,isActiveTrue]);
+  const fetchData = async () => {
     try {
-      const jobListResponse = await axios.get(
-        `${JOBS_API}/workflow/jobs/job/joblist/list/${isActive}`
-      );
+      const storedData = JSON.parse(localStorage.getItem("teamMemberData"));
+      console.log("Received stored teamMemberData:", storedData);
+      const loginuserid = storedData?.teammember?.userid;
+      console.log("User role is:", userRole);
+
+      let url = userRole === "Admin"
+      ? `${JOBS_API}/workflow/jobs/job/joblist/list/${isActiveTrue}`
+      : `${JOBS_API}/workflow/jobs/joblist/list/${loginuserid}/${isActiveTrue}`;
+      
+      const jobListResponse = await axios.get(url);
+      // const jobListResponse = await axios.get(
+      //   `${JOBS_API}/workflow/jobs/job/joblist/list/${isActive}`
+      // );
       const formattedData = jobListResponse.data.jobList.map((job) => ({
         ...job,
         // StartDate: format(new Date(job.StartDate), "MMMM dd, yyyy"),

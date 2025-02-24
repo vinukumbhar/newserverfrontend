@@ -213,7 +213,7 @@ const loginuserid = storedData?.teammember?.userid;
 
       let url = userRole === "Admin"
       ? `${ACCOUNT_API}/accounts/account/accountdetailslist/${isActiveTrue}`
-      : `${ACCOUNT_API}/accounts/getaccounts/${loginuserid}`;
+      : `${ACCOUNT_API}/accounts/getaccounts/${loginuserid}/${isActiveTrue}`;
       
       const response = await axios.get(url);
       console.log("API Response:", response.data.accountlist);
@@ -247,7 +247,7 @@ const loginuserid = storedData?.teammember?.userid;
     if (userRole) {
       fetchData();
     }
-  }, [userRole]); 
+  }, [userRole,ACCOUNT_API,isActiveTrue]); 
   
 
   // useEffect(() => {

@@ -573,13 +573,13 @@ const TeamMember = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
-
+    const password = `${firstName}@123`;
     
     const raw = JSON.stringify({
       username: firstName,
       email: email,
       role: "TeamMember",
-      password: firstName,
+      password: password,
     });
 
     const requestOptions = {

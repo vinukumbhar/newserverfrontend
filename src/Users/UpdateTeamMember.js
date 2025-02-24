@@ -672,7 +672,7 @@ const handleCloseLoginDetials=()=>{
   // Fetch the last uploaded image when the page loads
   useEffect(() => {
     axios
-      .get("http://127.0.0.1/lastimage")
+      .get(`${LOGIN_API}/lastimage`)
       .then((response) => {
         const imageUrl = response.data.imageUrl;
         setCroppedImage(imageUrl); // Set the last uploaded image URL as the profile picture
@@ -717,7 +717,7 @@ const handleCloseLoginDetials=()=>{
 
         // Make POST request using axios
         axios
-          .post("http://127.0.0.1/userprofilepic", formData, {
+          .post(`${LOGIN_API}/userprofilepic`, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },

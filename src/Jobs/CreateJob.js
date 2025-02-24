@@ -446,7 +446,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
       .then((response) => {
         console.log("Job created successfully");
         toast.success("Job created successfully");
-        navigate("/workflow/jobs");
+        navigate("/workflow/jobs/activejob");
       })
       .catch((error) => {
         console.error("Failed to create Job Template:", error);
