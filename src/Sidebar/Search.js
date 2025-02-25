@@ -300,7 +300,7 @@ const SearchComponent = () => {
   const CONTACT_API = process.env.REACT_APP_CONTACTS_URL;
   const [contactData, setContactData] = useState([]);
   const handleSearchChange = async (event) => {
-    const query = event.target.value.trim();
+    const query = event.target.value;
     setSearchQuery(query);
 
     if (!query) {

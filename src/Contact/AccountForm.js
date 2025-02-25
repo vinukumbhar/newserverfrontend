@@ -23,7 +23,7 @@ import {
   Autocomplete,
   Switch,
   FormControlLabel,
-  Alert,
+  Alert, Modal,
 } from "@mui/material";
 import { RxCross2 } from "react-icons/rx";
 import { useTheme } from "@mui/material/styles";
@@ -287,7 +287,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
       alignItems: "center",
       textAlign: "center",
       marginBottom: "5px",
-      padding: "2px,8px",
+      padding: "2px 8px",
       fontSize: "10px",
       width: `${calculateWidth(tag.tagName)}px`,
       margin: "7px",
@@ -297,7 +297,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
       color: "#fff",
       alignItems: "center",
       textAlign: "center",
-      padding: "2px,8px",
+      // padding: "2px",
       fontSize: "10px",
       cursor: "pointer",
     },
@@ -969,6 +969,42 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
 
     //
   };
+  const [comfirmationOpen, setComfirmationOpen] = useState(false);
+
+    const handleOpen = () => setComfirmationOpen(true);
+    const handleClose = () => setComfirmationOpen(false);
+    // Open modal and set AccountId properly
+const handleOpenModal = (id) => {
+  setAccountId(id);
+  setComfirmationOpen(true);
+};
+  // const handleDeleteData =()=>{
+   
+  // }
+   const handleDeleteData = () => {
+        const requestOptions = {
+          method: "DELETE",
+          redirect: "follow",
+        };
+  
+        fetch(`${ACCOUNT_API}/accounts/accountdetails/${AccountId}`, requestOptions)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to delete item");
+            }
+            return response.json();
+          })
+          .then((result) => {
+            console.log(result);
+            setComfirmationOpen(false);
+            handleNewDrawerClose()
+            
+          })
+          .catch((error) => {
+            console.error(error);
+            toast.error("Failed to delete item");
+          });
+      };
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [personalMessage, setPersonalMessage] = useState("");
@@ -1378,7 +1414,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
         />
       </Box>
       <Box className="account-form" sx={{ height: "90vh", overflowY: "auto" }}>
-        <Box>
+        <Box >
           <FormControl
             sx={{ width: "100%", display: "flex", alignItems: "center" }}
           >
@@ -1420,36 +1456,46 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                   </>
                 ) : (
                   <>
+                  <Box sx={{display:'flex', alignItems:'center',gap:2}}>
+                    <Box>
                     <FormControlLabel
                       value="Account Info"
                       control={
                         <Radio checked={selectedOption === "Account Info"} />
                       }
                       label="Account Info"
-                      sx={{ mb: 2 }}
+                      
                     />
-                    <ArrowForwardIosRoundedIcon />
-                    <FormControlLabel
+                    </Box>
+                 <Box>
+                 <ArrowForwardIosRoundedIcon style={{fontSize:'15px'}}/>
+                 </Box>
+                  <Box ml={1}>
+                  <FormControlLabel
                       value="Contact Info"
                       control={
                         <Radio checked={selectedOption === "Contact Info"} />
                       }
                       label="Contact Info"
-                      sx={{ mb: 2, ml: 2 }}
+                     
                     />
+                  </Box>
+                    
+                    </Box>
                   </>
                 )}
               </Box>
             </RadioGroup>
           </FormControl>
         </Box>
-        <Box sx={{ p: 2 }}>
+       
+        <Box sx={{p:2,}}>
           {selectedOption === "Account Info" && (
             <Box>
-              {/* <Typography sx={{fontWeight:'bold'}}>Client Type</Typography> */}
-              <Box>
-                <h3>Client Type</h3>
-              </Box>
+              <Typography sx={{fontWeight:'bold',fontSize:'20px'}}>Client Type</Typography>
+              {/* <Box>
+                Client Type
+              </Box> */}
               <FormControl>
                 <RadioGroup
                   row
@@ -1482,10 +1528,10 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                         mb: 1,
                       }}
                     >
-                      <Box>
+                      {/* <Box>
                         <h3>Account Info</h3>
-                      </Box>
-
+                      </Box> */}
+ <Typography sx={{fontWeight:'bold',fontSize:'20px'}}>Account Info</Typography>
                       {/* <Box className='HelpOutlineRoundedIcon'></Box> */}
 
                       <Box className="MoreVertRoundedIcon">
@@ -1509,7 +1555,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                       </InputLabel>
 
                       <TextField
-                        size="small"
+                         size="medium"
                         fullWidth
                         placeholder="Account Name"
                         value={accountName}
@@ -1560,24 +1606,57 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
 
                       <Autocomplete
                         multiple
-                        size="small"
-                        id="tags-outlined"
+                        size="medium"
+                      
                         options={tagsOptions}
                         getOptionLabel={(option) => option.label}
                         value={tagsOptions.filter((option) =>
                           selectedTags.includes(option.value)
                         )}
                         onChange={handleTagChange}
+                        // renderTags={(selected, getTagProps) =>
+                        //   selected.map((option, index) => (
+                        //     <Chip
+                        //       key={option.value}
+                        //       label={option.label}
+                        //       style={option.customTagStyle}
+                        //       {...getTagProps({ index })}
+                        //     />
+                        //   ))
+                        // }
                         renderTags={(selected, getTagProps) =>
                           selected.map((option, index) => (
                             <Chip
                               key={option.value}
                               label={option.label}
-                              style={option.customTagStyle}
+                              sx={{
+                                backgroundColor: option.colour,
+                                color: "#fff",
+                                fontWeight: 500,
+                                fontSize: "15px",
+                                borderRadius: "16px",
+                                padding: "4px 10px",
+                                height: "28px",
+                                margin: "2px",
+                                cursor:'pointer',
+                                boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                                "& .MuiChip-label": {
+                                  padding: "0 8px",
+                                },
+                                "& .MuiChip-deleteIcon": {
+                                  color: "#fff",
+                                  opacity: 0.7,
+                                  transition: "opacity 0.2s",
+                                  "&:hover": {
+                                    opacity: 1,
+                                  },
+                                },
+                              }}
                               {...getTagProps({ index })}
                             />
                           ))
                         }
+                        
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -1606,10 +1685,42 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                         multiple
                         sx={{ mt: 2 }}
                         options={options}
-                        size="small"
+                        size="medium"
                         getOptionLabel={(option) => option.label}
                         value={selectedUser}
                         onChange={handleUserChange}
+                        renderTags={(selected, getTagProps) =>
+                          selected.map((option, index) => (
+                            <Chip
+                              key={option.value}
+                              label={option.label}
+                              sx={{
+                              
+                                color: "#000",
+                                fontWeight: 500,
+                                fontSize: "15px",
+                                borderRadius: "16px",
+                                padding: "4px 10px",
+                                height: "28px",
+                                margin: "2px",
+                                cursor:'pointer',
+                                boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                                "& .MuiChip-label": {
+                                  padding: "0 8px",
+                                },
+                                "& .MuiChip-deleteIcon": {
+                                  color: "#fff",
+                                  opacity: 0.7,
+                                  transition: "opacity 0.2s",
+                                  "&:hover": {
+                                    opacity: 1,
+                                  },
+                                },
+                              }}
+                              {...getTagProps({ index })}
+                            />
+                          ))
+                        }
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -1662,7 +1773,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                               sx={{ backgroundColor: "#fff" }}
                               placeholder="select folder template"
                               variant="outlined"
-                              size="small"
+                              size="medium"
                               error={!!foldertemplateError}
                             />
                             {!!foldertemplateError && (
@@ -1701,7 +1812,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
               {accountType === "Company" && (
                 <Box>
                   <form>
-                    <Box>
+                    <Box mt={2}>
                       <Box>
                         <InputLabel
                           sx={{
@@ -1730,10 +1841,11 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                           }}
                           placeholder="Account Name"
                           fullWidth
-                          size="small"
+                         
+                          size="medium"
                           error={!!accountNameError}
                           // helperText={pipelineNameError}
-                          sx={{ mt: 1.5, backgroundColor: "#fff" }}
+                          sx={{ mt:1.5, backgroundColor: "#fff" }}
                         />
                         {!!accountNameError && (
                           <Alert
@@ -1761,7 +1873,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                         )}
                       </Box>
 
-                      <Box>
+                      <Box mt={2}>
                         {/* <InputLabel sx={{ color: "black" }}>
                           Company Name
                         </InputLabel> */}
@@ -1779,10 +1891,11 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                         </InputLabel>
                         <TextField
                           fullWidth
-                          size="small"
+                          size="medium"
+                          //  margin="normal"
                           error={!!companyNameError}
                           // helperText={pipelineNameError}
-                          sx={{ mt: 1.5, backgroundColor: "#fff" }}
+                          sx={{mt:1.5, backgroundColor: "#fff" }}
                           value={companyname}
                           // onChange={(e) => setcompanyname(e.target.value)}
                           onChange={(e) => {
@@ -1822,7 +1935,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                         )}
                       </Box>
 
-                      <Box>
+                      <Box mt={2}>
                         <InputLabel sx={{ color: "black" }}>Tags</InputLabel>
 
                         <Autocomplete
@@ -1834,12 +1947,44 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                             selectedTags.includes(option.value)
                           )}
                           onChange={handleTagChange}
-                          renderTags={(value, getTagProps) =>
-                            value.map((option, index) => (
+                          // renderTags={(value, getTagProps) =>
+                          //   value.map((option, index) => (
+                          //     <Chip
+                          //       key={option.value}
+                          //       label={option.label}
+                          //       style={option.customTagStyle}
+                          //       {...getTagProps({ index })}
+                          //     />
+                          //   ))
+                          // }
+                          renderTags={(selected, getTagProps) =>
+                            selected.map((option, index) => (
                               <Chip
                                 key={option.value}
                                 label={option.label}
-                                style={option.customTagStyle}
+                                sx={{
+                                  backgroundColor: option.colour,
+                                  color: "#fff",
+                                  fontWeight: 500,
+                                  fontSize: "15px",
+                                  borderRadius: "16px",
+                                  padding: "4px 10px",
+                                  height: "28px",
+                                  margin: "2px",
+                                  cursor:'pointer',
+                                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                                  "& .MuiChip-label": {
+                                    padding: "0 8px",
+                                  },
+                                  "& .MuiChip-deleteIcon": {
+                                    color: "#fff",
+                                    opacity: 0.7,
+                                    transition: "opacity 0.2s",
+                                    "&:hover": {
+                                      opacity: 1,
+                                    },
+                                  },
+                                }}
                                 {...getTagProps({ index })}
                               />
                             ))
@@ -1857,7 +2002,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                             <TextField
                               {...params}
                               variant="outlined"
-                              size="small"
+                              size="medium"
                               placeholder="select tags"
                             />
                           )}
@@ -1874,15 +2019,47 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                           multiple
                           sx={{ mt: 2 }}
                           options={options}
-                          size="small"
+                          size="medium"
                           getOptionLabel={(option) => option.label}
                           value={selectedUser}
                           onChange={handleUserChange}
+                          renderTags={(selected, getTagProps) =>
+                            selected.map((option, index) => (
+                              <Chip
+                                key={option.value}
+                                label={option.label}
+                                sx={{
+                                  
+                                  color: "#000",
+                                  fontWeight: 500,
+                                  fontSize: "15px",
+                                  borderRadius: "16px",
+                                  padding: "4px 10px",
+                                  height: "28px",
+                                  margin: "2px",
+                                  cursor:'pointer',
+                                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                                  "& .MuiChip-label": {
+                                    padding: "0 8px",
+                                  },
+                                  "& .MuiChip-deleteIcon": {
+                                    color: "#fff",
+                                    opacity: 0.7,
+                                    transition: "opacity 0.2s",
+                                    "&:hover": {
+                                      opacity: 1,
+                                    },
+                                  },
+                                }}
+                                {...getTagProps({ index })}
+                              />
+                            ))
+                          }
                           renderInput={(params) => (
                             <TextField
                               {...params}
                               variant="outlined"
-                              placeholder="Assignees"
+                              placeholder="Team Member"
                             />
                           )}
                           isOptionEqualToValue={(option, value) =>
@@ -1930,7 +2107,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                               sx={{ backgroundColor: "#fff" }}
                               placeholder="select folder template"
                               variant="outlined"
-                              size="small"
+                              size="medium"
                               error={!!foldertemplateError}
                             />
                             {!!foldertemplateError && (
@@ -1963,14 +2140,15 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                         clearOnEscape // Enable clearable functionality
                       />
                     </Box>
-                    <>
-                      <Typography variant="h6" gutterBottom mt={3}>
+                    <Box mt={2}>
+                      {/* <Typography variant="h6" gutterBottom mt={3}>
                         Address
-                      </Typography>
-                      <Box>
+                      </Typography> */}
+                      <Typography sx={{fontWeight:'bold',fontSize:'20px'}}> Address</Typography>
+                      <Box mt={2}>
                         <InputLabel sx={{ color: "black" }}>Country</InputLabel>
                         <Autocomplete
-                          size="small"
+                          size="medium"
                           options={countries}
                           getOptionLabel={(option) => option.name}
                           // value={cCountry}
@@ -2034,7 +2212,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                           placeholder="Street address"
                           value={cStreetAddress}
                           onChange={(e) => SetCStreetAddress(e.target.value)}
-                          size="small"
+                          size="medium"
                           fullWidth
                           margin="normal"
                         />
@@ -2057,7 +2235,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                             value={cCity}
                             onChange={(e) => setCcity(e.target.value)}
                             placeholder="City"
-                            size="small"
+                            size="medium"
                           />
                         </Box>
                         <Box>
@@ -2072,7 +2250,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                             value={cStateProvince}
                             onChange={(e) => SetCStateProvince(e.target.value)}
                             placeholder="State/Province"
-                            size="small"
+                            size="medium"
                           />
                         </Box>
                         <Box>
@@ -2087,11 +2265,11 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                             value={cZipPostalCode}
                             onChange={(e) => SetCZipPostalCode(e.target.value)}
                             placeholder="ZIP/Postal Code"
-                            size="small"
+                            size="medium"
                           />
                         </Box>
                       </Box>
-                    </>
+                    </Box>
                   </form>
                 </Box>
               )}
@@ -2118,6 +2296,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
             </Box>
           )}
         </Box>
+       
         <Box>
           {selectedOption === "Contact Info" && (
             <Box className="create_new_contactform-container">
@@ -2127,9 +2306,12 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
+                    p:2
                   }}
                 >
-                  <h3 style={{ marginLeft: "20px" }}>Contacts</h3>
+                  {/* <h3 style={{ marginLeft: "20px" }}>Contacts</h3> */}
+                  <Typography sx={{fontWeight:'bold',fontSize:'20px'}}>Contacts</Typography>
+                  
                   <Box
                     onClick={handleClickOpen}
                     sx={{
@@ -2178,7 +2360,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                           <Grid item xs="auto">
                             <IconButton
                               aria-label="more options"
-                              size="small"
+                              size="medium"
                               onClick={(e) =>
                                 handleMenuClick(e, contact._id, contactName)
                               }
@@ -2539,7 +2721,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                             fullWidth
                             name="firstName"
                             placeholder="First Name"
-                            size="small"
+                            size="medium"
                             onChange={(e) => handleContactInputChange(index, e)}
                             error={!!firstNameError}
                             // helperText={pipelineNameError}
@@ -2579,7 +2761,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                             fullWidth
                             name="middleName"
                             placeholder="Middle Name"
-                            size="small"
+                            size="medium"
                             onChange={(e) => handleContactInputChange(index, e)}
                           />
                         </Box>
@@ -2603,7 +2785,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                             fullWidth
                             name="lastName"
                             placeholder="Last name"
-                            size="small"
+                            size="medium"
                             onChange={(e) => handleContactInputChange(index, e)}
                             error={!!lastNameError}
                             // helperText={pipelineNameError}
@@ -2645,7 +2827,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                           fullWidth
                           placeholder="Contact Name"
                           margin="normal"
-                          size="small"
+                          size="medium"
                           value={contact.contactName}
                           onChange={(e) => handleContactInputChange(index, e)}
                         />
@@ -2659,7 +2841,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                           name="companyName"
                           margin="normal"
                           placeholder="Company Name"
-                          size="small"
+                          size="medium"
                           onChange={(e) => handleContactInputChange(index, e)}
                         />
                       </Box>
@@ -2671,7 +2853,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                           name="note"
                           margin="normal"
                           placeholder="Note"
-                          size="small"
+                          size="medium"
                           onChange={(e) => handleContactInputChange(index, e)}
                         />
                       </Box>
@@ -2682,7 +2864,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                           name="ssn"
                           margin="normal"
                           placeholder="SSN"
-                          size="small"
+                          size="medium"
                           onChange={(e) => handleContactInputChange(index, e)}
                         />
                       </Box>
@@ -2704,7 +2886,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                           fullWidth
                           name="email"
                           placeholder="Email"
-                          size="small"
+                          size="medium"
                           onChange={(e) => handleContactInputChange(index, e)}
                           error={!!emailError}
                           // helperText={pipelineNameError}
@@ -2830,7 +3012,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                             <TextField
                               {...params}
                               variant="outlined"
-                              size="small"
+                              size="medium"
                               placeholder="Select tags"
                               sx={{ width: "100%", marginTop: "8px" }}
                             />
@@ -2869,7 +3051,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                             <Chip
                               label="Primary phone"
                               color="primary"
-                              size="small"
+                              size="medium"
                               sx={{ position: "absolute", mt: -3 }}
                             />
                           )}
@@ -2935,7 +3117,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                           </InputLabel>
 
                           <Autocomplete
-                            size="small"
+                            size="medium"
                             options={countries}
                             getOptionLabel={(option) => option.name}
                             value={contact.country} // Update to reflect the contact's current country
@@ -2992,7 +3174,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                           name="streetAddress"
                           margin="normal"
                           placeholder="Street address"
-                          size="small"
+                          size="medium"
                           onChange={(e) =>
                             handleContactAddressChange(
                               index,
@@ -3017,7 +3199,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                             margin="normal"
                             name="city"
                             placeholder="City"
-                            size="small"
+                            size="medium"
                             onChange={(e) =>
                               handleContactAddressChange(
                                 index,
@@ -3036,7 +3218,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                             name="state"
                             fullWidth
                             placeholder="State/Province"
-                            size="small"
+                            size="medium"
                             onChange={(e) =>
                               handleContactAddressChange(
                                 index,
@@ -3055,7 +3237,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                             fullWidth
                             name="postalCode"
                             placeholder="ZIP/Postal Code"
-                            size="small"
+                            size="medium"
                             onChange={(e) =>
                               handleContactAddressChange(
                                 index,
@@ -3146,6 +3328,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                   type="button"
                   variant="outlined"
                   color="primary"
+                  onClick={handleOpen}
                   // onClick={onClose}
                   // sx={{
                   //   mt: 2,
@@ -3168,7 +3351,40 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                   Cancel
                 </Button>
               </Box>
-
+              <Modal open={comfirmationOpen} onClose={handleClose}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 300,
+              bgcolor: "background.paper",
+              p: 4,
+              boxShadow: 24,
+              borderRadius: 2,
+            }}
+          >
+            <Typography variant="h6" component="h2" mb={2}>
+              Confirm Deletion
+            </Typography>
+            <Typography variant="body1" mb={4}>
+              Are you sure you want to delete this data?
+            </Typography>
+            <Box display="flex" gap={3} ml={15}>
+              <Button variant="text" onClick={handleClose}>
+                Cancel
+              </Button>
+              <Button
+                variant="contained"
+                color="error"
+               onClick={handleDeleteData}
+              >
+                Delete
+              </Button>
+            </Box>
+          </Box>
+        </Modal>
               {/* Material-UI Dialog for Modal */}
               <Dialog open={isModalVisible} onClose={handleCloseModal}>
                 <DialogTitle>Add portal access</DialogTitle>

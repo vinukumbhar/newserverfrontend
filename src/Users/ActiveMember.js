@@ -167,7 +167,10 @@ const ActiveMember = () => {
 
   const handleTeamMemberDelete = async (_id) => {
     console.log(_id);
-  
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this account ?"
+    );
+    if (isConfirmed) {
     const requestOptions = {
       method: "DELETE",
       redirect: "follow",
@@ -211,11 +214,12 @@ const ActiveMember = () => {
       console.error(error);
       toast.error("An error occurred while deleting the team member or user");
     }
+  }
   };
   
   const handleDeleteMember = async (_id) => {
     const isConfirmed = window.confirm(
-      "Are you sure you want to delete this account ?"
+      "Are you sure you want to deactivate this account ?"
     );
     if (isConfirmed) {
       const myHeaders = new Headers();
@@ -706,116 +710,116 @@ const ActiveMember = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-  const columns = useMemo(
-    () => [
-      {
-        accessorKey: "FirstName",
-        header: "Name",
-        Cell: ({ row }) => {
-          const firstName = row.original?.FirstName;
-          const middleName = row.original?.MiddleName;
-          const lastName = row.original?.LastName;
-          const initials = `${firstName ? firstName[0] : ""}${lastName ? lastName[0] : ""}`;
+  // const columns = useMemo(
+  //   () => [
+  //     {
+  //       accessorKey: "FirstName",
+  //       header: "Name",
+  //       Cell: ({ row }) => {
+  //         const firstName = row.original?.FirstName;
+  //         const middleName = row.original?.MiddleName;
+  //         const lastName = row.original?.LastName;
+  //         const initials = `${firstName ? firstName[0] : ""}${lastName ? lastName[0] : ""}`;
 
-          const isLoggedInUser = row.index === 0;
-          // Route to Account Settings for first row, Team Member Update for others
-          const linkPath = isLoggedInUser
-            ? `/settings/myaccount`
-            : `/updateteammember/${row.original?.id}`;
-          return (
-            <div>
-              <div className="circle">{initials}</div>
-              <Link
-                to={linkPath}
-              >{`${firstName ? firstName : ""}  ${middleName ? middleName : ""} ${lastName ? lastName : ""}`}</Link>
-              {/* <Link to={`/updateteammember/${row.original?.id}`}>{`${firstName ? firstName : ""}  ${middleName ? middleName : ""} ${lastName ? lastName : ""}`}</Link>{" "} */}
-            </div>
-          );
-        },
-      },
-      { accessorKey: "Email", header: "Email" },
-      { accessorKey: "Role", header: "Role" },
-      {
-        accessorKey: "Created",
-        header: "Created",
-        Cell: ({ cell }) => {
-          const dateValue = cell.getValue();
-          const date = new Date(dateValue);
+  //         const isLoggedInUser = row.index === 0;
+  //         // Route to Account Settings for first row, Team Member Update for others
+  //         const linkPath = isLoggedInUser
+  //           ? `/settings/myaccount`
+  //           : `/updateteammember/${row.original?.id}`;
+  //         return (
+  //           <div>
+  //             <div className="circle">{initials}</div>
+  //             <Link
+  //               to={linkPath}
+  //             >{`${firstName ? firstName : ""}  ${middleName ? middleName : ""} ${lastName ? lastName : ""}`}</Link>
+  //             {/* <Link to={`/updateteammember/${row.original?.id}`}>{`${firstName ? firstName : ""}  ${middleName ? middleName : ""} ${lastName ? lastName : ""}`}</Link>{" "} */}
+  //           </div>
+  //         );
+  //       },
+  //     },
+  //     { accessorKey: "Email", header: "Email" },
+  //     { accessorKey: "Role", header: "Role" },
+  //     {
+  //       accessorKey: "Created",
+  //       header: "Created",
+  //       Cell: ({ cell }) => {
+  //         const dateValue = cell.getValue();
+  //         const date = new Date(dateValue);
 
-          if (isNaN(date)) {
-            return "Invalid Date";
-          }
+  //         if (isNaN(date)) {
+  //           return "Invalid Date";
+  //         }
 
-          return date
-            .toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "short",
-              day: "2-digit",
-            })
-            .replace(",", "");
-        },
-      },
-      {
-        accessorKey: "has2FA",
-        header: "2FA",
-        Cell: ({ value }) => (value ? "Enabled" : "Disabled"),
-      },
-      {
-        accessorKey: "Actions",
-        header: "Actions",
-        Cell: ({ row }) => (
-          <IconButton
-            onClick={() => toggleMenu(row.original.id)}
-            style={{ color: "#2c59fa", position: "relative" }} // Added position relative for proper positioning
-          >
-            <CiMenuKebab style={{ fontSize: "25px" }} />
-            {openMenuId === row.original.id && (
-              <Box
-                sx={{
-                  position: "absolute",
-                  zIndex: 10, // Ensure it's on top of other elements
-                  backgroundColor: "#fff",
-                  boxShadow: 1,
-                  borderRadius: 1,
-                  p: 1,
-                  left: "30px",
-                  m: 2,
-                }}
-              >
-                <Typography
-                  sx={{ fontSize: "12px", fontWeight: "bold" }}
-                  onClick={() => {
-                    handleEdit(row.original._id);
-                    handleUpdateDrawerOpen();
-                  }}
-                >
-                  Edit
-                </Typography>
-                <Typography
-                  sx={{ fontSize: "12px", color: "red", fontWeight: "bold" }}
-                  onClick={() => handleDeleteMember(row.original.id)}
-                >
-                  Deactivate
-                </Typography>
-                <Typography
-                  sx={{ fontSize: "12px", color: "red", fontWeight: "bold" }}
-                  onClick={() => handleTeamMemberDelete(row.original.id)}
-                >
-                  Delete
-                </Typography>
-              </Box>
-            )}
-          </IconButton>
-        ),
-      },
-    ],
-    [openMenuId]
-  );
+  //         return date
+  //           .toLocaleDateString("en-US", {
+  //             year: "numeric",
+  //             month: "short",
+  //             day: "2-digit",
+  //           })
+  //           .replace(",", "");
+  //       },
+  //     },
+  //     {
+  //       accessorKey: "has2FA",
+  //       header: "2FA",
+  //       Cell: ({ value }) => (value ? "Enabled" : "Disabled"),
+  //     },
+  //     {
+  //       accessorKey: "Actions",
+  //       header: "Actions",
+  //       Cell: ({ row }) => (
+  //         <IconButton
+  //           onClick={() => toggleMenu(row.original.id)}
+  //           style={{ color: "#2c59fa", position: "relative" }} // Added position relative for proper positioning
+  //         >
+  //           <CiMenuKebab style={{ fontSize: "25px" }} />
+  //           {openMenuId === row.original.id && (
+  //             <Box
+  //               sx={{
+  //                 position: "absolute",
+  //                 zIndex: 10, // Ensure it's on top of other elements
+  //                 backgroundColor: "#fff",
+  //                 boxShadow: 1,
+  //                 borderRadius: 1,
+  //                 p: 1,
+  //                 left: "30px",
+  //                 m: 2,
+  //               }}
+  //             >
+  //               <Typography
+  //                 sx={{ fontSize: "12px", fontWeight: "bold" }}
+  //                 onClick={() => {
+  //                   handleEdit(row.original._id);
+  //                   handleUpdateDrawerOpen();
+  //                 }}
+  //               >
+  //                 Edit
+  //               </Typography>
+  //               <Typography
+  //                 sx={{ fontSize: "12px", color: "red", fontWeight: "bold" }}
+  //                 onClick={() => handleDeleteMember(row.original.id)}
+  //               >
+  //                 Deactivate
+  //               </Typography>
+  //               <Typography
+  //                 sx={{ fontSize: "12px", color: "red", fontWeight: "bold" }}
+  //                 onClick={() => handleTeamMemberDelete(row.original.id)}
+  //               >
+  //                 Delete
+  //               </Typography>
+  //             </Box>
+  //           )}
+  //         </IconButton>
+  //       ),
+  //     },
+  //   ],
+  //   [openMenuId]
+  // );
 
-  const table = useMaterialReactTable({
-    columns,
-    data: teamMembers,
-  });
+  // const table = useMaterialReactTable({
+  //   columns,
+  //   data: teamMembers,
+  // });
 
   if (loading) {
     return <div>Loading...</div>;

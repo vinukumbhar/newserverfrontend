@@ -16,6 +16,7 @@ import {
   InputLabel,
   Autocomplete,
   Alert,
+  FormControl, OutlinedInput,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import axios from "axios";
@@ -201,29 +202,52 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
   };
 
   const [selectedTags, setSelectedTags] = useState([]);
+  const [open, setOpen] = useState(false); // State to control menu visibility
+  const handleTagChange = (event) => {
+      const selectedValues = event.target.value;
+      setSelectedTags(selectedValues);
 
-  // const handleTagChange = (event) => {
-  //     const selectedValues = event.target.value;
-  //     setSelectedTags(selectedValues);
-
-  //     // Send selectedValues array to your backend
-  //     console.log("Selected Values:", selectedValues);
-  //     // Assuming setCombinedValues is a function to send the values to your backend
-  //     setCombinedValues(selectedValues);
-  // };
-  const handleTagChange = (event, newValue) => {
-    setSelectedTags(newValue.map((option) => option.value));
-
-    // Send selectedValues array to your backend
-    console.log(
-      "Selected Values:",
-      newValue.map((option) => option.value)
-    );
-    // Assuming setCombinedValues is a function to send the values to your backend
-    setCombinedValues(newValue.map((option) => option.value));
+      // Send selectedValues array to your backend
+      console.log("Selected Values:", selectedValues);
+      // Assuming setCombinedValues is a function to send the values to your backend
+      setCombinedValues(selectedValues);
   };
+  // const handleTagChange = (event, newValue) => {
+  //   setSelectedTags(newValue.map((option) => option.value));
 
+  //   // Send selectedValues array to your backend
+  //   console.log(
+  //     "Selected Values:",
+  //     newValue.map((option) => option.value)
+  //   );
+  //   // Assuming setCombinedValues is a function to send the values to your backend
+  //   setCombinedValues(newValue.map((option) => option.value));
+  // };
+  // const handleTagChange = (event) => {
+  //   const newSelectedTags = event.target.value; // Directly get selected values
+  //   setSelectedTags(newSelectedTags);
+  
+  //   // Send selected values array to your backend
+  //   console.log("Selected Values:", newSelectedTags);
+  
+  //   // Assuming setCombinedValues is a function to send the values to your backend
+  //   setCombinedValues(newSelectedTags);
+  //   setOpen(false);
+  // };
+  
   //Tag FetchData ================
+
+
+  const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: "auto",
+    },
+  },
+};
   const [tags, setTags] = useState([]);
   useEffect(() => {
     fetchData();
@@ -244,7 +268,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
   const calculateWidth = (tagName) => {
     const baseWidth = 10; // base width for each tag
     const charWidth = 8; // approximate width of each character
-    const padding = 10; // padding on either side
+    const padding = 5; // padding on either side
     return baseWidth + charWidth * tagName.length + padding;
   };
 
@@ -256,14 +280,16 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
     customStyle: {
       backgroundColor: tag.tagColour,
       color: "#fff",
-      borderRadius: "8px",
+      borderRadius: "10px",
       alignItems: "center",
-      textAlign: "center",
+      textAlign: "start",
+    // paddingLeft:'5px',
       marginBottom: "5px",
-      padding: "2px,8px",
+  //  marginLeft:'10px',
+      padding: "3px 10px",
       fontSize: "10px",
       width: `${calculateWidth(tag.tagName)}px`,
-      margin: "7px",
+      // margin: "7px",
       cursor: "pointer",
     },
     customTagStyle: {
@@ -288,7 +314,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
           borderBottom: "1px solid grey",
         }}
       >
-        <Typography variant="h6">New Contact</Typography>
+        <Typography sx={{fontWeight:'550',fontSize:'20px'}}>New Contact</Typography>
         <RxCross2
           onClick={handleNewDrawerClose}
           style={{ cursor: "pointer" }}
@@ -296,6 +322,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
       </Box>
       <form
         style={{
+          // marginTop:'5px',
           paddingRight: "3%",
           paddingLeft: "3%",
           height: "90vh",
@@ -303,29 +330,43 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
         }}
         className="contact-form"
       >
-        <Typography
+        {/* <Typography
           variant="h6"
           gutterBottom
           sx={{ ml: 1, fontWeight: "bold", mt: 2 }}
         >
           Contact info
-        </Typography>
+        </Typography> */}
+         {/* <Typography gutterBottom sx={{fontWeight:'bold',fontSize:'20px'}}>Contact info</Typography> */}
         <Box
           sx={{
             display: "flex",
             flexDirection: isSmallScreen ? "column" : "row",
             gap: isSmallScreen ? 2 : 5,
-            padding: "1px 5px 0 5px",
+            padding: "1px 5px 0 2px",
+            mt:1
           }}
         >
           <Box>
             {/* <InputLabel sx={{ color: 'black' }}>First name</InputLabel> */}
-            <InputLabel
+            {/* <InputLabel
               sx={{ color: "black", display: "flex", alignItems: "center" }}
             >
               First Name
               <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
-            </InputLabel>
+            </InputLabel> */}
+            <InputLabel
+                                    sx={{
+                                      color: "black",
+                                      display: "flex",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    First Name
+                                    <Typography sx={{ color: "red", ml: 0.5 }}>
+                                      *
+                                    </Typography>
+                                  </InputLabel>
             <TextField
               // margin="normal"
               fullWidth
@@ -343,7 +384,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                 }
               }}
               placeholder="First Name"
-              size="small"
+              size="medium"
               error={!!firstNameError}
             />
             {!!firstNameError && (
@@ -372,8 +413,17 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
             )}
           </Box>
           <Box>
-            <InputLabel sx={{ color: "black" }}>Middle Name</InputLabel>
-
+            {/* <InputLabel sx={{ color: "black" }}>Middle Name</InputLabel> */}
+            <InputLabel
+                                    sx={{
+                                      color: "black",
+                                      display: "flex",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    Middle Name
+                                    
+                                  </InputLabel>
             <TextField
               // margin="normal"
               sx={{ mt: 1.5, backgroundColor: "#fff" }}
@@ -382,16 +432,28 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
               value={middleName}
               onChange={(e) => setMiddleName(e.target.value)}
               placeholder="Middle Name"
-              size="small"
+              size="medium"
             />
           </Box>
           <Box>
-            <InputLabel
+            {/* <InputLabel
               sx={{ color: "black", display: "flex", alignItems: "center" }}
             >
               Last Name
               <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
-            </InputLabel>
+            </InputLabel> */}
+            <InputLabel
+                                    sx={{
+                                      color: "black",
+                                      display: "flex",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                    Last Name
+                                    <Typography sx={{ color: "red", ml: 0.5 }}>
+                                      *
+                                    </Typography>
+                                  </InputLabel>
             {/* <InputLabel sx={{ color: 'black' }}>Last Name</InputLabel> */}
 
             <TextField
@@ -401,7 +463,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
               // onChange={(e) => setLastName(e.target.value)}
               // margin="normal"
               placeholder="Last name"
-              size="small"
+              size="medium"
               sx={{ mt: 1.5, backgroundColor: "#fff" }}
               // onChange={(e) => setFirstName(e.target.value)}
               onChange={(e) => {
@@ -441,7 +503,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
             )}
           </Box>
         </Box>
-        <Box>
+        <Box mt={1}>
           <InputLabel sx={{ color: "black" }}>Contact Name</InputLabel>
 
           <TextField
@@ -451,10 +513,10 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
             fullWidth
             placeholder="Contact Name"
             margin="normal"
-            size="small"
+            size="medium"
           />
         </Box>
-        <Box>
+        <Box mt={1}>
           <InputLabel sx={{ color: "black" }}>Company Name</InputLabel>
 
           <TextField
@@ -464,44 +526,29 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
             onChange={(e) => setCompanyName(e.target.value)}
             margin="normal"
             placeholder="Company Name"
-            size="small"
+            size="medium"
           />
         </Box>
-        <Box>
-          <InputLabel sx={{ color: "black" }}>Note</InputLabel>
-
-          <TextField
-            fullWidth
-            name="note"
-            value={note}
-            multiline
-            onChange={(e) => setNote(e.target.value)}
-            margin="normal"
-            placeholder="Note"
-            size="small"
-          />
-        </Box>
-        <Box>
-          <InputLabel sx={{ color: "black" }}>SSN</InputLabel>
-
-          <TextField
-            fullWidth
-            name="ssn"
-            value={ssn}
-            onChange={(e) => setSsn(e.target.value)}
-            margin="normal"
-            placeholder="SSN"
-            size="small"
-          />
-        </Box>
-        <Box>
+        <Box mt={1}>
           {/* <InputLabel sx={{ color: 'black' }}>Email</InputLabel> */}
-          <InputLabel
+          {/* <InputLabel
             sx={{ color: "black", display: "flex", alignItems: "center" }}
           >
             Email
             <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
-          </InputLabel>
+          </InputLabel> */}
+          <InputLabel
+                                    sx={{
+                                      color: "black",
+                                      display: "flex",
+                                      alignItems: "center",
+                                    }}
+                                  >
+                                   Email
+                                    <Typography sx={{ color: "red", ml: 0.5 }}>
+                                      *
+                                    </Typography>
+                                  </InputLabel>
           <TextField
             fullWidth
             name="email"
@@ -509,7 +556,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
             // onChange={(e) => setEmail(e.target.value)}
             // margin="normal"
             placeholder="Email"
-            size="small"
+            size="medium"
             sx={{ mt: 1.5, backgroundColor: "#fff" }}
               // onChange={(e) => setFirstName(e.target.value)}
               onChange={(e) => {
@@ -548,12 +595,14 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
               </Alert>
             )}
         </Box>
-        <Box mt={2}>
+        <Box mt={1}>
+          {/* <FormControl fullWidth > */}
           <InputLabel sx={{ color: "black" }}>Tags</InputLabel>
 
-          <Autocomplete
+          {/* <Autocomplete
             multiple
-            size="small"
+           
+            size="medium"
             id="tags-outlined"
             options={options}
             getOptionLabel={(option) => option.label}
@@ -561,19 +610,48 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
               selectedTags.includes(option.value)
             )}
             onChange={handleTagChange}
-            renderTags={(selected, getTagProps) =>
-              selected.map((option, index) => (
-                <Chip
-                  key={option.value}
-                  label={option.label}
-                  style={option.customTagStyle}
-                  {...getTagProps({ index })}
-                />
-              ))
-            }
+        
+            renderTags={(selected, getTagProps) =>(
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
+                                     { selected.map((option, index) => (
+                                        <Chip
+                                          key={option.value}
+                                          label={option.label}
+                                          sx={{
+                                            backgroundColor: option.colour,
+                                            color: "#fff",
+                                            fontWeight: 500,
+                                            fontSize: "15px",
+                                            borderRadius: "16px",
+                                            padding: "4px 10px",
+                                            height: "28px",
+                                            margin: "2px",
+                                            cursor:'pointer',
+                                            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                                            "& .MuiChip-label": {
+                                              padding: "0 8px",
+                                            },
+                                            "& .MuiChip-deleteIcon": {
+                                              color: "#fff",
+                                              opacity: 0.7,
+                                              transition: "opacity 0.2s",
+                                              "&:hover": {
+                                                opacity: 1,
+                                              },
+                                            },
+                                          }}
+                                          {...getTagProps({ index })}
+                                        />
+                                      ))}
+                                      </Box>
+  )}
+
+
+  
             renderInput={(params) => (
               <TextField
                 {...params}
+                
                 variant="outlined"
                 placeholder="Tags"
                 sx={{ width: "100%", marginTop: "8px" }}
@@ -584,8 +662,279 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                 {option.label}
               </Box>
             )}
+          /> */}
+        {/* <Autocomplete
+      multiple
+      id="tags-outlined"
+      options={options}
+      getOptionLabel={(option) => option.label}
+      value={options.filter((option) => selectedTags.includes(option.value))}
+      onChange={handleTagChange}
+      disableCloseOnSelect
+      renderTags={(selected, getTagProps) => (
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "6px",
+            border: "2px solid #64a6ff",
+            padding: "8px",
+            borderRadius: "10px",
+          }}
+        >
+          {selected.map((option, index) => (
+            <Chip
+              key={option.value}
+              label={option.label}
+              {...getTagProps({ index })}
+              sx={{
+                backgroundColor: option.colour,
+                color: "#fff",
+                fontWeight: 500,
+                fontSize: "14px",
+                borderRadius: "16px",
+                height: "30px",
+                padding: "6px 12px",
+                cursor: "pointer",
+                boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                "& .MuiChip-deleteIcon": {
+                  color: "#fff",
+                  opacity: 0.7,
+                  transition: "opacity 0.2s",
+                  "&:hover": { opacity: 1 },
+                },
+              }}
+            />
+          ))}
+        </Box>
+      )}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          variant="outlined"
+          placeholder="Search"
+          sx={{
+            width: "100%",
+            marginTop: "8px",
+          }}
+        />
+      )}
+      renderOption={(props, option) => (
+        <Box
+          component="li"
+          {...props}
+          sx={{
+            backgroundColor: option.colour,
+            color: "#fff",
+            padding: "6px 10px",
+            borderRadius: "10px",
+            margin: "4px",
+            fontWeight: "500",
+            cursor: "pointer",
+            "&:hover": { opacity: 0.8 },
+          }}
+        >
+          {option.label}
+        </Box>
+      )}
+    /> */}
+
+<FormControl sx={{  width:'100%' }}>
+      {/* <InputLabel id="multi-select-chip-label">Tags</InputLabel> */}
+      <Select
+        // labelId="multi-select-chip-label"
+        // id="multi-select-chip"
+        multiple
+        multiline
+        size="small"
+        fullWidth
+        value={selectedTags}
+        onChange={handleTagChange}
+        input={<OutlinedInput />}
+        renderValue={(selected) => (
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "6px", borderRadius: "10px" }}>
+            {selected.map((value) => {
+              const option = options.find((opt) => opt.value === value);
+              return (
+                <Chip
+                  key={value}
+                  label={option?.label}
+                  sx={{
+                    backgroundColor: option?.colour,
+                    color: "#fff",
+                    fontWeight: 500,
+                    fontSize: "10px",
+                    borderRadius: "16px",
+                    height: "20px",
+                    // padding: "1px",
+                    cursor: "pointer",
+                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                    "& .MuiChip-deleteIcon": {
+                      color: "#fff",
+                      opacity: 0.7,
+                      transition: "opacity 0.2s",
+                      "&:hover": { opacity: 1 },
+                    },
+                  }}
+                />
+              );
+            })}
+          </Box>
+        )}
+        MenuProps={MenuProps}
+        sx={{
+          borderRadius: "10px",
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "10px",
+          },
+        }}
+      >
+        {/* {options.map((option) => (
+          <MenuItem
+            key={option.value}
+            value={option.value}
+            sx={{
+              backgroundColor: option.colour,
+              color: "#fff",
+              // fontWeight: theme.typography.fontWeightBold,
+              borderRadius: "10px",
+              fontSize:'15px',
+              margin: "5px",
+              padding: "6px 12px",
+              minWidth: "auto", // Dynamic width based on text length
+              maxWidth: `${dynamicWidth}px`,// Prevents extremely long widths
+              // transition: "0.2s ease-in-out",
+              "&:hover": {
+                backgroundColor: option.colour,
+                color: "#fff",
+              },
+            }}
+          >
+            {option.label}
+          </MenuItem>
+        ))} */}
+         {options.map((option) => {
+          const dynamicWidth = Math.min(option.label.length * 10, 150); // Adjust width dynamically
+          return (
+            <MenuItem
+              key={option.value}
+              value={option.value}
+              sx={{
+                backgroundColor: option.colour,
+                color: "#fff",fontSize:'10px',
+                // fontWeight: theme.typography.fontWeightBold,
+                borderRadius: "10px",
+                margin: "5px",
+                textAlign:'center',
+                // transition: "0.2s ease-in-out",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                paddingLeft: "10px",
+                // width: "auto", // Allow text to define width
+    whiteSpace: "nowrap", // Prevent line breaks
+    textAlign: "left", // Ensure text is left-aligned
+    paddingLeft: "10px", // Add left padding for proper alignment
+                minWidth: `${dynamicWidth}px`,
+                maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
+                "&:hover": {
+                  backgroundColor: option.colour,
+                  color: "#fff",
+                },
+              }}
+            >
+              {option.label}
+            </MenuItem>
+          );
+        })}
+      </Select>
+    </FormControl>
+      {/* <Select
+        multiple
+        size="medium"
+        multiline
+        fullWidth
+        value={selectedTags}
+        onChange={handleTagChange}
+        open={open}
+        onOpen={() => setOpen(true)}
+        onClose={() => setOpen(false)}
+        renderValue={(selected) => (
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, padding: "8px" }}>
+            {selected.map((tagId) => {
+              const tag = tags.find((t) => t._id === tagId);
+              return (
+                <Chip
+                  key={tagId}
+                  label={tag?.tagName}
+                  sx={{
+                    backgroundColor: tag?.tagColour,
+                    color: "#fff",
+                    fontWeight: 500,
+                    fontSize: "15px",
+                    borderRadius: "16px",
+                    height: "28px",
+                    cursor: "pointer",
+                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                  }}
+                  onDelete={() =>
+                    setSelectedTags(selected.filter((id) => id !== tagId))
+                  }
+                />
+              );
+            })}
+          </Box>
+        )}
+      >
+        {tags.map((tag) => (
+          <MenuItem key={tag._id} value={tag._id} onClick={() => setOpen(false)}>
+            <Box
+              sx={{
+                backgroundColor: tag.tagColour,
+                color: "#fff",
+                borderRadius: "8px",
+                padding: "4px 10px",
+                fontSize: "14px",
+                display: "flex",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              {tag.tagName}
+            </Box>
+          </MenuItem>
+        ))}
+      </Select> */}
+      {/* </FormControl> */}
+        </Box>
+        <Box mt={1}>
+          <InputLabel sx={{ color: "black" }}>Note</InputLabel>
+
+          <TextField
+            fullWidth
+            name="note"
+            value={note}
+            multiline
+            onChange={(e) => setNote(e.target.value)}
+            margin="normal"
+            placeholder="Note"
+            size="medium"
           />
         </Box>
+        <Box mt={1}>
+          <InputLabel sx={{ color: "black" }}>SSN</InputLabel>
+
+          <TextField
+            fullWidth
+            name="ssn"
+            value={ssn}
+            onChange={(e) => setSsn(e.target.value)}
+            margin="normal"
+            placeholder="SSN"
+            size="medium"
+          />
+        </Box>
+       
         <Typography
           variant="h6"
           gutterBottom
@@ -614,6 +963,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
               />
             )}
             <PhoneInput
+            
               country={"us"}
               value={phone.phone}
               onChange={(phoneValue) =>
@@ -679,7 +1029,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                         ))}
                     </Select> */}
           <Autocomplete
-            size="small"
+            size="medium"
             options={countries}
             getOptionLabel={(option) => option.name}
             value={selectedCountry}
@@ -720,7 +1070,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
             onChange={(e) => setStreetAddress(e.target.value)}
             margin="normal"
             placeholder="Street address"
-            size="small"
+            size="medium"
           />
         </Box>
         <Box
@@ -740,7 +1090,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
               value={city}
               onChange={(e) => setCity(e.target.value)}
               placeholder="City"
-              size="small"
+              size="medium"
             />
           </Box>
           <Box>
@@ -753,7 +1103,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
               value={state}
               onChange={(e) => setState(e.target.value)}
               placeholder="State/Province"
-              size="small"
+              size="medium"
             />
           </Box>
           <Box>
@@ -766,7 +1116,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
               value={postalCode}
               onChange={(e) => setPostalCode(e.target.value)}
               placeholder="ZIP/Postal Code"
-              size="small"
+              size="medium"
             />
           </Box>
         </Box>
