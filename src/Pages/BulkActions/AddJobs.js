@@ -18,6 +18,9 @@ import {
   Switch,
   FormControlLabel,
   Autocomplete,
+  FormControl,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import React, { useState, useEffect, useContext } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -709,7 +712,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
       .then((response) => {
         console.log("Job created successfully");
         toast.success("Job created successfully");
-        navigate("/workflow/jobs");
+        navigate("/workflow/jobs/activejob");
       })
       .catch((error) => {
         console.error("Failed to create Job Template:", error);
@@ -1159,234 +1162,224 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
           : [...prevSelected, index]
       );
     };
-//     const handleMove = async () => {
-//       // Flag to track whether all automations are successful
-//       let allAutomationsSuccessful = true;
+    //     const handleMove = async () => {
+    //       // Flag to track whether all automations are successful
+    //       let allAutomationsSuccessful = true;
 
-//       // Loop through selected automations
-//       for (const automationIndex of selectedAutomations) {
-//         const automation = automations[automationIndex];
+    //       // Loop through selected automations
+    //       for (const automationIndex of selectedAutomations) {
+    //         const automation = automations[automationIndex];
 
-//         // Ensure automation has the necessary fields
-//         if (
-//           !automation ||
-//           !automation.type ||
-//           !automation.template ||
-//           !automation.template.value ||
-//           !automation.tags
-//         ) {
-//           console.error(
-//             "Missing required automation data for automation index:",
-//             automationIndex
-//           );
-//           allAutomationsSuccessful = false; // Mark as failed
-//           break; // Exit the loop if required data is missing
-//         }
+    //         // Ensure automation has the necessary fields
+    //         if (
+    //           !automation ||
+    //           !automation.type ||
+    //           !automation.template ||
+    //           !automation.template.value ||
+    //           !automation.tags
+    //         ) {
+    //           console.error(
+    //             "Missing required automation data for automation index:",
+    //             automationIndex
+    //           );
+    //           allAutomationsSuccessful = false; // Mark as failed
+    //           break; // Exit the loop if required data is missing
+    //         }
 
-//         const automationType = automation.type;
-//         const automationTemp = automation.template.value; // Assuming the template has a `value` field
-//         const automationAccountId = combinedaccountValues; // Use the selected account IDs
+    //         const automationType = automation.type;
+    //         const automationTemp = automation.template.value; // Assuming the template has a `value` field
+    //         const automationAccountId = combinedaccountValues; // Use the selected account IDs
 
-//         // Ensure automationAccountId is not empty or invalid
-//         if (!automationAccountId || automationAccountId.length === 0) {
-//           console.error(
-//             "Missing required account IDs for automation index:",
-//             automationIndex
-//           );
-//           allAutomationsSuccessful = false; // Mark as failed
-//           break; // Exit the loop if account IDs are missing
-//         }
+    //         // Ensure automationAccountId is not empty or invalid
+    //         if (!automationAccountId || automationAccountId.length === 0) {
+    //           console.error(
+    //             "Missing required account IDs for automation index:",
+    //             automationIndex
+    //           );
+    //           allAutomationsSuccessful = false; // Mark as failed
+    //           break; // Exit the loop if account IDs are missing
+    //         }
 
+    //          // Check if automation has tags
+    //      const hasTags = automation.tags && automation.tags.length > 0;
+    //      // Process each account for the current automation
+    //      for (const accountId of automationAccountId) {
+    //        const account = accountdata.find((acc) => acc._id === accountId);
 
-//          // Check if automation has tags
-//      const hasTags = automation.tags && automation.tags.length > 0;
-//      // Process each account for the current automation
-//      for (const accountId of automationAccountId) {
-//        const account = accountdata.find((acc) => acc._id === accountId);
- 
-//        if (!account) {
-//          console.warn(`Account with ID ${accountId} not found. Skipping.`);
-//          continue;
-//        }
- 
-//        // const accountTags = account.tags;
- 
-//        // // Check if automation tags match the account tags
-//        // const tagMatch = automation.tags.some((automationTag) =>
-//        //   accountTags.some(
-//        //     (accountTag) => accountTag.tagName === automationTag.tagName
-//        //   )
-//        // );
- 
-//        // if (!tagMatch) {
-//        //   console.warn(
-//        //     `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
-//        //   );
-//        //   continue; // Skip this account if tags don't match
-//        // }
-//   // If automation has tags, ensure they match the account tags
-//   if (hasTags) {
-//    const accountTags = account.tags;
+    //        if (!account) {
+    //          console.warn(`Account with ID ${accountId} not found. Skipping.`);
+    //          continue;
+    //        }
 
-//    const tagMatch = automation.tags.some((automationTag) =>
-//      accountTags.some(
-//        (accountTag) => accountTag.tagName === automationTag.tagName
-//      )
-//    );
+    //        // const accountTags = account.tags;
 
-//    if (!tagMatch) {
-//      console.warn(
-//        `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
-//      );
-//      continue; // Skip this account if tags don't match
-//    }
-//  }
-//         try {
-//           // Await the result of the automation API call
-//           await selectAutomationApi(
-//             automationType,
-//             automationTemp,
-//             automationAccountId
-//           );
-//         } catch (error) {
-//           console.error("Error processing automation:", error);
-//           allAutomationsSuccessful = false; // Mark as failed
-//           break; // Exit the loop on error
-//         }
-//       }
-//     }
-//       // If all automations were successful, create the job
-//       if (allAutomationsSuccessful) {
-//         try {
-//           await createJob();
-//         } catch (error) {
-//           console.error("Failed to create job:", error);
-//           toast.error("Failed to create job");
-//         }
-//       } else {
-//         console.error("One or more automations failed, job creation aborted.");
-//         toast.error("Automations failed, job not created.");
-//       }
-//     };
+    //        // // Check if automation tags match the account tags
+    //        // const tagMatch = automation.tags.some((automationTag) =>
+    //        //   accountTags.some(
+    //        //     (accountTag) => accountTag.tagName === automationTag.tagName
+    //        //   )
+    //        // );
+
+    //        // if (!tagMatch) {
+    //        //   console.warn(
+    //        //     `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
+    //        //   );
+    //        //   continue; // Skip this account if tags don't match
+    //        // }
+    //   // If automation has tags, ensure they match the account tags
+    //   if (hasTags) {
+    //    const accountTags = account.tags;
+
+    //    const tagMatch = automation.tags.some((automationTag) =>
+    //      accountTags.some(
+    //        (accountTag) => accountTag.tagName === automationTag.tagName
+    //      )
+    //    );
+
+    //    if (!tagMatch) {
+    //      console.warn(
+    //        `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
+    //      );
+    //      continue; // Skip this account if tags don't match
+    //    }
+    //  }
+    //         try {
+    //           // Await the result of the automation API call
+    //           await selectAutomationApi(
+    //             automationType,
+    //             automationTemp,
+    //             automationAccountId
+    //           );
+    //         } catch (error) {
+    //           console.error("Error processing automation:", error);
+    //           allAutomationsSuccessful = false; // Mark as failed
+    //           break; // Exit the loop on error
+    //         }
+    //       }
+    //     }
+    //       // If all automations were successful, create the job
+    //       if (allAutomationsSuccessful) {
+    //         try {
+    //           await createJob();
+    //         } catch (error) {
+    //           console.error("Failed to create job:", error);
+    //           toast.error("Failed to create job");
+    //         }
+    //       } else {
+    //         console.error("One or more automations failed, job creation aborted.");
+    //         toast.error("Automations failed, job not created.");
+    //       }
+    //     };
 
     // Function to create job
-    
-    
-    
-    
-      const handleMove = async () => {
-          let allAutomationsSuccessful = true; // Flag to track overall success
-        
-          for (const automationIndex of selectedAutomations) {
-            const automation = automations[automationIndex];
-        
-            // Validate the required fields in automation
-            if (
-              !automation ||
-              !automation.type ||
-              !automation.template ||
-              !automation.template.value ||
-              !automation.tags
-            ) {
-              console.error(
-                "Missing required automation data for automation index:",
-                automationIndex
-              );
-              allAutomationsSuccessful = false;
-              break;
-            }
-        
-            const automationType = automation.type;
-            const automationTemp = automation.template.value;
-            const automationAccountIds = combinedaccountValues;
-        
-            if (!automationAccountIds || automationAccountIds.length === 0) {
-              console.error(
-                "Missing required account IDs for automation index:",
-                automationIndex
-              );
-              allAutomationsSuccessful = false;
-              break;
-            }
-         // Check if automation has tags
-         const hasTags = automation.tags && automation.tags.length > 0;
-            // Process each account for the current automation
-            for (const accountId of automationAccountIds) {
-              const account = accountdata.find((acc) => acc._id === accountId);
-        
-              if (!account) {
-                console.warn(`Account with ID ${accountId} not found. Skipping.`);
-                continue;
-              }
-        
-              // const accountTags = account.tags;
-        
-              // // Check if automation tags match the account tags
-              // const tagMatch = automation.tags.some((automationTag) =>
-              //   accountTags.some(
-              //     (accountTag) => accountTag.tagName === automationTag.tagName
-              //   )
-              // );
-        
-              // if (!tagMatch) {
-              //   console.warn(
-              //     `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
-              //   );
-              //   continue; // Skip this account if tags don't match
-              // }
-         // If automation has tags, ensure they match the account tags
-         if (hasTags) {
-          const accountTags = account.tags;
-    
-          const tagMatch = automation.tags.some((automationTag) =>
-            accountTags.some(
-              (accountTag) => accountTag.tagName === automationTag.tagName
-            )
+
+    const handleMove = async () => {
+      let allAutomationsSuccessful = true; // Flag to track overall success
+
+      for (const automationIndex of selectedAutomations) {
+        const automation = automations[automationIndex];
+
+        // Validate the required fields in automation
+        if (
+          !automation ||
+          !automation.type ||
+          !automation.template ||
+          !automation.template.value ||
+          !automation.tags
+        ) {
+          console.error(
+            "Missing required automation data for automation index:",
+            automationIndex
           );
-    
-          if (!tagMatch) {
-            console.warn(
-              `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
+          allAutomationsSuccessful = false;
+          break;
+        }
+
+        const automationType = automation.type;
+        const automationTemp = automation.template.value;
+        const automationAccountIds = combinedaccountValues;
+
+        if (!automationAccountIds || automationAccountIds.length === 0) {
+          console.error(
+            "Missing required account IDs for automation index:",
+            automationIndex
+          );
+          allAutomationsSuccessful = false;
+          break;
+        }
+        // Check if automation has tags
+        const hasTags = automation.tags && automation.tags.length > 0;
+        // Process each account for the current automation
+        for (const accountId of automationAccountIds) {
+          const account = accountdata.find((acc) => acc._id === accountId);
+
+          if (!account) {
+            console.warn(`Account with ID ${accountId} not found. Skipping.`);
+            continue;
+          }
+
+          // const accountTags = account.tags;
+
+          // // Check if automation tags match the account tags
+          // const tagMatch = automation.tags.some((automationTag) =>
+          //   accountTags.some(
+          //     (accountTag) => accountTag.tagName === automationTag.tagName
+          //   )
+          // );
+
+          // if (!tagMatch) {
+          //   console.warn(
+          //     `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
+          //   );
+          //   continue; // Skip this account if tags don't match
+          // }
+          // If automation has tags, ensure they match the account tags
+          if (hasTags) {
+            const accountTags = account.tags;
+
+            const tagMatch = automation.tags.some((automationTag) =>
+              accountTags.some(
+                (accountTag) => accountTag.tagName === automationTag.tagName
+              )
             );
-            continue; // Skip this account if tags don't match
+
+            if (!tagMatch) {
+              console.warn(
+                `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
+              );
+              continue; // Skip this account if tags don't match
+            }
+          }
+          try {
+            // Execute the automation for the matched account
+            await selectAutomationApi(automationType, automationTemp, [
+              accountId,
+            ]);
+          } catch (error) {
+            console.error(
+              `Error processing automation for account ID: ${accountId}:`,
+              error
+            );
+            allAutomationsSuccessful = false;
+            break;
           }
         }
-              try {
-                // Execute the automation for the matched account
-                await selectAutomationApi(automationType, automationTemp, [accountId]);
-              } catch (error) {
-                console.error(
-                  `Error processing automation for account ID: ${accountId}:`,
-                  error
-                );
-                allAutomationsSuccessful = false;
-                break;
-              }
-            }
-          }
-        
-          // Create the job if all automations were successful
-          if (allAutomationsSuccessful) {
-            try {
-              await createJob();
-            } catch (error) {
-              console.error("Failed to create job:", error);
-              toast.error("Failed to create job");
-            }
-          } else {
-            console.error("One or more automations failed, job creation aborted.");
-            toast.error("Automations failed, job not created.");
-          }
-        };
-    
-    
-    
-    
-    
-    
-    
-    
-    
+      }
+
+      // Create the job if all automations were successful
+      if (allAutomationsSuccessful) {
+        try {
+          await createJob();
+        } catch (error) {
+          console.error("Failed to create job:", error);
+          toast.error("Failed to create job");
+        }
+      } else {
+        console.error("One or more automations failed, job creation aborted.");
+        toast.error("Automations failed, job not created.");
+      }
+    };
+
     const createJob = () => {
       const myHeaders = {
         "Content-Type": "application/json",
@@ -1530,26 +1523,36 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
           })}
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 5 }}>
-          <Button variant="contained" onClick={handleMove} sx={{
-                backgroundColor: 'var(--color-save-btn)',  // Normal background
-               
-                '&:hover': {
-                  backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                },
-               width:'80px',borderRadius:'15px'
-              }}>
+          <Button
+            variant="contained"
+            onClick={handleMove}
+            sx={{
+              backgroundColor: "var(--color-save-btn)", // Normal background
+
+              "&:hover": {
+                backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+              },
+              width: "80px",
+              borderRadius: "15px",
+            }}
+          >
             Move
           </Button>
-          <Button variant="outlined" onClick={() => setDrawerOpen(false)} sx={{
-                    borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                   color:'var(--color-save-btn)',
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      color:'#fff',
-                      border:"none"
-                    },
-                    width:'80px',borderRadius:'15px'
-                  }}>
+          <Button
+            variant="outlined"
+            onClick={() => setDrawerOpen(false)}
+            sx={{
+              borderColor: "var(--color-border-cancel-btn)", // Normal background
+              color: "var(--color-save-btn)",
+              "&:hover": {
+                backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                color: "#fff",
+                border: "none",
+              },
+              width: "80px",
+              borderRadius: "15px",
+            }}
+          >
             Close
           </Button>
         </Box>
@@ -1559,18 +1562,21 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box >
-        <form>
-          <Box>
-            <Box mt={2} mb={2}>
+      <Box>
+        <form >
+        <Box mt={2} mb={1}>
               <hr />
             </Box>
-            <Grid container spacing={2}>
-              <Grid padding={2}>
+          <Box className="bulk-job-form" sx={{height:'88vh', overflowY:'auto'}}>
+           
+            <Grid spacing={2}>
+              <Grid padding={1}>
                 <Box>
-                  <label className="job-input-label">Accounts</label>
+                  <InputLabel sx={{ color: "black" }}>
+                    Select Accounts
+                  </InputLabel>
 
-                  <Autocomplete
+                  {/* <Autocomplete
                     multiple
                     options={accountoptions}
                     value={selectedaccount}
@@ -1611,7 +1617,40 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                       />
                     )}
                     sx={{ width: "100%", marginTop: "8px" }}
-                  />
+                  /> */}
+                  <FormControl sx={{ width: "100%", marginTop: "8px" }}>
+                    <Select
+                      multiple
+                      size="medium"
+                      value={selectedaccount}
+                      onChange={(event) => {
+                        const newSelected = event.target.value;
+                        setSelectedaccount(newSelected);
+                        setCombinedaccountValues(
+                          newSelected.map((option) => option.value)
+                        );
+                      }}
+                      renderValue={(selected) => (
+                        <Box
+                          sx={{ display: "flex", flexWrap: "wrap", gap: "4px" }}
+                        >
+                          {selected.map((option) => (
+                            <Chip
+                              key={option.value}
+                              label={option.label}
+                              sx={{ maxWidth: "100%", cursor: "pointer" }}
+                            />
+                          ))}
+                        </Box>
+                      )}
+                    >
+                      {accountoptions.map((option) => (
+                        <MenuItem key={option.value} value={option}>
+                          {option.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
                 </Box>
 
                 <Box mt={2}>
@@ -1642,7 +1681,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                         sx={{ backgroundColor: "#fff" }}
                         placeholder="Pipeline"
                         variant="outlined"
-                        size="small"
+                        size="medium"
                       />
                     )}
                     sx={{ width: "100%", marginTop: "8px" }}
@@ -1650,11 +1689,11 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                   />
                 </Box>
 
-                <Box>
+                <Box mt={2}>
                   <label className="job-input-label">Stage</label>
                   <Autocomplete
                     disabled // Disable the Autocomplete input
-                    size="small"
+                    size="medium"
                     options={stagesoptions}
                     getOptionLabel={(option) => option.label}
                     value={selectedStage}
@@ -1695,7 +1734,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                         sx={{ backgroundColor: "#fff" }}
                         placeholder="Job Template"
                         variant="outlined"
-                        size="small"
+                        size="medium"
                       />
                     )}
                     sx={{ width: "100%", marginTop: "8px" }}
@@ -1709,7 +1748,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                     value={jobName}
                     onChange={(e) => setJobName(e.target.value)}
                     margin="normal"
-                    size="small"
+                    size="medium"
                     placeholder="Job Name"
                     sx={{ backgroundColor: "#fff" }}
                   />
@@ -1720,7 +1759,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                     multiple
                     sx={{ marginTop: "8px" }}
                     options={assigneesoptions}
-                    size="small"
+                    size="medium"
                     getOptionLabel={(option) => option.label}
                     value={selectedUser}
                     onChange={handleUserChange}
@@ -1819,7 +1858,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                       <Typography>Start In</Typography>
                       <TextField
-                        size="small"
+                        size="medium"
                         margin="normal"
                         fullWidth
                         defaultValue={0}
@@ -1830,7 +1869,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                       />
                       <Autocomplete
                         options={dayOptions}
-                        size="small"
+                        size="medium"
                         getOptionLabel={(option) => option.label}
                         value={
                           startsInDuration
@@ -1866,7 +1905,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                       <Typography>Due In</Typography>
                       <TextField
-                        size="small"
+                        size="medium"
                         margin="normal"
                         fullWidth
                         defaultValue={0}
@@ -1889,7 +1928,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                             : null
                         }
                         onChange={handleDueInDateChange}
-                        size="small"
+                        size="medium"
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -1961,7 +2000,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                                 value={inputText + selectedJobShortcut}
                                 onChange={handlechatsubject}
                                 placeholder="Job name for client"
-                                size="small"
+                                size="medium"
                                 sx={{ background: "#fff", mt: 2 }}
                               />
 
@@ -1969,7 +2008,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                                 <Typography>Status</Typography>
                                 <Autocomplete
                                   options={optionstatus}
-                                  size="small"
+                                  size="medium"
                                   sx={{ mt: 1 }}
                                   value={selectedJob}
                                   onChange={handleJobChange}
@@ -2030,7 +2069,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                                 </InputLabel>
                                 <TextField
                                   fullWidth
-                                  size="small"
+                                  size="medium"
                                   margin="normal"
                                   type="text"
                                   multiline
@@ -2070,27 +2109,38 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
             </Box>
 
             <Box sx={{ pt: 2, display: "flex", alignItems: "center", gap: 5 }}>
-              <Button variant="contained" color="primary" onClick={createjob} sx={{
-                backgroundColor: 'var(--color-save-btn)',  // Normal background
-               
-                '&:hover': {
-                  backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                },
-               width:'80px',borderRadius:'15px'
-              }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={createjob}
+                sx={{
+                  backgroundColor: "var(--color-save-btn)", // Normal background
+
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                  },
+                  width: "80px",
+                  borderRadius: "15px",
+                }}
+              >
                 Add
               </Button>
               {/* <Link to='/'><Button variant="outlined" onClick={handleJobFormClose}>Cancel</Button></Link> */}
-              <Button onClick={handleJobFormClose} variant="outlined" sx={{
-                    borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                   color:'var(--color-save-btn)',
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      color:'#fff',
-                      border:"none"
-                    },
-                    width:'80px',borderRadius:'15px'
-                  }}>
+              <Button
+                onClick={handleJobFormClose}
+                variant="outlined"
+                sx={{
+                  borderColor: "var(--color-border-cancel-btn)", // Normal background
+                  color: "var(--color-save-btn)",
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                    color: "#fff",
+                    border: "none",
+                  },
+                  width: "80px",
+                  borderRadius: "15px",
+                }}
+              >
                 Cancel
               </Button>
             </Box>

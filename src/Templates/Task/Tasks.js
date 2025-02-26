@@ -23,7 +23,9 @@ import {
   TableHead,
   TableRow,
   Paper,
-  TablePagination
+  TablePagination,  FormControl,
+  OutlinedInput,MenuItem,
+  Select,  InputLabel,
 } from '@mui/material';
 import { useNavigate, } from "react-router-dom";
 import Editor from '../Texteditor/Editor';
@@ -221,14 +223,33 @@ const Tasks = () => {
       cursor: 'pointer',
     },
   }));
-  const handleTagChange = (event, newValue) => {
-    setSelectedTags(newValue.map((option) => option.value));
-    // Send selectedValues array to your backend
-    console.log("Selected Values:", newValue.map((option) => option.value));
-    // Assuming setCombinedValues is a function to send the values to your backend
-    setCombinedTagsValues(newValue.map((option) => option.value));
-  };
+  // const handleTagChange = (event, newValue) => {
+  //   setSelectedTags(newValue.map((option) => option.value));
+  //   // Send selectedValues array to your backend
+  //   console.log("Selected Values:", newValue.map((option) => option.value));
+  //   // Assuming setCombinedValues is a function to send the values to your backend
+  //   setCombinedTagsValues(newValue.map((option) => option.value));
+  // };
   // task temp
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: "auto",
+      },
+    },
+  };
+  const handleTagChange = (event) => {
+    const selectedValues = event.target.value;
+    setSelectedTags(selectedValues);
+
+    // Send selectedValues array to your backend
+    console.log("Selected Values:", selectedValues);
+    // Assuming setCombinedValues is a function to send the values to your backend
+    setCombinedValues(selectedValues);
+  };
   const [TaskTemplates, setTaskTemplates] = useState([]);
   useEffect(() => {
     fetchTaskData();
@@ -791,7 +812,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                 fullWidth
                                 name="TemplateName"
                                 placeholder="Template Name"
-                                size="small"
+                                size="medium"
                                 sx={{
                                   background: '#fff', mt: 1,
                                 }}
@@ -833,7 +854,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                 multiple
                                 sx={{ background: '#fff', mt: 1, }}
                                 options={options}
-                                size='small'
+                                size="medium"
                                 getOptionLabel={(option) => option.label}
                                 value={selectedUser}
                                 onChange={handleUserChange}
@@ -864,7 +885,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                         <Editor onChange={handleEditorChange} content={description} />
                       </Box>
                      
-                      <Box mt={2}>
+                      {/* <Box mt={2}>
                         <label className='task-input-label'>Tags</label>
                         <Autocomplete
                           multiple
@@ -898,7 +919,114 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                             </Box>
                           )}
                         />
-                      </Box>
+                      </Box> */}
+                      <Box mt={1}>
+         
+         <InputLabel sx={{ color: "black", mb: 1 }}>Tags</InputLabel>
+        
+        <FormControl sx={{ width: "100%" }}>
+ <Select
+   multiple
+   size="medium"
+   fullWidth
+   value={selectedTags}
+   onChange={handleTagChange}
+   input={<OutlinedInput />}
+   displayEmpty // Enables placeholder when no value is selected
+   renderValue={(selected) => {
+     if (selected.length === 0) {
+       return <span style={{ color: "#aaa" }}>Select tags...</span>; // Placeholder
+     }
+     return (
+       <Box
+         sx={{
+           display: "flex",
+           flexWrap: "wrap",
+           gap: "6px",
+           padding: "6px",
+           borderRadius: "10px",
+         }}
+       >
+         {selected.map((value) => {
+           const option = tagsoptions.find((opt) => opt.value === value);
+           return (
+             <Chip
+               key={value}
+               label={option?.label}
+               sx={{
+                 backgroundColor: option?.colour,
+                 color: "#fff",
+                 fontWeight: 500,
+                 fontSize: "10px",
+                 borderRadius: "16px",
+                 height: "20px",
+                 cursor: "pointer",
+                 boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                 "& .MuiChip-deleteIcon": {
+                   color: "#fff",
+                   opacity: 0.7,
+                   transition: "opacity 0.2s",
+                   "&:hover": { opacity: 1 },
+                 },
+               }}
+             />
+           );
+         })}
+       </Box>
+     );
+   }}
+   MenuProps={MenuProps}
+   sx={{
+     borderRadius: "10px",
+     "& .MuiOutlinedInput-root": {
+       borderRadius: "10px",
+     },
+   }}
+ >
+   {tagsoptions.map((option) => {
+     // const dynamicWidth = Math.min(option.label.length * 10, 150); // Adjust width dynamically
+     // Create a canvas element to measure the actual text width
+ const canvas = document.createElement("canvas");
+ const context = canvas.getContext("2d");
+ context.font = "12px Arial"; // Match the font size/style of MenuItem
+
+ const textWidth = context.measureText(option.label).width; // Get precise width
+ const dynamicWidth = Math.min(textWidth + 16, 150); // Add padding & set max width
+     return (
+       <MenuItem
+         key={option.value}
+         value={option.value}
+         sx={{
+           backgroundColor: option.colour,
+           color: "#fff",
+           fontSize: "10px",
+           borderRadius: "10px",
+           margin: "5px",
+           textAlign: "center",
+           display: "flex",
+           justifyContent: "center",
+           padding: "4px 9px",
+           // alignItems: "center",
+           // paddingLeft: "10px",
+           whiteSpace: "nowrap", // Prevent line breaks
+           // textAlign: "left", // Ensure text is left-aligned
+           // paddingLeft: "10px", // Add left padding for proper alignment
+           minWidth: `${dynamicWidth}px`,
+           maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
+           "&:hover": {
+             backgroundColor: option.colour,
+             color: "#fff",
+           },
+         }}
+       >
+         {option.label}
+       </MenuItem>
+     );
+   })}
+ </Select>
+</FormControl>
+
+       </Box>
                       <Box mt={2}>
                         <Box display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
                           <Typography variant='h6' className='task-input-label'>Start and Due Date</Typography>
@@ -950,7 +1078,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                             </Grid>
                             <Grid item xs={12} sm={5}>
                               <TextField
-                                size="small"
+                                 size="medium"
                                 placeholder='0'
                                 defaultValue={0}
                                 value={startsin}
@@ -963,7 +1091,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                             <Grid item xs={12} sm={5}>
                               <Autocomplete
                                 options={dayOptions}
-                                size="small"
+                                 size="medium"
                                 getOptionLabel={(option) => option.label}
                                 onChange={handleStartInDateChange}
                                 renderInput={(params) => (
@@ -988,7 +1116,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                             </Grid>
                             <Grid item xs={12} sm={5}>
                               <TextField
-                                size="small"
+                                size="medium"
                                 placeholder='0'
                                 value={duein}
                                 fullWidth
@@ -1003,7 +1131,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                 options={dayOptions}
                                 getOptionLabel={(option) => option.label}
                                 onChange={handledueindateChange}
-                                size='small'
+                                size="medium"
                                 renderInput={(params) => (
                                   <>
                                     <TextField {...params} variant="outlined" sx={{ backgroundColor: '#fff' }}  />
@@ -1064,7 +1192,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                             <TextField
                                               placeholder="Things To do"
                                               value={subtask.text}
-                                              size='small'
+                                              size="medium"
                                               margin='normal'
                                               fullWidth
                                               onChange={(e) => handleInputChange(subtask.id, e.target.value)}

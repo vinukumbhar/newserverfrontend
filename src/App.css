@@ -27,7 +27,9 @@
 #steps-label {
   color: var(--color-text);
 }
-
+.bulk-job-form::-webkit-scrollbar{
+  display: none;
+}
 
 .priority-custom-label,
 .pipeline-lable,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Chip, Box, Button, InputLabel, MenuItem, Select, TextField, Typography, Autocomplete, Grid, IconButton } from "@mui/material";
+import { OutlinedInput,  FormControl,Chip, Box, Button, InputLabel, MenuItem, Select, TextField, Typography, Autocomplete, Grid, IconButton } from "@mui/material";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import axios from "axios";
@@ -56,34 +56,7 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
       setState(selectedContact.state || "");
       setPostalCode(selectedContact.postalCode || "");
       setContactId(selectedContact._id || null); // Set contact ID
-      // const flatPhoneNumbers = selectedContact.phoneNumbers?.[0] || [];
-      // setPhoneNumbers(flatPhoneNumbers.map(phone => ({ id: Date.now(), phone, isPrimary: false })));
-      // const flatPhoneNumbers = (selectedContact.phoneNumbers && selectedContact.phoneNumbers[0]) || [];
-      // setPhoneNumbers(
-      //   flatPhoneNumbers.map((phone) => ({
-      //     id: Date.now(), // Using Date.now() is not ideal for IDs; consider a better unique ID generator
-      //     phone: phone.phone,
-      //     isPrimary: false, // Set according to your data logic
-      //   }))
-      // );
-      // Flatten phoneNumbers array
-      // const flatPhoneNumbers = selectedContact.phoneNumbers?.flat() || [];
-      // setPhoneNumbers(
-      //   flatPhoneNumbers.map((phone) => ({
-      //     id: Date.now() + Math.random(), // Improved unique ID generation
-      //     phone,
-      //     isPrimary: false, // Set based on your logic
-      //   }))
-      // );
-
-      // const flatPhoneNumbers = selectedContact.phoneNumbers?.flat() || [];
-      // setPhoneNumbers(
-      //   flatPhoneNumbers.map((phone) => ({
-      //     id: Date.now() + Math.random(), // Improved unique ID generation
-      //     phone: String(phone), // Ensure phone is a string
-      //     isPrimary: false, // Set based on your logic
-      //   }))
-      // );
+      
       const flatPhoneNumbers = selectedContact.phoneNumbers?.flat(2) || []; // Flatten to ensure no nested arrays
       setPhoneNumbers(
         flatPhoneNumbers.map((phoneObj) => ({
@@ -93,23 +66,29 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
         }))
       );
 
+      // const flatTags = selectedContact.tags?.[0] || [];
+      // setTagsNew(
+      //   flatTags.map((tag) => ({
+      //     value: tag._id,
+      //     label: tag.tagName,
+      //     colour: tag.tagColour,
+      //     customTagStyle: {
+      //       backgroundColor: tag.tagColour,
+      //       color: "#fff",
+      //       alignItems: "center",
+      //       textAlign: "center",
+      //       padding: "2px,8px",
+      //       fontSize: "15px",
+      //       cursor: "pointer",
+      //     },
+      //   }))
+      // );
       const flatTags = selectedContact.tags?.[0] || [];
-      setTagsNew(
-        flatTags.map((tag) => ({
-          value: tag._id,
-          label: tag.tagName,
-          colour: tag.tagColour,
-          customTagStyle: {
-            backgroundColor: tag.tagColour,
-            color: "#fff",
-            alignItems: "center",
-            textAlign: "center",
-            padding: "2px,8px",
-            fontSize: "15px",
-            cursor: "pointer",
-          },
-        }))
-      );
+    
+    // Store only tag IDs in `tagsNew` as `<Select>` requires values, not objects
+    setTagsNew(flatTags.map((tag) => tag._id));
+    
+    setCombinedTagsValues(flatTags.map((tag) => tag._id));
       getaccountbycontactid(selectedContact._id);
       // Set combinedTagsValues to match the tags in the contact
       setCombinedTagsValues(flatTags.map((tag) => tag._id));
@@ -154,11 +133,26 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
     setPhoneNumbers((prevPhoneNumbers) => prevPhoneNumbers.filter((item) => item.id !== id));
   };
 
-  const handleTagChange = (event, newValue) => {
-    setTagsNew(newValue);
-    const selectedTagsValues = newValue.map((option) => option.value);
+  // const handleTagChange = (event, newValue) => {
+  //   setTagsNew(newValue);
+  //   const selectedTagsValues = newValue.map((option) => option.value);
+  //   setCombinedTagsValues(selectedTagsValues);
+  // };
+  const handleTagChange = (event) => {
+    const { value } = event.target;
+    
+    // Ensure the selected value is stored correctly
+    setTagsNew(value);
+  
+    // Extract selected tag values
+    const selectedTagsValues = value.map((val) => {
+      const option = tagsOptions.find((opt) => opt.value === val);
+      return option?.value;
+    });
+  
     setCombinedTagsValues(selectedTagsValues);
   };
+  
 
   useEffect(() => {
     fetchData();
@@ -204,7 +198,7 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
     return baseWidth + charWidth * tagName.length + padding;
   };
 
-  const options = tags.map((tag) => ({
+  const tagsOptions = tags.map((tag) => ({
     value: tag._id,
     label: tag.tagName,
     colour: tag.tagColour,
@@ -380,45 +374,47 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
 
   return (
     <form style={{ paddingRight: "3%", paddingLeft: "3%", height: "90vh", overflowY: "auto" }} className="contact-form">
-      <Typography variant="h6" gutterBottom sx={{ ml: 1, fontWeight: "bold", mt: 2 }}>
-        Contact info
-      </Typography>
-      <Box sx={{ display: "flex", flexDirection: isSmallScreen ? "column" : "row", gap: isSmallScreen ? 2 : 5, padding: "1px 5px 0 5px" }}>
+     
+      <Box sx={{ display: "flex", flexDirection: isSmallScreen ? "column" : "row", gap: isSmallScreen ? 2 : 5, padding: "1px 5px 0 2px" , mt: 2,}}>
         <Box>
-          <InputLabel sx={{ color: "black" }}>First name</InputLabel>
-          <TextField margin="normal" fullWidth name="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First Name" size="small" />
+          <InputLabel sx={{
+                color: "black",
+                display: "flex",
+                alignItems: "center",
+              }}>First name</InputLabel>
+          <TextField size="medium" margin="normal" fullWidth name="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First Name" />
         </Box>
         <Box>
           <InputLabel sx={{ color: "black" }}>Middle Name</InputLabel>
-          <TextField margin="normal" fullWidth name="middleName" value={middleName} onChange={(e) => setMiddleName(e.target.value)} placeholder="Middle Name" size="small" />
+          <TextField margin="normal" fullWidth name="middleName" value={middleName} onChange={(e) => setMiddleName(e.target.value)} placeholder="Middle Name" size="medium" />
         </Box>
         <Box>
           <InputLabel sx={{ color: "black" }}>Last Name</InputLabel>
-          <TextField fullWidth name="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} margin="normal" placeholder="Last name" size="small" />
+          <TextField fullWidth name="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} margin="normal" placeholder="Last name" size="medium" />
         </Box>
       </Box>
-      <Box>
+      <Box mt={1}>
         <InputLabel sx={{ color: "black" }}>Contact Name</InputLabel>
-        <TextField name="contactName" value={contactName} onChange={(e) => setContactName(e.target.value)} fullWidth placeholder="Contact Name" margin="normal" size="small" />
+        <TextField name="contactName" value={contactName} onChange={(e) => setContactName(e.target.value)} fullWidth placeholder="Contact Name" margin="normal" size="medium" />
       </Box>
-      <Box>
+      <Box mt={1}>
         <InputLabel sx={{ color: "black" }}>Company Name</InputLabel>
-        <TextField fullWidth name="companyName" value={companyName} onChange={(e) => setCompanyName(e.target.value)} margin="normal" placeholder="Company Name" size="small" />
+        <TextField fullWidth name="companyName" value={companyName} onChange={(e) => setCompanyName(e.target.value)} margin="normal" placeholder="Company Name" size="medium"/>
       </Box>
-      <Box>
+      <Box mt={1}>
         <InputLabel sx={{ color: "black" }}>Note</InputLabel>
-        <TextField fullWidth name="note" value={note} onChange={(e) => setNote(e.target.value)} margin="normal" placeholder="Note" size="small" />
+        <TextField fullWidth name="note" value={note} onChange={(e) => setNote(e.target.value)} margin="normal" placeholder="Note" size="medium" />
       </Box>
-      <Box>
+      <Box mt={1}>
         <InputLabel sx={{ color: "black" }}>SSN</InputLabel>
-        <TextField fullWidth name="ssn" value={ssn} onChange={(e) => setSsn(e.target.value)} margin="normal" placeholder="SSN" size="small" />
+        <TextField fullWidth name="ssn" value={ssn} onChange={(e) => setSsn(e.target.value)} margin="normal" placeholder="SSN" size="medium" />
       </Box>
-      <Box>
+      <Box mt={1}>
         <InputLabel sx={{ color: "black" }}>Email</InputLabel>
-        <TextField fullWidth name="email" value={email} onChange={(e) => setEmail(e.target.value)} margin="normal" placeholder="Email" size="small" />
+        <TextField fullWidth name="email" value={email} onChange={(e) => setEmail(e.target.value)} margin="normal" placeholder="Email" size="medium" />
       </Box>
-      <Box>
-        <InputLabel sx={{ color: "black" }}>Tags</InputLabel>
+      <Box mt={1}>
+        {/* <InputLabel sx={{ color: "black" }}>Tags</InputLabel>
         <Autocomplete
           multiple
           size="small"
@@ -434,7 +430,81 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
               {option.label}
             </Box>
           )}
-        />
+        /> */}
+        <InputLabel sx={{ color: "black", mb: 1 }}>Tags</InputLabel>
+<FormControl sx={{ width: "100%" }}>
+  <Select
+    multiple
+    size="medium"
+    id="tags-outlined"
+    value={tagsNew}
+    onChange={handleTagChange}
+    input={<OutlinedInput />}
+    displayEmpty
+    renderValue={(selected) => {
+      if (selected.length === 0) {
+        return <span style={{ color: "#aaa" }}>Select tags...</span>;
+      }
+      return (
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "6px" }}>
+          {selected.map((value) => {
+            const option = tagsOptions.find((opt) => opt.value === value);
+            return (
+              <Chip
+                key={value}
+                label={option?.label}
+                sx={{
+                  backgroundColor: option?.colour,
+                  color: "#fff",
+                  fontWeight: 500,
+                  fontSize: "10px",
+                  borderRadius: "16px",
+                  height: "20px",
+                  cursor: "pointer",
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                }}
+              />
+            );
+          })}
+        </Box>
+      );
+    }}
+    MenuProps={{
+      PaperProps: {
+        style: { maxHeight: 250 },
+      },
+    }}
+    sx={{
+      borderRadius: "10px",
+      "& .MuiOutlinedInput-root": { borderRadius: "10px" },
+    }}
+  >
+    {tagsOptions.map((option) => {
+      const dynamicWidth = Math.min(option.label.length * 8 + 16, 150);
+      return (
+        <MenuItem
+          key={option.value}
+          value={option.value}
+          sx={{
+            backgroundColor: option.colour,
+            color: "#fff",
+            fontSize: "10px",
+            borderRadius: "10px",
+            margin: "5px",
+            textAlign: "center",
+            padding: "4px 9px",
+            minWidth: `${dynamicWidth}px`,
+            maxWidth: `${dynamicWidth}px`,
+            "&:hover": { backgroundColor: option.colour, color: "#fff" },
+          }}
+        >
+          {option.label}
+        </MenuItem>
+      );
+    })}
+  </Select>
+</FormControl>
+
       </Box>
       <Typography variant="h6" gutterBottom sx={{ ml: 1, fontWeight: "bold", mt: 3 }}>
         Phone Numbers
@@ -493,7 +563,7 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
       <Box>
         <InputLabel sx={{ color: "black" }}>Country</InputLabel>
         <Select
-          size="small"
+          size="medium"
           value={selectedCountry.code}
           onChange={handleCountryChange}
           sx={{
@@ -508,22 +578,22 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
           ))}
         </Select>
       </Box>
-      <Box>
+      <Box mt={1}>
         <InputLabel sx={{ color: "black" }}>Street Address</InputLabel>
-        <TextField fullWidth name="streetAddress" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} margin="normal" placeholder="Street Address" size="small" />
+        <TextField fullWidth name="streetAddress" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} margin="normal" placeholder="Street Address" size="medium" />
       </Box>
-      <Box sx={{ display: "flex", flexDirection: isSmallScreen ? "column" : "row", gap: isSmallScreen ? 2 : 5, padding: "1px 5px 0 5px" }}>
+      <Box sx={{mt:1, display: "flex", flexDirection: isSmallScreen ? "column" : "row", gap: isSmallScreen ? 2 : 5, padding: "1px 5px 0 5px" }}>
         <Box>
           <InputLabel sx={{ color: "black" }}>City</InputLabel>
-          <TextField fullWidth name="city" value={city} onChange={(e) => setCity(e.target.value)} margin="normal" placeholder="City" size="small" />
+          <TextField fullWidth name="city" value={city} onChange={(e) => setCity(e.target.value)} margin="normal" placeholder="City" size="medium" />
         </Box>
         <Box>
           <InputLabel sx={{ color: "black" }}>State</InputLabel>
-          <TextField fullWidth name="state" value={state} onChange={(e) => setState(e.target.value)} margin="normal" placeholder="State" size="small" />
+          <TextField fullWidth name="state" value={state} onChange={(e) => setState(e.target.value)} margin="normal" placeholder="State" size="medium"/>
         </Box>
         <Box>
           <InputLabel sx={{ color: "black" }}>Postal Code</InputLabel>
-          <TextField fullWidth name="postalCode" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} margin="normal" placeholder="Postal Code" size="small" />
+          <TextField fullWidth name="postalCode" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} margin="normal" placeholder="Postal Code" size="medium" />
         </Box>
       </Box>
 
@@ -596,10 +666,28 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
               </Box>
               {/* Drawer Footer */}
               <Box mt={4}>
-                <Button variant="contained" color="primary" onClick={updatecontactidtoAccounts}>
+                <Button variant="contained" color="primary" onClick={updatecontactidtoAccounts} sx={{
+                        backgroundColor: "var(--color-save-btn)", // Normal background
+
+                        "&:hover": {
+                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        },
+                        borderRadius: "15px",
+                        width: "80px",
+                      }}>
                   Save
                 </Button>
-                <Button variant="outlined" onClick={handleDrawerClose}>
+                <Button variant="outlined" onClick={handleDrawerClose}  sx={{
+                        borderColor: "var(--color-border-cancel-btn)", // Normal background
+                        color: "var(--color-save-btn)",
+                        "&:hover": {
+                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          color: "#fff",
+                          border: "none",
+                        },
+                        width: "80px",
+                        borderRadius: "15px",
+                      }}>
                   Cancel
                 </Button>
               </Box>
@@ -653,10 +741,29 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
         <Button
           variant="contained"
           onClick={handleSave} // Attach the save handler
+          sx={{
+            backgroundColor: "var(--color-save-btn)", // Normal background
+
+            "&:hover": {
+              backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+            },
+            borderRadius: "15px",
+            width: "80px",
+          }}
         >
           Save
         </Button>
-        <Button variant="outlined" onClick={handleClose} sx={{ ml: 2 }}>
+        <Button variant="outlined" onClick={handleClose} sx={{
+                        borderColor: "var(--color-border-cancel-btn)", // Normal background
+                        color: "var(--color-save-btn)",
+                        "&:hover": {
+                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          color: "#fff",
+                          border: "none",
+                        },
+                        width: "80px",
+                        borderRadius: "15px",ml:2
+                      }}>
           Cancel
         </Button>
       </Box>

@@ -33,7 +33,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
+  Paper, OutlinedInput, Select,FormControl,
 } from "@mui/material";
 // import Select from 'react-select';
 import CloseIcon from "@mui/icons-material/Close";
@@ -139,6 +139,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
         fetchJobData();
       }
     }, [userRole]);
+    const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
   const fetchJobData = async () => {
     // try {
     //   const url = `${JOBS_API}/workflow/jobs/job/joblist/list/true`;
@@ -153,12 +154,43 @@ const Pipeline = ({ charLimit = 4000 }) => {
       const storedData = JSON.parse(localStorage.getItem("teamMemberData"));
       console.log("Received stored teamMemberData:", storedData);
       const loginuserid = storedData?.teammember?.userid;
+      const viewAllAccounts = storedData?.teammember?.viewallAccounts;
       console.log("User role is:", userRole);
-
-      let url = userRole === "Admin"
-      ? `${JOBS_API}/workflow/jobs/job/joblist/list/true`
-      : `${JOBS_API}/workflow/jobs/joblist/list/${loginuserid}/true`;
-      
+      let url = "";
+      // let url = userRole === "Admin"
+      // ? `${JOBS_API}/workflow/jobs/job/joblist/list/true`
+      // : `${JOBS_API}/workflow/jobs/joblist/list/${loginuserid}/true`;
+      if (userRole === "Admin") {
+        // Admin fetches all jobs
+        url = `${JOBS_API}/workflow/jobs/job/joblist/list/true`;
+      } else if (userRole === "TeamMember") {
+        if (!viewAllAccounts) {
+          // If TeamMember has no access, do not fetch data
+          // alert("You do not have permission to view accounts.");
+          setJobs([]); // Set empty job data
+          return;
+        }
+  
+        // Fetch accounts linked to the user
+        const accountsResponse = await axios.get(`${ACCOUNT_API}/accounts/getaccounts/${loginuserid}/true`);
+        const accountsData = accountsResponse.data.accountlist;
+        console.log(accountsData);
+  
+        if (!accountsData || accountsData.length === 0) {
+          console.warn("No accounts found for user.");
+          setJobs([]); // Set empty job data
+          return;
+        }
+  
+        // Extract account IDs and form a query string
+        const accountIds = accountsData.map(account => account.id).join(",");
+  
+        // Fetch jobs based on retrieved account IDs
+        url = `${JOBS_API}/workflow/jobs/job/joblist/list/true/${accountIds}`;
+      }
+  
+      // If no URL is set, exit
+      if (!url) return;
       const response = await fetch(url);
       const data = await response.json();
       setJobs(data.jobList);
@@ -1482,40 +1514,41 @@ const Pipeline = ({ charLimit = 4000 }) => {
           console.log(data.jobList.Account[0]._id);
           setAccountId(data.jobList.Account[0]._id);
           console.log(data.jobList.Account[0].tags);
-          const tagOptions = data.jobList.Account[0].tags
+          const tagsData = data.jobList.Account[0].tags
             .flatMap((tagArray) => tagArray)
             .map((tag) => ({
               value: tag._id,
               label: tag.tagName,
               colour: tag.tagColour,
             }));
-          setSelectedTags(tagOptions);
-          console.log(tagOptions);
+          setSelectedTags(tagsData);
+          const selectedValues = tagsData.map((option) => option.value);
+         setCombinedTagsValues(selectedValues);
         }
-        if (data.jobList && data.jobList.Account) {
-          const tags = data.jobList.Account[0].tags.map((tag) => ({
-            value: tag._id,
-            label: tag.tagName,
-            colour: tag.tagColour,
+        // if (data.jobList && data.jobList.Account) {
+        //   const tags = data.jobList.Account[0].tags.map((tag) => ({
+        //     value: tag._id,
+        //     label: tag.tagName,
+        //     colour: tag.tagColour,
 
-            customStyle: {
-              backgroundColor: tag.tagColour,
-              color: "#fff",
-              borderRadius: "8px",
-              alignItems: "center",
-              textAlign: "center",
-              marginBottom: "5px",
-              padding: "2px,8px",
+        //     customStyle: {
+        //       backgroundColor: tag.tagColour,
+        //       color: "#fff",
+        //       borderRadius: "8px",
+        //       alignItems: "center",
+        //       textAlign: "center",
+        //       marginBottom: "5px",
+        //       padding: "2px,8px",
 
-              fontSize: "10px",
-              // width: `${calculateWidth(tag.tagName)}px`,
-              margin: "7px",
-            },
-          }));
+        //       fontSize: "10px",
+        //       // width: `${calculateWidth(tag.tagName)}px`,
+        //       margin: "7px",
+        //     },
+        //   }));
 
-          // setSelectedTags(tags);
-          console.log(tags);
-        }
+        //   // setSelectedTags(tags);
+        //   console.log(tags);
+        // }
         if (data.jobList && data.jobList.JobAssignee) {
           const assigneesData = data.jobList.JobAssignee.map((assignee) => ({
             value: assignee._id,
@@ -1576,7 +1609,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
     };
     const handleSaveExitClick = () => {
       updatejobdata();
-      handleSaveTags();
+      
     };
     // console.log(accountId);
     const handleSaveTags = () => {
@@ -1597,7 +1630,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
         .then((response) => response.json())
         .then((result) => {
           console.log(result);
-          console.log(result.updatedAccount); // Log the result
+          console.log("acc",result.updatedAccount); // Log the result
         })
         .catch((error) => {
           console.error(error); // Log the error
@@ -1645,6 +1678,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
         .then((result) => {
           // Handle success
           toast.success("Job Template updated successfully");
+          handleSaveTags();
           setIsDrawerOpen(false);
           fetchJobData();
         })
@@ -1796,7 +1830,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
             </Box>
             <Divider />
             <Box padding={2} height="83vh" sx={{ overflowY: "auto" }}>
-              <Box mt={2}>
+              <Box mt={1}>
                 <label>Pipeline</label>
 
                 <Autocomplete
@@ -1822,7 +1856,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                       sx={{ backgroundColor: "#fff" }}
                       placeholder="Pipeline"
                       variant="outlined"
-                      size="small"
+                      size="medium"
                     />
                   )}
                   sx={{ width: "100%", marginTop: "8px" }}
@@ -1885,7 +1919,8 @@ const Pipeline = ({ charLimit = 4000 }) => {
                       />
                     ))
                   }
-                />
+                /> 
+                
               </Box>
               <Box>
                 <label className="task-input-label">Task Assignee</label>

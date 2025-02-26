@@ -156,18 +156,26 @@ const CreateJob = ({ charLimit = 4000 }) => {
 
   const [combinedaccountValues, setCombinedaccountValues] = useState([]);
 
-  const handleAccountChange = (event, newValue) => {
-    console.log("test",newValue)
-    setSelectedaccount(newValue.map((option) => option.value));
-    // Map selected options to their values and send as an array
-    console.log(
-      "Selected Values:",
-      newValue.map((option) => option.value)
-    );
-    setCombinedaccountValues(newValue.map((option) => option.value));
+  // const handleAccountChange = (event, newValue) => {
+  //   console.log("test",newValue)
+  //   setSelectedaccount(newValue.map((option) => option.value));
+  //   // Map selected options to their values and send as an array
+  //   console.log(
+  //     "Selected Values:",
+  //     newValue.map((option) => option.value)
+  //   );
+  //   setCombinedaccountValues(newValue.map((option) => option.value));
+  // };
+
+  const handleAccountChange = (event) => {
+    const selectedValues = event.target.value;
+    console.log("test", selectedValues);
+    
+    setSelectedaccount(selectedValues);
+    setCombinedaccountValues(selectedValues);
+  
+    console.log("Selected Values:", selectedValues);
   };
-
-
   
   useEffect(() => {
   fetchAccountData();
@@ -1605,11 +1613,11 @@ const CreateJob = ({ charLimit = 4000 }) => {
                         {...params}
                         placeholder="Select Accounts"
                         variant="outlined"
-                        size="small"
+                        size="medium"
                         sx={{ backgroundColor: "#fff" }}
                       />
                     )}
-                    sx={{ width: "100%", marginTop: "8px" }}
+                    sx={{ width: "100%", marginTop: "15px" }}
                   />
                 </Box>
                 <Box mt={2}>
@@ -1640,10 +1648,10 @@ const CreateJob = ({ charLimit = 4000 }) => {
                         sx={{ backgroundColor: "#fff" }}
                         placeholder="Pipeline"
                         variant="outlined"
-                        size="small"
+                        size="medium"
                       />
                     )}
-                    sx={{ width: "100%", marginTop: "8px" }}
+                    sx={{ width: "100%", marginTop: "15px" }}
                     clearOnEscape // Enable clearable functionality
                   />
                 </Box>
@@ -1672,10 +1680,10 @@ const CreateJob = ({ charLimit = 4000 }) => {
                         sx={{ backgroundColor: "#fff" }}
                         placeholder="Job Template"
                         variant="outlined"
-                        size="small"
+                       size="medium"
                       />
                     )}
-                    sx={{ width: "100%", marginTop: "8px" }}
+                    sx={{ width: "100%", marginTop: "15px" }}
                     clearOnEscape // Enable clearable functionality
                   />
                 </Box>
@@ -1686,7 +1694,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
                     value={jobName}
                     onChange={(e) => setJobName(e.target.value)}
                     margin="normal"
-                    size="small"
+                    size="medium"
                     placeholder="Job Name"
                     sx={{ backgroundColor: "#fff" }}
                   />
@@ -1697,7 +1705,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
                     multiple
                     sx={{ marginTop: "8px" }}
                     options={assigneesoptions}
-                    size="small"
+                   size="medium"
                     getOptionLabel={(option) => option.label}
                     value={selectedUser}
                     onChange={handleUserChange}
@@ -1715,7 +1723,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
                         {...params}
                         variant="outlined"
                         placeholder="Job Assignees"
-                        sx={{ backgroundColor: "#fff" }}
+                        sx={{ backgroundColor: "#fff",mt:'15px' }}
                       />
                     )}
                     isOptionEqualToValue={(option, value) =>
@@ -1771,7 +1779,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
                         value={startDate}
                         onChange={handleStartDateChange}
                         renderInput={(params) => (
-                          <TextField {...params} size="small" />
+                          <TextField {...params} size="medium" />
                         )}
                       />
                     </Box>
@@ -1785,7 +1793,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
                         value={dueDate}
                         onChange={handleDueDateChange}
                         renderInput={(params) => (
-                          <TextField {...params} size="small" />
+                          <TextField {...params} size="medium" />
                         )}
                       />
                     </Box>
@@ -1796,7 +1804,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                       <Typography>Start In</Typography>
                       <TextField
-                        size="small"
+                       size="medium"
                         margin="normal"
                         fullWidth
                         defaultValue={0}
@@ -1807,7 +1815,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
                       />
                       <Autocomplete
                         options={dayOptions}
-                        size="small"
+                        size="medium"
                         getOptionLabel={(option) => option.label}
                         value={
                           startsInDuration
@@ -1843,7 +1851,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                       <Typography>Due In</Typography>
                       <TextField
-                        size="small"
+                        size="medium"
                         margin="normal"
                         fullWidth
                         defaultValue={0}
@@ -1866,7 +1874,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
                             : null
                         }
                         onChange={handleDueInDateChange}
-                        size="small"
+                        size="medium"
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -1961,7 +1969,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
                                 value={inputText + selectedJobShortcut}
                                 onChange={handlechatsubject}
                                 placeholder="Job name for client"
-                                size="small"
+                               size="medium"
                                 sx={{ background: "#fff", mt: 2 }}
                               />
 
@@ -1969,7 +1977,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
                                 <Typography>Status</Typography>
                                 <Autocomplete
                                   options={optionstatus}
-                                  size="small"
+                                  size="medium"
                                   sx={{ mt: 1 }}
                                   value={selectedJob}
                                   onChange={handleJobChange}
@@ -2030,7 +2038,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
                                 </InputLabel>
                                 <TextField
                                   fullWidth
-                                  size="small"
+                                 size="medium"
                                   margin="normal"
                                   type="text"
                                   multiline

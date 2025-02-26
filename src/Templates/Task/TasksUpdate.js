@@ -629,8 +629,8 @@ import {
     FormControlLabel,
     Chip,
     IconButton,
-    Checkbox
-
+    Checkbox,
+    OutlinedInput,MenuItem, Select,FormControl,InputLabel
 } from '@mui/material';
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
@@ -929,13 +929,28 @@ const Tasks = () => {
         },
     }));
 
-    const handleTagChange = (event, newValue) => {
-        setTagsNew(newValue);
-        // Map selected options to their values and send as an array
-        const selectedTagsValues = newValue.map((option) => option.value);
-        // console.log(selectedTagsValues);
+    // const handleTagChange = (event, newValue) => {
+    //     setTagsNew(newValue);
+    //     // Map selected options to their values and send as an array
+    //     const selectedTagsValues = newValue.map((option) => option.value);
+    //     // console.log(selectedTagsValues);
+    //     setCombinedTagsValues(selectedTagsValues);
+    // };
+
+    const handleTagChange = (event) => {
+        const { value } = event.target;
+        
+        // Ensure the selected value is stored correctly
+        setTagsNew(value);
+      
+        // Extract selected tag values
+        const selectedTagsValues = value.map((val) => {
+          const option = tagsoptions.find((opt) => opt.value === val);
+          return option?.value;
+        });
+      
         setCombinedTagsValues(selectedTagsValues);
-    };
+      };
     const [tempvalues, setTempValues] = useState();
     useEffect(() => {
         fetchidwiseData(_id);
@@ -997,6 +1012,7 @@ const Tasks = () => {
                 setTagsNew(tagsData); // Assuming you have a setTags function to update your state
                 const selectedTagsValues = tagsData.map((option) => option.value);
                 setCombinedTagsValues(selectedTagsValues);
+                console.log("Tags Data:", selectedTagsValues);
             } else {
                 console.log("tasktags is not defined or not an array.");
             }
@@ -1200,7 +1216,7 @@ const Tasks = () => {
                                                             fullWidth
                                                             name="TemplateName"
                                                             placeholder="Template Name"
-                                                            size="small"
+                                                            size="medium"
                                                             sx={{ background: '#fff', mt: 1 }}
                                                             onChange={(e) => setTempNameNew(e.target.value)} value={tempNameNew}
                                                         />
@@ -1222,7 +1238,7 @@ const Tasks = () => {
                                                             multiple
                                                             sx={{ mt: 2 }}
                                                             options={options}
-                                                            size='small'
+                                                            size="medium"
                                                             getOptionLabel={(option) => option.label}
                                                             value={AssigneesNew}
                                                             onChange={handleuserChange}
@@ -1255,7 +1271,7 @@ const Tasks = () => {
                                             />
                                         </Box>
                                         <Box mt={2}>
-                                            <label className='task-input-label'>Tags</label>
+                                            {/* <label className='task-input-label'>Tags</label>
                                             <Autocomplete
                                                 multiple
                                                 size='small'
@@ -1289,7 +1305,80 @@ const Tasks = () => {
                                                     </Box>
                                                 )}
                                                 isOptionEqualToValue={(option, value) => option.value === value.value}
-                                            />
+                                            /> */}
+                                            <InputLabel sx={{ color: "black", mb: 1 }}>Tags</InputLabel>
+<FormControl sx={{ width: "100%" }}>
+  <Select
+    multiple
+    size="medium"
+    id="tags-outlined"
+    value={combinedTagsValues}
+    onChange={handleTagChange}
+    input={<OutlinedInput />}
+    displayEmpty
+    renderValue={(selected) => {
+      if (selected.length === 0) {
+        return <span style={{ color: "#aaa" }}>Select tags...</span>;
+      }
+      return (
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "6px" }}>
+          {selected.map((value) => {
+            const option = tagsoptions.find((opt) => opt.value === value);
+            return (
+              <Chip
+                key={value}
+                label={option?.label}
+                sx={{
+                  backgroundColor: option?.colour,
+                  color: "#fff",
+                  fontWeight: 500,
+                  fontSize: "10px",
+                  borderRadius: "16px",
+                  height: "20px",
+                  cursor: "pointer",
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                }}
+              />
+            );
+          })}
+        </Box>
+      );
+    }}
+    MenuProps={{
+      PaperProps: {
+        style: { maxHeight: 250 },
+      },
+    }}
+    sx={{
+      borderRadius: "10px",
+      "& .MuiOutlinedInput-root": { borderRadius: "10px" },
+    }}
+  >
+    {tagsoptions.map((option) => {
+      const dynamicWidth = Math.min(option.label.length * 8 + 16, 150);
+      return (
+        <MenuItem
+          key={option.value}
+          value={option.value}
+          sx={{
+            backgroundColor: option.colour,
+            color: "#fff",
+            fontSize: "10px",
+            borderRadius: "10px",
+            margin: "5px",
+            textAlign: "center",
+            padding: "4px 9px",
+            minWidth: `${dynamicWidth}px`,
+            maxWidth: `${dynamicWidth}px`,
+            "&:hover": { backgroundColor: option.colour, color: "#fff" },
+          }}
+        >
+          {option.label}
+        </MenuItem>
+      );
+    })}
+  </Select>
+  </FormControl>
                                         </Box>
                                         <Box mt={2}>
                                             <Box display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
@@ -1335,7 +1424,7 @@ const Tasks = () => {
                                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                                                     <Typography className='task-input-label'>Start In</Typography>
                                                     <TextField
-                                                        size='small'
+                                                         size="medium"
                                                         margin='normal'
                                                         fullWidth
                                                         defaultValue={0}
@@ -1346,7 +1435,7 @@ const Tasks = () => {
                                                     />
                                                     <Autocomplete
                                                         options={dayOptions}
-                                                        size="small"
+                                                       size="medium"
                                                         getOptionLabel={(option) => option.label}
                                                         onChange={(event, newValue) => {
                                                             if (newValue) {
@@ -1362,7 +1451,7 @@ const Tasks = () => {
                                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                                                     <Typography className='task-input-label'>Due In</Typography>
                                                     <TextField
-                                                        size='small'
+                                                       size="medium"
                                                         margin='normal'
                                                         value={DueInNew}
                                                         onChange={(e) => setDueInNew(e.target.value)}
@@ -1375,7 +1464,7 @@ const Tasks = () => {
 
                                                     <Autocomplete
                                                         options={dayOptions}
-                                                        size="small"
+                                                        size="medium"
                                                         getOptionLabel={(option) => option.label}
                                                         onChange={(event, newValue) => {
                                                             if (newValue) {
@@ -1435,7 +1524,7 @@ const Tasks = () => {
                                                                                     <TextField
                                                                                         placeholder="Things To do"
                                                                                         value={subtask.text}
-                                                                                        size='small'
+                                                                                        size="medium"
                                                                                         margin='normal'
                                                                                         fullWidth
                                                                                         onChange={(e) => handleInputChange(subtask.id, e.target.value)}

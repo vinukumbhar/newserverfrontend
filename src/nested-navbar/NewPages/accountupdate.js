@@ -1,4 +1,4 @@
-import { Box, ListItem, Chip, Grid, Typography, Divider, Button, Autocomplete, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, FormControl, InputLabel, RadioGroup, Radio, TextField, IconButton, Switch } from "@mui/material";
+import {OutlinedInput, Box, ListItem, Chip, Grid, Typography, Divider, Button, Autocomplete, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, FormControl, InputLabel, RadioGroup, Radio, TextField, IconButton, Switch } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useTheme, useMediaQuery, Menu, MenuItem, Select, Drawer } from "@mui/material";
 import { RxCross2 } from "react-icons/rx";
@@ -30,7 +30,16 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
   const isMobile = useMediaQuery("(max-width: 1000px)");
-
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: "auto",
+      },
+    },
+  };
   const handleOptionChange = (event, value) => {
     setSelectedOption(value || event.target.value);
     setActiveStep(value || event.target.value);
@@ -72,7 +81,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
   const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
   const fetchUserData = async () => {
     try {
-      const url = `${LOGIN_API}/common/users/roles?roles=TeamMember`;
+      const url = `${LOGIN_API}/common/users/roles?roles=TeamMember,Admin`;
       // const url = "http://68.251.138.236:8000/common/users/roles?roles=TeamMember,Admin"
       const response = await fetch(url);
       const data = await response.json();
@@ -99,24 +108,38 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
     return baseWidth + charWidth * tagName.length + padding;
   };
 
-  const handleContactTagChange = (index, event, newValue) => {
-    // Map newValue to get an array of option values
-    const selectedTags = newValue.map((option) => option.value);
+  // const handleContactTagChange = (index, event, newValue) => {
+  //   // Map newValue to get an array of option values
+  //   const selectedTags = newValue.map((option) => option.value);
 
-    // Update the contacts state
+  //   // Update the contacts state
+  //   setContacts((prevContacts) => {
+  //     const updatedContacts = [...prevContacts];
+  //     updatedContacts[index].tags = selectedTags;
+  //     return updatedContacts;
+  //   });
+
+  //   // Log the selected tags
+  //   console.log("Selected Tags for contact", index, ":", selectedTags);
+
+  //   // Update combined values
+  //   setCombinedValues((prevCombinedValues) => [...prevCombinedValues, ...selectedTags]);
+  // };
+
+  const handleContactTagChange = (index) => (event) => {
+    const selectedValues = event.target.value;
+  
     setContacts((prevContacts) => {
       const updatedContacts = [...prevContacts];
-      updatedContacts[index].tags = selectedTags;
+      updatedContacts[index].tags = selectedValues;
       return updatedContacts;
     });
-
-    // Log the selected tags
-    console.log("Selected Tags for contact", index, ":", selectedTags);
-
-    // Update combined values
-    setCombinedValues((prevCombinedValues) => [...prevCombinedValues, ...selectedTags]);
+  
+    console.log("Selected Tags for contact", index, ":", selectedValues);
+  
+    setCombinedValues(selectedValues);
   };
-
+  
   const tagsoptions = tags.map((tag) => ({
     value: tag._id,
     label: tag.tagName,
@@ -803,14 +826,14 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                   </Box>
                   <Box>
                     <InputLabel sx={{ color: "black" }}>Account Name</InputLabel>
-                    <TextField size="small" fullWidth placeholder="Account Name" margin="normal" value={accountName} onChange={(e) => setaccountName(e.target.value)} />
+                    <TextField size="medium" fullWidth placeholder="Account Name" margin="normal" value={accountName} onChange={(e) => setaccountName(e.target.value)} />
                   </Box>
                   <Box>
                     <InputLabel sx={{ color: "black" }}>Company Name</InputLabel>
-                    <TextField size="small" fullWidth placeholder="Company Name" margin="normal" value={companyname} onChange={(e) => setcompanyname(e.target.value)} />
+                    <TextField size="medium" fullWidth placeholder="Company Name" margin="normal" value={companyname} onChange={(e) => setcompanyname(e.target.value)} />
                   </Box>
                   <Box>
-                    <InputLabel sx={{ color: "black" }}>Tags</InputLabel>
+                    {/* <InputLabel sx={{ color: "black" }}>Tags</InputLabel>
                     <Autocomplete
                       multiple
                       size="small"
@@ -826,7 +849,126 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                           {option.label}
                         </Box>
                       )}
-                    />
+                    /> */}
+                    <InputLabel sx={{ color: "black", mb: 1 }}>Tags</InputLabel>
+<FormControl sx={{ width: "100%" }}>
+  <Select
+    multiple
+    size="medium"
+    fullWidth
+    value={combinedTagsValues}
+    onChange={(event) => setCombinedTagsValues(event.target.value)}
+    input={<OutlinedInput />}
+    displayEmpty
+    renderValue={(selected) => {
+      if (selected.length === 0) {
+        return <span style={{ color: "#aaa" }}>Select tags...</span>;
+      }
+      return (
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "6px", borderRadius: "10px" }}>
+          {selected.map((value) => {
+            const option = tagsoptions.find((opt) => opt.value === value);
+            return (
+              <Chip
+                key={value}
+                label={option?.label}
+                sx={{
+                  backgroundColor: option?.customTagStyle?.backgroundColor || "#1976d2",
+                  color: option?.customTagStyle?.color || "#fff",
+                  fontWeight: 500,
+                  fontSize: "10px",
+                  borderRadius: "16px",
+                  height: "20px",
+                  cursor: "pointer",
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                  "& .MuiChip-deleteIcon": {
+                    color: "#fff",
+                    opacity: 0.7,
+                    transition: "opacity 0.2s",
+                    "&:hover": { opacity: 1 },
+                  },
+                }}
+              />
+            );
+          })}
+        </Box>
+      );
+    }}
+    MenuProps={{ PaperProps: { style: { maxHeight: 200 } } }}
+    sx={{
+      borderRadius: "10px",
+      "& .MuiOutlinedInput-root": {
+        borderRadius: "10px",
+      },
+    }}
+  >
+    {/* {tagsoptions.map((option) => (
+      <MenuItem
+        key={option.value}
+        value={option.value}
+        sx={{
+          backgroundColor: option.colour,
+          color: "#fff",
+          fontSize: "10px",
+          borderRadius: "10px",
+          margin: "5px",
+          textAlign: "center",
+          display: "flex",
+          justifyContent: "center",
+          padding: "4px 9px",
+          minWidth: "120px",
+          "&:hover": {
+            backgroundColor: option.colour,
+            color: "#fff",
+          },
+        }}
+      >
+        {option.label}
+      </MenuItem>
+    ))} */}
+    {tagsoptions.map((option) => {
+          // const dynamicWidth = Math.min(option.label.length * 10, 150); // Adjust width dynamically
+          // Create a canvas element to measure the actual text width
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      context.font = "12px Arial"; // Match the font size/style of MenuItem
+    
+      const textWidth = context.measureText(option.label).width; // Get precise width
+      const dynamicWidth = Math.min(textWidth + 16, 150); // Add padding & set max width
+          return (
+            <MenuItem
+              key={option.value}
+              value={option.value}
+              sx={{
+                backgroundColor: option.colour,
+                color: "#fff",
+                fontSize: "10px",
+                borderRadius: "10px",
+                margin: "5px",
+                textAlign: "center",
+                display: "flex",
+                justifyContent: "center",
+                padding: "4px 9px",
+                // alignItems: "center",
+                // paddingLeft: "10px",
+                whiteSpace: "nowrap", // Prevent line breaks
+                // textAlign: "left", // Ensure text is left-aligned
+                // paddingLeft: "10px", // Add left padding for proper alignment
+                minWidth: `${dynamicWidth}px`,
+                maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
+                "&:hover": {
+                  backgroundColor: option.colour,
+                  color: "#fff",
+                },
+              }}
+            >
+              {option.label}
+            </MenuItem>
+          );
+        })}
+  </Select>
+</FormControl>
+
                   </Box>
                   <Box mt={2}>
                     <InputLabel sx={{ color: "black" }}>Team Member</InputLabel>
@@ -834,7 +976,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                       multiple
                       sx={{ mt: 2 }}
                       options={options}
-                      size="small"
+                      size="medium"
                       getOptionLabel={(option) => option.label}
                       value={options.filter((option) => selectedUser.some((selected) => selected.value === option.value))}
                       onChange={handleUserChange} // Updated to use `handleUserChange` function
@@ -845,6 +987,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                   <Box mt={2}>
                                         <Typography>Folder Template</Typography>
                                         <Autocomplete
+                                        
                                          options={optionfolder}
                                           getOptionLabel={(option) => option.label}
                                           value={selectedTemplate}
@@ -869,7 +1012,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                                               sx={{ backgroundColor: "#fff" }}
                                               placeholder="select folder template"
                                               variant="outlined"
-                                              size="small"
+                                              size="medium"
                                             />
                                           )}
                                           sx={{ width: "100%", marginTop: "8px" }}
@@ -884,7 +1027,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                   <Box>
                     <InputLabel sx={{ color: "black" }}>Country</InputLabel>
                     <Select
-                      size="small"
+                     size="medium"
                       value={selectedCountry.code}
                       onChange={handleCountryChange}
                       sx={{
@@ -906,7 +1049,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                       value={streetAddress}
                       onChange={(e) => setStreetAddress(e.target.value)}
                       // onChange={(e) => SetCStreetAddress(e.target.value)}
-                      size="small"
+                     size="medium"
                       fullWidth
                       margin="normal"
                     />
@@ -921,7 +1064,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                   >
                     <Box>
                       <InputLabel sx={{ color: "black" }}>City</InputLabel>
-                      <TextField fullWidth margin="normal" name="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" size="small" />
+                      <TextField fullWidth margin="normal" name="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" size="medium"/>
                     </Box>
                     <Box>
                       <InputLabel sx={{ color: "black" }}>State/Province</InputLabel>
@@ -933,7 +1076,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                         onChange={(e) => setState(e.target.value)}
                         // onChange={(e) => SetCStateProvince(e.target.value)}
                         placeholder="State/Province"
-                        size="small"
+                        size="medium"
                       />
                     </Box>
                     <Box>
@@ -947,7 +1090,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                         onChange={(e) => setPostalCode(e.target.value)}
                         // onChange={(e) => SetCZipPostalCode(e.target.value)}
                         placeholder="ZIP/Postal Code"
-                        size="small"
+                        size="medium"
                       />
                     </Box>
                   </Box>
@@ -1276,36 +1419,36 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                       >
                         <Box>
                           <InputLabel sx={{ color: "black" }}>First Name</InputLabel>
-                          <TextField margin="normal" fullWidth name="firstName" placeholder="First Name" size="small" onChange={(e) => handleContactInputChange(index, e)} />
+                          <TextField margin="normal" fullWidth name="firstName" placeholder="First Name" size="medium" onChange={(e) => handleContactInputChange(index, e)} />
                         </Box>
                         <Box>
                           <InputLabel sx={{ color: "black" }}>Middle Name</InputLabel>
-                          <TextField margin="normal" fullWidth name="middleName" placeholder="Middle Name" size="small" onChange={(e) => handleContactInputChange(index, e)} />
+                          <TextField margin="normal" fullWidth name="middleName" placeholder="Middle Name" size="medium" onChange={(e) => handleContactInputChange(index, e)} />
                         </Box>
                         <Box>
                           <InputLabel sx={{ color: "black" }}>Last Name</InputLabel>
-                          <TextField fullWidth name="lastName" margin="normal" placeholder="Last name" size="small" onChange={(e) => handleContactInputChange(index, e)} />
+                          <TextField fullWidth name="lastName" margin="normal" placeholder="Last name" size="medium" onChange={(e) => handleContactInputChange(index, e)} />
                         </Box>
                       </Box>
                       <Box>
                         <InputLabel sx={{ color: "black" }}>Contact Name</InputLabel>
-                        <TextField name="contactName" fullWidth placeholder="Contact Name" margin="normal" size="small" value={contact.contactName} onChange={(e) => handleContactInputChange(index, e)} />
+                        <TextField name="contactName" fullWidth placeholder="Contact Name" margin="normal" size="medium" value={contact.contactName} onChange={(e) => handleContactInputChange(index, e)} />
                       </Box>
                       <Box>
                         <InputLabel sx={{ color: "black" }}>Company Name</InputLabel>
-                        <TextField fullWidth name="companyName" margin="normal" placeholder="Company Name" size="small" onChange={(e) => handleContactInputChange(index, e)} />
+                        <TextField fullWidth name="companyName" margin="normal" placeholder="Company Name" size="medium" onChange={(e) => handleContactInputChange(index, e)} />
                       </Box>
                       <Box>
                         <InputLabel sx={{ color: "black" }}>Note</InputLabel>
-                        <TextField fullWidth multiline name="note" margin="normal" placeholder="Note" size="small" onChange={(e) => handleContactInputChange(index, e)} />
+                        <TextField fullWidth multiline name="note" margin="normal" placeholder="Note" size="medium" onChange={(e) => handleContactInputChange(index, e)} />
                       </Box>
                       <Box>
                         <InputLabel sx={{ color: "black" }}>SSN</InputLabel>
-                        <TextField fullWidth name="ssn" margin="normal" placeholder="SSN" size="small" onChange={(e) => handleContactInputChange(index, e)} />
+                        <TextField fullWidth name="ssn" margin="normal" placeholder="SSN" size="medium" onChange={(e) => handleContactInputChange(index, e)} />
                       </Box>
                       <Box>
                         <InputLabel sx={{ color: "black" }}>Email</InputLabel>
-                        <TextField fullWidth name="email" margin="normal" placeholder="Email" size="small" onChange={(e) => handleContactInputChange(index, e)} />
+                        <TextField fullWidth name="email" margin="normal" placeholder="Email" size="medium" onChange={(e) => handleContactInputChange(index, e)} />
                       </Box>
                       {/* Switches for Login, Notify, and Email Sync */}
                       <Box sx={{ mt: 1 }}>
@@ -1315,7 +1458,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                       </Box>
 
                       <Box key={contact.id}>
-                        <InputLabel sx={{ color: "black" }}>Tags</InputLabel>
+                        {/* <InputLabel sx={{ color: "black" }}>Tags</InputLabel>
 
                         <Autocomplete
                           multiple
@@ -1331,7 +1474,110 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                               {option.label}
                             </Box>
                           )}
-                        />
+                        /> */}
+                                              <InputLabel sx={{ color: "black", mb: 1 }}>Tags</InputLabel>
+                                 
+                                 <FormControl sx={{ width: "100%" }}>
+                          <Select
+                            multiple
+                            size="medium"
+                            fullWidth
+                            value={contact.tags || []}
+    onChange={(event) => handleContactTagChange(index)(event)}
+                            input={<OutlinedInput />}
+                            displayEmpty // Enables placeholder when no value is selected
+                            renderValue={(selected) => {
+                              if (selected.length === 0) {
+                                return <span style={{ color: "#aaa" }}>Select tags...</span>; // Placeholder
+                              }
+                              return (
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    gap: "6px",
+                                    padding: "6px",
+                                    borderRadius: "10px",
+                                  }}
+                                >
+                                  {selected.map((value) => {
+                                    const option = tagsoptions.find((opt) => opt.value === value);
+                                    return (
+                                      <Chip
+                                        key={value}
+                                        label={option?.label}
+                                        sx={{
+                                          backgroundColor: option?.colour,
+                                          color: "#fff",
+                                          fontWeight: 500,
+                                          fontSize: "10px",
+                                          borderRadius: "16px",
+                                          height: "20px",
+                                          cursor: "pointer",
+                                          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                                          "& .MuiChip-deleteIcon": {
+                                            color: "#fff",
+                                            opacity: 0.7,
+                                            transition: "opacity 0.2s",
+                                            "&:hover": { opacity: 1 },
+                                          },
+                                        }}
+                                      />
+                                    );
+                                  })}
+                                </Box>
+                              );
+                            }}
+                            MenuProps={MenuProps}
+                            sx={{
+                              borderRadius: "10px",
+                              "& .MuiOutlinedInput-root": {
+                                borderRadius: "10px",
+                              },
+                            }}
+                          >
+                            {tagsoptions.map((option) => {
+                              // const dynamicWidth = Math.min(option.label.length * 10, 150); // Adjust width dynamically
+                              // Create a canvas element to measure the actual text width
+                          const canvas = document.createElement("canvas");
+                          const context = canvas.getContext("2d");
+                          context.font = "12px Arial"; // Match the font size/style of MenuItem
+                        
+                          const textWidth = context.measureText(option.label).width; // Get precise width
+                          const dynamicWidth = Math.min(textWidth + 16, 150); // Add padding & set max width
+                              return (
+                                <MenuItem
+                                  key={option.value}
+                                  value={option.value}
+                                  sx={{
+                                    backgroundColor: option.colour,
+                                    color: "#fff",
+                                    fontSize: "10px",
+                                    borderRadius: "10px",
+                                    margin: "5px",
+                                    textAlign: "center",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    padding: "4px 9px",
+                                    // alignItems: "center",
+                                    // paddingLeft: "10px",
+                                    whiteSpace: "nowrap", // Prevent line breaks
+                                    // textAlign: "left", // Ensure text is left-aligned
+                                    // paddingLeft: "10px", // Add left padding for proper alignment
+                                    minWidth: `${dynamicWidth}px`,
+                                    maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
+                                    "&:hover": {
+                                      backgroundColor: option.colour,
+                                      color: "#fff",
+                                    },
+                                  }}
+                                >
+                                  {option.label}
+                                </MenuItem>
+                              );
+                            })}
+                          </Select>
+                        </FormControl>
                       </Box>
                       <Typography variant="h6" gutterBottom sx={{ ml: 1, fontWeight: "bold", mt: 3 }}>
                         Phone Numbers
@@ -1396,7 +1642,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                           <InputLabel sx={{ color: "black" }}>Country</InputLabel>
 
                           <Autocomplete
-                            size="small"
+                            size="medium"
                             options={countries}
                             getOptionLabel={(option) => option.name}
                             value={contact.country} // Update to reflect the contact's current country
@@ -1433,7 +1679,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                       </Box>
                       <Box>
                         <InputLabel sx={{ color: "black", mt: 2 }}>Street address</InputLabel>
-                        <TextField fullWidth name="streetAddress" margin="normal" placeholder="Street address" size="small" onChange={(e) => handleContactAddressChange(index, "streetAddress", e.target.value)} />
+                        <TextField fullWidth name="streetAddress" margin="normal" placeholder="Street address" size="medium" onChange={(e) => handleContactAddressChange(index, "streetAddress", e.target.value)} />
                       </Box>
                       <Box
                         sx={{
@@ -1445,15 +1691,15 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                       >
                         <Box>
                           <InputLabel sx={{ color: "black" }}>City</InputLabel>
-                          <TextField fullWidth margin="normal" name="city" placeholder="City" size="small" onChange={(e) => handleContactAddressChange(index, "city", e.target.value)} />
+                          <TextField fullWidth margin="normal" name="city" placeholder="City" size="medium" onChange={(e) => handleContactAddressChange(index, "city", e.target.value)} />
                         </Box>
                         <Box>
                           <InputLabel sx={{ color: "black" }}>State/Province</InputLabel>
-                          <TextField margin="normal" name="state" fullWidth placeholder="State/Province" size="small" onChange={(e) => handleContactAddressChange(index, "state", e.target.value)} />
+                          <TextField margin="normal" name="state" fullWidth placeholder="State/Province" size="medium" onChange={(e) => handleContactAddressChange(index, "state", e.target.value)} />
                         </Box>
                         <Box>
                           <InputLabel sx={{ color: "black" }}>ZIP/Postal Code</InputLabel>
-                          <TextField margin="normal" fullWidth name="postalCode" placeholder="ZIP/Postal Code" size="small" onChange={(e) => handleContactAddressChange(index, "postalCode", e.target.value)} />
+                          <TextField margin="normal" fullWidth name="postalCode" placeholder="ZIP/Postal Code" size="medium" onChange={(e) => handleContactAddressChange(index, "postalCode", e.target.value)} />
                         </Box>
                       </Box>
                     </form>

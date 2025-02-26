@@ -16,7 +16,8 @@ import {
   InputLabel,
   Autocomplete,
   Alert,
-  FormControl, OutlinedInput,
+  FormControl,
+  OutlinedInput,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import axios from "axios";
@@ -204,13 +205,13 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [open, setOpen] = useState(false); // State to control menu visibility
   const handleTagChange = (event) => {
-      const selectedValues = event.target.value;
-      setSelectedTags(selectedValues);
+    const selectedValues = event.target.value;
+    setSelectedTags(selectedValues);
 
-      // Send selectedValues array to your backend
-      console.log("Selected Values:", selectedValues);
-      // Assuming setCombinedValues is a function to send the values to your backend
-      setCombinedValues(selectedValues);
+    // Send selectedValues array to your backend
+    console.log("Selected Values:", selectedValues);
+    // Assuming setCombinedValues is a function to send the values to your backend
+    setCombinedValues(selectedValues);
   };
   // const handleTagChange = (event, newValue) => {
   //   setSelectedTags(newValue.map((option) => option.value));
@@ -223,31 +224,19 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
   //   // Assuming setCombinedValues is a function to send the values to your backend
   //   setCombinedValues(newValue.map((option) => option.value));
   // };
-  // const handleTagChange = (event) => {
-  //   const newSelectedTags = event.target.value; // Directly get selected values
-  //   setSelectedTags(newSelectedTags);
-  
-  //   // Send selected values array to your backend
-  //   console.log("Selected Values:", newSelectedTags);
-  
-  //   // Assuming setCombinedValues is a function to send the values to your backend
-  //   setCombinedValues(newSelectedTags);
-  //   setOpen(false);
-  // };
   
   //Tag FetchData ================
 
-
   const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: "auto",
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: "auto",
+      },
     },
-  },
-};
+  };
   const [tags, setTags] = useState([]);
   useEffect(() => {
     fetchData();
@@ -283,9 +272,9 @@ const MenuProps = {
       borderRadius: "10px",
       alignItems: "center",
       textAlign: "start",
-    // paddingLeft:'5px',
+      // paddingLeft:'5px',
       marginBottom: "5px",
-  //  marginLeft:'10px',
+      //  marginLeft:'10px',
       padding: "3px 10px",
       fontSize: "10px",
       width: `${calculateWidth(tag.tagName)}px`,
@@ -314,7 +303,9 @@ const MenuProps = {
           borderBottom: "1px solid grey",
         }}
       >
-        <Typography sx={{fontWeight:'550',fontSize:'20px'}}>New Contact</Typography>
+        <Typography sx={{ fontWeight: "550", fontSize: "20px" }}>
+          New Contact
+        </Typography>
         <RxCross2
           onClick={handleNewDrawerClose}
           style={{ cursor: "pointer" }}
@@ -337,14 +328,14 @@ const MenuProps = {
         >
           Contact info
         </Typography> */}
-         {/* <Typography gutterBottom sx={{fontWeight:'bold',fontSize:'20px'}}>Contact info</Typography> */}
+        {/* <Typography gutterBottom sx={{fontWeight:'bold',fontSize:'20px'}}>Contact info</Typography> */}
         <Box
           sx={{
             display: "flex",
             flexDirection: isSmallScreen ? "column" : "row",
             gap: isSmallScreen ? 2 : 5,
             padding: "1px 5px 0 2px",
-            mt:1
+            mt: 1,
           }}
         >
           <Box>
@@ -356,17 +347,15 @@ const MenuProps = {
               <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
             </InputLabel> */}
             <InputLabel
-                                    sx={{
-                                      color: "black",
-                                      display: "flex",
-                                      alignItems: "center",
-                                    }}
-                                  >
-                                    First Name
-                                    <Typography sx={{ color: "red", ml: 0.5 }}>
-                                      *
-                                    </Typography>
-                                  </InputLabel>
+              sx={{
+                color: "black",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              First Name
+              <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
+            </InputLabel>
             <TextField
               // margin="normal"
               fullWidth
@@ -415,15 +404,14 @@ const MenuProps = {
           <Box>
             {/* <InputLabel sx={{ color: "black" }}>Middle Name</InputLabel> */}
             <InputLabel
-                                    sx={{
-                                      color: "black",
-                                      display: "flex",
-                                      alignItems: "center",
-                                    }}
-                                  >
-                                    Middle Name
-                                    
-                                  </InputLabel>
+              sx={{
+                color: "black",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              Middle Name
+            </InputLabel>
             <TextField
               // margin="normal"
               sx={{ mt: 1.5, backgroundColor: "#fff" }}
@@ -443,17 +431,15 @@ const MenuProps = {
               <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
             </InputLabel> */}
             <InputLabel
-                                    sx={{
-                                      color: "black",
-                                      display: "flex",
-                                      alignItems: "center",
-                                    }}
-                                  >
-                                    Last Name
-                                    <Typography sx={{ color: "red", ml: 0.5 }}>
-                                      *
-                                    </Typography>
-                                  </InputLabel>
+              sx={{
+                color: "black",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              Last Name
+              <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
+            </InputLabel>
             {/* <InputLabel sx={{ color: 'black' }}>Last Name</InputLabel> */}
 
             <TextField
@@ -538,17 +524,15 @@ const MenuProps = {
             <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
           </InputLabel> */}
           <InputLabel
-                                    sx={{
-                                      color: "black",
-                                      display: "flex",
-                                      alignItems: "center",
-                                    }}
-                                  >
-                                   Email
-                                    <Typography sx={{ color: "red", ml: 0.5 }}>
-                                      *
-                                    </Typography>
-                                  </InputLabel>
+            sx={{
+              color: "black",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            Email
+            <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
+          </InputLabel>
           <TextField
             fullWidth
             name="email"
@@ -558,354 +542,149 @@ const MenuProps = {
             placeholder="Email"
             size="medium"
             sx={{ mt: 1.5, backgroundColor: "#fff" }}
-              // onChange={(e) => setFirstName(e.target.value)}
-              onChange={(e) => {
-                const value = e.target.value;
-                setEmail(value);
+            // onChange={(e) => setFirstName(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              setEmail(value);
 
-                // Clear the error message when input is not empty
-                if (value.trim() !== "") {
-                  setEmaileError("");
-                }
-              }}
-              error={!!emailError}
+              // Clear the error message when input is not empty
+              if (value.trim() !== "") {
+                setEmaileError("");
+              }
+            }}
+            error={!!emailError}
           />
-           {!!emailError && (
-              <Alert
-                sx={{
-                  width: "96%",
-                  p: "0", // Adjust padding to control the size
-                  pl: "4%",
-                  height: "23px",
-                  borderRadius: "10px",
-                  borderTopLeftRadius: "0",
-                  borderTopRightRadius: "0",
-                  fontSize: "11px",
-                  display: "flex",
-                  alignItems: "center", // Center content vertically
-                  "& .MuiAlert-icon": {
-                    fontSize: "16px", // Adjust the size of the icon
-                    mr: "8px", // Add margin to the right of the icon
-                  },
-                }}
-                variant="filled"
-                severity="error"
-              >
-                {emailError}
-              </Alert>
-            )}
+          {!!emailError && (
+            <Alert
+              sx={{
+                width: "96%",
+                p: "0", // Adjust padding to control the size
+                pl: "4%",
+                height: "23px",
+                borderRadius: "10px",
+                borderTopLeftRadius: "0",
+                borderTopRightRadius: "0",
+                fontSize: "11px",
+                display: "flex",
+                alignItems: "center", // Center content vertically
+                "& .MuiAlert-icon": {
+                  fontSize: "16px", // Adjust the size of the icon
+                  mr: "8px", // Add margin to the right of the icon
+                },
+              }}
+              variant="filled"
+              severity="error"
+            >
+              {emailError}
+            </Alert>
+          )}
         </Box>
         <Box mt={1}>
-          {/* <FormControl fullWidth > */}
-          <InputLabel sx={{ color: "black" }}>Tags</InputLabel>
-
-          {/* <Autocomplete
-            multiple
-           
-            size="medium"
-            id="tags-outlined"
-            options={options}
-            getOptionLabel={(option) => option.label}
-            value={options.filter((option) =>
-              selectedTags.includes(option.value)
-            )}
-            onChange={handleTagChange}
-        
-            renderTags={(selected, getTagProps) =>(
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: "4px" }}>
-                                     { selected.map((option, index) => (
-                                        <Chip
-                                          key={option.value}
-                                          label={option.label}
-                                          sx={{
-                                            backgroundColor: option.colour,
-                                            color: "#fff",
-                                            fontWeight: 500,
-                                            fontSize: "15px",
-                                            borderRadius: "16px",
-                                            padding: "4px 10px",
-                                            height: "28px",
-                                            margin: "2px",
-                                            cursor:'pointer',
-                                            boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-                                            "& .MuiChip-label": {
-                                              padding: "0 8px",
-                                            },
-                                            "& .MuiChip-deleteIcon": {
-                                              color: "#fff",
-                                              opacity: 0.7,
-                                              transition: "opacity 0.2s",
-                                              "&:hover": {
-                                                opacity: 1,
-                                              },
-                                            },
-                                          }}
-                                          {...getTagProps({ index })}
-                                        />
-                                      ))}
-                                      </Box>
-  )}
-
-
-  
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                
-                variant="outlined"
-                placeholder="Tags"
-                sx={{ width: "100%", marginTop: "8px" }}
-              />
-            )}
-            renderOption={(props, option) => (
-              <Box component="li" {...props} style={option.customStyle}>
-                {option.label}
-              </Box>
-            )}
-          /> */}
-        {/* <Autocomplete
-      multiple
-      id="tags-outlined"
-      options={options}
-      getOptionLabel={(option) => option.label}
-      value={options.filter((option) => selectedTags.includes(option.value))}
-      onChange={handleTagChange}
-      disableCloseOnSelect
-      renderTags={(selected, getTagProps) => (
+         
+          <InputLabel sx={{ color: "black", mb: 1 }}>Tags</InputLabel>
+         
+         <FormControl sx={{ width: "100%" }}>
+  <Select
+    multiple
+    size="medium"
+    fullWidth
+    value={selectedTags}
+    onChange={handleTagChange}
+    input={<OutlinedInput />}
+    displayEmpty // Enables placeholder when no value is selected
+    renderValue={(selected) => {
+      if (selected.length === 0) {
+        return <span style={{ color: "#aaa" }}>Select tags...</span>; // Placeholder
+      }
+      return (
         <Box
           sx={{
             display: "flex",
             flexWrap: "wrap",
             gap: "6px",
-            border: "2px solid #64a6ff",
-            padding: "8px",
+            padding: "6px",
             borderRadius: "10px",
           }}
         >
-          {selected.map((option, index) => (
-            <Chip
-              key={option.value}
-              label={option.label}
-              {...getTagProps({ index })}
-              sx={{
-                backgroundColor: option.colour,
-                color: "#fff",
-                fontWeight: 500,
-                fontSize: "14px",
-                borderRadius: "16px",
-                height: "30px",
-                padding: "6px 12px",
-                cursor: "pointer",
-                boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-                "& .MuiChip-deleteIcon": {
+          {selected.map((value) => {
+            const option = options.find((opt) => opt.value === value);
+            return (
+              <Chip
+                key={value}
+                label={option?.label}
+                sx={{
+                  backgroundColor: option?.colour,
                   color: "#fff",
-                  opacity: 0.7,
-                  transition: "opacity 0.2s",
-                  "&:hover": { opacity: 1 },
-                },
-              }}
-            />
-          ))}
+                  fontWeight: 500,
+                  fontSize: "10px",
+                  borderRadius: "16px",
+                  height: "20px",
+                  cursor: "pointer",
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                  "& .MuiChip-deleteIcon": {
+                    color: "#fff",
+                    opacity: 0.7,
+                    transition: "opacity 0.2s",
+                    "&:hover": { opacity: 1 },
+                  },
+                }}
+              />
+            );
+          })}
         </Box>
-      )}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          variant="outlined"
-          placeholder="Search"
-          sx={{
-            width: "100%",
-            marginTop: "8px",
-          }}
-        />
-      )}
-      renderOption={(props, option) => (
-        <Box
-          component="li"
-          {...props}
+      );
+    }}
+    MenuProps={MenuProps}
+    sx={{
+      borderRadius: "10px",
+      "& .MuiOutlinedInput-root": {
+        borderRadius: "10px",
+      },
+    }}
+  >
+    {options.map((option) => {
+      // const dynamicWidth = Math.min(option.label.length * 10, 150); // Adjust width dynamically
+      // Create a canvas element to measure the actual text width
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d");
+  context.font = "12px Arial"; // Match the font size/style of MenuItem
+
+  const textWidth = context.measureText(option.label).width; // Get precise width
+  const dynamicWidth = Math.min(textWidth + 16, 150); // Add padding & set max width
+      return (
+        <MenuItem
+          key={option.value}
+          value={option.value}
           sx={{
             backgroundColor: option.colour,
             color: "#fff",
-            padding: "6px 10px",
+            fontSize: "10px",
             borderRadius: "10px",
-            margin: "4px",
-            fontWeight: "500",
-            cursor: "pointer",
-            "&:hover": { opacity: 0.8 },
+            margin: "5px",
+            textAlign: "center",
+            display: "flex",
+            justifyContent: "center",
+            padding: "4px 9px",
+            // alignItems: "center",
+            // paddingLeft: "10px",
+            whiteSpace: "nowrap", // Prevent line breaks
+            // textAlign: "left", // Ensure text is left-aligned
+            // paddingLeft: "10px", // Add left padding for proper alignment
+            minWidth: `${dynamicWidth}px`,
+            maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
+            "&:hover": {
+              backgroundColor: option.colour,
+              color: "#fff",
+            },
           }}
         >
           {option.label}
-        </Box>
-      )}
-    /> */}
+        </MenuItem>
+      );
+    })}
+  </Select>
+</FormControl>
 
-<FormControl sx={{  width:'100%' }}>
-      {/* <InputLabel id="multi-select-chip-label">Tags</InputLabel> */}
-      <Select
-        // labelId="multi-select-chip-label"
-        // id="multi-select-chip"
-        multiple
-        multiline
-        size="small"
-        fullWidth
-        value={selectedTags}
-        onChange={handleTagChange}
-        input={<OutlinedInput />}
-        renderValue={(selected) => (
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "6px", borderRadius: "10px" }}>
-            {selected.map((value) => {
-              const option = options.find((opt) => opt.value === value);
-              return (
-                <Chip
-                  key={value}
-                  label={option?.label}
-                  sx={{
-                    backgroundColor: option?.colour,
-                    color: "#fff",
-                    fontWeight: 500,
-                    fontSize: "10px",
-                    borderRadius: "16px",
-                    height: "20px",
-                    // padding: "1px",
-                    cursor: "pointer",
-                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-                    "& .MuiChip-deleteIcon": {
-                      color: "#fff",
-                      opacity: 0.7,
-                      transition: "opacity 0.2s",
-                      "&:hover": { opacity: 1 },
-                    },
-                  }}
-                />
-              );
-            })}
-          </Box>
-        )}
-        MenuProps={MenuProps}
-        sx={{
-          borderRadius: "10px",
-          "& .MuiOutlinedInput-root": {
-            borderRadius: "10px",
-          },
-        }}
-      >
-        {/* {options.map((option) => (
-          <MenuItem
-            key={option.value}
-            value={option.value}
-            sx={{
-              backgroundColor: option.colour,
-              color: "#fff",
-              // fontWeight: theme.typography.fontWeightBold,
-              borderRadius: "10px",
-              fontSize:'15px',
-              margin: "5px",
-              padding: "6px 12px",
-              minWidth: "auto", // Dynamic width based on text length
-              maxWidth: `${dynamicWidth}px`,// Prevents extremely long widths
-              // transition: "0.2s ease-in-out",
-              "&:hover": {
-                backgroundColor: option.colour,
-                color: "#fff",
-              },
-            }}
-          >
-            {option.label}
-          </MenuItem>
-        ))} */}
-         {options.map((option) => {
-          const dynamicWidth = Math.min(option.label.length * 10, 150); // Adjust width dynamically
-          return (
-            <MenuItem
-              key={option.value}
-              value={option.value}
-              sx={{
-                backgroundColor: option.colour,
-                color: "#fff",fontSize:'10px',
-                // fontWeight: theme.typography.fontWeightBold,
-                borderRadius: "10px",
-                margin: "5px",
-                textAlign:'center',
-                // transition: "0.2s ease-in-out",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                paddingLeft: "10px",
-                // width: "auto", // Allow text to define width
-    whiteSpace: "nowrap", // Prevent line breaks
-    textAlign: "left", // Ensure text is left-aligned
-    paddingLeft: "10px", // Add left padding for proper alignment
-                minWidth: `${dynamicWidth}px`,
-                maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
-                "&:hover": {
-                  backgroundColor: option.colour,
-                  color: "#fff",
-                },
-              }}
-            >
-              {option.label}
-            </MenuItem>
-          );
-        })}
-      </Select>
-    </FormControl>
-      {/* <Select
-        multiple
-        size="medium"
-        multiline
-        fullWidth
-        value={selectedTags}
-        onChange={handleTagChange}
-        open={open}
-        onOpen={() => setOpen(true)}
-        onClose={() => setOpen(false)}
-        renderValue={(selected) => (
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, padding: "8px" }}>
-            {selected.map((tagId) => {
-              const tag = tags.find((t) => t._id === tagId);
-              return (
-                <Chip
-                  key={tagId}
-                  label={tag?.tagName}
-                  sx={{
-                    backgroundColor: tag?.tagColour,
-                    color: "#fff",
-                    fontWeight: 500,
-                    fontSize: "15px",
-                    borderRadius: "16px",
-                    height: "28px",
-                    cursor: "pointer",
-                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-                  }}
-                  onDelete={() =>
-                    setSelectedTags(selected.filter((id) => id !== tagId))
-                  }
-                />
-              );
-            })}
-          </Box>
-        )}
-      >
-        {tags.map((tag) => (
-          <MenuItem key={tag._id} value={tag._id} onClick={() => setOpen(false)}>
-            <Box
-              sx={{
-                backgroundColor: tag.tagColour,
-                color: "#fff",
-                borderRadius: "8px",
-                padding: "4px 10px",
-                fontSize: "14px",
-                display: "flex",
-                alignItems: "center",
-                width: "100%",
-              }}
-            >
-              {tag.tagName}
-            </Box>
-          </MenuItem>
-        ))}
-      </Select> */}
-      {/* </FormControl> */}
         </Box>
         <Box mt={1}>
           <InputLabel sx={{ color: "black" }}>Note</InputLabel>
@@ -934,7 +713,7 @@ const MenuProps = {
             size="medium"
           />
         </Box>
-       
+
         <Typography
           variant="h6"
           gutterBottom
@@ -963,7 +742,6 @@ const MenuProps = {
               />
             )}
             <PhoneInput
-            
               country={"us"}
               value={phone.phone}
               onChange={(phoneValue) =>
@@ -1182,3 +960,97 @@ const MenuProps = {
 };
 
 export default ContactForm;
+
+
+ {/* <FormControl sx={{ width: "100%" }}>
+            <Select
+              multiple
+              multiline
+              size="medium"
+              fullWidth
+              value={selectedTags}
+              onChange={handleTagChange}
+              input={<OutlinedInput />}
+              renderValue={(selected) => (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "6px",
+                    padding: "6px",
+                    borderRadius: "10px",
+                  }}
+                >
+                  {selected.map((value) => {
+                    const option = options.find((opt) => opt.value === value);
+                    return (
+                      <Chip
+                        key={value}
+                        label={option?.label}
+                        sx={{
+                          backgroundColor: option?.colour,
+                          color: "#fff",
+                          fontWeight: 500,
+                          fontSize: "10px",
+                          borderRadius: "16px",
+                          height: "20px",
+                          // padding: "1px",
+                          cursor: "pointer",
+                          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                          "& .MuiChip-deleteIcon": {
+                            color: "#fff",
+                            opacity: 0.7,
+                            transition: "opacity 0.2s",
+                            "&:hover": { opacity: 1 },
+                          },
+                        }}
+                      />
+                    );
+                  })}
+                </Box>
+              )}
+              MenuProps={MenuProps}
+              sx={{
+                borderRadius: "10px",
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "10px",
+                },
+              }}
+            >
+              {options.map((option) => {
+                const dynamicWidth = Math.min(option.label.length * 10, 150); // Adjust width dynamically
+                return (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                    sx={{
+                      backgroundColor: option.colour,
+                      color: "#fff",
+                      fontSize: "10px",
+                      // fontWeight: theme.typography.fontWeightBold,
+                      borderRadius: "10px",
+                      margin: "5px",
+                      textAlign: "center",
+                      // transition: "0.2s ease-in-out",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      paddingLeft: "10px",
+                      // width: "auto", // Allow text to define width
+                      whiteSpace: "nowrap", // Prevent line breaks
+                      textAlign: "left", // Ensure text is left-aligned
+                      paddingLeft: "10px", // Add left padding for proper alignment
+                      minWidth: `${dynamicWidth}px`,
+                      maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
+                      "&:hover": {
+                        backgroundColor: option.colour,
+                        color: "#fff",
+                      },
+                    }}
+                  >
+                    {option.label}
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </FormControl> */}

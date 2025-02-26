@@ -19,7 +19,7 @@ import {
   TableHead,
   TablePagination,
   TableRow,Button,Menu,
-  MenuItem,Chip
+  MenuItem,Chip,Select,OutlinedInput,FormControl
 } from "@mui/material";
 import { toast } from "react-toastify";
 import {
@@ -113,11 +113,19 @@ const ContactTable = () => {
         cursor: 'pointer',
       },
     }));
-    const handleTagChange = (event, newValue) => {
-      setSelectedTags(newValue.map((option) => option.label));
-      // Send selectedValues array to your backend
-      console.log("Selected Values:", newValue.map((option) => option.label));
+    // const handleTagChange = (event, newValue) => {
+    //   setSelectedTags(newValue.map((option) => option.label));
+    //   // Send selectedValues array to your backend
+    //   console.log("Selected Values:", newValue.map((option) => option.label));
     
+    // };
+    const handleTagChange = (event) => {
+      const selectedValues = event.target.value;
+      setSelectedTags(selectedValues);
+  
+      // Send selectedValues array to your backend
+      console.log("Selected Values:", selectedValues);
+     
     };
   // Filter the data based on the filterText
   // const filteredData = useMemo(() => {
@@ -424,38 +432,130 @@ const filteredData = useMemo(() => {
         {selectedFilters.map((filter) => (
           <Box display="flex" alignItems="center" ml={2} >
             {filter === "tags" ? (
-             <Autocomplete
-             multiple
-             size='small'
-             id="tags-outlined"
-             options={tagsoptions}
-             getOptionLabel={(option) => option.label}
-             value={tagsoptions.filter(option => selectedTags.includes(option.label))}
-             onChange={handleTagChange}
-             renderTags={(selected, getTagProps) =>
-               selected.map((option, index) => (
-                 <Chip
-                   key={option.value}
-                   label={option.label}
-                   style={option.customTagStyle}
-                   {...getTagProps({ index })}
-                 />
-               ))
-             }
-             renderInput={(params) => (
-               <TextField
-                 {...params}
-                 variant="outlined"
-                 placeholder="Tags"
-                 sx={{ width: '100%', marginTop: '8px', backgroundColor: '#fff' }}
-               />
-             )}
-             renderOption={(props, option) => (
-               <Box component="li" {...props} style={option.customStyle}>
-                 {option.label}
-               </Box>
-             )}
-           />
+          //    <Autocomplete
+          //    multiple
+          //    size='small'
+          //    id="tags-outlined"
+          //    options={tagsoptions}
+          //    getOptionLabel={(option) => option.label}
+          //    value={tagsoptions.filter(option => selectedTags.includes(option.label))}
+          //    onChange={handleTagChange}
+          //    renderTags={(selected, getTagProps) =>
+          //      selected.map((option, index) => (
+          //        <Chip
+          //          key={option.value}
+          //          label={option.label}
+          //          style={option.customTagStyle}
+          //          {...getTagProps({ index })}
+          //        />
+          //      ))
+          //    }
+          //    renderInput={(params) => (
+          //      <TextField
+          //        {...params}
+          //        variant="outlined"
+          //        placeholder="Tags"
+          //        sx={{ width: '100%', marginTop: '8px', backgroundColor: '#fff' }}
+          //      />
+          //    )}
+          //    renderOption={(props, option) => (
+          //      <Box component="li" {...props} style={option.customStyle}>
+          //        {option.label}
+          //      </Box>
+          //    )}
+          //  />
+          <FormControl sx={{ width: "100%" }}>
+          <Select
+  multiple
+  displayEmpty
+  fullWidth
+  value={selectedTags}
+  onChange={handleTagChange}
+  input={<OutlinedInput placeholder="Tags" />}
+  renderValue={(selected) =>
+    selected.length > 0 ? (
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+        {selected.map((label) => {
+          const option = tagsoptions.find((tag) => tag.label === label);
+          return (
+            <Chip
+              key={label}
+              label={label}
+              sx={{
+                backgroundColor: option?.colour,
+                color: "#fff",
+                fontWeight: 500,
+                fontSize: "10px",
+                borderRadius: "16px",
+                height: "20px",
+                cursor: "pointer",
+                boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                "& .MuiChip-deleteIcon": {
+                  color: "#fff",
+                  opacity: 0.7,
+                  transition: "opacity 0.2s",
+                  "&:hover": { opacity: 1 },
+                },
+              }}
+            />
+          );
+        })}
+      </Box>
+    ) : (
+      "Tags"
+    )
+  }
+  style={{ width: "250px", marginRight: "10px" }}
+  MenuProps={{
+    PaperProps: {
+      style: {
+        maxHeight: 200, // Set the maximum height of the dropdown
+        overflowY: "auto", // Enable scrolling
+      },
+    },
+  }}
+>
+  {tagsoptions.map((option) => {
+     const canvas = document.createElement("canvas");
+     const context = canvas.getContext("2d");
+     context.font = "12px Arial"; // Match the font size/style of MenuItem
+   
+     const textWidth = context.measureText(option.label).width; // Get precise width
+     const dynamicWidth = Math.min(textWidth + 16, 150); // Add padding & set max width
+     return (
+    <MenuItem
+      key={option.label}
+      value={option.label}
+      sx={{
+            backgroundColor: option.colour,
+            color: "#fff",
+            fontSize: "10px",
+            borderRadius: "10px",
+            margin: "5px",
+            textAlign: "center",
+            display: "flex",
+            justifyContent: "center",
+            padding: "4px 9px",
+            // alignItems: "center",
+            // paddingLeft: "10px",
+            whiteSpace: "nowrap", // Prevent line breaks
+            // textAlign: "left", // Ensure text is left-aligned
+            // paddingLeft: "10px", // Add left padding for proper alignment
+            minWidth: `${dynamicWidth}px`,
+            maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
+            "&:hover": {
+              backgroundColor: option.colour,
+              color: "#fff",
+            },
+          }}
+    >
+      {option.label}
+    </MenuItem>
+    );
+  })}
+ 
+</Select>
+</FormControl>
             ) : (
               <TextField
               label={`Search by ${filter}`}

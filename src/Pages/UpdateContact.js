@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Chip, Box, Button, InputLabel, MenuItem, Select, TextField, Typography, Autocomplete } from "@mui/material";
+import {OutlinedInput,  FormControl, Chip, Box, Button, InputLabel, MenuItem, Select, TextField, Typography, Autocomplete } from "@mui/material";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import axios from "axios";
@@ -105,24 +105,10 @@ setPhoneNumbers(
       console.log(flatPhoneNumbers)
 
       const flatTags = selectedContact.tags?.[0] || [];
-      setTagsNew(
-        flatTags.map((tag) => ({
-          value: tag._id,
-          label: tag.tagName,
-          colour: tag.tagColour,
-          customTagStyle: {
-            backgroundColor: tag.tagColour,
-            color: "#fff",
-            alignItems: "center",
-            textAlign: "center",
-            padding: "2px,8px",
-            fontSize: "15px",
-            cursor: "pointer",
-          },
-        }))
-      );
-
-      // Set combinedTagsValues to match the tags in the contact
+    
+      // Store only tag IDs in `tagsNew` as `<Select>` requires values, not objects
+      setTagsNew(flatTags.map((tag) => tag._id));
+      
       setCombinedTagsValues(flatTags.map((tag) => tag._id));
 
       console.log("Tags:", selectedContact.tags);
@@ -170,17 +156,31 @@ setPhoneNumbers(
     setPhoneNumbers((prevPhoneNumbers) => prevPhoneNumbers.filter((item) => item.id !== id));
   };
 
-  const handleTagChange = (event, newValue) => {
-    // setTagsNew(newValue);
-    // const selectedTagsValues = newValue.map((option) => option.value);
-    // setCombinedValues(selectedTagsValues);
-    setTagsNew(newValue);
-    // Map selected options to their values and send as an array
-    const selectedTagsValues = newValue.map((option) => option.value);
-    // console.log(selectedTagsValues);
+  // const handleTagChange = (event, newValue) => {
+  //   // setTagsNew(newValue);
+  //   // const selectedTagsValues = newValue.map((option) => option.value);
+  //   // setCombinedValues(selectedTagsValues);
+  //   setTagsNew(newValue);
+  //   // Map selected options to their values and send as an array
+  //   const selectedTagsValues = newValue.map((option) => option.value);
+  //   // console.log(selectedTagsValues);
+  //   setCombinedTagsValues(selectedTagsValues);
+  // };
+
+  const handleTagChange = (event) => {
+    const { value } = event.target;
+    
+    // Ensure the selected value is stored correctly
+    setTagsNew(value);
+  
+    // Extract selected tag values
+    const selectedTagsValues = value.map((val) => {
+      const option = tagsOptions.find((opt) => opt.value === val);
+      return option?.value;
+    });
+  
     setCombinedTagsValues(selectedTagsValues);
   };
-
   useEffect(() => {
     fetchData();
   }, []);
@@ -203,7 +203,7 @@ setPhoneNumbers(
     return baseWidth + charWidth * tagName.length + padding;
   };
 
-  const options = tags.map((tag) => ({
+  const tagsOptions = tags.map((tag) => ({
     value: tag._id,
     label: tag.tagName,
     colour: tag.tagColour,
@@ -317,7 +317,7 @@ setPhoneNumbers(
         <TextField fullWidth name="email" value={email} onChange={(e) => setEmail(e.target.value)} margin="normal" placeholder="Email" size="small" />
       </Box>
       <Box>
-        <InputLabel sx={{ color: "black" }}>Tags</InputLabel>
+        {/* <InputLabel sx={{ color: "black" }}>Tags</InputLabel>
         <Autocomplete
           multiple
           size="small"
@@ -333,7 +333,80 @@ setPhoneNumbers(
               {option.label}
             </Box>
           )}
-        />
+        /> */}
+         <InputLabel sx={{ color: "black", mb: 1 }}>Tags</InputLabel>
+<FormControl sx={{ width: "100%" }}>
+  <Select
+    multiple
+    size="small"
+    id="tags-outlined"
+    value={tagsNew}
+    onChange={handleTagChange}
+    input={<OutlinedInput />}
+    displayEmpty
+    renderValue={(selected) => {
+      if (selected.length === 0) {
+        return <span style={{ color: "#aaa" }}>Select tags...</span>;
+      }
+      return (
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "6px" }}>
+          {selected.map((value) => {
+            const option = tagsOptions.find((opt) => opt.value === value);
+            return (
+              <Chip
+                key={value}
+                label={option?.label}
+                sx={{
+                  backgroundColor: option?.colour,
+                  color: "#fff",
+                  fontWeight: 500,
+                  fontSize: "10px",
+                  borderRadius: "16px",
+                  height: "20px",
+                  cursor: "pointer",
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                }}
+              />
+            );
+          })}
+        </Box>
+      );
+    }}
+    MenuProps={{
+      PaperProps: {
+        style: { maxHeight: 250 },
+      },
+    }}
+    sx={{
+      borderRadius: "10px",
+      "& .MuiOutlinedInput-root": { borderRadius: "10px" },
+    }}
+  >
+    {tagsOptions.map((option) => {
+      const dynamicWidth = Math.min(option.label.length * 8 + 16, 150);
+      return (
+        <MenuItem
+          key={option.value}
+          value={option.value}
+          sx={{
+            backgroundColor: option.colour,
+            color: "#fff",
+            fontSize: "10px",
+            borderRadius: "10px",
+            margin: "5px",
+            textAlign: "center",
+            padding: "4px 9px",
+            minWidth: `${dynamicWidth}px`,
+            maxWidth: `${dynamicWidth}px`,
+            "&:hover": { backgroundColor: option.colour, color: "#fff" },
+          }}
+        >
+          {option.label}
+        </MenuItem>
+      );
+    })}
+  </Select>
+</FormControl>
       </Box>
       <Typography variant="h6" gutterBottom sx={{ ml: 1, fontWeight: "bold", mt: 3 }}>
         Phone Numbers
