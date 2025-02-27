@@ -296,10 +296,10 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
       myHeaders.append("Content-Type", "application/json");
       const raw = JSON.stringify({
         templatename: templatename,
-        status: status.value,
+        status: status,
         taskassignees: combinedValues,
         tasktags: combinedTagsValues,
-        priority: priority.value,
+        priority: priority,
         description: description,
         absolutedates: absoluteDate,
         comments: "",
@@ -344,10 +344,10 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
       myHeaders.append("Content-Type", "application/json");
       const raw = JSON.stringify({
         templatename: templatename,
-        status: status.value,
+        status: status,
         taskassignees: combinedValues,
         tasktags: combinedTagsValues,
-        priority: priority.value,
+        priority: priority,
         description: description,
         absolutedates: absoluteDate,
         startsin: startsin,
@@ -407,10 +407,10 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
       myHeaders.append("Content-Type", "application/json");
       const raw = JSON.stringify({
         templatename: templatename,
-        status: status.value,
+        status: status,
         taskassignees: combinedValues,
         tasktags: combinedTagsValues,
-        priority: priority.value,
+        priority: priority,
         description: description,
         absolutedates: absoluteDate,
         comments: "",
@@ -455,10 +455,10 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
       myHeaders.append("Content-Type", "application/json");
       const raw = JSON.stringify({
         templatename: templatename,
-        status: status.value,
+        status: status,
         taskassignees: combinedValues,
         tasktags: combinedTagsValues,
-        priority: priority.value,
+        priority: priority,
         description: description,
         absolutedates: absoluteDate,
         startsin: startsin,
@@ -813,8 +813,9 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                 name="TemplateName"
                                 placeholder="Template Name"
                                 size="medium"
+                                margin='normal'
                                 sx={{
-                                  background: '#fff', mt: 1,
+                                  background: '#fff', 
                                 }}
                                 onChange={(e) => settemplatename(e.target.value)}
                                 error={!!templateNameError}
@@ -852,7 +853,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                               <label className='task-input-label'>Task Assignee</label>
                               <Autocomplete
                                 multiple
-                                sx={{ background: '#fff', mt: 1, }}
+                                sx={{ background: '#fff', mt: 2, }}
                                 options={options}
                                 size="medium"
                                 getOptionLabel={(option) => option.label}

@@ -1417,6 +1417,8 @@ const loginuserid = storedData?.teammember?.userid;
                 style={{
                   display: "flex",
                   alignItems: "center",
+                  width:'250px',
+                  gap:3
                   // marginBottom: "10px",
                 }}
               >
@@ -1476,78 +1478,86 @@ const loginuserid = storedData?.teammember?.userid;
                   )}
                   style={{ marginRight: "10px", width: "250px" }}
                 /> */}
-                <Select
-                                    multiple
-                                    value={filters.tags || []}
-                                    onChange={(e) =>
-                                      handleMultiSelectChange("tags", e.target.value)
-                                    }
-                                    displayEmpty
-                                    renderValue={(selected) =>
-                                      selected.length === 0 ? (
-                                        <em>Filter by Tags</em>
-                                      ) : (
-                                        <div
-                                          style={{
-                                            display: "flex",
-                                            flexWrap: "wrap",
-                                            gap: "5px",
-                                          }}
-                                        >
-                                          {selected.map((option) => (
-                                            <Chip
-                                              key={option.tagName}
-                                              label={option.tagName}
-                                              style={{
-                                                backgroundColor: option.tagColour,
-                                                color: "#fff",
-                                                fontSize: "12px",
-                                              }}
-                                            />
-                                          ))}
-                                        </div>
-                                      )
-                                    }
-                                    style={{ width: "250px", marginRight: "10px" }}
-                                    MenuProps={{
-                                      PaperProps: {
-                                        style: {
-                                          maxHeight: 200, // Set the maximum height of the dropdown
-                                          overflowY: "auto", // Enable scrolling
-                                        },
-                                      },
-                                    }}
-                                  >
-                                    {uniqueTags.map((option) => (
-                                      <MenuItem
-                                        key={option.tagName}
-                                        value={option}
-                                        style={{
-                                          backgroundColor: option.tagColour,
-                                          color: "#fff",
-                                          fontSize: "10px",
-                                          borderRadius: "10px",
-                                          margin: "5px",
-                                          // textAlign: "center",
-                                          display: "flex",
-                                          justifyContent: "center",
-                                          padding: "4px 9px",
-                                          // alignItems: "center",
-                                          // paddingLeft: "10px",
-                                          whiteSpace: "nowrap",
-                                          // minWidth: `${option.tagName.length * 8 + 10}px`, // Adjust width based on text length
-                                          // maxWidth: "200px",
-                                          width: `${calculateWidth(option.tagName)}px`,
-                                          "&:hover": {
-                                            backgroundColor: option.colour,
-                                            color: "#fff",
-                                          },
-                                        }}
-                                      >
-                                        {option.tagName}
-                                      </MenuItem>
-                                    ))}
-                                  </Select>
+                <FormControl sx={{ width: "100%" }}>
+                    <Select
+                      multiple
+                      multiline
+                      fullWidth
+                      size="small"
+                      input={<OutlinedInput />}
+                      displayEmpty
+                      value={filters.tags || []} // Store selected tag objects
+                      onChange={(e) => handleMultiSelectChange("tags", e.target.value)} // Handle selection
+                      renderValue={(selected) => {
+                        if (selected.length === 0) {
+                          return <span style={{ color: "#aaa" }}>Select tags...</span>;
+                        }
+                        return (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                              gap: "6px",
+                              padding: "6px",
+                            }}
+                          >
+                            {selected.map((option) => (
+                              <Chip
+                                key={option.tagName}
+                                label={option.tagName}
+                                sx={{
+                                  backgroundColor: option.tagColour,
+                                  color: "#fff",
+                                  fontWeight: 500,
+                                  fontSize: "10px",
+                                  borderRadius: "16px",
+                                  height: "20px",
+                                  cursor: "pointer",
+                                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                                }}
+                              />
+                            ))}
+                          </Box>
+                        );
+                      }}
+                      MenuProps={{
+                        PaperProps: {
+                          style: { maxHeight: 250 },
+                        },
+                      }}
+                      sx={{
+                        borderRadius: "10px",
+                        "& .MuiOutlinedInput-root": { borderRadius: "10px" },
+                      }}
+                    >
+                      {uniqueTags.map((option) => {
+                        const dynamicWidth = Math.min(option.tagName.length * 8 + 16, 150);
+                        return (
+                          <MenuItem
+                            key={option.tagName}
+                            value={option}
+                            sx={{
+                              backgroundColor: option.tagColour,
+                              color: "#fff",
+                              fontSize: "10px",
+                              borderRadius: "10px",
+                              margin: "5px",
+                              textAlign: "center",
+                              padding: "4px 9px",
+                              minWidth: `${dynamicWidth}px`,
+                              maxWidth: `${dynamicWidth}px`,
+                              "&:hover": {
+                                backgroundColor: option.tagColour,
+                                color: "#fff",
+                              },
+                            }}
+                          >
+                            {option.tagName}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
                 <DeleteIcon
                   onClick={() => clearFilter("tags")}
                   style={{ cursor: "pointer", color: "red" }}

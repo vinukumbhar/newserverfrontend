@@ -16,7 +16,7 @@ import {
     List,
     ListItem,
     ListItemText,
-    Popover
+    Popover,Autocomplete
 } from '@mui/material';
 import EditorShortcodes from '../Texteditor/EditorShortcodes';
 import Select from 'react-select';
@@ -80,10 +80,10 @@ const EmailTempUpdate = () => {
         setAnchorEl(null);
         setShowDropdown(false);
     };
-
-    const handleuserChange = (fromtempdata) => {
-        setFromdataTemp(fromtempdata);
-    }
+ const [selecteduser, setSelectedUser] = useState("");
+    const handleuserChange = (event, selectedOptions) => {
+        setSelectedUser(selectedOptions);
+      };
     useEffect(() => {
         fetchData();
         fetchEmailTemplates();
@@ -235,7 +235,7 @@ const EmailTempUpdate = () => {
         const formData = new FormData();
         formData.append("templatename", templateName);
         // formData.append("from", selecteduser.value);
-        formData.append("from", fromtempdata ? fromtempdata.value : '');
+        formData.append("from", selecteduser ? selecteduser.value : '');
         formData.append("emailsubject", inputText);
         formData.append("emailbody", emailBody);
     
@@ -284,7 +284,7 @@ const EmailTempUpdate = () => {
         const formData = new FormData();
         formData.append("templatename", templateName);
         // formData.append("from", selecteduser.value);
-        formData.append("from", fromtempdata ? fromtempdata.value : '');
+        formData.append("from", selecteduser ? selecteduser.value : '');
         formData.append("emailsubject", inputText);
         formData.append("emailbody", emailBody);
     
@@ -354,7 +354,7 @@ const EmailTempUpdate = () => {
         console.log(data);
         setTemplateName(data.templatename);
         setInputText(data.emailsubject);
-        setFromdataTemp(data.from ? { value: data.from._id, label: data.from.username } : null);
+        setSelectedUser(data.from ? { value: data.from._id, label: data.from.username } : null);
         setEmailBody(data.emailbody);
 
         // Check if files are present and format them properly
@@ -631,13 +631,13 @@ const EmailTempUpdate = () => {
                                         value={templateName}
                                         onChange={(e) => setTemplateName(e.target.value)}
                                         placeholder="Template Name"
-                                        size="small"
+                                        size="medium"
                                     />
                                 </Box>
                                 <Box>
-                                    <Typography variant="h6" gutterBottom>
-                                        Mode
-                                    </Typography>
+                                    <InputLabel sx={{color:'black'}}>
+                                                         Mode
+                                                       </InputLabel>
                                     <FormControl>
                                         <RadioGroup
                                             aria-labelledby="demo-controlled-radio-buttons-group"
@@ -658,9 +658,9 @@ const EmailTempUpdate = () => {
                                         </RadioGroup>
                                     </FormControl>
                                 </Box>
-                                <Box>
+                                <Box mt={2}>
                                     <InputLabel sx={{ color: 'black' }}>From</InputLabel>
-                                    <Select className='job-template-select-dropdown'
+                                    {/* <Select className='job-template-select-dropdown'
                                         placeholder="from"
                                         options={options}
                                         isMulti={false}// Enable multi-select
@@ -668,9 +668,33 @@ const EmailTempUpdate = () => {
                                         value={fromtempdata}
                                         isClearable
                                         onChange={handleuserChange}
-                                    />
+                                        styles={{marginTop:'5px'}}
+                                    /> */}
+                                    <Autocomplete
+                                                          options={options}
+                                                          sx={{ mt: 2, mb: 2, backgroundColor: "#fff" }}
+                                                          size="medium"
+                                                          value={selecteduser}
+                                                          onChange={handleuserChange}
+                                                          isOptionEqualToValue={(option, value) =>
+                                                            option.value === value.value
+                                                          }
+                                                          getOptionLabel={(option) => option.label || ""}
+                                                          renderInput={(params) => (
+                                                            <>
+                                                              <TextField
+                                                                {...params}
+                                                               
+                                                                
+                                                                placeholder="Form"
+                                                              />
+                                                             
+                                                            </>
+                                                          )}
+                                                          isClearable={true}
+                                                        />
                                 </Box>
-                                <Box>
+                                <Box mt={2}>
                                     <InputLabel sx={{ color: 'black' }}>Subject</InputLabel>
                                     <TextField
                                         margin="normal"
@@ -679,7 +703,7 @@ const EmailTempUpdate = () => {
                                         value={inputText + selectedShortcut}
                                         onChange={handlechatsubject}
                                         placeholder="Subject"
-                                        size="small"
+                                        size="medium"
                                     />
                                 </Box>
                                 <Box>

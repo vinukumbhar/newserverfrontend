@@ -355,7 +355,10 @@ const InvoiceTempUpdate = () => {
   const [templatename, setTemplatename] = useState();
 
   const [paymentMode, setPaymentMode] = useState("");
-  const handlePaymentOptionChange = (selectedOption) => {
+  // const handlePaymentOptionChange = (selectedOption) => {
+  //   setPaymentMode(selectedOption);
+  // };
+  const handlePaymentOptionChange = (event, selectedOption) => {
     setPaymentMode(selectedOption);
   };
   const [emailToClient, setEmailToClient] = useState(false);
@@ -1028,7 +1031,7 @@ const InvoiceTempUpdate = () => {
                         fullWidth
                         name="TemplateName"
                         placeholder="Template Name"
-                        size="small"
+                        size="medium"
                         sx={{ mt: 2 }}
                         value={templatename}
                         onChange={(e) => setTemplatename(e.target.value)}
@@ -1037,7 +1040,7 @@ const InvoiceTempUpdate = () => {
 
                     <Box>
                       <InputLabel sx={{ color: "black", mt: 2 }}>Description</InputLabel>
-                      <TextField fullWidth name="Description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" size="small" inputProps={{ maxLength: 50000 }} sx={{ mt: 2 }} />
+                      <TextField fullWidth name="Description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" size="medium" inputProps={{ maxLength: 50000 }} sx={{ mt: 2 }} />
                     </Box>
 
                     <Box>
@@ -1085,7 +1088,7 @@ const InvoiceTempUpdate = () => {
                     </Box>
 
                     <Box>
-                      <InputLabel sx={{ color: "black", mt: 2 }}>Choose payment method</InputLabel>
+                      <InputLabel sx={{ color: "black", mt: 2,mb: 2  }}>Choose payment method</InputLabel>
                       {/* <Select
                           size='small'
                           sx={{ width: '100%', mt: 2 }}
@@ -1098,7 +1101,8 @@ const InvoiceTempUpdate = () => {
                             </MenuItem>
                           ))}
                         </Select> */}
-                      <Select options={paymentsOptions} onChange={handlePaymentOptionChange} value={paymentMode} />
+                      {/* <Select options={paymentsOptions} onChange={handlePaymentOptionChange} value={paymentMode} styles={{marginTop:'5px'}}/> */}
+                    <Autocomplete size="medium" fullWidth sx={{ mt: 2 }} options={paymentsOptions} getOptionLabel={(option) => option?.label || ""} onChange={handlePaymentOptionChange} value={paymentMode} renderInput={(params) => <TextField {...params} placeholder="Select Payment Mode" variant="outlined" />} isOptionEqualToValue={(option, value) => option.value === value?.value} clearOnEscape />
                     </Box>
 
                     <Box mt={2}>
@@ -1178,7 +1182,7 @@ const InvoiceTempUpdate = () => {
                                 fullWidth
                                 name="Days until next reminder"
                                 placeholder="Days until next reminder"
-                                size="small"
+                                size="medium"
                                 sx={{ mt: 2 }}
                                 value={daysNextReminder}
                                 onChange={(e) => setDaysNextReminder(e.target.value)}
@@ -1192,7 +1196,7 @@ const InvoiceTempUpdate = () => {
                                 fullWidth
                                 name="Number of reminders"
                                 placeholder="Number of reminders"
-                                size="small"
+                                size="medium"
                                 sx={{ mt: 2 }}
                                 value={numOfReminder}
                                 onChange={(e) => setnumOfReminder(e.target.value)}
@@ -1530,7 +1534,7 @@ const InvoiceTempUpdate = () => {
                   fullWidth
                   name="ServiceName"
                   placeholder="Service Name"
-                  size="small"
+                  size="medium"
                   margin="normal"
                   value={selectedRowData?.productName || ""} // Use selected row data
                   onChange={(e) => setSelectedRowData({ ...selectedRowData, productName: e.target.value })}
@@ -1542,7 +1546,7 @@ const InvoiceTempUpdate = () => {
                   fullWidth
                   name="Description"
                   placeholder="Description"
-                  size="small"
+                  size="medium"
                   margin="normal"
                   value={selectedRowData?.description || ""} // Use selected row data
                   onChange={(e) => setSelectedRowData({ ...selectedRowData, description: e.target.value })}
@@ -1555,7 +1559,7 @@ const InvoiceTempUpdate = () => {
                     fullWidth
                     name="Rate"
                     placeholder="Rate"
-                    size="small"
+                    size="medium"
                     sx={{ mt: 1 }}
                   
                     value={selectedRowData?.rate || ""} // Use selected row data
@@ -1566,7 +1570,7 @@ const InvoiceTempUpdate = () => {
                 <Box width="50%">
                   <Typography sx={{ color: "black" }}>Rate Type</Typography>
                   <Autocomplete
-                    size="small"
+                    size="medium"
                     fullWidth
                     sx={{ mt: 1 }}
                     options={options}
@@ -1612,7 +1616,7 @@ const InvoiceTempUpdate = () => {
                 <Box>
                   <InputLabel sx={{ color: "black", mt: 2 }}>Category Name</InputLabel>
                   <Autocomplete
-                    size="small"
+                    size="medium"
                     fullWidth
                     sx={{ mt: 2 }}
                     options={categoryoptions}
@@ -1659,7 +1663,7 @@ const InvoiceTempUpdate = () => {
                   <Box p={3}>
                     <InputLabel sx={{ color: "black", mt: 2 }}>Category Name</InputLabel>
 
-                    <TextField fullWidth name="Rate" placeholder="Category Name" size="small" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
+                    <TextField fullWidth name="Rate" placeholder="Category Name" size="medium" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
                   </Box>
                   <Box sx={{ pt: 2, display: "flex", alignItems: "center", gap: 5, margin: "8px", ml: 3 }}>
                     <Button variant="contained" color="primary" onClick={createCategory} sx={{
@@ -1737,7 +1741,7 @@ const InvoiceTempUpdate = () => {
         <Box p={3}>
           <InputLabel sx={{ color: "black", mt: 2 }}>Category Name</InputLabel>
 
-          <TextField fullWidth name="Rate" placeholder="Category Name" size="small" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
+          <TextField fullWidth name="Rate" placeholder="Category Name" size="medium" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
         </Box>
         <Box sx={{ pt: 2, display: "flex", alignItems: "center", gap: 5, margin: "8px", ml: 3 }}>
           <Button variant="contained" color="primary" onClick={createCategory} sx={{
@@ -1788,23 +1792,23 @@ const InvoiceTempUpdate = () => {
               <Typography variant="h6" fontWeight="bold">
                 Product or service
               </Typography>
-              <TextField size="small" margin="normal" value={selectedRowData?.productName || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, productName: e.target.value })} />
+              <TextField size="medium" margin="normal" value={selectedRowData?.productName || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, productName: e.target.value })} />
               <Box>
                 <Typography>Description</Typography>
-                <TextField size="small" margin="normal" value={selectedRowData?.description || ""} fullWidth multiline onChange={(e) => setSelectedRowData({ ...selectedRowData, description: e.target.value })} />
+                <TextField size="medium" margin="normal" value={selectedRowData?.description || ""} fullWidth multiline onChange={(e) => setSelectedRowData({ ...selectedRowData, description: e.target.value })} />
               </Box>
               <Box sx={{ display: "flex", alignItems: "center", gap: "10px", mt: 1 }}>
                 <Box>
                   <Typography>Rate</Typography>
-                  <TextField size="small" margin="normal" value={selectedRowData?.rate || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, rate: e.target.value })} />
+                  <TextField size="medium" margin="normal" value={selectedRowData?.rate || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, rate: e.target.value })} />
                 </Box>
                 <Box>
                   <Typography>QTY</Typography>
-                  <TextField size="small" margin="normal" value={selectedRowData?.qty || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, qty: e.target.value })} />
+                  <TextField size="medium" margin="normal" value={selectedRowData?.qty || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, qty: e.target.value })} />
                 </Box>
                 <Box>
                   <Typography>Amount</Typography>
-                  <TextField size="small" margin="normal" fullWidth disabled value={totalamount} />
+                  <TextField size="medium" margin="normal" fullWidth disabled value={totalamount} />
                 </Box>
               </Box>
               <Box mt={2}>

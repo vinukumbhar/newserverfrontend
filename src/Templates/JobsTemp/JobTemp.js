@@ -404,7 +404,7 @@ const JobTemp = ({ charLimit = 4000 }) => {
         jobname: jobName,
         jobassignees: combinedValues,
         addshortcode: "",
-        priority: priority.value,
+        priority: priority,
         description: description,
         absolutedates: absoluteDate,
         comments: comments,
@@ -455,7 +455,7 @@ const JobTemp = ({ charLimit = 4000 }) => {
         jobname: jobName,
         jobassignees: combinedValues,
         addshortcode: "",
-        priority: priority.value,
+        priority: priority,
         description: description,
         absolutedates: absoluteDate,
         startsin: startsin,
@@ -514,7 +514,7 @@ const JobTemp = ({ charLimit = 4000 }) => {
         jobname: jobName,
         jobassignees: combinedValues,
         addshortcode: "",
-        priority: priority.value,
+        priority: priority,
         description: description,
         absolutedates: absoluteDate,
         comments: comments,
@@ -565,7 +565,7 @@ const JobTemp = ({ charLimit = 4000 }) => {
         jobname: jobName,
         jobassignees: combinedValues,
         addshortcode: "",
-        priority: priority.value,
+        priority: priority,
         description: description,
         absolutedates: absoluteDate,
         startsin: startsin,
@@ -902,17 +902,18 @@ onRowsPerPageChange={handleChangeRowsPerPage}
             </Box>
             <Grid container spacing={2}>
               <Grid xs={12} sm={5.8}>
-                <Box mt={2}>
-                  <label className="jobtemp-input-label">Template Name</label>
+                <Box mt={1}>
+                  {/* <label className="jobtemp-input-label">Template Name</label> */}
+                    <InputLabel sx={{ color: "black", mb: 1 }}>Template Name</InputLabel>
                   <TextField
-                    size="small"
+                    size="medium"
                     fullWidth
                     error={!!errors.templatename}
                     // helperText={errors.templatename}
                     placeholder="Template Name"
                     value={templatename}
                     onChange={(e) => settemplatename(e.target.value)}
-                    sx={{ backgroundColor: "#fff", mt: 2 }}
+                    sx={{ backgroundColor: "#fff", mt: 1 }}
                   />
                   {!!errors.templatename && (
                     <Alert
@@ -939,13 +940,13 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                     </Alert>
                   )}
                 </Box>
-                <Box mt={1}>
-                  <label className="jobtemp-input-label">Job Name</label>
+                <Box mt={2}>
+                <InputLabel sx={{ color: "black", mb: 1 }}>Job Name</InputLabel>
                   <TextField
-                    sx={{ backgroundColor: "#fff", mt: 2 }}
+                    sx={{ backgroundColor: "#fff", mt: 1 }}
                     value={jobName + selectedShortcut}
                     onChange={handlejobName}
-                    size="small"
+                    size="medium"
                     fullWidth
                     error={!!errors.jobName}
                     // helperText={errors.jobName}
@@ -1020,12 +1021,12 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                   </Popover>
                 </Box>
                 <Box mt={2}>
-                  <label className="jobtemp-input-label">Job Assignees</label>
+                <InputLabel sx={{ color: "black", mb: 1 }}>Job Assignees</InputLabel>
                   <Autocomplete
                     multiple
                     sx={{ mt: 2, backgroundColor: "#FFF" }}
                     options={options}
-                    size="small"
+                    size="medium"
                     getOptionLabel={(option) => option.label}
                     value={selectedUser}
                     onChange={handleUserChange}
@@ -1076,12 +1077,12 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                 {absoluteDate && (
                   <>
                     <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
-                      <Typography className="task-input-label">Start Date</Typography>
-                      <DatePicker format="DD/MM/YYYY" sx={{ width: "100%", backgroundColor: "#fff" }} selected={startDate} onChange={handleStartDateChange} renderInput={(params) => <TextField {...params} size="small" />} />
+                 <Typography>Start Date</Typography>
+                      <DatePicker format="DD/MM/YYYY" sx={{ width: "100%", backgroundColor: "#fff" }} selected={startDate} onChange={handleStartDateChange} renderInput={(params) => <TextField {...params} size="medium" />} />
                     </Box>
                     <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
-                      <Typography className="task-input-label">Due Date</Typography>
-                      <DatePicker format="DD/MM/YYYY" sx={{ width: "100%", backgroundColor: "#fff" }} selected={dueDate} onChange={handleDueDateChange} renderInput={(params) => <TextField {...params} size="small" />} />
+                    <Typography >Due Date</Typography>
+                      <DatePicker format="DD/MM/YYYY" sx={{ width: "100%", backgroundColor: "#fff" }} selected={dueDate} onChange={handleDueDateChange} renderInput={(params) => <TextField {...params} size="medium" />} />
                     </Box>
                   </>
                 )}
@@ -1089,15 +1090,15 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                   <>
                     <Grid container spacing={3} alignItems="center">
                       <Grid item xs={12} sm={2}>
-                        <Typography className="task-input-label">Start In</Typography>
+                      <InputLabel sx={{ color: "black", mb: 1 }}>Start In</InputLabel>
                       </Grid>
                       <Grid item xs={12} sm={5}>
-                        <TextField size="small" placeholder="0" defaultValue={0} value={startsin} sx={{ background: "#fff", width: "100%" }} onChange={(e) => setstartsin(e.target.value)} />
+                        <TextField size="medium" placeholder="0" defaultValue={0} value={startsin} sx={{ background: "#fff", width: "100%" }} onChange={(e) => setstartsin(e.target.value)} />
                       </Grid>
                       <Grid item xs={12} sm={5}>
                         <Autocomplete
                           options={dayOptions}
-                          size="small"
+                          size="medium"
                           getOptionLabel={(option) => option.label}
                           onChange={handleStartInDateChange}
                           renderInput={(params) => (
@@ -1112,17 +1113,17 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                     </Grid>
                     <Grid container spacing={3} alignItems="center">
                       <Grid item xs={12} sm={2}>
-                        <Typography className="task-input-label">Due In</Typography>
+                      <InputLabel sx={{ color: "black", mb: 1 }}>Due In</InputLabel>
                       </Grid>
                       <Grid item xs={12} sm={5}>
-                        <TextField size="small" placeholder="0" value={duein} fullWidth sx={{ background: "#fff" }} onChange={(e) => setduein(e.target.value)} />
+                        <TextField size="medium" placeholder="0" value={duein} fullWidth sx={{ background: "#fff" }} onChange={(e) => setduein(e.target.value)} />
                       </Grid>
                       <Grid item xs={12} sm={5}>
                         <Autocomplete
                           options={dayOptions}
                           getOptionLabel={(option) => option.label}
                           onChange={handledueindateChange}
-                          size="small"
+                          size="medium"
                           renderInput={(params) => (
                             <>
                               <TextField {...params} variant="outlined" sx={{ backgroundColor: "#fff" }} />
@@ -1159,8 +1160,8 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                     <Box>
                       {clientFacingStatus && (
                         <>
-                          <Typography>Job name for client</Typography>
-                          <TextField fullWidth name="subject" value={inputText + selectedJobShortcut} onChange={handlechatsubject} placeholder="Job name for client" size="small" sx={{ background: "#fff", mt: 2 }} />
+                           <InputLabel sx={{ color: "black", }}>Job name for client</InputLabel>
+                          <TextField fullWidth name="subject" value={inputText + selectedJobShortcut} onChange={handlechatsubject} placeholder="Job name for client" size="medium" sx={{ background: "#fff", mt: 2 }} />
 
                           <Box>
                             <Button variant="contained" color="primary" onClick={toggleShortcodeDropdown} sx={{
@@ -1205,10 +1206,10 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                             </Popover>
                           </Box>
                           <Box mt={2}>
-                            <Typography>Status</Typography>
+                          <InputLabel sx={{ color: "black", mb: 1 }}>Status</InputLabel>
                             <Autocomplete
                               options={optionstatus}
-                              size="small"
+                              size="medium"
                               sx={{ mt: 1 }}
                               value={selectedJob}
                               onChange={handleJobChange}
@@ -1258,7 +1259,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                             <InputLabel sx={{ color: "black" }}>Description</InputLabel>
                             <TextField
                               fullWidth
-                              size="small"
+                              size="medium"
                               margin="normal"
                               type="text"
                               multiline
@@ -1324,7 +1325,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                     </Box>
                     {comments.map((comment, index) => (
                       <div key={index} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        <TextField value={comment} onChange={(e) => handleCommentChange(index, e.target.value)} placeholder={`Comment ${index + 1}`} variant="outlined" fullWidth multiline />
+                        <TextField size="medium" value={comment} onChange={(e) => handleCommentChange(index, e.target.value)} placeholder={`Comment ${index + 1}`} variant="outlined" fullWidth multiline />
                         <IconButton onClick={() => deleteCommentField(index)}>
                           <DeleteIcon />
                         </IconButton>

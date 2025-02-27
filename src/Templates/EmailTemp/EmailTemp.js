@@ -24,7 +24,7 @@ import {
   TableHead,
   TableRow,
   Paper,
-  TablePagination,
+  TablePagination,InputLabel
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import {
@@ -875,10 +875,10 @@ console.log(formData)
           <hr />
           <Grid container spacing={2}>
             <Grid xs={12} sm={5.8}>
-              <Box sx={{ mt: 2 }}>
+              <Box >
                 <form>
                   <Box>
-                    <label className="email-input-label">Template Name</label>
+                  <InputLabel sx={{ color: "black" }}>Template Name</InputLabel>
                     <TextField
                       sx={{ background: "#fff", mt: 2 }}
                       fullWidth
@@ -888,7 +888,7 @@ console.log(formData)
                       // helperText={templateNameError}
                       onChange={(e) => setTemplateName(e.target.value)}
                       placeholder="Template Name"
-                      size="small"
+                      size="medium"
                     />
                     {!!templateNameError && (
                       <Alert
@@ -915,10 +915,10 @@ console.log(formData)
                       </Alert>
                     )}
                   </Box>
-                  <Box>
-                    <Typography variant="h6" gutterBottom>
+                  <Box mt={2}>
+                    <InputLabel sx={{color:'black'}}>
                       Mode
-                    </Typography>
+                    </InputLabel>
                     <FormControl>
                       <RadioGroup
                         aria-labelledby="demo-controlled-radio-buttons-group"
@@ -940,11 +940,11 @@ console.log(formData)
                     </FormControl>
                   </Box>
                   <Box>
-                    <label className="email-input-label">From</label>
+                  <InputLabel sx={{ color: "black" }}>From</InputLabel>
                     <Autocomplete
                       options={options}
                       sx={{ mt: 2, mb: 2, backgroundColor: "#fff" }}
-                      size="small"
+                      size="medium"
                       value={selecteduser}
                       onChange={handleuserChange}
                       isOptionEqualToValue={(option, value) =>
@@ -989,14 +989,14 @@ console.log(formData)
                     />
                   </Box>
                   <Box>
-                    <label className="email-input-label">Subject</label>
+                  <InputLabel sx={{ color: "black" }}>Subject</InputLabel>
                     <TextField
                       fullWidth
                       name="subject"
                       value={inputText + selectedShortcut}
                       onChange={handlechatsubject}
                       placeholder="Subject"
-                      size="small"
+                      size="medium"
                       error={!!inputTextError}
                       // helperText={inputTextError}
                       sx={{ background: "#fff", mt: 2 }}

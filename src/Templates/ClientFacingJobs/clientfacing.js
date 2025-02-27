@@ -21,8 +21,9 @@ const Clientfacing = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const colors = ["#fd3241", "#f9b5ac", "#ac6400", "#ff7e39", "#ffea00", "#94ecbe", "#2e8b57", "#76ac1e", "#3cbb50", "#9ed8db", "#0299bb", "#0af4b8", "#466efb", "#0496ff", "#b9c1ff", "#e1b1ff", "#9d33d0", "#d834f5", "#ff54b6", "#1d3354", "#767b91", "#8f8f8f", "#c7c7c7", "#9a657e", "#616468", "#511dff", "#85c7db", "#8cd1ff", "#0aefff", "#d4ff00", "#a1ff0a", "#00f43d", "#ffc100", "#cdc6a5", "#fed6b1", "#e5dfdf", "#ffeaa7"];
+  // const colors = ["#fd3241", "#f9b5ac", "#ac6400", "#ff7e39", "#ffea00", "#94ecbe", "#2e8b57", "#76ac1e", "#3cbb50", "#9ed8db", "#0299bb", "#0af4b8", "#466efb", "#0496ff", "#b9c1ff", "#e1b1ff", "#9d33d0", "#d834f5", "#ff54b6", "#1d3354", "#767b91", "#8f8f8f", "#c7c7c7", "#9a657e", "#616468", "#511dff", "#85c7db", "#8cd1ff", "#0aefff", "#d4ff00", "#a1ff0a", "#00f43d", "#ffc100", "#cdc6a5", "#fed6b1", "#e5dfdf", "#ffeaa7"];
 
+  const colors = ["#0d6efd", "#6c757d","#198754","#dc3545","#ffc107","#0dcaf0","#FF5722","#212529"];
   const handleDrawerOpen = () => {
     setIsDrawerOpen(true);
   };
@@ -273,7 +274,7 @@ const Clientfacing = () => {
                     <Select
                       value={selectedColor}
                       onChange={handleColorChange}
-                      size="small"
+                      size="medium"
                       sx={{ width: "100%", marginTop: "10px", backgroundColor: "#fff" }}
                       MenuProps={{
                         PaperProps: {
@@ -312,7 +313,7 @@ const Clientfacing = () => {
 
                   <Box sx={{ flexGrow: 1 }}>
                     <label className="tag-input-label">Name</label>
-                    <TextField placeholder="Status Name" fullWidth margin="normal" size="small" sx={{ backgroundColor: "#fff" }} value={clientFacingName} onChange={(e) => setClientFacingName(e.target.value)} />
+                    <TextField placeholder="Status Name" fullWidth margin="normal" size="medium" sx={{ backgroundColor: "#fff" }} value={clientFacingName} onChange={(e) => setClientFacingName(e.target.value)} />
                   </Box>
                 </Box>
 
@@ -393,7 +394,7 @@ const Clientfacing = () => {
                     <Select
                       value={selectedColor}
                       onChange={handleColorChange}
-                      size="small"
+                      size="medium"
                       sx={{ width: "100%", marginTop: "10px", backgroundColor: "#fff" }}
                       MenuProps={{
                         PaperProps: {
@@ -432,7 +433,7 @@ const Clientfacing = () => {
 
                   <Box sx={{ flexGrow: 1 }}>
                     <label className="tag-input-label">Name</label>
-                    <TextField placeholder="Status Name" fullWidth margin="normal" size="small" sx={{ backgroundColor: "#fff" }} value={clientFacingName} onChange={(e) => setClientFacingName(e.target.value)} />
+                    <TextField placeholder="Status Name" fullWidth margin="normal" size="medium" sx={{ backgroundColor: "#fff" }} value={clientFacingName} onChange={(e) => setClientFacingName(e.target.value)} />
                   </Box>
                 </Box>
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo ,useContext} from 'react';
 import './tag.css'
 import {  TableContainer,
-  Paper,
+  Paper,Chip,
   Table,
   TableHead,
   TableRow,
@@ -34,10 +34,12 @@ const Tags = () => {
   const [tagid, settagidData] = useState();
 
   // const colors = ["#EE4B2B", "#FFAC1C", "#32CD32", "#008000", "#0000FF", "#BF40BF", "#F72798"];
-  const colors = ["#fd3241", "#f9b5ac", "#ac6400", "#ff7e39", "#ffea00", "#94ecbe", "#2e8b57", "#76ac1e", "#3cbb50", "#9ed8db", "#0299bb", "#0af4b8", "#466efb", "#0496ff", "#b9c1ff",
-    "#e1b1ff", "#9d33d0", "#d834f5", "#ff54b6", "#1d3354", "#767b91", "#8f8f8f", "#c7c7c7", "#9a657e", "#616468", "#511dff", "#85c7db", "#8cd1ff", "#0aefff", "#d4ff00", "#a1ff0a", "#00f43d", "#ffc100",
-    "#cdc6a5", "#fed6b1", "#e5dfdf", "#ffeaa7"
-  ];
+  // const colors = ["#fd3241", "#f9b5ac", "#ac6400", "#ff7e39", "#ffea00", "#94ecbe", "#2e8b57", "#76ac1e", "#3cbb50", "#9ed8db", "#0299bb", "#0af4b8", "#466efb", "#0496ff", "#b9c1ff",
+  //   "#e1b1ff", "#9d33d0", "#d834f5", "#ff54b6", "#1d3354", "#767b91", "#8f8f8f", "#c7c7c7", "#9a657e", "#616468", "#511dff", "#85c7db", "#8cd1ff", "#0aefff", "#d4ff00", "#a1ff0a", "#00f43d", "#ffc100",
+  //   "#cdc6a5", "#fed6b1", "#e5dfdf", "#ffeaa7"
+  // ];
+
+  const colors = ["#0d6efd", "#6c757d","#198754","#dc3545","#ffc107","#0dcaf0","#FF5722","#212529"];
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const [loading, setLoading] = useState(true); // Loader state
@@ -106,7 +108,7 @@ const Tags = () => {
     setIsDrawerOpen(false);
   };
 
-  const selectWidth = inputValue ? `${inputValue.length * 5 + 40}px` : '';
+  const selectWidth = inputValue ? `${inputValue.length * 5 + 10}px` : '';
 
   const handleEdit = async (_id) => {
     setGetId(_id);
@@ -629,7 +631,7 @@ const Tags = () => {
                   onChange={(e) => handleInputChange(e.target.value)}
                   fullWidth
                   // margin="normal"
-                  size="small"
+                  size="medium"
                   sx={{ backgroundColor: '#fff', mt:1 }}
 
                 error={!!tagNameError}
@@ -660,8 +662,29 @@ const Tags = () => {
                   onChange={handleChange}
                   labelId="color-select-label"
                   id="color-select"
-                  size="small"
+                  size="medium"
                   sx={{ width: '100%', marginTop: '10px', backgroundColor: '#fff' }}
+                  renderValue={(selected) => (
+                    <Chip
+                      label={options.find((option) => option.tagColour === selected)?.tagName || ''}
+                      sx={{
+                        backgroundColor: selected,
+                        color: "#fff",
+                  fontWeight: 500,
+                  fontSize: "10px",
+                  borderRadius: "16px",
+                  height: "20px",
+                  cursor: "pointer",
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                  "& .MuiChip-deleteIcon": {
+                    color: "#fff",
+                    opacity: 0.7,
+                    transition: "opacity 0.2s",
+                    "&:hover": { opacity: 1 },
+                  },
+                      }}
+                    />
+                  )}
                   MenuProps={{
                     PaperProps: {
                       sx: {
@@ -676,16 +699,82 @@ const Tags = () => {
                       <Box sx={{
                         backgroundColor: option.tagColour,
                         color: "#fff",
+                        fontSize:'10px',
                         borderRadius: "10px",
+                        textAlign:'center',
                         width: selectWidth,
-                        textAlign: "center",
-                        padding: "0.1rem 0.6rem",
+                        
                       }}>
                         {option.tagName}
                       </Box>
                     </MenuItem>
                   ))}
                 </Select>
+
+
+{/* <Select
+  value={selectedOption ? selectedOption.tagColour : ""}
+  onChange={handleChange}
+  labelId="color-select-label"
+  id="color-select"
+  size="small"
+  sx={{ width: "100%", marginTop: "10px", backgroundColor: "#fff" }}
+  MenuProps={{
+    PaperProps: {
+      sx: {
+        maxHeight: 200, // Adjust the dropdown height as per your requirement
+        overflowY: "auto", // Enable scrolling if the content exceeds the height
+      },
+    },
+  }}
+  renderValue={(selected) => (
+    <Chip
+      label={options.find((opt) => opt.tagColour === selected)?.tagName || ""}
+      sx={{
+        backgroundColor: selected,
+        color: "#fff",
+                  fontWeight: 500,
+                  fontSize: "10px",
+                  borderRadius: "16px",
+                  height: "20px",
+                  cursor: "pointer",
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                  "& .MuiChip-deleteIcon": {
+                    color: "#fff",
+                    opacity: 0.7,
+                    transition: "opacity 0.2s",
+                    "&:hover": { opacity: 1 },
+                  },
+      }}
+    />
+  )}
+>
+  {options.map((option) => (
+    <MenuItem key={option.value} value={option.tagColour}>
+      <Chip
+        label={option.tagName}
+        sx={{
+          backgroundColor: option.tagColour,
+          color: "#fff",
+            fontSize: "10px",
+            borderRadius: "10px",
+            // margin: "5px",
+            textAlign: "center",
+            display: "flex",
+            justifyContent: "center",
+            padding: "2px",
+            // alignItems: "center",
+            // paddingLeft: "10px",
+            whiteSpace: "nowrap", 
+             "&:hover": {
+              backgroundColor: option.colour,
+              color: "#fff",
+            },
+        }}
+      />
+    </MenuItem>
+  ))}
+</Select> */}
 
               </Box>
               {/* <Box sx={{ pt: 5, display: 'flex', alignItems: 'center', gap: 5 }}>
@@ -770,8 +859,29 @@ const Tags = () => {
                   onChange={handleChange}
                   labelId="color-select-label"
                   id="color-select"
-                  size="small"
-                  sx={{ width: '100%', marginTop: '10px' }}
+                  size="medium"
+                  sx={{ width: '100%', marginTop: '10px', backgroundColor: '#fff' }}
+                  renderValue={(selected) => (
+                    <Chip
+                      label={options.find((option) => option.tagColour === selected)?.tagName || ''}
+                      sx={{
+                        backgroundColor: selected,
+                        color: "#fff",
+                  fontWeight: 500,
+                  fontSize: "10px",
+                  borderRadius: "16px",
+                  height: "20px",
+                  cursor: "pointer",
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                  "& .MuiChip-deleteIcon": {
+                    color: "#fff",
+                    opacity: 0.7,
+                    transition: "opacity 0.2s",
+                    "&:hover": { opacity: 1 },
+                  },
+                      }}
+                    />
+                  )}
                   MenuProps={{
                     PaperProps: {
                       sx: {
@@ -786,10 +896,11 @@ const Tags = () => {
                       <Box sx={{
                         backgroundColor: option.tagColour,
                         color: "#fff",
+                        fontSize:'10px',
                         borderRadius: "10px",
+                        textAlign:'center',
                         width: selectWidth,
-                        textAlign: "center",
-                        padding: "0.1rem 0.6rem",
+                        
                       }}>
                         {option.tagName}
                       </Box>

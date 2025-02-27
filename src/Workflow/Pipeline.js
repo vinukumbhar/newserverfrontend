@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import "./pipeline.css";
 import { useDrag, DndProvider, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -33,7 +33,10 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper, OutlinedInput, Select,FormControl,
+  Paper,
+  OutlinedInput,
+  Select,
+  FormControl,
 } from "@mui/material";
 // import Select from 'react-select';
 import CloseIcon from "@mui/icons-material/Close";
@@ -50,16 +53,17 @@ import AddJobs from "./AddJobs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
-import { LoginContext } from '../Sidebar/Context/Context'
+import { LoginContext } from "../Sidebar/Context/Context";
 const Pipeline = ({ charLimit = 4000 }) => {
- const { logindata } = useContext(LoginContext);
- const [loginuserid, setLoginUserId] = useState("");
+  const { logindata } = useContext(LoginContext);
+  const [loginuserid, setLoginUserId] = useState("");
 
- useEffect(() => {
-     if (logindata?.user?.id) { // Check if logindata and user.id exist
+  useEffect(() => {
+    if (logindata?.user?.id) {
+      // Check if logindata and user.id exist
       setLoginUserId(logindata.user.id);
-     }
- }, [logindata]);
+    }
+  }, [logindata]);
   const PIPELINE_API = process.env.REACT_APP_PIPELINE_TEMP_URL;
   const JOBS_API = process.env.REACT_APP_ADD_JOBS_URL;
   const AUTOMATION_API = process.env.REACT_APP_AUTOMATION_API;
@@ -88,28 +92,26 @@ const Pipeline = ({ charLimit = 4000 }) => {
   };
 
   useEffect(() => {
-    
     fetchJobData();
   }, []);
 
   const fetchPipelineData = async () => {
     setLoading(true);
     try {
-
       const storedData = JSON.parse(localStorage.getItem("teamMemberData"));
       console.log("Received stored teamMemberData:", storedData);
       const loginuserid = storedData?.teammember?.userid;
       console.log("User role is:", userRole);
 
-
-      let url = userRole === "Admin"
-      ? `${PIPELINE_API}/workflow/pipeline/pipelines`
-      : `${PIPELINE_API}/workflow/pipeline/pipelines/${loginuserid}`;
-// ${JOBS_API}/workflow/jobs/joblist/pipelines/${loginuserid}/true
-// http://127.0.0.1/workflow/pipeline/pipelines/
+      let url =
+        userRole === "Admin"
+          ? `${PIPELINE_API}/workflow/pipeline/pipelines`
+          : `${PIPELINE_API}/workflow/pipeline/pipelines/${loginuserid}`;
+      // ${JOBS_API}/workflow/jobs/joblist/pipelines/${loginuserid}/true
+      // http://127.0.0.1/workflow/pipeline/pipelines/
       const response = await fetch(url);
       const data = await response.json();
-      console.log(data)
+      console.log(data);
       setPipelineData(data.pipeline);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -128,24 +130,24 @@ const Pipeline = ({ charLimit = 4000 }) => {
       fetchPipelineData();
     }
   }, [userRole]);
-      // const [userRole, setUserRole] = useState("");
-      useEffect(() => {
-        const storedUserRole = localStorage.getItem("userRole");
-        console.log("Fetched userRole from localStorage:", storedUserRole);
-        setUserRole(storedUserRole);
-      }, []);
-    useEffect(() => {
-      if (userRole) {
-        fetchJobData();
-      }
-    }, [userRole]);
-    const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
+  // const [userRole, setUserRole] = useState("");
+  useEffect(() => {
+    const storedUserRole = localStorage.getItem("userRole");
+    console.log("Fetched userRole from localStorage:", storedUserRole);
+    setUserRole(storedUserRole);
+  }, []);
+  useEffect(() => {
+    if (userRole) {
+      fetchJobData();
+    }
+  }, [userRole]);
+  const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
   const fetchJobData = async () => {
     // try {
     //   const url = `${JOBS_API}/workflow/jobs/job/joblist/list/true`;
-      // const response = await fetch(url);
-      // const data = await response.json();
-      // setJobs(data.jobList);
+    // const response = await fetch(url);
+    // const data = await response.json();
+    // setJobs(data.jobList);
     //   console.log("result",data.jobList)
     // } catch (error) {
     //   console.error("Error fetching job data:", error);
@@ -170,25 +172,27 @@ const Pipeline = ({ charLimit = 4000 }) => {
           setJobs([]); // Set empty job data
           return;
         }
-  
+
         // Fetch accounts linked to the user
-        const accountsResponse = await axios.get(`${ACCOUNT_API}/accounts/getaccounts/${loginuserid}/true`);
+        const accountsResponse = await axios.get(
+          `${ACCOUNT_API}/accounts/getaccounts/${loginuserid}/true`
+        );
         const accountsData = accountsResponse.data.accountlist;
         console.log(accountsData);
-  
+
         if (!accountsData || accountsData.length === 0) {
           console.warn("No accounts found for user.");
           setJobs([]); // Set empty job data
           return;
         }
-  
+
         // Extract account IDs and form a query string
-        const accountIds = accountsData.map(account => account.id).join(",");
-  
+        const accountIds = accountsData.map((account) => account.id).join(",");
+
         // Fetch jobs based on retrieved account IDs
         url = `${JOBS_API}/workflow/jobs/job/joblist/list/true/${accountIds}`;
       }
-  
+
       // If no URL is set, exit
       if (!url) return;
       const response = await fetch(url);
@@ -200,8 +204,6 @@ const Pipeline = ({ charLimit = 4000 }) => {
     }
   };
 
-  
-  
   const fetchStages = async (pipelineId) => {
     try {
       const url = `${PIPELINE_API}/workflow/pipeline/pipeline/${pipelineId}`;
@@ -498,7 +500,9 @@ const Pipeline = ({ charLimit = 4000 }) => {
         numberOfreminder: invoiceData.numberOfreminder || null,
         scheduleinvoice: false, // Optional, adjust as needed
         scheduleinvoicedate: new Date(), // Current date and time
-        scheduleinvoicetime: new Date().toLocaleTimeString('en-US', { hour12: false }), 
+        scheduleinvoicetime: new Date().toLocaleTimeString("en-US", {
+          hour12: false,
+        }),
         lineItems: invoiceData.lineItems.map((item) => ({
           productorService: item.productorService || "",
           description: item.description || "",
@@ -513,9 +517,9 @@ const Pipeline = ({ charLimit = 4000 }) => {
           taxTotal: invoiceData.summary.taxTotal || "",
           total: invoiceData.summary.total || "",
         },
-        paidAmount:"",
-      invoiceStatus:"Pending",
-      balanceDueAmount:"",
+        paidAmount: "",
+        invoiceStatus: "Pending",
+        balanceDueAmount: "",
       });
 
       const requestOptions = {
@@ -783,55 +787,56 @@ const Pipeline = ({ charLimit = 4000 }) => {
               //   accountTags.some((accountTag) => accountTag._id === tag._id)
               // );
               const hasMatchingTags = automation.tags?.length
-              ? automation.tags.some((automationTag) =>
-                  accountTags.some((accountTag) => accountTag._id === automationTag._id)
-                )
-              : true;
+                ? automation.tags.some((automationTag) =>
+                    accountTags.some(
+                      (accountTag) => accountTag._id === automationTag._id
+                    )
+                  )
+                : true;
               return (
                 <Box key={index} sx={{ marginBottom: 2 }}>
-                   <Box sx={{display:'flex',alignItems:'center'}}>
-                  <Checkbox
-                    checked={selectedAutomationIndices.includes(index)}
-                    onChange={() => handleAutomationSelection(index)}
-                    disabled={!hasMatchingTags} // Disable if no matching tags
-                  />
-                   {!hasMatchingTags && (
-                                    <Typography
-                                      variant="body2"
-                                      color="error"
-                                      sx={{  fontStyle: "italic" }}
-                                    >
-                                     The tags do not match the account
-                                    </Typography>
-                                  )}
-                                  </Box>
-                  <Box>
-                  <Typography variant="body1">
-                    <strong>Type:</strong> {automation.type}
-                  </Typography>
-                  <Typography variant="body1">
-                    <strong>Template:</strong> {automation.template.label}
-                  </Typography>
-                  <Typography variant="body1">
-                    <strong>Tags:</strong>
-                  </Typography>
-                  {automation.tags.map((tag) => (
-                    <Box
-                      key={tag._id}
-                      sx={{
-                        display: "inline-block",
-                        backgroundColor: tag.tagColour,
-                        color: "white",
-                        borderRadius: "4px",
-                        padding: "2px 6px",
-                        marginRight: "4px",
-                      }}
-                    >
-                      {tag.tagName}
-                    </Box>
-                  ))}
+                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                    <Checkbox
+                      checked={selectedAutomationIndices.includes(index)}
+                      onChange={() => handleAutomationSelection(index)}
+                      disabled={!hasMatchingTags} // Disable if no matching tags
+                    />
+                    {!hasMatchingTags && (
+                      <Typography
+                        variant="body2"
+                        color="error"
+                        sx={{ fontStyle: "italic" }}
+                      >
+                        The tags do not match the account
+                      </Typography>
+                    )}
                   </Box>
-                 
+                  <Box>
+                    <Typography variant="body1">
+                      <strong>Type:</strong> {automation.type}
+                    </Typography>
+                    <Typography variant="body1">
+                      <strong>Template:</strong> {automation.template.label}
+                    </Typography>
+                    <Typography variant="body1">
+                      <strong>Tags:</strong>
+                    </Typography>
+                    {automation.tags.map((tag) => (
+                      <Box
+                        key={tag._id}
+                        sx={{
+                          display: "inline-block",
+                          backgroundColor: tag.tagColour,
+                          color: "white",
+                          borderRadius: "4px",
+                          padding: "2px 6px",
+                          marginRight: "4px",
+                        }}
+                      >
+                        {tag.tagName}
+                      </Box>
+                    ))}
+                  </Box>
                 </Box>
               );
             })
@@ -892,8 +897,8 @@ const Pipeline = ({ charLimit = 4000 }) => {
           >
             Move
           </Button> */}
-          <Box sx={{display:'flex', alignItems:'center',gap:3}}>
-          {/* <Button
+          <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
+            {/* <Button
             onClick={async () => {
               // Filter only selected and enabled automations
               const selectedAutomations = selectedAutomationIndices
@@ -947,81 +952,95 @@ const Pipeline = ({ charLimit = 4000 }) => {
           >
             Move
           </Button> */}
-<Button
-  onClick={async () => {
-    // Filter selected automations: include automations without tags or with matching tags
-    const selectedAutomations = selectedAutomationIndices
-      .map((index) => automations[index])
-      .filter((automation) => {
-        // Allow automations without tags
-        if (!automation.tags || automation.tags.length === 0) {
-          return true;
-        }
-        // Check for matching tags
-        return automation.tags.some((tag) =>
-          accountTags.some((accountTag) => accountTag._id === tag._id)
-        );
-      });
+            <Button
+              onClick={async () => {
+                // Filter selected automations: include automations without tags or with matching tags
+                const selectedAutomations = selectedAutomationIndices
+                  .map((index) => automations[index])
+                  .filter((automation) => {
+                    // Allow automations without tags
+                    if (!automation.tags || automation.tags.length === 0) {
+                      return true;
+                    }
+                    // Check for matching tags
+                    return automation.tags.some((tag) =>
+                      accountTags.some(
+                        (accountTag) => accountTag._id === tag._id
+                      )
+                    );
+                  });
 
-    if (selectedAutomations.length > 0) {
-      // Process all valid automations
-      for (const automation of selectedAutomations) {
-        const { type, template } = automation;
-        const templateValue = template?.value;
+                if (selectedAutomations.length > 0) {
+                  // Process all valid automations
+                  for (const automation of selectedAutomations) {
+                    const { type, template } = automation;
+                    const templateValue = template?.value;
 
-        if (type && templateValue && automationAccountId) {
-          try {
-            // Call the API for each automation
-            await selectAutomationApi(type, templateValue, automationAccountId);
-          } catch (error) {
-            console.error(
-              "Error processing automation:",
-              automation,
-              error
-            );
-          }
-        } else {
-          console.warn(
-            "Skipping automation due to missing parameters:",
-            automation
-          );
-        }
-      }
-    }
+                    if (type && templateValue && automationAccountId) {
+                      try {
+                        // Call the API for each automation
+                        await selectAutomationApi(
+                          type,
+                          templateValue,
+                          automationAccountId
+                        );
+                      } catch (error) {
+                        console.error(
+                          "Error processing automation:",
+                          automation,
+                          error
+                        );
+                      }
+                    } else {
+                      console.warn(
+                        "Skipping automation due to missing parameters:",
+                        automation
+                      );
+                    }
+                  }
+                }
 
-    // Move the job to the target stage after processing (even if no automations are selected)
-    onMoveJob(jobId, targetStage);
+                // Move the job to the target stage after processing (even if no automations are selected)
+                onMoveJob(jobId, targetStage);
 
-    // Close the drawer
-    onClose();
-  }}
-  variant="contained"
-  color="primary"
-  // sx={{ marginTop: 2 }}
-  sx={{
-    backgroundColor: 'var(--color-save-btn)',  // Normal background
-   
-    '&:hover': {
-      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-    },
-   width:'80px',borderRadius:'15px',mt:2
-  }}
->
-  Move
-</Button>
+                // Close the drawer
+                onClose();
+              }}
+              variant="contained"
+              color="primary"
+              // sx={{ marginTop: 2 }}
+              sx={{
+                backgroundColor: "var(--color-save-btn)", // Normal background
 
-          <Button onClick={onClose} variant="outlined"sx={{
-                    borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                   color:'var(--color-save-btn)',
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      color:'#fff',
-                      border:"none"
-                    },
-                    width:'80px',borderRadius:'15px',mt:2
-                  }}>
-            Close
-          </Button>
+                "&:hover": {
+                  backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                },
+                width: "80px",
+                borderRadius: "15px",
+                mt: 2,
+              }}
+            >
+              Move
+            </Button>
+
+            <Button
+              onClick={onClose}
+              variant="outlined"
+              sx={{
+                borderColor: "var(--color-border-cancel-btn)", // Normal background
+                color: "var(--color-save-btn)",
+                "&:hover": {
+                  backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                  color: "#fff",
+                  border: "none",
+                },
+                width: "80px",
+                borderRadius: "15px",
+                mt: 2,
+              }}
+            >
+              Close
+            </Button>
           </Box>
         </Box>
       </Drawer>
@@ -1230,7 +1249,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
             label: stage.name,
           }));
           setstages(stagesdata);
-          setSelectedstage(stagesdata[0]);
+          // setSelectedstage(stagesdata[0]);
           console.log(stagesdata);
         }
       } catch (error) {
@@ -1331,15 +1350,27 @@ const Pipeline = ({ charLimit = 4000 }) => {
     const [selectedTags, setSelectedTags] = useState([]);
     const [dataAccountjob, setDataAccountjob] = useState();
 
-    const handleTagChange = (event, newValue) => {
-      setSelectedTags(newValue); // Keep the full tag objects
+    // const handleTagChange = (event, newValue) => {
+    //   setSelectedTags(newValue); // Keep the full tag objects
 
-      // Send only the values to your backend
-      const tagValues = newValue.map((option) => option.value);
-      console.log("Selected Values:", tagValues);
+    //   // Send only the values to your backend
+    //   const tagValues = newValue.map((option) => option.value);
+    //   console.log("Selected Values:", tagValues);
 
-      // Assuming setCombinedTagsValues is a function to send the values to your backend
-      setCombinedTagsValues(tagValues);
+    //   // Assuming setCombinedTagsValues is a function to send the values to your backend
+    //   setCombinedTagsValues(tagValues);
+    // };
+    const handleTagChange = (event) => {
+      const { value } = event.target; // Get selected tag objects
+      setSelectedTags(value); // Keep full tag objects in state
+
+     // Extract selected tag values
+     const selectedTagsValues = value.map((val) => {
+      const option = tagoptions.find((opt) => opt.value === val);
+      return option?.value;
+    });
+
+      setCombinedTagsValues(selectedTagsValues); // Send only tag IDs to backend
     };
 
     useEffect(() => {
@@ -1464,7 +1495,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
         }
         const data = await response.json();
         setSelectedJoData(data.jobList);
-        console.log(data.jobList);
+        console.log(data);
 
         if (data.jobList && data.jobList.Pipeline) {
           const pipelineData = {
@@ -1480,13 +1511,15 @@ const Pipeline = ({ charLimit = 4000 }) => {
         setDueDate(dayjs(data.jobList.DueDate) || null);
         // (dayjs(tempvalues.startdate) || null)
         setStartDate(dayjs(data.jobList.StartDate) || null);
-        // if (data.jobList && data.jobList.Stage) {
-        //   const stageData = {
-        //     value: data.jobList.Stage._id,
-        //     label: data.jobList.Stage.name,
-        //   };
-        //   setSelectedstage(stageData);
-        // }
+        if (data.jobList && data.jobList.Stage && data.jobList.Stage.length > 0) {
+          const stageData = {
+            value: data.jobList.Stage[0]._id, // Access first element of array
+            label: data.jobList.Stage[0].name,
+          };
+          setSelectedstage(stageData);
+          console.log("stages", stageData);
+        }
+        
         setPriority(data.jobList.Priority);
         setDescription(data.jobList.Description);
         setClientFacingStatus(data.jobList.ShowinClientPortal);
@@ -1523,32 +1556,9 @@ const Pipeline = ({ charLimit = 4000 }) => {
             }));
           setSelectedTags(tagsData);
           const selectedValues = tagsData.map((option) => option.value);
-         setCombinedTagsValues(selectedValues);
+          setCombinedTagsValues(selectedValues);
         }
-        // if (data.jobList && data.jobList.Account) {
-        //   const tags = data.jobList.Account[0].tags.map((tag) => ({
-        //     value: tag._id,
-        //     label: tag.tagName,
-        //     colour: tag.tagColour,
-
-        //     customStyle: {
-        //       backgroundColor: tag.tagColour,
-        //       color: "#fff",
-        //       borderRadius: "8px",
-        //       alignItems: "center",
-        //       textAlign: "center",
-        //       marginBottom: "5px",
-        //       padding: "2px,8px",
-
-        //       fontSize: "10px",
-        //       // width: `${calculateWidth(tag.tagName)}px`,
-        //       margin: "7px",
-        //     },
-        //   }));
-
-        //   // setSelectedTags(tags);
-        //   console.log(tags);
-        // }
+        
         if (data.jobList && data.jobList.JobAssignee) {
           const assigneesData = data.jobList.JobAssignee.map((assignee) => ({
             value: assignee._id,
@@ -1609,7 +1619,6 @@ const Pipeline = ({ charLimit = 4000 }) => {
     };
     const handleSaveExitClick = () => {
       updatejobdata();
-      
     };
     // console.log(accountId);
     const handleSaveTags = () => {
@@ -1630,7 +1639,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
         .then((response) => response.json())
         .then((result) => {
           console.log(result);
-          console.log("acc",result.updatedAccount); // Log the result
+          console.log("acc", result.updatedAccount); // Log the result
         })
         .catch((error) => {
           console.error(error); // Log the error
@@ -1649,7 +1658,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
         stageid: selectedstage.value,
         jobassignees: combinedValues,
 
-        priority: priority.value,
+        priority: priority,
         description: description,
         startdate: startDate,
         enddate: dueDate,
@@ -1821,7 +1830,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                 ml: 1,
               }}
             >
-              <Typography sx={{ fontWeight: "bold" }} variant="h6">
+              <Typography sx={{ fontWeight: "bold" ,fontSize:'20px'}} >
                 Edit Job
               </Typography>
               <IconButton onClick={() => setIsDrawerOpen(false)}>
@@ -1829,9 +1838,9 @@ const Pipeline = ({ charLimit = 4000 }) => {
               </IconButton>
             </Box>
             <Divider />
-            <Box padding={2} height="83vh" sx={{ overflowY: "auto" }}>
-              <Box mt={1}>
-                <label>Pipeline</label>
+            <Box padding={2} height="83vh" sx={{ overflowY: "auto" }} className="bulk-job-form">
+              <Box >
+                  <InputLabel sx={{ color: "black",}}>Pipeline</InputLabel>
 
                 <Autocomplete
                   options={optionpipeline}
@@ -1864,8 +1873,8 @@ const Pipeline = ({ charLimit = 4000 }) => {
                 />
               </Box>
               <Box mt={2}>
-                <label>Account Tags</label>
-                <Autocomplete
+                <InputLabel sx={{ color: "black",mb:1}}>Account Tags</InputLabel>
+                {/* <Autocomplete
                   multiple // Enable multi-select
                   size="small"
                   sx={{ marginTop: "8px", marginBottom: "8px" }}
@@ -1920,15 +1929,105 @@ const Pipeline = ({ charLimit = 4000 }) => {
                     ))
                   }
                 /> 
-                
+                 */}
+                 <FormControl sx={{ width: "100%" }}>
+                <Select
+                  multiple
+                  multiline
+                  size="medium"
+                  // sx={{ marginTop: "8px", marginBottom: "8px", width: "100%" }}
+                 input={<OutlinedInput />}
+                    displayEmpty
+                  value={combinedTagsValues} // Store selected tag objects
+                  onChange={handleTagChange} // Handle selection
+                  // renderValue={(selected) => (
+                  //   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  //     {selected.map((option) => (
+                  //       <Chip
+                  //         key={option.value}
+                  //         label={option.label}
+                  //         sx={{
+                  //           backgroundColor: option.colour,
+                  //           color: "#fff",
+                  //           borderRadius: "15px",
+                  //           fontSize: "10px",
+                  //           padding: "2px 8px",
+                  //         }}
+                  //       />
+                  //     ))}
+                  //   </Box>
+                  // )}
+                    renderValue={(selected) => {
+                        if (selected.length === 0) {
+                          return <span style={{ color: "#aaa" }}>Select tags...</span>;
+                        }
+                        return (
+                          <Box sx={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "6px" }}>
+                            {selected.map((value) => {
+                              const option = tagoptions.find((opt) => opt.value === value);
+                              return (
+                                <Chip
+                                  key={value}
+                                  label={option?.label}
+                                  sx={{
+                                    backgroundColor: option?.colour,
+                                    color: "#fff",
+                                    fontWeight: 500,
+                                    fontSize: "10px",
+                                    borderRadius: "16px",
+                                    height: "20px",
+                                    cursor: "pointer",
+                                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                                  }}
+                                />
+                              );
+                            })}
+                          </Box>
+                        );
+                      }}
+                      MenuProps={{
+                        PaperProps: {
+                          style: { maxHeight: 250 },
+                        },
+                      }}
+                      sx={{
+                        borderRadius: "10px",
+                        "& .MuiOutlinedInput-root": { borderRadius: "10px" },
+                      }}
+                >
+                  {tagoptions.map((option) => {
+                        const dynamicWidth = Math.min(option.label.length * 8 + 16, 150);
+                        return (
+                          <MenuItem
+                            key={option.value}
+                            value={option.value}
+                            sx={{
+                              backgroundColor: option.colour,
+                              color: "#fff",
+                              fontSize: "10px",
+                              borderRadius: "10px",
+                              margin: "5px",
+                              textAlign: "center",
+                              padding: "4px 9px",
+                              minWidth: `${dynamicWidth}px`,
+                              maxWidth: `${dynamicWidth}px`,
+                              "&:hover": { backgroundColor: option.colour, color: "#fff" },
+                            }}
+                          >
+                            {option.label}
+                          </MenuItem>
+                        );
+                      })}
+                </Select>
+                </FormControl>
               </Box>
-              <Box>
-                <label className="task-input-label">Task Assignee</label>
+              <Box mt={2}>
+                <InputLabel sx={{ color: "black",}}>Task Assignee</InputLabel>
                 <Autocomplete
                   multiple
                   sx={{ background: "#fff", mt: 1 }}
                   options={useroptions}
-                  size="small"
+                  size="medium"
                   getOptionLabel={(option) => option.label}
                   value={selecteduser}
                   onChange={handleUserChange}
@@ -1953,8 +2052,8 @@ const Pipeline = ({ charLimit = 4000 }) => {
                   }
                 />
               </Box>
-              <Box>
-                <label>Stage</label>
+              <Box mt={2}>
+                <InputLabel sx={{ color: "black",}}>Stage</InputLabel>
                 <Autocomplete
                   options={stages || []}
                   getOptionLabel={(option) => option.label}
@@ -1978,7 +2077,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                       sx={{ backgroundColor: "#fff" }}
                       placeholder="Select stages"
                       variant="outlined"
-                      size="small"
+                      size="medium"
                     />
                   )}
                   clearOnEscape // Enable clearable functionality
@@ -1991,36 +2090,38 @@ const Pipeline = ({ charLimit = 4000 }) => {
                   selectedPriority={priority}
                 />
               </Box>
-
-              <Typography>Start Date</Typography>
+              <Box mt={2}>
+              <InputLabel sx={{ color: "black",}}>Start Date</InputLabel>
               <DatePicker
                 format="DD/MM/YYYY"
-                sx={{ width: "100%", backgroundColor: "#fff" }}
+                sx={{ width: "100%", backgroundColor: "#fff",mt:2 }}
                 // value={startDate}
                 // onChange={handleStartDateChange}
                 value={startDate}
                 onChange={handleStartDateChange}
-                renderInput={(params) => <TextField {...params} size="small" />}
+                renderInput={(params) => <TextField {...params} size="medium" />}
               />
-
-              <Typography>Due Date</Typography>
+              </Box>
+              <Box mt={2}>
+              <InputLabel sx={{ color: "black",}}>Due Date</InputLabel>
               <DatePicker
                 format="DD/MM/YYYY"
-                sx={{ width: "100%", backgroundColor: "#fff" }}
+                sx={{ width: "100%", backgroundColor: "#fff",mt:2 }}
                 // value={dueDate}
                 // onChange={handleDueDateChange}
                 value={dueDate}
                 onChange={handleDueDateChange}
-                renderInput={(params) => <TextField {...params} size="small" />}
+                renderInput={(params) => <TextField {...params} size="medium" />}
               />
-              <Box mt={2}>
+              </Box>
+              <Box mt={2} mb={5}>
                 <Editor
                   initialContent={description}
                   onChange={handleEditorChange}
                 />
               </Box>
 
-              <Box mt={2}>
+              <Box mt={3}>
                 <Box style={{ display: "flex", alignItems: "center" }}>
                   <Box
                     style={{
@@ -2056,22 +2157,22 @@ const Pipeline = ({ charLimit = 4000 }) => {
                     <Box>
                       {clientFacingStatus && (
                         <>
-                          <Typography>Job name for client</Typography>
+                          <InputLabel sx={{ color: "black",}}>Job name for client</InputLabel>
                           <TextField
                             fullWidth
                             name="subject"
                             value={inputText + selectedJobShortcut}
                             onChange={handlechatsubject}
                             placeholder="Job name for client"
-                            size="small"
+                            size="medium"
                             sx={{ background: "#fff", mt: 2 }}
                           />
 
                           <Box mt={2}>
-                            <Typography>Status</Typography>
+                            <InputLabel sx={{ color: "black",}}>Status</InputLabel>
                             <Autocomplete
                               options={optionstatus}
-                              size="small"
+                             size="medium"
                               sx={{ mt: 1 }}
                               value={selectedjob}
                               onChange={handleJobChange}
@@ -2131,7 +2232,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                             </InputLabel>
                             <TextField
                               fullWidth
-                              size="small"
+                              size="medium"
                               margin="normal"
                               type="text"
                               multiline
@@ -2165,36 +2266,51 @@ const Pipeline = ({ charLimit = 4000 }) => {
               </Box>
 
               <Box mt={5} display="flex" alignItems="center" gap={2}>
-                <Button variant="contained" onClick={handleSaveExitClick}  sx={{
-            backgroundColor: 'var(--color-save-btn)',  // Normal background
-           
-            '&:hover': {
-              backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-            },
-           borderRadius:'15px'
-          }}>
+                <Button
+                  variant="contained"
+                  onClick={handleSaveExitClick}
+                  sx={{
+                    backgroundColor: "var(--color-save-btn)", // Normal background
+
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                    },
+                    borderRadius: "15px",
+                  }}
+                >
                   Save & Exit
                 </Button>
-                <Button variant="contained" onClick={handleSaveClick} sx={{
-            backgroundColor: 'var(--color-save-btn)',  // Normal background
-           
-            '&:hover': {
-              backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-            },
-           width:'80px',borderRadius:'15px'
-          }}>
+                <Button
+                  variant="contained"
+                  onClick={handleSaveClick}
+                  sx={{
+                    backgroundColor: "var(--color-save-btn)", // Normal background
+
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                    },
+                    width: "80px",
+                    borderRadius: "15px",
+                  }}
+                >
                   Save
                 </Button>
-                <Button variant="outlined" onClick={handleFormClose} sx={{
-                    borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                   color:'var(--color-save-btn)',
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      color:'#fff',
-                      border:"none"
+                <Button
+                  variant="outlined"
+                  onClick={handleFormClose}
+                  sx={{
+                    borderColor: "var(--color-border-cancel-btn)", // Normal background
+                    color: "var(--color-save-btn)",
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                      color: "#fff",
+                      border: "none",
                     },
-                    width:'80px',borderRadius:'15px',ml:2
-                  }}>
+                    width: "80px",
+                    borderRadius: "15px",
+                    ml: 2,
+                  }}
+                >
                   Cancel
                 </Button>
               </Box>
@@ -2223,7 +2339,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
         job.Pipeline === selectedPipeline.pipelineName &&
         job.Stage.includes(stage.name)
     );
-    console.log("jobs for stage",stageJobs)
+    console.log("jobs for stage", stageJobs);
     const [displayCount, setDisplayCount] = useState(3);
     const displayedJobs = stageJobs.slice(0, displayCount);
     const truncatedStageName =
@@ -2296,17 +2412,16 @@ const Pipeline = ({ charLimit = 4000 }) => {
   //   }
   //   setTempJobData({ jobId, targetStageName });
   // };
-  
-  
+
   const handleDrop = (jobId, targetStageName) => {
     const targetStage = stages.find((stage) => stage.name === targetStageName);
     const job = jobs.find((job) => job.id === jobId);
-  
+
     if (job) {
       setAccountName(job.Account.join(", ")); // Store the account name
       setAccountId(job.AccountId); // Store the account ID
     }
-  
+
     // If the target stage has automations, show the drawer
     if (targetStage?.automations?.length > 0) {
       setAutomationData(targetStage.automations); // Set automation data for drawer
@@ -2321,21 +2436,19 @@ const Pipeline = ({ charLimit = 4000 }) => {
         }
         return job;
       });
-  
+
       setJobs(updatedJobs); // Update the job in the local state
-  
+
       // Optionally, refresh job data after updating
       setTimeout(() => {
         fetchJobData();
       }, 1000);
-  
+
       updateJobStage(jobId, targetStage);
     }
     setTempJobData({ jobId, targetStageName });
   };
-  
-  
-  
+
   const handleMoveJob = (jobId, targetStage) => {
     // Call the API to update the job stage in the backend
     const updateJobStage = async () => {
@@ -2359,7 +2472,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
     };
     updateJobStage();
   };
-  console.log("pipeline",pipelineData)
+  console.log("pipeline", pipelineData);
   const optionpipeline = pipelineData.map((pipeline) => ({
     value: pipeline._id,
     label: pipeline.pipelineName,
@@ -2417,16 +2530,17 @@ const Pipeline = ({ charLimit = 4000 }) => {
                   variant="outlined"
                   color="primary"
                   onClick={handleBackToPipelineList}
-                
                   sx={{
-                    borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                   color:'var(--color-save-btn)',
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      color:'#fff',
-                      border:"none"
+                    borderColor: "var(--color-border-cancel-btn)", // Normal background
+                    color: "var(--color-save-btn)",
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                      color: "#fff",
+                      border: "none",
                     },
-                    mt:2,borderRadius:'15px',ml:2
+                    mt: 2,
+                    borderRadius: "15px",
+                    ml: 2,
                   }}
                 >
                   Back to Pipeline List
@@ -2437,12 +2551,13 @@ const Pipeline = ({ charLimit = 4000 }) => {
                   // sx={{ mt: 2 }}
                   onClick={handleDrawerOpen}
                   sx={{
-                    backgroundColor: 'var(--color-save-btn)',  // Normal background
-                   
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                    backgroundColor: "var(--color-save-btn)", // Normal background
+
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                     },
-                   borderRadius:'15px',mt:2
+                    borderRadius: "15px",
+                    mt: 2,
                   }}
                 >
                   Add Jobs
@@ -2527,45 +2642,69 @@ const Pipeline = ({ charLimit = 4000 }) => {
               Pipeline List
             </Typography>
             <TableContainer component={Paper}>
-              <Table style={{  width: "100%" }}>
+              <Table style={{ width: "100%" }}>
                 <TableHead>
                   <TableRow>
-                    <TableCell style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="100">Pipeline Name</TableCell>
-                    <TableCell style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="100">Jobs</TableCell>
-                    <TableCell style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="100">Schedule</TableCell>
-                    <TableCell style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="100">Start Date</TableCell>
-                    <TableCell style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="100">End Date</TableCell>
-                    <TableCell style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="100">Setting</TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        padding: "16px",
+                      }}
+                      width="100"
+                    >
+                      Pipeline Name
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        padding: "16px",
+                      }}
+                      width="100"
+                    >
+                      Jobs
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        padding: "16px",
+                      }}
+                      width="100"
+                    >
+                      Schedule
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        padding: "16px",
+                      }}
+                      width="100"
+                    >
+                      Start Date
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        padding: "16px",
+                      }}
+                      width="100"
+                    >
+                      End Date
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        padding: "16px",
+                      }}
+                      width="100"
+                    >
+                      Setting
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -2577,43 +2716,53 @@ const Pipeline = ({ charLimit = 4000 }) => {
                           fontSize: "12px",
                           padding: "4px 8px",
                           lineHeight: "1",
-                          cursor: "pointer", color: "#3f51b5"
+                          cursor: "pointer",
+                          color: "#3f51b5",
                         }}
                       >
                         {pipeline.pipelineName}
                       </TableCell>
-                      <TableCell  style={{
+                      <TableCell
+                        style={{
                           fontSize: "12px",
                           padding: "4px 8px",
                           lineHeight: "1",
-                        }}></TableCell>
-                      <TableCell  style={{
+                        }}
+                      ></TableCell>
+                      <TableCell
+                        style={{
                           fontSize: "12px",
                           padding: "4px 8px",
                           lineHeight: "1",
-                        }}></TableCell>
-                      <TableCell  style={{
+                        }}
+                      ></TableCell>
+                      <TableCell
+                        style={{
                           fontSize: "12px",
                           padding: "4px 8px",
                           lineHeight: "1",
-                        }}></TableCell>
-                      <TableCell  style={{
+                        }}
+                      ></TableCell>
+                      <TableCell
+                        style={{
                           fontSize: "12px",
                           padding: "4px 8px",
                           lineHeight: "1",
-                        }}></TableCell>
-                       <TableCell style={{
+                        }}
+                      ></TableCell>
+                      <TableCell
+                        style={{
                           fontSize: "12px",
                           padding: "4px 8px",
                           lineHeight: "1",
-                        }}>
-                      <IconButton
-                        // onClick={(event) => handleMenuClick(event, row.id)}
+                        }}
                       >
-                        <MoreVertIcon />
-                      </IconButton>
-                     
-                    </TableCell>
+                        <IconButton
+                        // onClick={(event) => handleMenuClick(event, row.id)}
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

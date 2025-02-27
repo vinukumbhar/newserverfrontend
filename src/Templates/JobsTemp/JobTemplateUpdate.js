@@ -416,7 +416,7 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
       jobname: jobname,
       jobassignees: combinedValues,
       addshortcode: "",
-      priority: PriorityNew.value,
+      priority: PriorityNew,
       description: JobDescriptionNew,
       absolutedates: AbsoluteDateNew,
       startsin: StartsInNew,
@@ -467,7 +467,7 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
       jobname: jobname,
       jobassignees: combinedValues,
       addshortcode: "",
-      priority: PriorityNew.value,
+      priority: PriorityNew,
       description: JobDescriptionNew,
       absolutedates: AbsoluteDateNew,
       startsin: StartsInNew,
@@ -556,11 +556,11 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
             <Grid xs={12} sm={5.8} ml={2}>
               <Box mt={2}>
                 <InputLabel sx={{ color: "black" }}>Template Name</InputLabel>
-                <TextField size="small" margin="normal" fullWidth placeholder="Template Name" onChange={(e) => setTempNameNew(e.target.value)} value={tempNameNew} />
+                <TextField size="medium" margin="normal" fullWidth placeholder="Template Name" onChange={(e) => setTempNameNew(e.target.value)} value={tempNameNew} />
               </Box>
               <Box mt={1}>
                 <InputLabel sx={{ color: "black" }}>Job Name</InputLabel>
-                <TextField value={jobname + selectedShortcut} onChange={handlejobName} size="small" margin="normal" fullWidth placeholder="Job Name" />
+                <TextField value={jobname + selectedShortcut} onChange={handlejobName} size="medium" margin="normal" fullWidth placeholder="Job Name" />
               </Box>
               <Box>
                 <Button variant="contained" color="primary" onClick={toggleDropdown} sx={{
@@ -611,7 +611,7 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
                   multiple
                   sx={{ mt: 2 }}
                   options={options}
-                  size="small"
+                  size="medium"
                   getOptionLabel={(option) => option.label}
                   value={AssigneesNew}
                   onChange={handleuserChange}
@@ -647,11 +647,11 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
                   <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
                     <Typography>Start Date</Typography>
 
-                    <DatePicker format="DD/MM/YYYY" sx={{ width: "100%" }} value={StartsDateNew} onChange={handleStartDateChange} renderInput={(params) => <TextField {...params} size="small" />} />
+                    <DatePicker format="DD/MM/YYYY" sx={{ width: "100%" }} value={StartsDateNew} onChange={handleStartDateChange} renderInput={(params) => <TextField {...params} size="medium" />} />
                   </Box>
                   <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
                     <Typography>Due Date</Typography>
-                    <DatePicker format="DD/MM/YYYY" sx={{ width: "100%" }} value={DueDateNew} onChange={handleDueDateChange} renderInput={(params) => <TextField {...params} size="small" />} />
+                    <DatePicker format="DD/MM/YYYY" sx={{ width: "100%" }} value={DueDateNew} onChange={handleDueDateChange} renderInput={(params) => <TextField {...params} size="medium" />} />
                   </Box>
                 </>
               )}
@@ -660,10 +660,10 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
                 <>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                     <Typography>Start In</Typography>
-                    <TextField size="small" margin="normal" fullWidth value={StartsInNew} onChange={(e) => setStartsInNew(e.target.value)} sx={{ ml: 1 }} />
+                    <TextField size="medium" margin="normal" fullWidth value={StartsInNew} onChange={(e) => setStartsInNew(e.target.value)} sx={{ ml: 1 }} />
                     <Autocomplete
                       options={dayOptions}
-                      size="small"
+                      size="medium"
                       getOptionLabel={(option) => option.label}
                       onChange={(event, newValue) => {
                         if (newValue) {
@@ -678,10 +678,10 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
                   </Box>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                     <Typography>Due In</Typography>
-                    <TextField size="small" margin="normal" fullWidth value={DueInNew} onChange={(e) => setDueInNew(e.target.value)} sx={{ ml: 1.5 }} />
+                    <TextField size="medium" margin="normal" fullWidth value={DueInNew} onChange={(e) => setDueInNew(e.target.value)} sx={{ ml: 1.5 }} />
                     <Autocomplete
                       options={dayOptions}
-                      size="small"
+                      size="medium"
                       getOptionLabel={(option) => option.label}
                       onChange={(event, newValue) => {
                         if (newValue) {
@@ -712,7 +712,7 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
                     {clientFacingStatus && (
                       <>
                         <Typography>Job name for client</Typography>
-                        <TextField fullWidth name="subject" value={inputText + selectedJobShortcut} onChange={handlechatsubject} placeholder="Job name for client" size="small" sx={{ background: "#fff", mt: 2 }} />
+                        <TextField fullWidth name="subject" value={inputText + selectedJobShortcut} onChange={handlechatsubject} placeholder="Job name for client" size="medium" sx={{ background: "#fff", mt: 2 }} />
 
                         <Box>
                           <Button variant="contained" color="primary" onClick={toggleShortcodeDropdown} sx={{
@@ -760,7 +760,7 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
                           <Typography>Status</Typography>
                           <Autocomplete
                             options={optionstatus}
-                            size="small"
+                            size="medium"
                             sx={{ mt: 1 }}
                             value={selectedJob}
                             onChange={handleJobChange}
@@ -810,7 +810,7 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
                           <InputLabel sx={{ color: "black" }}>Description</InputLabel>
                           <TextField
                             fullWidth
-                            size="small"
+                            size="medium"
                             margin="normal"
                             type="text"
                             multiline
@@ -877,7 +877,7 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
 
                   {comments.map((comment, index) => (
                     <div key={index} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                      <TextField value={comment} onChange={(e) => handleCommentChange(index, e.target.value)} placeholder={`Comment ${index + 1}`} variant="outlined" fullWidth multiline />
+                      <TextField value={comment}  size="medium" onChange={(e) => handleCommentChange(index, e.target.value)} placeholder={`Comment ${index + 1}`} variant="outlined" fullWidth multiline />
                       <IconButton onClick={() => deleteCommentField(index)}>
                         <DeleteIcon />
                       </IconButton>

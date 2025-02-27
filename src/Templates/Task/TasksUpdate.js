@@ -1073,10 +1073,10 @@ const Tasks = () => {
         console.log(subtaskData);
         const raw = JSON.stringify({
             templatename: tempNameNew,
-            status: status.value,
+            status: status,
             tasktags: combinedTagsValues,
             taskassignees: combinedValues,
-            priority: priority.value,
+            priority: priority,
             description: taskDiscription,
             absolutedates: absoluteDate,
             startsin: StartsInNew,
@@ -1132,11 +1132,11 @@ const Tasks = () => {
         console.log(subtaskData);
         const raw = JSON.stringify({
             templatename: tempNameNew,
-            status: status.value,
+            status: status,
             tasktags: combinedTagsValues,
             taskassignees: combinedValues,
 
-            priority: priority.value,
+            priority: priority,
             description: taskDiscription,
             absolutedates: absoluteDate,
             startsin: StartsInNew,
@@ -1217,7 +1217,8 @@ const Tasks = () => {
                                                             name="TemplateName"
                                                             placeholder="Template Name"
                                                             size="medium"
-                                                            sx={{ background: '#fff', mt: 1 }}
+                                                            margin='normal'
+                                                            sx={{ background: '#fff',  }}
                                                             onChange={(e) => setTempNameNew(e.target.value)} value={tempNameNew}
                                                         />
                                                     </Box>
@@ -1259,7 +1260,7 @@ const Tasks = () => {
                                                     </Box>
                                                 </Grid>
                                                 <Grid item xs={12} sm={6}>
-                                                    <Box mt={1}>
+                                                    <Box >
                                                         <Priority onPriorityChange={handlePriorityChange} selectedPriority={priority} />
                                                     </Box>
                                                 </Grid>
