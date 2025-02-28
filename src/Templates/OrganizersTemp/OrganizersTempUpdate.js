@@ -995,7 +995,7 @@ onChange={handlejobName}
                               value={daysuntilNextReminder}
                               onChange={(e) => setDaysuntilNextReminder(e.target.value)}
                               placeholder="Days until next reminder"
-                              size="small"
+                              size="medium"
                               sx={{ mt: 2 }}
                             />
                           </Box>
@@ -1010,7 +1010,7 @@ onChange={handlejobName}
                               onChange={(e) => setNoOfReminder(e.target.value)}
 
                               placeholder="NoOfreminders"
-                              size="small"
+                              size="medium"
                               sx={{ mt: 2 }}
                             />
                           </Box>
@@ -1236,7 +1236,7 @@ onChange={handlejobName}
                                     sx={{ width: '100%', backgroundColor: '#fff' }}
                                     selected={startDate}
                                     onChange={handleStartDateChange}
-                                    renderInput={(params) => <TextField {...params} size="small" />}
+                                    renderInput={(params) => <TextField {...params} size="medium" />}
                                     onOpen={() => setAnsweredElements((prevAnswered) => ({
                                       ...prevAnswered,
                                       [element.text]: true,
@@ -1259,7 +1259,7 @@ onChange={handlejobName}
                                     <Box sx={{ position: 'relative', width: '100%' }}>
                                       <TextField
                                         variant="outlined"
-                                        size="small"
+                                        size="medium"
                                         fullWidth
                                         // margin="normal"
                                         disabled

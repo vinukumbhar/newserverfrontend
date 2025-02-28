@@ -1074,13 +1074,13 @@ onRowsPerPageChange={handleChangeRowsPerPage}
 
             </Box>
             <Box>
-              <label className='organizer-input-label'>Template Name</label>
+              <InputLabel sx={{color:'black'}}>Template Name</InputLabel>
               <TextField
 
                 value={templateName}
                 onChange={(e) => setTemplateName(e.target.value)}
                 fullWidth
-                size='small'
+                size="medium"
 
                 placeholder='Template name'
                 sx={{ backgroundColor: '#fff', mt: 2 }}
@@ -1113,7 +1113,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                 // value={organizerName}
                 // onChange={(e) => setOrganizerName(e.target.value)}
                 fullWidth
-                size='small'
+                size="medium"
                 error={!!organizerError}
                 placeholder='Organizer name'
                 className='organizer-input-label'
@@ -1191,7 +1191,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                     <TextField
                       placeholder={`Section Name`}
                       className='section-name'
-                      size='small'
+                      size="medium"
                       margin='normal'
                       value={truncateText(section.text, 5)}
                       InputProps={{
@@ -1346,7 +1346,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                               value={daysuntilNextReminder}
                               onChange={(e) => setDaysuntilNextReminder(e.target.value)}
                               placeholder="Days until next reminder"
-                              size="small"
+                              size="medium"
                               sx={{ mt: 2 }}
                             />
                           </Box>
@@ -1361,7 +1361,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                               onChange={(e) => setNoOfReminder(e.target.value)}
 
                               placeholder="NoOfreminders"
-                              size="small"
+                              size="medium"
                               sx={{ mt: 2 }}
                             />
                           </Box>
@@ -1398,7 +1398,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                       <Select
                         value={activeStep}
                         onChange={handleDropdownChange}
-                        size='small'
+                        size="medium"
                       >
                         {/* {sections.map((section, index) => (
                             <MenuItem key={index} value={index}>
@@ -1433,7 +1433,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                       <Typography fontSize='18px' mb={1} mt={1}>{element.text}</Typography>
                                       <TextField
                                         variant="outlined"
-                                        size='small'
+                                        size="medium"
                                         multiline
                                         fullWidth
                                         // margin='normal'
@@ -1567,7 +1567,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                         <Select
                                           value={selectedDropdownValue}
                                           onChange={(event) => handleDropdownValueChange(event, element.text)}
-                                          size='small'
+                                          size="medium"
                                         >
                                           {element.options.map((option) => (
                                             <MenuItem key={option.text} value={option.text}>
@@ -1587,7 +1587,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                         sx={{ width: '100%', backgroundColor: '#fff' }}
                                         selected={startDate}
                                         onChange={handleStartDateChange}
-                                        renderInput={(params) => <TextField {...params} size="small" />}
+                                        renderInput={(params) => <TextField {...params} size="medium" />}
                                         onOpen={() => setAnsweredElements((prevAnswered) => ({
                                           ...prevAnswered,
                                           [element.text]: true,
@@ -1610,7 +1610,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                         <Box sx={{ position: 'relative', width: '100%' }}>
                                           <TextField
                                             variant="outlined"
-                                            size="small"
+                                            size="medium"
                                             fullWidth
                                             // margin="normal"
                                             disabled

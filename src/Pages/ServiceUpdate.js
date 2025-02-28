@@ -209,7 +209,7 @@ const ServiceUpdate = () => {
               fullWidth
               name="ServiceName"
               placeholder="Service Name"
-              size="small"
+              size="medium"
               margin="normal"
               value={servicename}
               onChange={(e) => setservicename(e.target.value)}
@@ -223,7 +223,7 @@ const ServiceUpdate = () => {
               fullWidth
               name="Description"
               placeholder="Description"
-              size="small"
+              size="medium"
               margin="normal"
             />
           </Box>
@@ -236,7 +236,7 @@ const ServiceUpdate = () => {
                     fullWidth
                     name="Rate"
                     placeholder="Rate"
-                    size="small"
+                    size="medium"
                     margin="normal"
                     // value={rate}
                     // onChange={(e) => setrate(e.target.value)}
@@ -250,7 +250,7 @@ const ServiceUpdate = () => {
                 <Box sx={{ mr: "15px" }}>
                   <InputLabel sx={{ color: "black" }}>Rate Type</InputLabel>
                   <Autocomplete
-                    size="small"
+                    size="medium"
                     fullWidth
                     sx={{ mt: 2 }}
                     options={options}
@@ -312,7 +312,7 @@ const ServiceUpdate = () => {
                 Category Name
               </InputLabel>
               <Autocomplete
-                size="small"
+                size="medium"
                 fullWidth
                 sx={{ mt: 2 }}
                 options={categoryoptions}
@@ -391,7 +391,7 @@ const ServiceUpdate = () => {
                   fullWidth
                   name="Rate"
                   placeholder="Category Name"
-                  size="small"
+                  size="medium"
                   margin="normal"
                   value={categorycreate}
                   onChange={(e) => setcategorycreate(e.target.value)}

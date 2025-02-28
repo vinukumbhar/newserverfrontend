@@ -971,7 +971,7 @@ const PipelineTempUpdate = () => {
                       sx={{ backgroundColor: "#fff" }}
                       placeholder="Select Template"
                       variant="outlined"
-                      size="small"
+                      size="medium"
                     />
                   </>
                 )}
@@ -1018,7 +1018,7 @@ const PipelineTempUpdate = () => {
                 </Typography>
                 <TextField
                   fullWidth
-                  size="small"
+                  size="medium"
                   variant="outlined"
                   placeholder="Search..."
                   value={searchTerm}
@@ -1130,7 +1130,7 @@ const PipelineTempUpdate = () => {
                       sx={{ backgroundColor: "#fff" }}
                       placeholder="Select Template"
                       variant="outlined"
-                      size="small"
+                      size="medium"
                     />
                   </>
                 )}
@@ -1178,7 +1178,7 @@ const PipelineTempUpdate = () => {
                 </Typography>
                 <TextField
                   fullWidth
-                  size="small"
+                  size="medium"
                   variant="outlined"
                   placeholder="Search..."
                   value={searchTerm}
@@ -1291,7 +1291,7 @@ const PipelineTempUpdate = () => {
                         sx={{ backgroundColor: "#fff" }}
                         placeholder="Select Template"
                         variant="outlined"
-                        size="small"
+                        size="medium"
                       />
                     </>
                   )}
@@ -1343,7 +1343,7 @@ const PipelineTempUpdate = () => {
                 </Typography>
                 <TextField
                   fullWidth
-                  size="small"
+                  size="medium"
                   variant="outlined"
                   placeholder="Search..."
                   value={searchTerm}
@@ -1457,7 +1457,7 @@ const PipelineTempUpdate = () => {
                         sx={{ backgroundColor: "#fff" }}
                         placeholder="Select Template"
                         variant="outlined"
-                        size="small"
+                        size="medium"
                       />
                     </>
                   )}
@@ -1509,7 +1509,7 @@ const PipelineTempUpdate = () => {
                 </Typography>
                 <TextField
                   fullWidth
-                  size="small"
+                  size="medium"
                   variant="outlined"
                   placeholder="Search..."
                   value={searchTerm}
@@ -1603,7 +1603,7 @@ const PipelineTempUpdate = () => {
                       <label className="task-input-label">Add Tags</label>
                       <Autocomplete
                         multiple
-                        size="small"
+                        size="medium"
                         id="tags-add-outlined"
                         options={filteredAddTagsOptions}
                         getOptionLabel={(option) => option.label}
@@ -1649,7 +1649,7 @@ const PipelineTempUpdate = () => {
                       <label className="task-input-label">Remove Tags</label>
                       <Autocomplete
                         multiple
-                        size="small"
+                        size="medium"
                         id="tags-remove-outlined"
                         options={filteredRemoveTagsOptions}
                         getOptionLabel={(option) => option.label}
@@ -1736,7 +1736,7 @@ const PipelineTempUpdate = () => {
                   </Typography>
                   <TextField
                     fullWidth
-                    size="small"
+                    size="medium"
                     variant="outlined"
                     placeholder="Search..."
                     value={searchTerm}
@@ -1852,7 +1852,7 @@ const PipelineTempUpdate = () => {
                         sx={{ backgroundColor: "#fff" }}
                         placeholder="Select Template"
                         variant="outlined"
-                        size="small"
+                        size="medium"
                       />
                     </>
                   )}
@@ -1904,7 +1904,7 @@ const PipelineTempUpdate = () => {
                 </Typography>
                 <TextField
                   fullWidth
-                  size="small"
+                  size="medium"
                   variant="outlined"
                   placeholder="Search..."
                   value={searchTerm}
@@ -2070,7 +2070,7 @@ const PipelineTempUpdate = () => {
                     </InputLabel>
 
                     <TextField
-                      size="small"
+                      size="medium"
                       margin="normal"
                       placeholder="Pipeline Name"
                       fullWidth
@@ -2086,7 +2086,7 @@ const PipelineTempUpdate = () => {
                       multiple
                       sx={{ marginTop: "8px" }}
                       options={options}
-                      size="small"
+                      size="medium"
                       getOptionLabel={(option) => option.label}
                       value={selectedUser}
                       onChange={handleUserChange}
@@ -2137,7 +2137,7 @@ const PipelineTempUpdate = () => {
                         <TextField
                           {...params}
                           placeholder="Sort By Job"
-                          size="small"
+                          size="medium"
                           sx={{ width: "100%", marginTop: "8px" }}
                           variant="outlined"
                           InputLabelProps={{ shrink: true }}
@@ -2175,7 +2175,7 @@ const PipelineTempUpdate = () => {
                         <TextField
                           {...params}
                           placeholder="Default job template"
-                          size="small"
+                          size="medium"
                           sx={{ width: "100%", marginTop: "8px" }}
                           variant="outlined"
                           InputLabelProps={{ shrink: true }}
@@ -2402,7 +2402,7 @@ const PipelineTempUpdate = () => {
                                 variant="outlined"
                                 placeholder="Stage Name"
                                 sx={{ flexGrow: 1 }}
-                                size="small"
+                                size="medium"
                                 margin="normal"
                                 value={stage.name}
                                 onChange={(e) =>
@@ -2671,7 +2671,7 @@ const PipelineTempUpdate = () => {
                                                       </label>
                                                       <Autocomplete
                                                         multiple
-                                                        size="small"
+                                                        size="medium"
                                                         id={`tags-add-outlined-${index}`}
                                                         options={
                                                           filteredAddTagsOptions
@@ -2742,7 +2742,7 @@ const PipelineTempUpdate = () => {
                                                       </label>
                                                       <Autocomplete
                                                         multiple
-                                                        size="small"
+                                                        size="medium"
                                                         id={`tags-remove-outlined-${index}`}
                                                         options={
                                                           filteredRemoveTagsOptions
@@ -2907,7 +2907,7 @@ const PipelineTempUpdate = () => {
                                                         </Typography>
                                                         <TextField
                                                           fullWidth
-                                                          size="small"
+                                                          size="medium"
                                                           variant="outlined"
                                                           placeholder="Search..."
                                                           value={searchTerm}
@@ -3094,7 +3094,7 @@ const PipelineTempUpdate = () => {
                                                       <TextField
                                                         {...params}
                                                         variant="outlined"
-                                                        size="small"
+                                                        size="medium"
                                                         placeholder="Select Template"
                                                       />
                                                     )}
@@ -3199,7 +3199,7 @@ const PipelineTempUpdate = () => {
                                                         </Typography>
                                                         <TextField
                                                           fullWidth
-                                                          size="small"
+                                                          size="medium"
                                                           variant="outlined"
                                                           placeholder="Search..."
                                                           value={searchTerm}

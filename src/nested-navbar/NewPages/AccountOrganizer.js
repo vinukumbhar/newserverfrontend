@@ -571,7 +571,7 @@ fetch(`${ORGANIZER_TEMP_API}/organizersendemail`, requestOptions)
   };
 
   return (
-    <Container>
+    <>
       {/* <Divider /> */}
       <Box mt={3} borderBottom={"2px solid #e2e8f0"} p={2}>
         <Typography fontSize={20}>
@@ -583,7 +583,7 @@ fetch(`${ORGANIZER_TEMP_API}/organizersendemail`, requestOptions)
         <Typography>Accounts</Typography>
         <Autocomplete
           multiple
-          size="small"
+          size="medium"
           sx={{ marginTop: "10px" }}
           options={AccountsOptions}
           getOptionLabel={(option) => option.label}
@@ -605,11 +605,12 @@ fetch(`${ORGANIZER_TEMP_API}/organizersendemail`, requestOptions)
 
       <Box mt={3}>
         <FormControl fullWidth sx={{ marginBottom: "10px" }}>
-          <Typography>Organizer Template</Typography>
+          <Typography gutterBottom>Organizer Template</Typography>
           {/* <InputLabel>Organizer Template</InputLabel> */}
           <Select
             value={selectedOrganizerTemplate}
-            size="small"
+            size="medium"
+            sx={{mt:2}}
             // label="Age"
             onChange={handleOrganizerTemplateChange}
             renderValue={(selected) => {
@@ -635,7 +636,7 @@ fetch(`${ORGANIZER_TEMP_API}/organizersendemail`, requestOptions)
           fullWidth
           value={organizerName || ""} // Replace 'someField' with the field you want to display/edit
           placeholder="Organizer Name"
-          size="small"
+          size="medium"
         />
       </Box>
 
@@ -679,14 +680,14 @@ fetch(`${ORGANIZER_TEMP_API}/organizersendemail`, requestOptions)
                 value={daysuntilNextReminder}
                 onChange={(e) => setDaysuntilNextReminder(e.target.value)}
                 placeholder="Days until next reminder"
-                size="small"
+                size="medium"
                 sx={{ mt: 2 }}
               />
             </Box>
 
             <Box>
               <InputLabel sx={{ color: "black" }}>No Of reminders</InputLabel>
-              <TextField fullWidth name="No Of reminders" value={noOfReminder} onChange={(e) => setNoOfReminder(e.target.value)} placeholder="NoOfreminders" size="small" sx={{ mt: 2 }} />
+              <TextField fullWidth name="No Of reminders" value={noOfReminder} onChange={(e) => setNoOfReminder(e.target.value)} placeholder="NoOfreminders" size="medium" sx={{ mt: 2 }} />
             </Box>
           </Box>
         )}
@@ -741,7 +742,7 @@ fetch(`${ORGANIZER_TEMP_API}/organizersendemail`, requestOptions)
                 </Typography>
 
                 <FormControl fullWidth sx={{ marginBottom: "10px", marginTop: "10px" }}>
-                  <Select value={activeStep} onChange={handleDropdownChange} size="small">
+                  <Select value={activeStep} onChange={handleDropdownChange} size="medium">
                     {visibleSections.map((section, index) => (
                       <MenuItem key={index} value={index}>
                         {section.text} ({answeredCount}/{totalElements})
@@ -770,7 +771,7 @@ fetch(`${ORGANIZER_TEMP_API}/organizersendemail`, requestOptions)
                                       </Typography>
                                       <TextField
                                         variant="outlined"
-                                        size="small"
+                                        size="medium"
                                         multiline
                                         fullWidth
                                         // margin='normal'
@@ -888,7 +889,7 @@ fetch(`${ORGANIZER_TEMP_API}/organizersendemail`, requestOptions)
                                     <Box>
                                       <Typography fontSize="18px">{element.text}</Typography>
                                       <FormControl fullWidth>
-                                        <Select value={selectedDropdownValue} onChange={(event) => handleDropdownValueChange(event, element.text)} size="small">
+                                        <Select value={selectedDropdownValue} onChange={(event) => handleDropdownValueChange(event, element.text)} size="medium">
                                           {element.options.map((option) => (
                                             <MenuItem key={option.text} value={option.text}>
                                               {option.text}
@@ -907,7 +908,7 @@ fetch(`${ORGANIZER_TEMP_API}/organizersendemail`, requestOptions)
                                         sx={{ width: "100%", backgroundColor: "#fff" }}
                                         selected={startDate}
                                         onChange={handleStartDateChange}
-                                        renderInput={(params) => <TextField {...params} size="small" />}
+                                        renderInput={(params) => <TextField {...params} size="medium" />}
                                         onOpen={() =>
                                           setAnsweredElements((prevAnswered) => ({
                                             ...prevAnswered,
@@ -928,7 +929,7 @@ fetch(`${ORGANIZER_TEMP_API}/organizersendemail`, requestOptions)
                                         <Box sx={{ position: "relative", width: "100%" }}>
                                           <TextField
                                             variant="outlined"
-                                            size="small"
+                                            size="medium"
                                             fullWidth
                                             // margin="normal"
                                             disabled
@@ -985,7 +986,7 @@ fetch(`${ORGANIZER_TEMP_API}/organizersendemail`, requestOptions)
           </Box>
         </DialogContent>
       </Dialog>
-    </Container>
+    </>
   );
 };
 

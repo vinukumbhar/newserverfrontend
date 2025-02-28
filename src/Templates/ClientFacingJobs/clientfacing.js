@@ -1,5 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Container, Box, Button, Typography, Drawer, Select, MenuItem, TextField } from "@mui/material";
+import {
+  Container,
+  Box,
+  Button,
+  Typography,
+  Drawer,
+  Select,
+  MenuItem,
+  TextField,
+  FormControl,
+  InputLabel,
+  Chip,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { IoClose } from "react-icons/io5";
@@ -23,7 +35,16 @@ const Clientfacing = () => {
 
   // const colors = ["#fd3241", "#f9b5ac", "#ac6400", "#ff7e39", "#ffea00", "#94ecbe", "#2e8b57", "#76ac1e", "#3cbb50", "#9ed8db", "#0299bb", "#0af4b8", "#466efb", "#0496ff", "#b9c1ff", "#e1b1ff", "#9d33d0", "#d834f5", "#ff54b6", "#1d3354", "#767b91", "#8f8f8f", "#c7c7c7", "#9a657e", "#616468", "#511dff", "#85c7db", "#8cd1ff", "#0aefff", "#d4ff00", "#a1ff0a", "#00f43d", "#ffc100", "#cdc6a5", "#fed6b1", "#e5dfdf", "#ffeaa7"];
 
-  const colors = ["#0d6efd", "#6c757d","#198754","#dc3545","#ffc107","#0dcaf0","#FF5722","#212529"];
+  const colors = [
+    "#0d6efd",
+    "#6c757d",
+    "#198754",
+    "#dc3545",
+    "#ffc107",
+    "#0dcaf0",
+    "#FF5722",
+    "#212529",
+  ];
   const handleDrawerOpen = () => {
     setIsDrawerOpen(true);
   };
@@ -54,7 +75,9 @@ const Clientfacing = () => {
     setLoading(true);
     const loaderDelay = new Promise((resolve) => setTimeout(resolve, 1000));
     try {
-      const response = await fetch(`${CLIENT_FACING_API}/workflow/clientfacingjobstatus/`);
+      const response = await fetch(
+        `${CLIENT_FACING_API}/workflow/clientfacingjobstatus/`
+      );
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -63,8 +86,7 @@ const Clientfacing = () => {
       console.log(data);
     } catch (error) {
       console.error("Error fetching data:", error);
-    }
-    finally {
+    } finally {
       await loaderDelay;
       setLoading(false); // Stop loader
     }
@@ -92,7 +114,10 @@ const Clientfacing = () => {
       redirect: "follow",
     };
 
-    fetch(`${CLIENT_FACING_API}/workflow/clientfacingjobstatus/`, requestOptions)
+    fetch(
+      `${CLIENT_FACING_API}/workflow/clientfacingjobstatus/`,
+      requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
@@ -131,7 +156,10 @@ const Clientfacing = () => {
       redirect: "follow",
     };
     console.log(jobId);
-    fetch(`${CLIENT_FACING_API}/workflow/clientfacingjobstatus/${jobId}`, requestOptions)
+    fetch(
+      `${CLIENT_FACING_API}/workflow/clientfacingjobstatus/${jobId}`,
+      requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
@@ -144,7 +172,9 @@ const Clientfacing = () => {
   };
 
   const deleteJobFacing = async (jobId) => {
-    const isConfirmed = window.confirm("Are you sure you want to delete this client facing job?");
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this client facing job?"
+    );
 
     // Proceed with deletion if confirmed
     if (isConfirmed) {
@@ -164,7 +194,10 @@ const Clientfacing = () => {
         redirect: "follow",
       };
 
-      fetch(`${CLIENT_FACING_API}/workflow/clientfacingjobstatus/${jobId}`, requestOptions)
+      fetch(
+        `${CLIENT_FACING_API}/workflow/clientfacingjobstatus/${jobId}`,
+        requestOptions
+      )
         .then((response) => response.json())
         .then((result) => {
           console.log(result);
@@ -180,14 +213,18 @@ const Clientfacing = () => {
     console.log(jobId);
     handleNewDrawerOpen(jobId);
     try {
-      const response = await fetch(`${CLIENT_FACING_API}/workflow/clientfacingjobstatus/${jobId}`);
+      const response = await fetch(
+        `${CLIENT_FACING_API}/workflow/clientfacingjobstatus/${jobId}`
+      );
       const data = await response.json();
       console.log("Fetched job data:", data);
       setJobId(data.clientfacingjobstatuses._id);
       setSelectedColor(data.clientfacingjobstatuses.clientfacingColour);
       console.log(data.clientfacingjobstatuses.clientfacingColour);
       setClientFacingName(data.clientfacingjobstatuses.clientfacingName);
-      setClientFacingDescription(data.clientfacingjobstatuses.clientfacingdescription);
+      setClientFacingDescription(
+        data.clientfacingjobstatuses.clientfacingdescription
+      );
       console.log(data.clientfacingjobstatuses.clientfacingdescription);
     } catch (error) {
       console.error("Error fetching job details:", error);
@@ -205,41 +242,85 @@ const Clientfacing = () => {
             mb: 2,
           }}
         >
-          <Button variant="contained" onClick={handleDrawerOpen} sx={{
-              backgroundColor: 'var(--color-save-btn)',  // Normal background
-             
-              '&:hover': {
-                backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+          <Button
+            variant="contained"
+            onClick={handleDrawerOpen}
+            sx={{
+              backgroundColor: "var(--color-save-btn)", // Normal background
+
+              "&:hover": {
+                backgroundColor: "var(--color-save-hover-btn)", // Hover background color
               },
-              borderRadius:'15px', mb: 3
-            }}>
+              borderRadius: "15px",
+              mb: 3,
+            }}
+          >
             Create Status
           </Button>
         </Box>
 
         {/* Display Current Status */}
         {loading ? (
-          <Box sx={{display:'flex',alignItems:'center', justifyContent:'center'}}> <CircularProgress style={{fontSize:'300px', color:'blue'}}/></Box>):(
-        <Box>
-          {clientFacingJobs.map((job) => (
-            <Box key={job._id} style={{ padding: "10px", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px", border: "1px solid #e2e8f0", borderRadius: "10px", padding: "15px" }}>
-              <Box style={{ display: "flex", alignItems: "center" }}>
-                <GoDotFill style={{ color: job.clientfacingColour, marginRight: "8px", fontSize: "25px" }} />
-                <div>
-                  <strong>{job.clientfacingName}</strong>
-                  <br />
-                  {job.clientfacingdescription}
-                </div>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {" "}
+            <CircularProgress style={{ fontSize: "300px", color: "blue" }} />
+          </Box>
+        ) : (
+          <Box>
+            {clientFacingJobs.map((job) => (
+              <Box
+                key={job._id}
+                style={{
+                  padding: "10px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: "8px",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "10px",
+                  padding: "15px",
+                }}
+              >
+                <Box style={{ display: "flex", alignItems: "center" }}>
+                  <GoDotFill
+                    style={{
+                      color: job.clientfacingColour,
+                      marginRight: "8px",
+                      fontSize: "25px",
+                    }}
+                  />
+                  <div>
+                    <strong>{job.clientfacingName}</strong>
+                    <br />
+                    {job.clientfacingdescription}
+                  </div>
+                </Box>
+                <Box
+                  style={{ display: "flex", alignItems: "center", gap: "10px" }}
+                >
+                  <BorderColorIcon
+                    onClick={() => handleEdit(job._id)}
+                    style={{
+                      marginRight: "8px",
+                      color: "#1168bf",
+                      cursor: "pointer",
+                    }}
+                  />
+                  <DeleteIcon
+                    onClick={() => deleteJobFacing(job._id)}
+                    sx={{ color: "#f52d2d", cursor: "pointer" }}
+                  />
+                </Box>
               </Box>
-              <Box style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <BorderColorIcon onClick={() => handleEdit(job._id)} style={{ marginRight: "8px", color: "#1168bf", cursor: "pointer" }} />
-                <DeleteIcon onClick={() => deleteJobFacing(job._id)} sx={{ color: "#f52d2d", cursor: "pointer" }} />
-              </Box>
-            </Box>
-          ))}
-        </Box>
-        )
-        }
+            ))}
+          </Box>
+        )}
         <Drawer
           anchor="right"
           open={isDrawerOpen}
@@ -256,103 +337,235 @@ const Clientfacing = () => {
             },
           }}
         >
-          <Box sx={{ borderRadius: isSmallScreen ? "0" : "15px" }} role="presentation">
+          <Box
+            sx={{ borderRadius: isSmallScreen ? "0" : "15px" }}
+            role="presentation"
+          >
             <Box>
-              <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "15px", borderBottom: "1px solid #e2e8f0" }}>
+              <Box
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "15px",
+                  borderBottom: "1px solid #e2e8f0",
+                }}
+              >
                 <Typography variant="h6">
                   <b>Create client-facing job status template</b>
                 </Typography>
-                <IoClose onClick={handleDrawerClose} style={{ cursor: "pointer" }} />
+                <IoClose
+                  onClick={handleDrawerClose}
+                  style={{ cursor: "pointer" }}
+                />
               </Box>
 
-              <Box m={3}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 3, justifyContent: "space-between", width: "100%" }}>
-                  <Box sx={{ flexGrow: 1 }}>
-                    {" "}
-                    {/* Adjust margin to align with the TextField */}
-                    <label className="tag-input-label">Color</label>
-                    <Select
-                      value={selectedColor}
-                      onChange={handleColorChange}
+              <Box m={2}>
+                {/* <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 3,
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                  <Box sx={{ flexGrow: 1 }} >
+                    
+                    <InputLabel sx={{color:'black'}}>Color</InputLabel>
+                    <FormControl fullWidth>
+                      <Select
                       size="medium"
-                      sx={{ width: "100%", marginTop: "10px", backgroundColor: "#fff" }}
-                      MenuProps={{
-                        PaperProps: {
-                          sx: {
-                            maxHeight: 200,
-                            overflowY: "auto",
-                          },
-                        },
-                      }}
-                    >
-                      <MenuItem value="" disabled>
-                        Select a color
-                      </MenuItem>
-                      {colors.map((color, index) => (
-                        <MenuItem key={index} value={color}>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
+                    
+                        sx={{width:'100%',mt:2}}
+                        value={selectedColor}
+                        onChange={handleColorChange}
+                        renderValue={(selected) => (
+                          <Chip
+                            style={{
+                              backgroundColor: selected,
+                              width: "15px",
+                              height: "15px",
                             }}
-                          >
-                            <Box
-                              sx={{
-                                width: "20px",
-                                height: "20px",
-                                borderRadius: "50%",
-                                backgroundColor: color,
-                                marginRight: "10px",
+                          />
+                        )}
+                      >
+                        {colors.map((color) => (
+                          <MenuItem key={color} value={color}>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "8px",
+                               
                               }}
-                            />
-                          </Box>
-                        </MenuItem>
-                      ))}
-                    </Select>
+                            >
+                              <div
+                                style={{
+                                  width: "15px",
+                                  height: "15px",
+                                  backgroundColor: color,
+                                  borderRadius: "50%",
+                                }}
+                              ></div>
+                              
+                            </div>
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
                   </Box>
 
                   <Box sx={{ flexGrow: 1 }}>
-                    <label className="tag-input-label">Name</label>
-                    <TextField placeholder="Status Name" fullWidth margin="normal" size="medium" sx={{ backgroundColor: "#fff" }} value={clientFacingName} onChange={(e) => setClientFacingName(e.target.value)} />
+                  <InputLabel sx={{color:'black'}}>Name</InputLabel>
+                    <TextField
+                      placeholder="Status Name"
+                      fullWidth
+                      margin="normal"
+                      size="medium"
+                      sx={{ backgroundColor: "#fff" }}
+                      value={clientFacingName}
+                      onChange={(e) => setClientFacingName(e.target.value)}
+                    />
+                  </Box>
+                </Box> */}
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 2,
+                    width: "100%",
+                  }}
+                >
+                  {/* Color Selection */}
+                  <Box sx={{ flex: 1 }}>
+                    <InputLabel sx={{ color: "black" }}>Color</InputLabel>
+                    <FormControl fullWidth>
+                      <Select
+                        displayEmpty
+                        size="medium"
+                        sx={{
+                          width: "100%",
+                          backgroundColor: "#fff",
+                          mt: 2,
+                        }}
+                        value={selectedColor}
+                        onChange={handleColorChange}
+                        renderValue={(selected) =>
+                          selected ? (
+                            <Chip
+                              sx={{
+                                backgroundColor: selected,
+                                width: "18px",
+                                height: "18px",
+                                // borderRadius: "50%",
+                              }}
+                            />
+                          ) : (
+                            <span style={{ color: "#9ca3af" }}>Select</span>
+                          )
+                        }
+                        MenuProps={{
+                          PaperProps: {
+                            sx: {
+                              maxHeight: 200,
+                              overflowY: "auto",
+                            },
+                          },
+                        }}
+                      >
+                        {colors.map((color) => (
+                          <MenuItem key={color} value={color}>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  width: "18px",
+                                  height: "18px",
+                                  backgroundColor: color,
+                                  borderRadius: "50%",
+                                }}
+                              />
+                            </Box>
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
+
+                  {/* Name Input */}
+                  <Box sx={{ flex: 2 }}>
+                    <InputLabel sx={{ color: "black" }}>Name</InputLabel>
+                    <TextField
+                      placeholder="Enter a name"
+                      fullWidth
+                      size="medium"
+                      sx={{
+                        backgroundColor: "#fff",
+                        mt: 2,
+                      }}
+                      value={clientFacingName}
+                      onChange={(e) => setClientFacingName(e.target.value)}
+                    />
                   </Box>
                 </Box>
 
                 <Box sx={{ marginTop: 2 }}>
-                  <label>Status description for client</label>
+                  <InputLabel sx={{ color: "black" }}>
+                    Status description for client
+                  </InputLabel>
                   <TextField
                     sx={{ marginTop: 2 }}
                     fullWidth
-                    id="outlined-multiline-static"
+                    size="medium"
                     placeholder="Status description for client"
                     // label="Multiline"
                     multiline
-                    rows={2}
                     value={clientFacingDescription}
                     onChange={(e) => setClientFacingDescription(e.target.value)}
                   />
                 </Box>
 
-                <Box sx={{ pt: 5, display: "flex", alignItems: "center", gap: 5 }}>
-                  <Button onClick={createJobFacing} variant="contained" color="primary" sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                <Box
+                  sx={{ pt: 5, display: "flex", alignItems: "center", gap: 5 }}
+                >
+                  <Button
+                    onClick={createJobFacing}
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      backgroundColor: "var(--color-save-btn)", // Normal background
+
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                       },
-                      borderRadius:'15px', width:'80px'
-                    }} >
+                      borderRadius: "15px",
+                      width: "80px",
+                    }}
+                  >
                     Submit
                   </Button>
-                  <Button variant="outlined" onClick={handleClearTemp} sx={{
-                  borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                 color:'var(--color-save-btn)',
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                    color:'#fff',
-                    border:"none"
-                  },
-                  width:'80px',borderRadius:'15px'
-                }}>
+                  <Button
+                    variant="outlined"
+                    onClick={handleClearTemp}
+                    sx={{
+                      borderColor: "var(--color-border-cancel-btn)", // Normal background
+                      color: "var(--color-save-btn)",
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        color: "#fff",
+                        border: "none",
+                      },
+                      width: "80px",
+                      borderRadius: "15px",
+                    }}
+                  >
                     Clear
                   </Button>
                 </Box>
@@ -378,24 +591,50 @@ const Clientfacing = () => {
             },
           }}
         >
-          <Box sx={{ borderRadius: isSmallScreen ? "0" : "15px" }} role="presentation">
+          <Box
+            sx={{ borderRadius: isSmallScreen ? "0" : "15px" }}
+            role="presentation"
+          >
             <Box>
-              <Box style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "15px", borderBottom: "1px solid #e2e8f0" }}>
+              <Box
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "15px",
+                  borderBottom: "1px solid #e2e8f0",
+                }}
+              >
                 <Typography variant="h6">
                   <b>Update client-facing job status template</b>
                 </Typography>
-                <IoClose onClick={handleNewDrawerClose} style={{ cursor: "pointer" }} />
+                <IoClose
+                  onClick={handleNewDrawerClose}
+                  style={{ cursor: "pointer" }}
+                />
               </Box>
 
               <Box m={3}>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 3, justifyContent: "space-between", width: "100%" }}>
+                {/* <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 3,
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
                   <Box sx={{ flexGrow: 1 }}>
                     <label className="tag-input-label">Color</label>
                     <Select
                       value={selectedColor}
                       onChange={handleColorChange}
                       size="medium"
-                      sx={{ width: "100%", marginTop: "10px", backgroundColor: "#fff" }}
+                      sx={{
+                        width: "100%",
+                        marginTop: "10px",
+                        backgroundColor: "#fff",
+                      }}
                       MenuProps={{
                         PaperProps: {
                           sx: {
@@ -433,36 +672,152 @@ const Clientfacing = () => {
 
                   <Box sx={{ flexGrow: 1 }}>
                     <label className="tag-input-label">Name</label>
-                    <TextField placeholder="Status Name" fullWidth margin="normal" size="medium" sx={{ backgroundColor: "#fff" }} value={clientFacingName} onChange={(e) => setClientFacingName(e.target.value)} />
+                    <TextField
+                      placeholder="Status Name"
+                      fullWidth
+                      margin="normal"
+                      size="medium"
+                      sx={{ backgroundColor: "#fff" }}
+                      value={clientFacingName}
+                      onChange={(e) => setClientFacingName(e.target.value)}
+                    />
+                  </Box>
+                </Box> */}
+ <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 2,
+                    width: "100%",
+                  }}
+                >
+                  {/* Color Selection */}
+                  <Box sx={{ flex: 1 }}>
+                    <InputLabel sx={{ color: "black" }}>Color</InputLabel>
+                    <FormControl fullWidth>
+                      <Select
+                        displayEmpty
+                        size="medium"
+                        sx={{
+                          width: "100%",
+                          backgroundColor: "#fff",
+                          mt: 2,
+                        }}
+                        value={selectedColor}
+                        onChange={handleColorChange}
+                        renderValue={(selected) =>
+                          selected ? (
+                            <Chip
+                              sx={{
+                                backgroundColor: selected,
+                                width: "18px",
+                                height: "18px",
+                                // borderRadius: "50%",
+                              }}
+                            />
+                          ) : (
+                            <span style={{ color: "#9ca3af" }}>Select</span>
+                          )
+                        }
+                        MenuProps={{
+                          PaperProps: {
+                            sx: {
+                              maxHeight: 200,
+                              overflowY: "auto",
+                            },
+                          },
+                        }}
+                      >
+                        {colors.map((color) => (
+                          <MenuItem key={color} value={color}>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  width: "18px",
+                                  height: "18px",
+                                  backgroundColor: color,
+                                  borderRadius: "50%",
+                                }}
+                              />
+                            </Box>
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Box>
+
+                  {/* Name Input */}
+                  <Box sx={{ flex: 2 }}>
+                    <InputLabel sx={{ color: "black" }}>Name</InputLabel>
+                    <TextField
+                      placeholder="Enter a name"
+                      fullWidth
+                      size="medium"
+                      sx={{
+                        backgroundColor: "#fff",
+                        mt: 2,
+                      }}
+                      value={clientFacingName}
+                      onChange={(e) => setClientFacingName(e.target.value)}
+                    />
                   </Box>
                 </Box>
-
                 <Box sx={{ marginTop: 2 }}>
-                  <label>Status description for client</label>
-                  <TextField sx={{ marginTop: 2 }} fullWidth id="outlined-multiline-static" placeholder="Status description for client" multiline rows={2} value={clientFacingDescription} onChange={(e) => setClientFacingDescription(e.target.value)} />
+                <InputLabel sx={{ color: "black" }}>
+                    Status description for client
+                  </InputLabel>
+                  <TextField
+                    sx={{ marginTop: 2 }}
+                    fullWidth
+                   
+                    placeholder="Status description for client"
+                    multiline
+                  size="medium"
+                    value={clientFacingDescription}
+                    onChange={(e) => setClientFacingDescription(e.target.value)}
+                  />
                 </Box>
 
-                <Box sx={{ pt: 5, display: "flex", alignItems: "center", gap: 5 }}>
-                  <Button onClick={handleupdateclientstatus} variant="contained" color="primary" sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                <Box
+                  sx={{ pt: 5, display: "flex", alignItems: "center", gap: 5 }}
+                >
+                  <Button
+                    onClick={handleupdateclientstatus}
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      backgroundColor: "var(--color-save-btn)", // Normal background
+
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                       },
-                      borderRadius:'15px', width:'80px'
-                    }}>
+                      borderRadius: "15px",
+                      width: "80px",
+                    }}
+                  >
                     Submit
                   </Button>
-                  <Button variant="outlined" onClick={handleNewDrawerClose} sx={{
-                  borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                 color:'var(--color-save-btn)',
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                    color:'#fff',
-                    border:"none"
-                  },
-                  width:'80px',borderRadius:'15px'
-                }}>
+                  <Button
+                    variant="outlined"
+                    onClick={handleNewDrawerClose}
+                    sx={{
+                      borderColor: "var(--color-border-cancel-btn)", // Normal background
+                      color: "var(--color-save-btn)",
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        color: "#fff",
+                        border: "none",
+                      },
+                      width: "80px",
+                      borderRadius: "15px",
+                    }}
+                  >
                     Clear
                   </Button>
                 </Box>

@@ -609,7 +609,7 @@ const PipelineTemp = () => {
   //                     sx={{ backgroundColor: "#fff" }}
   //                     placeholder="Select Template"
   //                     variant="outlined"
-  //                     size="small"
+  //                     size="medium"
   //                   />
   //                 </>
   //               )}
@@ -649,7 +649,7 @@ const PipelineTemp = () => {
   //               </Typography>
   //               <TextField
   //                 fullWidth
-  //                 size="small"
+  //                 size="medium"
   //                 variant="outlined"
   //                 placeholder="Search..."
   //                 value={searchTerm}
@@ -743,7 +743,7 @@ const PipelineTemp = () => {
   //                     sx={{ backgroundColor: "#fff" }}
   //                     placeholder="Select Template"
   //                     variant="outlined"
-  //                     size="small"
+  //                     size="medium"
   //                   />
   //                 </>
   //               )}
@@ -784,7 +784,7 @@ const PipelineTemp = () => {
   //               </Typography>
   //               <TextField
   //                 fullWidth
-  //                 size="small"
+  //                 size="medium"
   //                 variant="outlined"
   //                 placeholder="Search..."
   //                 value={searchTerm}
@@ -879,7 +879,7 @@ const PipelineTemp = () => {
   //                       sx={{ backgroundColor: "#fff" }}
   //                       placeholder="Select Template"
   //                       variant="outlined"
-  //                       size="small"
+  //                       size="medium"
   //                     />
   //                   </>
   //                 )}
@@ -923,7 +923,7 @@ const PipelineTemp = () => {
   //               </Typography>
   //               <TextField
   //                 fullWidth
-  //                 size="small"
+  //                 size="medium"
   //                 variant="outlined"
   //                 placeholder="Search..."
   //                 value={searchTerm}
@@ -1018,7 +1018,7 @@ const PipelineTemp = () => {
   //                       sx={{ backgroundColor: "#fff" }}
   //                       placeholder="Select Template"
   //                       variant="outlined"
-  //                       size="small"
+  //                       size="medium"
   //                     />
   //                   </>
   //                 )}
@@ -1062,7 +1062,7 @@ const PipelineTemp = () => {
   //               </Typography>
   //               <TextField
   //                 fullWidth
-  //                 size="small"
+  //                 size="medium"
   //                 variant="outlined"
   //                 placeholder="Search..."
   //                 value={searchTerm}
@@ -1165,7 +1165,7 @@ const PipelineTemp = () => {
                       sx={{ backgroundColor: "#fff" }}
                       placeholder="Select Template"
                       variant="outlined"
-                      size="small"
+                      size="medium"
                     />
                   </>
                 )}
@@ -1216,7 +1216,7 @@ const PipelineTemp = () => {
                 </Typography>
                 <TextField
                   fullWidth
-                  size="small"
+                  size="medium"
                   variant="outlined"
                   placeholder="Search..."
                   value={searchTerm}
@@ -1331,7 +1331,7 @@ const PipelineTemp = () => {
                       sx={{ backgroundColor: "#fff" }}
                       placeholder="Select Template"
                       variant="outlined"
-                      size="small"
+                      size="medium"
                     />
                   </>
                 )}
@@ -1383,7 +1383,7 @@ const PipelineTemp = () => {
                 </Typography>
                 <TextField
                   fullWidth
-                  size="small"
+                  size="medium"
                   variant="outlined"
                   placeholder="Search..."
                   value={searchTerm}
@@ -1499,7 +1499,7 @@ const PipelineTemp = () => {
                         sx={{ backgroundColor: "#fff" }}
                         placeholder="Select Template"
                         variant="outlined"
-                        size="small"
+                        size="medium"
                       />
                     </>
                   )}
@@ -1551,7 +1551,7 @@ const PipelineTemp = () => {
                 </Typography>
                 <TextField
                   fullWidth
-                  size="small"
+                  size="medium"
                   variant="outlined"
                   placeholder="Search..."
                   value={searchTerm}
@@ -1667,7 +1667,7 @@ const PipelineTemp = () => {
                         sx={{ backgroundColor: "#fff" }}
                         placeholder="Select Template"
                         variant="outlined"
-                        size="small"
+                        size="medium"
                       />
                     </>
                   )}
@@ -1719,7 +1719,7 @@ const PipelineTemp = () => {
                 </Typography>
                 <TextField
                   fullWidth
-                  size="small"
+                  size="medium"
                   variant="outlined"
                   placeholder="Search..."
                   value={searchTerm}
@@ -1816,7 +1816,7 @@ const PipelineTemp = () => {
                     <label className="task-input-label">Add Tags</label>
                     <Autocomplete
                       multiple
-                      size="small"
+                      size="medium"
                       id="tags-add-outlined"
                       options={filteredAddTagsOptions}
                       getOptionLabel={(option) => option.label}
@@ -1862,7 +1862,7 @@ const PipelineTemp = () => {
                     <label className="task-input-label">Remove Tags</label>
                     <Autocomplete
                       multiple
-                      size="small"
+                      size="medium"
                       id="tags-remove-outlined"
                       options={filteredRemoveTagsOptions}
                       getOptionLabel={(option) => option.label}
@@ -1950,7 +1950,7 @@ const PipelineTemp = () => {
                 </Typography>
                 <TextField
                   fullWidth
-                  size="small"
+                  size="medium"
                   variant="outlined"
                   placeholder="Search..."
                   value={searchTerm}
@@ -2065,7 +2065,7 @@ const PipelineTemp = () => {
                         sx={{ backgroundColor: "#fff" }}
                         placeholder="Select Template"
                         variant="outlined"
-                        size="small"
+                        size="medium"
                       />
                     </>
                   )}
@@ -2117,7 +2117,7 @@ const PipelineTemp = () => {
                 </Typography>
                 <TextField
                   fullWidth
-                  size="small"
+                  size="medium"
                   variant="outlined"
                   placeholder="Search..."
                   value={searchTerm}
@@ -2274,7 +2274,7 @@ const PipelineTemp = () => {
                       sx={{ backgroundColor: "#fff" }}
                       placeholder="Select Template"
                       variant="outlined"
-                      size="small"
+                      size="medium"
                     />
                   </>
                 )}
@@ -2325,7 +2325,7 @@ const PipelineTemp = () => {
                 </Typography>
                 <TextField
                   fullWidth
-                  size="small"
+                  size="medium"
                   variant="outlined"
                   placeholder="Search..."
                   value={searchTerm}
@@ -2443,7 +2443,7 @@ const PipelineTemp = () => {
                         sx={{ backgroundColor: "#fff" }}
                         placeholder="Select Template"
                         variant="outlined"
-                        size="small"
+                        size="medium"
                       />
                     </>
                   )}
@@ -2496,7 +2496,7 @@ const PipelineTemp = () => {
                 </Typography>
                 <TextField
                   fullWidth
-                  size="small"
+                  size="medium"
                   variant="outlined"
                   placeholder="Search..."
                   value={searchTerm}
@@ -3194,7 +3194,7 @@ const PipelineTemp = () => {
           <TextField
         placeholder="Search Pipeline"
         // variant="outlined"
-        size="small"
+        size="medium"
         // fullWidth
         sx={{ marginBottom: 2,width:'300px' }}
         value={searchQuery}
@@ -3343,7 +3343,7 @@ const PipelineTemp = () => {
                         error={!!pipelineNameError}
                         // helperText={pipelineNameError}
                         sx={{ mt: 1.5, backgroundColor: "#fff" }}
-                        size="small"
+                        size="medium"
                         placeholder="Pipeline Name"
                       />
                       {!!pipelineNameError && (
@@ -3377,7 +3377,7 @@ const PipelineTemp = () => {
                         multiple
                         sx={{ marginTop: "8px", backgroundColor: "#fff" }}
                         options={options}
-                        size="small"
+                        size="medium"
                         getOptionLabel={(option) => option.label}
                         value={selectedUser}
                         onChange={handleUserChange}
@@ -3454,7 +3454,7 @@ const PipelineTemp = () => {
                             <TextField
                               {...params}
                               placeholder="Sort By Job"
-                              size="small"
+                              size="medium"
                               error={!!sortByJobError}
                               // helperText={sortByJobError}
                               sx={{
@@ -3529,7 +3529,7 @@ const PipelineTemp = () => {
                               sx={{ backgroundColor: "#fff" }}
                               placeholder="Default job template"
                               variant="outlined"
-                              size="small"
+                              size="medium"
                             />
                             {!!templateError && (
                               <Alert
@@ -3775,7 +3775,7 @@ const PipelineTemp = () => {
                                 variant="outlined"
                                 placeholder="Stage Name"
                                 sx={{ flexGrow: 1 }}
-                                size="small"
+                                size="medium"
                                 margin="normal"
                                 value={stage.name}
                                 onChange={(e) =>
@@ -4042,7 +4042,7 @@ const PipelineTemp = () => {
                                                       </label>
                                                       <Autocomplete
                                                         multiple
-                                                        size="small"
+                                                        size="medium"
                                                         id={`tags-add-outlined-${index}`}
                                                         options={
                                                           filteredAddTagsOptions
@@ -4113,7 +4113,7 @@ const PipelineTemp = () => {
                                                       </label>
                                                       <Autocomplete
                                                         multiple
-                                                        size="small"
+                                                        size="medium"
                                                         id={`tags-remove-outlined-${index}`}
                                                         options={
                                                           filteredRemoveTagsOptions
@@ -4278,7 +4278,7 @@ const PipelineTemp = () => {
                                                         </Typography>
                                                         <TextField
                                                           fullWidth
-                                                          size="small"
+                                                          size="medium"
                                                           variant="outlined"
                                                           placeholder="Search..."
                                                           value={searchTerm}
@@ -4436,7 +4436,7 @@ const PipelineTemp = () => {
                                                       <TextField
                                                         {...params}
                                                         variant="outlined"
-                                                        size="small"
+                                                        size="medium"
                                                         placeholder="Select Template"
                                                       />
                                                     )}
@@ -4541,7 +4541,7 @@ const PipelineTemp = () => {
                                                         </Typography>
                                                         <TextField
                                                           fullWidth
-                                                          size="small"
+                                                          size="medium"
                                                           variant="outlined"
                                                           placeholder="Search..."
                                                           value={searchTerm}
@@ -4938,7 +4938,7 @@ const PipelineTemp = () => {
                                 variant="outlined"
                                 placeholder="Stage Name"
                                 sx={{ flexGrow: 1 }}
-                                size="small"
+                                size="medium"
                                 margin="normal"
                                 value={stage.name}
                                 onChange={(e) =>
@@ -5205,7 +5205,7 @@ const PipelineTemp = () => {
                                                       </label>
                                                       <Autocomplete
                                                         multiple
-                                                        size="small"
+                                                        size="medium"
                                                         id={`tags-add-outlined-${index}`}
                                                         options={
                                                           filteredAddTagsOptions
@@ -5276,7 +5276,7 @@ const PipelineTemp = () => {
                                                       </label>
                                                       <Autocomplete
                                                         multiple
-                                                        size="small"
+                                                        size="medium"
                                                         id={`tags-remove-outlined-${index}`}
                                                         options={
                                                           filteredRemoveTagsOptions
@@ -5441,7 +5441,7 @@ const PipelineTemp = () => {
                                                         </Typography>
                                                         <TextField
                                                           fullWidth
-                                                          size="small"
+                                                          size="medium"
                                                           variant="outlined"
                                                           placeholder="Search..."
                                                           value={searchTerm}
@@ -5635,7 +5635,7 @@ const PipelineTemp = () => {
                                                       <TextField
                                                         {...params}
                                                         variant="outlined"
-                                                        size="small"
+                                                        size="medium"
                                                         placeholder="Select Template"
                                                       />
                                                     )}
@@ -5740,7 +5740,7 @@ const PipelineTemp = () => {
                                                         </Typography>
                                                         <TextField
                                                           fullWidth
-                                                          size="small"
+                                                          size="medium"
                                                           variant="outlined"
                                                           placeholder="Search..."
                                                           value={searchTerm}

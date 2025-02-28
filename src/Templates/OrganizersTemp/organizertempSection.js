@@ -560,7 +560,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="Option"
                 value={option.text}
-                size="small"
+                size="medium"
                 margin="normal"
                 fullWidth
                 className="organizer-input-label"
@@ -607,7 +607,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="Free Entry"
                 value={element.text}
-                size="small"
+                size="medium"
                 margin="normal"
                 fullWidth
                 sx={{ backgroundColor: "#fff" }}
@@ -641,7 +641,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="Email"
                 value={element.text}
-                size="small"
+                size="medium"
                 margin="normal"
                 fullWidth
                 onChange={(e) =>
@@ -675,7 +675,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="Number"
                 value={element.text}
-                size="small"
+                size="medium"
                 margin="normal"
                 fullWidth
                 onChange={(e) =>
@@ -709,7 +709,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="Date"
                 value={element.text}
-                size="small"
+                size="medium"
                 margin="normal"
                 fullWidth
                 onChange={(e) =>
@@ -737,7 +737,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="Radio Buttons"
                 value={element.text}
-                size="small"
+                size="medium"
                 margin="normal"
                 fullWidth
                 onChange={(e) =>
@@ -766,7 +766,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="Checkboxes"
                 value={element.text}
-                size="small"
+                size="medium"
                 margin="normal"
                 fullWidth
                 onChange={(e) =>
@@ -794,7 +794,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="Dropdown"
                 value={element.text}
-                size="small"
+                size="medium"
                 margin="normal"
                 fullWidth
                 onChange={(e) =>
@@ -823,7 +823,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="Yes/No"
                 value={element.text}
-                size="small"
+                size="medium"
                 margin="normal"
                 fullWidth
                 onChange={(e) =>
@@ -852,7 +852,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="File Upload"
                 value={element.text}
-                size="small"
+                size="medium"
                 margin="normal"
                 fullWidth
                 onChange={(e) =>
@@ -994,7 +994,7 @@ const Section = ({
           variant="outlined"
           fullWidth
           value={text}
-          size="small"
+          size="medium"
           margin="normal"
           onChange={handleTextChange}
           placeholder="Section text"
@@ -1130,7 +1130,7 @@ const Section = ({
                 <TextField
                   variant="outlined"
                   fullWidth
-                  size="small"
+                  size="medium"
                   margin="normal"
                   // defaultValue="Repeat Section"
                   value={repeatButtonName}
@@ -1186,7 +1186,7 @@ const Section = ({
                       <TextField
                         {...params}
                         variant="outlined"
-                        size="small"
+                        size="medium"
                         margin="normal"
                       />
                     )}
@@ -1223,7 +1223,7 @@ const Section = ({
                           <TextField
                             {...params}
                             variant="outlined"
-                            size="small"
+                            size="medium"
                             margin="normal"
                             placeholder="Question"
                           />
@@ -1254,7 +1254,7 @@ const Section = ({
                           <TextField
                             {...params}
                             variant="outlined"
-                            size="small"
+                            size="medium"
                             margin="normal"
                             placeholder="Answer"
                           />
@@ -1429,7 +1429,7 @@ const Section = ({
                         <TextField
                           {...params}
                           variant="outlined"
-                          size="small"
+                          size="medium"
                           margin="normal"
                         />
                       )}
@@ -1466,7 +1466,7 @@ const Section = ({
                             <TextField
                               {...params}
                               variant="outlined"
-                              size="small"
+                              size="medium"
                               margin="normal"
                               placeholder="Question"
                             />
@@ -1495,7 +1495,7 @@ const Section = ({
                             <TextField
                               {...params}
                               variant="outlined"
-                              size="small"
+                              size="medium"
                               margin="normal"
                               placeholder="Answer"
                             />

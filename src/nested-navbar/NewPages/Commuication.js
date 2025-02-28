@@ -1294,7 +1294,7 @@ console.log(raw)
                                       </Typography>
                                       <Button
 
-                                        size="small"
+                                        size="medium"
                                         startIcon={<AddCircleIcon sx={{ fontSize: 12 }} />}
                                         sx={{ ml: 2, whiteSpace: 'nowrap' }}
                                         onClick={() => handleAddTask(groupIndex)}
@@ -1411,7 +1411,7 @@ console.log(raw)
           },
         }}
       >
-        <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }} >
           {/* Drawer Header */}
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: 2 }}>
             <Typography variant="h6">New chat</Typography>
@@ -1421,13 +1421,13 @@ console.log(raw)
           </Box>
           <Divider />
 
-
-          <Box mt={2} m={1}>
+<Box p={2} >
+          <Box  >
             <InputLabel sx={{ color: 'black' }}>To</InputLabel>
             <Autocomplete
               multiple
-              size="small"
-              sx={{ marginTop: "10px" }}
+              size="medium"
+              // sx={{ marginTop: "10px" }}
               options={AccountsOptions}
               getOptionLabel={(option) => option.label}
               value={selectedAccount}
@@ -1470,7 +1470,7 @@ console.log(raw)
                   sx={{ backgroundColor: '#fff' }}
                   placeholder="Job Template"
                   variant="outlined"
-                  size="small"
+                  size="medium"
                 />
               )}
               sx={{ width: '100%', marginTop: '8px' }}
@@ -1486,7 +1486,7 @@ console.log(raw)
               name="subject"
               value={inputText + selectedShortcut} onChange={handlechatsubject}
               placeholder="Subject"
-              size="small"
+              size="medium"
               error={!!inputTextError}
             />
           </Box>
@@ -1578,7 +1578,7 @@ borderRadius:'15px',mt:2
                       value={daysuntilNextReminder}
                       onChange={(e) => setDaysuntilNextReminder(e.target.value)}
                       placeholder="Days until next reminder"
-                      size="small"
+                      size="medium"
                       sx={{ mt: 2 }}
                     />
                   </Box>
@@ -1593,7 +1593,7 @@ borderRadius:'15px',mt:2
                       onChange={(e) => setNoOfReminder(e.target.value)}
 
                       placeholder="NoOfreminders"
-                      size="small"
+                      size="medium"
                       sx={{ mt: 2 }}
                     />
                   </Box>
@@ -1653,7 +1653,7 @@ borderRadius:'15px',mt:2
 
 
           {/* Drawer Actions */}
-          <Box sx={{ p: 4, display: "flex", alignItems: "center", gap: 2, m: 2, }}>
+          <Box sx={{  display: "flex", alignItems: "center", gap: 2, mt: 5, }}>
             <Button
 
 
@@ -1683,6 +1683,7 @@ borderRadius:'15px',mt:2
                 }}>
               Cancel
             </Button>
+          </Box>
           </Box>
         </Box>
       </Drawer>

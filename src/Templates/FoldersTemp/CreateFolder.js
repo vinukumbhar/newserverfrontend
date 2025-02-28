@@ -271,7 +271,7 @@ import {
   IconButton,
   Typography,
   TextField,
-  Button,
+  Button,Box
 } from "@mui/material";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -476,25 +476,42 @@ export default function CreateFolder({
       anchor="right"
       open={isFolderFormOpen}
       onClose={handleFormClose}
-      PaperProps={{ sx: { width: 800 } }} // Set width of the Drawer
+      PaperProps={{ sx: { width: 600 } }} // Set width of the Drawer
     >
-      <div style={{ padding: 16 }}>
+      <Box >
 
         
-        <div>
+        {/* <div>
           <h1 style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            Create Folder
+            <Typography variant="h6">New Account</Typography>
             <IconButton aria-label="close" onClick={handleFormClose}>
               <FaTimes style={{ color: "#1976d3" }} />
             </IconButton>
           </h1>
-        </div>
+        </div> */}
+        <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          p: 2,
+          // padding:'5px 0 5px 0',
+          borderBottom: "1px solid grey",
+        }}
+      >
+        <Typography variant="h6">Create Folder</Typography>
+        <FaTimes
+          style={{ cursor: "pointer" }}
+          onClick={handleFormClose}
+        />
+      </Box>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "16px" }}>
+        <Box style={{ display: "flex", alignItems: "center", gap: "10px", margin:'20px' }}>
         <TextField
           fullWidth
-          size="big"
+          size="medium"
           variant="outlined"
+          placeholder="Folder Name"
           value={newFolderName}
           onChange={(e) => setNewFolderName(e.target.value)}
         />
@@ -514,13 +531,13 @@ export default function CreateFolder({
           Create and Save
         </Button>
         
-      </div>
+      </Box>
  
 
         {renderContents(structFolder.folders, (newFolders) =>
           setStructFolder({ ...structFolder, folders: newFolders })
         )}
-      </div>
+      </Box>
 
 
       

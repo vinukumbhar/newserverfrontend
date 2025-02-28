@@ -22,58 +22,68 @@
 
 // export default TemplateName
 
-import React from 'react';
-import { TextField, Button, Box } from '@mui/material';
+import React from "react";
+import { TextField, Button, Box, Typography, InputLabel } from "@mui/material";
 
-function TemplateName({ handleSaveTemplate, handleCancel, tempName, setTempName }) {
-    return (
-        <Box display="flex" flexDirection="column" gap={2}>
-            <TextField
-               
-                variant="outlined"
-                placeholder="Template Name"
-                value={tempName}
-                onChange={(e) => setTempName(e.target.value)}
-                fullWidth
-                size="small"
-                margin="normal"
-            />
-            <Box display="flex" gap={2}>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleSaveTemplate}
-                    sx={{
-                        backgroundColor: 'var(--color-save-btn)',  // Normal background
-                       
-                        '&:hover': {
-                          backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                        },
-                        borderRadius:'15px', width:'80px'
-                      }}
-                >
-                    Save
-                </Button>
-                <Button
-                    variant="outlined"
-                   
-                    onClick={handleCancel}
-                    sx={{
-                        borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                       color:'var(--color-save-btn)',
-                        '&:hover': {
-                          backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                          color:'#fff',
-                          border:"none"
-                        },
-                        width:'80px',borderRadius:'15px'
-                      }}
-                >
-                    Cancel
-                </Button>
-            </Box>
+function TemplateName({
+  handleSaveTemplate,
+  handleCancel,
+  tempName,
+  setTempName,
+}) {
+  return (
+    <>
+      <Typography variant="h5">Create folder template</Typography>
+      <Box display="flex" flexDirection="column" gap={2} mt={3}>
+        <Box>
+          <InputLabel sx={{ color: "black" }}>Template Name</InputLabel>
+          <TextField
+            placeholder="Template Name"
+            value={tempName}
+            onChange={(e) => setTempName(e.target.value)}
+            fullWidth
+            size="medium"
+            margin="normal"
+          />
         </Box>
-    );
+        <Box display="flex" gap={2}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSaveTemplate}
+            sx={{
+              backgroundColor: "var(--color-save-btn)", // Normal background
+
+              "&:hover": {
+                backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+              },
+              borderRadius: "15px",
+              width: "80px",
+            }}
+          >
+            Save
+          </Button>
+          <Button
+            variant="outlined"
+            onClick={handleCancel}
+            sx={{
+              borderColor: "var(--color-border-cancel-btn)", // Normal background
+              color: "var(--color-save-btn)",
+              "&:hover": {
+                backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                color: "#fff",
+                border: "none",
+              },
+              width: "80px",
+              borderRadius: "15px",
+            }}
+          >
+            Cancel
+          </Button>
+        </Box>
+      </Box>
+    </>
+  );
 }
 
 export default TemplateName;

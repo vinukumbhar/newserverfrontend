@@ -1229,7 +1229,7 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
                                             {...params}
                                             placeholder="Select Account"
                                             variant="outlined"
-                                            size="small"
+                                            size="medium"
                                             sx={{ backgroundColor: '#fff' }}
                                         />
                                     )}
@@ -1251,7 +1251,7 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
                       {option.label} {/* Ensure this property exists in each option */}
                     </Box>
                   )}
-                  renderInput={(params) => <TextField {...params} placeholder="Select Account" variant="outlined" size="small" sx={{ backgroundColor: "#fff" }} />}
+                  renderInput={(params) => <TextField {...params} placeholder="Select Account" variant="outlined" size="medium" sx={{ backgroundColor: "#fff" }} />}
                   sx={{ width: "100%", marginTop: "8px" }}
                 />
               </Box>
@@ -1259,7 +1259,7 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
             <Grid xs={6}>
               <Box>
                 <InputLabel sx={{ color: "black" }}>Invoice Template</InputLabel>
-                <Autocomplete options={invoiceoptions} sx={{ mt: 1, mb: 2, backgroundColor: "#fff" }} size="small" value={selectInvoiceTemp} onChange={handleInvoiceTempChange} isOptionEqualToValue={(option, value) => option.value === value.value} getOptionLabel={(option) => option.label || ""} renderInput={(params) => <TextField {...params} placeholder="Invoice Template" />} isClearable={true} />
+                <Autocomplete options={invoiceoptions} sx={{ mt: 1, mb: 2, backgroundColor: "#fff" }} size="medium" value={selectInvoiceTemp} onChange={handleInvoiceTempChange} isOptionEqualToValue={(option, value) => option.value === value.value} getOptionLabel={(option) => option.label || ""} renderInput={(params) => <TextField {...params} placeholder="Invoice Template" />} isClearable={true} />
               </Box>
             </Grid>
           </Grid>
@@ -1267,13 +1267,13 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
             <Grid xs={6}>
               <Box>
                 <InputLabel sx={{ color: "black" }}>Invoice Number</InputLabel>
-                <TextField fullWidth value={invoicenumber} onChange={(e) => setinvoicenumber(e.target.value)} placeholder="Invoice Number" size="small" sx={{ mt: 1 }} />
+                <TextField fullWidth value={invoicenumber} onChange={(e) => setinvoicenumber(e.target.value)} placeholder="Invoice Number" size="medium" sx={{ mt: 1 }} />
               </Box>
             </Grid>
             <Grid xs={6}>
               <Box>
                 <InputLabel sx={{ color: "black" }}>Choose payment method</InputLabel>
-                <Autocomplete size="small" fullWidth sx={{ mt: 1 }} options={paymentsOptions} getOptionLabel={(option) => option?.label || ""} onChange={handlePaymentOptionChange} value={paymentMode} renderInput={(params) => <TextField {...params} placeholder="Select Payment Mode" variant="outlined" />} isOptionEqualToValue={(option, value) => option.value === value?.value} clearOnEscape />
+                <Autocomplete size="medium" fullWidth sx={{ mt: 1 }} options={paymentsOptions} getOptionLabel={(option) => option?.label || ""} onChange={handlePaymentOptionChange} value={paymentMode} renderInput={(params) => <TextField {...params} placeholder="Select Payment Mode" variant="outlined" />} isOptionEqualToValue={(option, value) => option.value === value?.value} clearOnEscape />
               </Box>
             </Grid>
           </Grid>
@@ -1289,7 +1289,7 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
                       onChange={handleStartDateChange} // Handle date change
                       format="DD/MM/YYYY" // Format the date display
                       sx={{ width: "100%", backgroundColor: "#fff" }}
-                      renderInput={(params) => <TextField {...params} size="small" sx={{ width: "100%" }} />}
+                      renderInput={(params) => <TextField {...params} size="medium" sx={{ width: "100%" }} />}
                     />
                   </LocalizationProvider>
                 </FormControl>
@@ -1298,7 +1298,7 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
             <Grid xs={6}>
               <Box>
                 <label className="email-input-label">Team Member</label>
-                <Autocomplete options={options} sx={{ mt: 2, mb: 2, backgroundColor: "#fff" }} size="small" value={selecteduser} onChange={handleuserChange} isOptionEqualToValue={(option, value) => option.value === value.value} getOptionLabel={(option) => option.label || ""} renderInput={(params) => <TextField {...params} placeholder="Team Member" />} isClearable={true} />
+                <Autocomplete options={options} sx={{ mt: 2, mb: 2, backgroundColor: "#fff" }} size="medium" value={selecteduser} onChange={handleuserChange} isOptionEqualToValue={(option, value) => option.value === value.value} getOptionLabel={(option) => option.label || ""} renderInput={(params) => <TextField {...params} placeholder="Team Member" />} isClearable={true} />
               </Box>
             </Grid>
           </Grid>
@@ -1306,7 +1306,7 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
             <InputLabel sx={{ color: "black" }}>Description</InputLabel>
             <TextField
               fullWidth
-              size="small"
+              size="medium"
               margin="normal"
               type="text"
               value={description}
@@ -1657,7 +1657,7 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
                     fullWidth
                     name="ServiceName"
                     placeholder="Service Name"
-                    size="small"
+                    size="medium"
                     margin="normal"
                     value={selectedRowData?.productName || ""} // Use selected row data
                     onChange={(e) => setSelectedRowData({ ...selectedRowData, productName: e.target.value })}
@@ -1669,7 +1669,7 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
                     fullWidth
                     name="Description"
                     placeholder="Description"
-                    size="small"
+                    size="medium"
                     margin="normal"
                     value={selectedRowData?.description || ""} // Use selected row data
                     onChange={(e) => setSelectedRowData({ ...selectedRowData, description: e.target.value })}
@@ -1684,7 +1684,7 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
                         fullWidth
                         name="Rate"
                         placeholder="Rate"
-                        size="small"
+                        size="medium"
                         margin="normal"
                         value={selectedRowData?.rate || ""} // Use selected row data
                         onChange={(e) => setSelectedRowData({ ...selectedRowData, rate: e.target.value })}
@@ -1695,7 +1695,7 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
                     <Box sx={{ mr: "15px" }}>
                       <InputLabel sx={{ color: "black" }}>Rate Type</InputLabel>
                       <Autocomplete
-                        size="small"
+                        size="medium"
                         fullWidth
                         sx={{ mt: 2 }}
                         options={options}
@@ -1728,7 +1728,7 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
                       fullWidth
                       name="Rate"
                       placeholder="Rate"
-                      size="small"
+                      size="medium"
                       sx={{ mt: 1 }}
                     
                       value={selectedRowData?.rate || ""} // Use selected row data
@@ -1739,7 +1739,7 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
                   <Box width="50%">
                     <Typography sx={{ color: "black" }}>Rate Type</Typography>
                     <Autocomplete
-                      size="small"
+                      size="medium"
                       fullWidth
                       sx={{ mt: 1 }}
                       options={options}
@@ -1784,7 +1784,7 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
                   <Box>
                     <InputLabel sx={{ color: "black", mt: 2 }}>Category Name</InputLabel>
                     <Autocomplete
-                      size="small"
+                      size="medium"
                       fullWidth
                       sx={{ mt: 2 }}
                       options={categoryoptions}
@@ -1831,7 +1831,7 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
                     <Box p={3}>
                       <InputLabel sx={{ color: "black", mt: 2 }}>Category Name</InputLabel>
 
-                      <TextField fullWidth name="Rate" placeholder="Category Name" size="small" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
+                      <TextField fullWidth name="Rate" placeholder="Category Name" size="medium" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
                     </Box>
                     <Box sx={{ pt: 2, display: "flex", alignItems: "center", gap: 5, margin: "8px", ml: 3 }}>
                       <Button variant="contained" color="primary" onClick={createCategory} sx={{
@@ -1909,7 +1909,7 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
           <Box p={3}>
             <InputLabel sx={{ color: "black", mt: 2 }}>Category Name</InputLabel>
 
-            <TextField fullWidth name="Rate" placeholder="Category Name" size="small" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
+            <TextField fullWidth name="Rate" placeholder="Category Name" size="medium" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
           </Box>
           <Box sx={{ pt: 2, display: "flex", alignItems: "center", gap: 5, margin: "8px", ml: 3 }}>
             <Button variant="contained" color="primary" onClick={createCategory} sx={{
@@ -1960,23 +1960,23 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
                 <Typography variant="h6" fontWeight="bold">
                   Product or service
                 </Typography>
-                <TextField size="small" margin="normal" value={selectedRowData?.productName || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, productName: e.target.value })} />
+                <TextField size="medium" margin="normal" value={selectedRowData?.productName || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, productName: e.target.value })} />
                 <Box>
                   <Typography>Description</Typography>
-                  <TextField size="small" margin="normal" value={selectedRowData?.description || ""} fullWidth multiline onChange={(e) => setSelectedRowData({ ...selectedRowData, description: e.target.value })} />
+                  <TextField size="medium" margin="normal" value={selectedRowData?.description || ""} fullWidth multiline onChange={(e) => setSelectedRowData({ ...selectedRowData, description: e.target.value })} />
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "center", gap: "10px", mt: 1 }}>
                   <Box>
                     <Typography>Rate</Typography>
-                    <TextField size="small" margin="normal" value={selectedRowData?.rate || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, rate: e.target.value })} />
+                    <TextField size="medium" margin="normal" value={selectedRowData?.rate || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, rate: e.target.value })} />
                   </Box>
                   <Box>
                     <Typography>QTY</Typography>
-                    <TextField size="small" margin="normal" value={selectedRowData?.qty || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, qty: e.target.value })} />
+                    <TextField size="medium" margin="normal" value={selectedRowData?.qty || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, qty: e.target.value })} />
                   </Box>
                   <Box>
                     <Typography>Amount</Typography>
-                    <TextField size="small" margin="normal" fullWidth disabled value={totalamount} />
+                    <TextField size="medium" margin="normal" fullWidth disabled value={totalamount} />
                   </Box>
                 </Box>
                 <Box mt={2}>

@@ -822,7 +822,7 @@ const TeamMember = () => {
                 padding: "20px",
               }}
             >
-              <Typography sx={{ fontWeight: "bold" }} variant="h4">
+              <Typography variant="h6">
                 {" "}
                 Add Team Member
               </Typography>
@@ -833,9 +833,9 @@ const TeamMember = () => {
             </Box>
             <Divider />
           </Box>
-          <form style={{ margin: "15px" }}>
-            <Box>
-              <Box sx={{ width: "100%", mt: 3 }}>
+          <form >
+            <Box sx={{height:'80vh',overflowY:'auto',p:2}} className="bulk-job-form">
+              <Box sx={{ width: "100%",}}>
                 <Grid container spacing={2}>
                   <Grid item xs={12} sm={4}>
                     <Box>
@@ -848,7 +848,7 @@ const TeamMember = () => {
                         id="firstname"
                         name="firstname"
                         placeholder="First name"
-                        size="small"
+                        size="medium"
                         sx={{ mt: 1 }}
                       />
                     </Box>
@@ -867,7 +867,7 @@ const TeamMember = () => {
                         name="middlename"
                         id="middlename"
                         placeholder="Middle Name"
-                        size="small"
+                        size="medium"
                         sx={{ mt: 1 }}
                       />
                     </Box>
@@ -882,7 +882,7 @@ const TeamMember = () => {
                         id="lastname"
                         onChange={handleLastName}
                         placeholder="Last Name"
-                        size="small"
+                        size="medium"
                         sx={{ mt: 1 }}
                       />
                     </Box>
@@ -902,14 +902,14 @@ const TeamMember = () => {
                   id="email"
                   onChange={handleEmail}
                   placeholder="Email"
-                  size="small"
+                  size="medium"
                   sx={{ mt: 2 }}
                 />
               </Box>
 
               <Box>
                 <Select
-                  size="small"
+                  size="medium"
                   sx={{ width: "100%", mt: 2 }}
                   value={selectedOption}
                   // onChange={handleOptionChange}
@@ -1571,8 +1571,10 @@ const TeamMember = () => {
               display: "flex",
               alignItems: "center",
               gap: 5,
-              margin: "8px",
+              // margin: "8px",
+              mt:1,
               ml: 3,
+              
             }}
           >
             <Button

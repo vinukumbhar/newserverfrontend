@@ -395,7 +395,7 @@ const CollapsibleFolder = ({ name, children }) => {
               sx={{ backgroundColor: "#fff" }}
               placeholder="Select Folder "
               variant="outlined"
-              size="small"
+              size="medium"
             />
           )}
           sx={{ width: "30%", marginTop: "8px" }}

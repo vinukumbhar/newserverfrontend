@@ -1279,7 +1279,7 @@ const [username,setUserName]= useState("")
                         <TextField
                           name="firstName"
                           disabled={!isEditable}
-                          size="small"
+                          size="medium"
                           margin="normal"
                           fullWidth
                           sx={{ backgroundColor: "#fff" }}
@@ -1297,7 +1297,7 @@ const [username,setUserName]= useState("")
                           disabled={!isEditable}
                           value={middleName}
                           onChange={(e) => setMiddleName(e.target.value)}
-                          size="small"
+                          size="medium"
                           margin="normal"
                           fullWidth
                           placeholder="Middle Name"
@@ -1313,7 +1313,7 @@ const [username,setUserName]= useState("")
                           name="lastName"
                           value={lastname}
                           onChange={(e) => setLastName(e.target.value)}
-                          size="small"
+                          size="medium"
                           margin="normal"
                           fullWidth
                           sx={{ backgroundColor: "#fff" }}
@@ -1332,7 +1332,7 @@ const [username,setUserName]= useState("")
                         onChange={(e) => setPhoneNumber(e.target.value)}
                         name="Phone Number"
                         sx={{ backgroundColor: "#fff" }}
-                        size="small"
+                        size="medium"
                         margin="normal"
                         fullWidth
                         placeholder="Last name"
@@ -1508,7 +1508,7 @@ const [username,setUserName]= useState("")
                               type={!passShow ? "password" : "text"}
                               placeholder="Enter Your Password"
                               id="password"
-                              size="small"
+                              size="medium"
                               margin="normal"
                               fullWidth
                             />
@@ -1616,7 +1616,7 @@ const [username,setUserName]= useState("")
                   type="email"
                   placeholder="Enter Your Password"
                   id="password"
-                  size="small"
+                  size="medium"
                   margin="normal"
                   fullWidth
                   sx={{ backgroundColor: "#fff" }}
@@ -1638,7 +1638,7 @@ const [username,setUserName]= useState("")
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    size="small"
+                    size="medium"
                     disabled={!isLoginEditable}
                     placeholder="Password"
                     // onChange={handlePasswordChange}
@@ -1663,7 +1663,7 @@ const [username,setUserName]= useState("")
                     type={showConfirmPassword ? "text" : "password"}
                     value={cpassword}
                     onChange={(e) => setCpassword(e.target.value)}
-                    size="small"
+                    size="medium"
                     disabled={!isLoginEditable}
                     placeholder="Confirm Password"
                     // onChange={handleConfirmPasswordChange}
@@ -1691,7 +1691,7 @@ const [username,setUserName]= useState("")
                 <label htmlFor="last-name">Stay signed in for</label>
                 <TextField
                   name="Staysigned"
-                  size="small"
+                  size="medium"
                   margin="normal"
                   fullWidth
                   sx={{ backgroundColor: "#fff" }}
@@ -2420,7 +2420,7 @@ const [username,setUserName]= useState("")
                     name="Email for sync"
                     value={emailId}
                     onChange={(e) => setEmailId(e.target.value)}
-                    size="small"
+                    size="medium"
                     margin="normal"
                     fullWidth
                     placeholder="Email for sync"
@@ -2468,7 +2468,7 @@ const [username,setUserName]= useState("")
                   value={SystemLang}
                   onChange={(e) => setSystemLang(e.target.value)}
                   sx={{ width: "100%", mt: 2, mb: 2 }}
-                  size="small"
+                  size="medium"
                 >
                   {options.map((option) => (
                     <MenuItem key={option.value} value={option.value}>

@@ -7,7 +7,7 @@ const UploadDocument = ({
   isDocumentForm,
   setIsDocumentForm,
   templateId,
-  handleUploadFormClose,
+  // handleUploadFormClose,
   file,
   setFile,
 }) => {
@@ -19,7 +19,9 @@ const UploadDocument = ({
   const [newFolderPath, setNewFolderPath] = useState("");
   const [destinationPath, setDestinationPath] = useState("");
 
-
+const handleUploadFormClose=()=>{
+  setIsDocumentForm(false);
+}
 
     const fetchFolders = async () => {
       try {
@@ -75,8 +77,8 @@ const UploadDocument = ({
         const selectFolder = () => setSelectedFolderId(item.id);
 
         return (
-          <div key={index} style={{ marginLeft: "20px" }}>
-            <div
+          <Box key={index} style={{ marginLeft: "20px" }}>
+            <Box
               style={{
                 cursor: "pointer",
                 display: "flex",
@@ -89,28 +91,28 @@ const UploadDocument = ({
                 handleSelectFolderPath();
               }}
             >
-              <div onClick={toggleFolder}>
+              <Box onClick={toggleFolder}>
                 {item.isOpen ? "📂" : "📁"}{" "}
                 <strong style={{ marginLeft: "5px" }}>{item.folder}</strong>
-              </div>
-            </div>
+              </Box>
+            </Box>
             {item.isOpen && item.contents && item.contents.length > 0 && (
-              <div>
+              <Box>
                 {renderContents(item.contents, (newContents) => {
                   const updatedFolders = contents.map((folder, i) =>
                     i === index ? { ...folder, contents: newContents } : folder
                   );
                   setContents(updatedFolders);
                 })}
-              </div>
+              </Box>
             )}
-          </div>
+          </Box>
         );
       } else if (item.file) {
         return (
-          <div key={index} style={{ marginLeft: "40px" }}>
+          <Box key={index} style={{ marginLeft: "40px" }}>
             📄 {item.file}
-          </div>
+          </Box>
         );
       }
       return null;
@@ -187,11 +189,11 @@ const handleSelectFolderPath = () => {
   }, [newFolderPath]);
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <Box>Error: {error}</Box>;
   }
 
   if (!structFolder) {
-    return <div>Loading...</div>;
+    return <Box>Loading...</Box>;
   }
 
   return (
@@ -202,13 +204,13 @@ const handleSelectFolderPath = () => {
       PaperProps={{
         sx: {
           width: 600,
-          p:3
+         
         },
       }}
     >
-      <div>
-        <div>
-          <div
+      <Box>
+        {/* <Box>
+          <Box
             className="folder-header"
             style={{
               display: "flex",
@@ -220,18 +222,34 @@ const handleSelectFolderPath = () => {
             <IconButton onClick={handleUploadFormClose}>
               <FaTimes style={{ color: "#1976d3" }} />
             </IconButton>
-          </div>
-        </div>
-        <Box mt={2}>
+          </Box>
+        </Box> */}
+         <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          p: 2,
+          // padding:'5px 0 5px 0',
+          borderBottom: "1px solid grey",
+        }}
+      >
+        <Typography variant="h6">Select Folder to upload</Typography>
+        <FaTimes
+          style={{ cursor: "pointer" }}
+          onClick={handleUploadFormClose}
+        />
+      </Box>
+        <Box p={2} mt={2}>
         {renderContents(structFolder.folders, (newFolders) =>
           setStructFolder({ ...structFolder, folders: newFolders })
         )}
         </Box>
         
-      </div>
+      </Box>
 
       {/* Buttons */}
-      <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
+      <Box sx={{ display: "flex", gap: 2, mt: 3,ml:4}}>
         <Button
           variant="contained"
           color="primary"

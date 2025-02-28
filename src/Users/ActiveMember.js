@@ -1062,7 +1062,7 @@ const ActiveMember = () => {
                   padding: "20px",
                 }}
               >
-                <Typography sx={{ fontWeight: "bold" }} variant="h4">
+                <Typography  variant="h6">
                   {" "}
                   update Team Member
                 </Typography>
@@ -1073,9 +1073,9 @@ const ActiveMember = () => {
               </Box>
               <Divider />
             </Box>
-            <form style={{ margin: "15px" }}>
-              <Box>
-                <Box sx={{ width: "100%", mt: 3 }}>
+            <form >
+              <Box sx={{height:'80vh',overflowY:'auto',p:2}} className="bulk-job-form">
+                <Box sx={{ width: "100%", }}>
                   <Grid container spacing={2}>
                     <Grid xs={12} sm={4}>
                       <Box>
@@ -1813,12 +1813,13 @@ const ActiveMember = () => {
             </form>
             <Box
               sx={{
-                pt: 48,
+              
                 display: "flex",
                 alignItems: "center",
                 gap: 5,
-                margin: "8px",
+                // margin: "8px",
                 ml: 3,
+                mt:1
               }}
             >
               <Button

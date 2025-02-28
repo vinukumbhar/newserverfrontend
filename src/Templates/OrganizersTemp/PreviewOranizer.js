@@ -258,7 +258,7 @@
 //                                         sx={{ width: '100%', backgroundColor: '#fff' }}
 //                                         selected={startDate}
 //                                         onChange={handleStartDateChange}
-//                                         renderInput={(params) => <TextField {...params} size="small" />}
+//                                         renderInput={(params) => <TextField {...params} size="medium" />}
 //                                         onOpen={() =>
 //                                             setAnsweredElements((prevAnswered) => ({
 //                                                 ...prevAnswered,
@@ -651,7 +651,7 @@ const OrganizerPreview = () => {
                                                         sx={{ width: '100%', backgroundColor: '#fff' }}
                                                         selected={startDate}
                                                         onChange={handleStartDateChange}
-                                                        renderInput={(params) => <TextField {...params} size="small" />}
+                                                        renderInput={(params) => <TextField {...params} size="medium" />}
                                                         onOpen={() => setAnsweredElements((prevAnswered) => ({
                                                             ...prevAnswered,
                                                             [element.text]: true,

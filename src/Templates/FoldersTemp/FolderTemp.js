@@ -153,12 +153,10 @@ const [loading, setLoading] = useState(true); // Loader state
 
   return (
     <>
-      <Box sx={{ borderRadius: "10px", padding: "20px" }}>
-        <Box>
-          <Typography variant="h4" fontWeight="bold">
-            Folder Templates
-          </Typography>
-        </Box>
+      <Box sx={{ borderRadius: "10px", padding: "10px" }}>
+        {/* <Box>
+         <Typography variant='h5' gutterBottom>Folder Templates</Typography>
+        </Box> */}
 
         <Box>
         {loading ? (

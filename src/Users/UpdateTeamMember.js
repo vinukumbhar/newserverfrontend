@@ -782,7 +782,7 @@ const handleCloseLoginDetials=()=>{
                       onChange={(e) => setFirstName(e.target.value)}
                       placeholder="First Name"
                       fullWidth
-                      size="small"
+                      size="medium"
                       disabled={!isEditable}
                     />
                   </Box>
@@ -794,7 +794,7 @@ const handleCloseLoginDetials=()=>{
                       onChange={(e) => setMiddleName(e.target.value)}
                       placeholder="Middle Name"
                       fullWidth
-                      size="small"
+                      size="medium"
                       disabled={!isEditable}
                     />
                   </Box>
@@ -806,7 +806,7 @@ const handleCloseLoginDetials=()=>{
                       onChange={(e) => setLastName(e.target.value)}
                       placeholder="Last Name"
                       fullWidth
-                      size="small"
+                      size="medium"
                       disabled={!isEditable}
                     />
                   </Box>
@@ -819,7 +819,7 @@ const handleCloseLoginDetials=()=>{
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     placeholder="Phone Number"
                     fullWidth
-                    size="small"
+                    size="medium"
                     disabled={!isEditable}
                   />
                 </Box>
@@ -938,7 +938,7 @@ const handleCloseLoginDetials=()=>{
                 disabled
                 fullWidth
                 margin="normal"
-                size="small"
+                size="medium"
                 value={email}
                 onChange={handleEmail}
                 sx={{ backgroundColor: "#fff" }}
@@ -952,7 +952,7 @@ const handleCloseLoginDetials=()=>{
                     <OutlinedInput
                       type={showPassword ? "text" : "password"}
                       value={password}
-                      size="small"
+                      size="medium"
                       placeholder="Password"
                       onChange={handlePasswordChange}
                       sx={{ width: "100%", borderRadius: "10px", mt: 1 }}
@@ -975,7 +975,7 @@ const handleCloseLoginDetials=()=>{
                     <OutlinedInput
                       type={showPassword ? "text" : "password"}
                       value={confirmPassword}
-                      size="small"
+                      size="medium"
                       placeholder="Confirm Password"
                       onChange={handleConfirmPasswordChange}
                       onPaste={handleConfirmPasswordPaste} // Allow pasting
@@ -1055,7 +1055,7 @@ const handleCloseLoginDetials=()=>{
                 PaperProps={{
                   sx: {
                     borderRadius: isSmallScreen ? "0" : "10px 0 0 10px",
-                    width: isSmallScreen ? "100%" : "650px",
+                    width: isSmallScreen ? "100%" : "700px",
                   },
                 }}
               >
@@ -1072,7 +1072,7 @@ const handleCloseLoginDetials=()=>{
                         padding: "20px",
                       }}
                     >
-                      <Typography sx={{ fontWeight: "bold" }} variant="h4">
+                       <Typography variant="h6">
                         {" "}
                         Edit team member
                       </Typography>
@@ -1083,8 +1083,8 @@ const handleCloseLoginDetials=()=>{
                     </Box>
                     <Divider />
                   </Box>
-                  <form style={{ margin: "15px" }}>
-                    <Box>
+                  <form >
+                      <Box sx={{height:'80vh',overflowY:'auto',p:2}} className="bulk-job-form">
                       <Box
                         sx={{ display: "flex", alignItems: "center", gap: 2 }}
                       >
@@ -1097,7 +1097,7 @@ const handleCloseLoginDetials=()=>{
                             value={firstName}
                             fullWidth
                             margin="normal"
-                            size="small"
+                            size="medium"
                             sx={{ backgroundColor: "#fff" }}
                           />
                         </Box>
@@ -1109,7 +1109,7 @@ const handleCloseLoginDetials=()=>{
                             value={middleName}
                             fullWidth
                             margin="normal"
-                            size="small"
+                            size="medium"
                             sx={{ backgroundColor: "#fff" }}
                           />
                         </Box>
@@ -1121,7 +1121,7 @@ const handleCloseLoginDetials=()=>{
                             value={lastName}
                             fullWidth
                             margin="normal"
-                            size="small"
+                            size="medium"
                             sx={{ backgroundColor: "#fff" }}
                           />
                         </Box>
@@ -1137,14 +1137,14 @@ const handleCloseLoginDetials=()=>{
                           value={email}
                           // onChange={handleEmail}
                           placeholder="Email"
-                          size="small"
+                          size="medium"
                           sx={{ mt: 2 }}
                         />
                       </Box>
 
                       <Box>
                         <Select
-                          size="small"
+                          size="medium"
                           sx={{ width: "100%", mt: 2 }}
                           value={selectedOption}
                           // onChange={handleOptionChange}
@@ -1895,7 +1895,8 @@ const handleCloseLoginDetials=()=>{
                       display: "flex",
                       alignItems: "center",
                       gap: 5,
-                      margin: "8px",
+                      // margin: "8px",
+                      mt:1,
                       ml: 3,
                     }}
                   >
@@ -1910,7 +1911,7 @@ const handleCloseLoginDetials=()=>{
                         },
                         borderRadius: "15px",
                         width: "80px",
-                        mt: 2,
+                        // mt: 2,
                       }}
                     >
                       Save
@@ -1925,7 +1926,7 @@ const handleCloseLoginDetials=()=>{
                     },
                     width: "80px",
                     borderRadius: "15px",
-                    mt: 2,
+                    // mt: 2,
                   }}>
                       Cancel
                     </Button>

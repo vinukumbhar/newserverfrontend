@@ -771,7 +771,7 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
                           fullWidth
                           name="TemplateName"
                           placeholder="Template Name"
-                          size="small"
+                          size="medium"
                           sx={{ mt: 2 }}
                         />
                         {(!!templateNameError) && <Alert sx={{
@@ -803,7 +803,7 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
 
                           options={options}
                           sx={{ mt: 2, mb: 2 }}
-                          size='small'
+                          size="medium"
                           value={selecteduser}
                           onChange={handleuserChange}
                           isOptionEqualToValue={(option, value) => option.value === value.value}
@@ -851,7 +851,7 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
                           name="subject"
                           value={inputText + selectedShortcut} onChange={handlechatsubject}
                           placeholder="Subject"
-                          size="small"
+                          size="medium"
                           error={!!inputTextError}
 
                         />
@@ -961,7 +961,7 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
                                   value={daysuntilNextReminder}
                                   onChange={(e) => setDaysuntilNextReminder(e.target.value)}
                                   placeholder="Days until next reminder"
-                                  size="small"
+                                  size="medium"
                                   sx={{ mt: 2 }}
                                 />
                               </Box>
@@ -976,7 +976,7 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
                                   onChange={(e) => setNoOfReminder(e.target.value)}
 
                                   placeholder="NoOfreminders"
-                                  size="small"
+                                  size="medium"
                                   sx={{ mt: 2 }}
                                 />
                               </Box>
@@ -1032,7 +1032,7 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
                                             <TextField
                                               placeholder="Things To do"
                                               value={subtask.text}
-                                              size='small'
+                                              size="medium"
                                               margin='normal'
                                               fullWidth
                                               onChange={(e) => handleInputChange(subtask.id, e.target.value)}

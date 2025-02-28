@@ -1148,8 +1148,8 @@ const MyStepper = () => {
           <Box>
             <Typography sx={{ fontWeight: "bold" }}>General </Typography>
             <Box mt={2}>
-              <label className="custom-input-label">Template name (not visible to clients)</label>
-              <TextField error={!!errors.templatename} placeholder="Template name (not visible to clients)" value={templatename} onChange={(e) => settemplatename(e.target.value)} size="small" margin="normal" fullWidth sx={{ backgroundColor: "#fff" }} />
+            <InputLabel sx={{ color: "black" }}>Template name (not visible to clients)</InputLabel>
+              <TextField error={!!errors.templatename} placeholder="Template name (not visible to clients)" value={templatename} onChange={(e) => settemplatename(e.target.value)} size="medium" margin="normal" fullWidth sx={{ backgroundColor: "#fff" }} />
               {!!errors.templatename && (
                 <Alert
                   sx={{
@@ -1179,15 +1179,15 @@ const MyStepper = () => {
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={6}>
                   <Box ml={2}>
-                    <label className="custom-input-label">Team Member</label>
+                  <InputLabel sx={{ color: "black" }}>Team Member</InputLabel>
 
-                    <Autocomplete multiple sx={{ mt: 2, backgroundColor: "#fff" }} options={options} size="small" getOptionLabel={(option) => option.label} value={selectedUser} onChange={handleUserChange} renderInput={(params) => <TextField {...params} variant="outlined" placeholder="Assignees" />} isOptionEqualToValue={(option, value) => option.value === value.value} />
+                    <Autocomplete multiple sx={{ mt: 2, backgroundColor: "#fff" }} options={options} size="medium" getOptionLabel={(option) => option.label} value={selectedUser} onChange={handleUserChange} renderInput={(params) => <TextField {...params} variant="outlined" placeholder="Assignees" />} isOptionEqualToValue={(option, value) => option.value === value.value} />
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Box ml={3}>
-                    <label className="custom-input-label">Proposal name (visible to clients)</label>
-                    <TextField fullWidth value={proposalName + selectedShortcut} onChange={handleProposalName} placeholder="Proposal name (visible to clients)" size="small" sx={{ mt: 2, backgroundColor: "#fff" }} />
+                  <InputLabel sx={{ color: "black" }}>Proposal name (visible to clients)</InputLabel>
+                    <TextField fullWidth value={proposalName + selectedShortcut} onChange={handleProposalName} placeholder="Proposal name (visible to clients)" size="medium" sx={{ mt: 2, backgroundColor: "#fff" }} />
                     <Box>
                       <Button variant="contained" color="primary" onClick={toggleDropdown} sx={{
                             backgroundColor: 'var(--color-save-btn)',  // Normal background
@@ -1328,7 +1328,7 @@ const MyStepper = () => {
                           value={daysuntilNextReminder}
                           onChange={(e) => setDaysuntilNextReminder(e.target.value)}
                           placeholder="Days until next reminder"
-                          size="small"
+                          size="medium"
                           sx={{ mt: 2 }}
                           label="Days until next reminder"
                         />
@@ -1336,7 +1336,7 @@ const MyStepper = () => {
 
                       <Box>
                         {/* <InputLabel sx={{ color: 'black' }}>No Of reminders</InputLabel> */}
-                        <TextField fullWidth name="No Of reminders" value={noOfReminder} onChange={(e) => setNoOfReminder(e.target.value)} placeholder="NoOfreminders" size="small" sx={{ mt: 2 }} label="No Of reminders" />
+                        <TextField fullWidth name="No Of reminders" value={noOfReminder} onChange={(e) => setNoOfReminder(e.target.value)} placeholder="NoOfreminders" size="medium" sx={{ mt: 2 }} label="No Of reminders" />
                       </Box>
                     </Box>
                   </Box>
@@ -1351,7 +1351,7 @@ const MyStepper = () => {
             <Typography variant="h6">Introduction</Typography>
             <Box mt={1} mb={3}>
               <TextField
-                size="small"
+                size="medium"
                 // variant="standard"
                 fullWidth
                 margin="normal"
@@ -1371,7 +1371,7 @@ const MyStepper = () => {
 
             <Box mt={1} mb={3}>
               <TextField
-                size="small"
+                size="medium"
                 // variant="standard"
                 fullWidth
                 margin="normal"
@@ -1575,7 +1575,7 @@ const MyStepper = () => {
                             fullWidth
                             name="ServiceName"
                             placeholder="Service Name"
-                            size="small"
+                            size="medium"
                             margin="normal"
                             value={selectedRowData?.productName || ""} // Use selected row data
                             onChange={(e) => setSelectedRowData({ ...selectedRowData, productName: e.target.value })}
@@ -1587,58 +1587,13 @@ const MyStepper = () => {
                             fullWidth
                             name="Description"
                             placeholder="Description"
-                            size="small"
+                            size="medium"
                             margin="normal"
                             value={selectedRowData?.description || ""} // Use selected row data
                             onChange={(e) => setSelectedRowData({ ...selectedRowData, description: e.target.value })}
                           />
                         </Box>
-                        {/* <Box sx={{ width: "100%", mt: 2 }}>
-                          <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                              <Box>
-                                <InputLabel sx={{ color: "black" }}>Rate</InputLabel>
-                                <TextField
-                                  fullWidth
-                                  name="Rate"
-                                  placeholder="Rate"
-                                  size="small"
-                                  margin="normal"
-                                  value={selectedRowData?.rate || ""} // Use selected row data
-                                  onChange={(e) => setSelectedRowData({ ...selectedRowData, rate: e.target.value })}
-                                />
-                              </Box>
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                              <Box sx={{ mr: "15px" }}>
-                                <InputLabel sx={{ color: "black" }}>Rate Type</InputLabel>
-                                <Autocomplete
-                                  size="small"
-                                  fullWidth
-                                  sx={{ mt: 2 }}
-                                  options={Rateoptions}
-                                  getOptionLabel={(option) => option?.label || ""}
-                                  value={selectedRateOption}
-                                  onChange={handleRateTypeChange}
-                                  renderInput={(params) => <TextField {...params} variant="outlined" placeholder="Select Rate Type" />}
-                                  isOptionEqualToValue={(option, value) => option.value === value.value}
-                                  renderOption={(props, option) => (
-                                    <Box
-                                      component="li"
-                                      {...props}
-                                      sx={{
-                                        margin: "4px",
-                                        cursor: "pointer",
-                                      }}
-                                    >
-                                      <Typography>{option.label}</Typography>
-                                    </Box>
-                                  )}
-                                />
-                              </Box>
-                            </Grid>
-                          </Grid>
-                        </Box> */}
+                       
                         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                           <Box width="50%">
                             <Typography sx={{ color: "black" }}>Rate</Typography>
@@ -1646,7 +1601,7 @@ const MyStepper = () => {
                               fullWidth
                               name="Rate"
                               placeholder="Rate"
-                              size="small"
+                              size="medium"
                               sx={{ mt: 1 }}
                              
                               value={selectedRowData?.rate || ""} // Use selected row data
@@ -1657,7 +1612,7 @@ const MyStepper = () => {
                           <Box width="50%">
                             <Typography sx={{ color: "black" }}>Rate Type</Typography>
                             <Autocomplete
-                              size="small"
+                              size="medium"
                               fullWidth
                               sx={{ mt: 1 }}
                               options={options}
@@ -1702,7 +1657,7 @@ const MyStepper = () => {
                           <Box>
                             <InputLabel sx={{ color: "black", mt: 2 }}>Category Name</InputLabel>
                             <Autocomplete
-                              size="small"
+                              size="medium"
                               fullWidth
                               sx={{ mt: 2 }}
                               options={categoryoptions}
@@ -1749,7 +1704,7 @@ const MyStepper = () => {
                             <Box p={3}>
                               <InputLabel sx={{ color: "black", mt: 2 }}>Category Name</InputLabel>
 
-                              <TextField fullWidth name="Rate" placeholder="Category Name" size="small" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
+                              <TextField fullWidth name="Rate" placeholder="Category Name" size="medium" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
                             </Box>
                             <Box sx={{ pt: 2, display: "flex", alignItems: "center", gap: 5, margin: "8px", ml: 3 }}>
                               <Button variant="contained" color="primary" onClick={createCategory} sx={{
@@ -1827,7 +1782,7 @@ const MyStepper = () => {
                   <Box p={3}>
                     <InputLabel sx={{ color: "black", mt: 2 }}>Category Name</InputLabel>
 
-                    <TextField fullWidth name="Rate" placeholder="Category Name" size="small" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
+                    <TextField fullWidth name="Rate" placeholder="Category Name" size="medium" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
                   </Box>
                   <Box sx={{ pt: 2, display: "flex", alignItems: "center", gap: 5, margin: "8px", ml: 3 }}>
                     <Button variant="contained" color="primary" onClick={createCategory} sx={{
@@ -1878,23 +1833,23 @@ const MyStepper = () => {
                         <Typography variant="h6" fontWeight="bold">
                           Product or service
                         </Typography>
-                        <TextField size="small" margin="normal" value={selectedRowData?.productName || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, productName: e.target.value })} />
+                        <TextField size="medium" margin="normal" value={selectedRowData?.productName || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, productName: e.target.value })} />
                         <Box>
                           <Typography>Description</Typography>
-                          <TextField size="small" margin="normal" value={selectedRowData?.description || ""} fullWidth multiline onChange={(e) => setSelectedRowData({ ...selectedRowData, description: e.target.value })} />
+                          <TextField size="medium" margin="normal" value={selectedRowData?.description || ""} fullWidth multiline onChange={(e) => setSelectedRowData({ ...selectedRowData, description: e.target.value })} />
                         </Box>
                         <Box sx={{ display: "flex", alignItems: "center", gap: "10px", mt: 1 }}>
                           <Box>
                             <Typography>Rate</Typography>
-                            <TextField size="small" margin="normal" value={selectedRowData?.rate || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, rate: e.target.value })} />
+                            <TextField size="medium" margin="normal" value={selectedRowData?.rate || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, rate: e.target.value })} />
                           </Box>
                           <Box>
                             <Typography>QTY</Typography>
-                            <TextField size="small" margin="normal" value={selectedRowData?.qty || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, qty: e.target.value })} />
+                            <TextField size="medium" margin="normal" value={selectedRowData?.qty || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, qty: e.target.value })} />
                           </Box>
                           <Box>
                             <Typography>Amount</Typography>
-                            <TextField size="small" margin="normal" fullWidth disabled value={totalamount} />
+                            <TextField size="medium" margin="normal" fullWidth disabled value={totalamount} />
                           </Box>
                         </Box>
                         <Box mt={2}>
@@ -1938,13 +1893,13 @@ const MyStepper = () => {
           <Box>
             <Typography variant="h6">Payment Information</Typography>
             <Box mt={1} mb={3}>
-              <TextField size="small" fullWidth margin="normal" placeholder="Payment terms" sx={{ backgroundColor: "#fff" }} onChange={handlePaymentTerms} value={paymentterms} />
+              <TextField size="medium" fullWidth margin="normal" placeholder="Payment terms" sx={{ backgroundColor: "#fff" }} onChange={handlePaymentTerms} value={paymentterms} />
             </Box>
             <Box mt={1} mb={3}>
-              <TextField size="small" fullWidth margin="normal" placeholder="Payment due date" sx={{ backgroundColor: "#fff" }} onChange={handlePaymentDueDate} value={paymentduedate} />
+              <TextField size="medium" fullWidth margin="normal" placeholder="Payment due date" sx={{ backgroundColor: "#fff" }} onChange={handlePaymentDueDate} value={paymentduedate} />
             </Box>
             <Box mt={1} mb={3}>
-              <TextField size="small" fullWidth margin="normal" placeholder="Payment amount" sx={{ backgroundColor: "#fff" }} onChange={handlePaymentAmount} value={paymentamount} />
+              <TextField size="medium" fullWidth margin="normal" placeholder="Payment amount" sx={{ backgroundColor: "#fff" }} onChange={handlePaymentAmount} value={paymentamount} />
             </Box>
             {/* Add more fields for payment details if necessary */}
           </Box>

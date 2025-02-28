@@ -6,7 +6,8 @@ import {  TableContainer,
   TableHead,
   TableRow,
   TableCell,
-  TableBody,TablePagination,Box, Button, Typography, Drawer, Select, MenuItem, IconButton, TextField,Alert } from '@mui/material';
+  TableBody,TablePagination,Box, Button, Typography, Drawer, Select, MenuItem, IconButton, TextField,Alert, 
+  InputLabel} from '@mui/material';
 import { FiSettings } from "react-icons/fi";
 import { CiMenuKebab } from "react-icons/ci";
 import { useTheme } from '@mui/material/styles';
@@ -623,7 +624,7 @@ const Tags = () => {
             </Box>
             <Box sx={{ pr: 2, pl: 2, pt: 2 }}>
               <Box>
-                <label className='tag-input-label'>Name</label>
+                <InputLabel sx={{color:'black'}}>Name</InputLabel>
 
                 <TextField
                   placeholder="Tag Name"
@@ -656,7 +657,7 @@ const Tags = () => {
 
               </Box>
               <Box sx={{ mt: 3 }}>
-                <label className='tag-input-label'>Color</label>
+                <InputLabel sx={{color:'black'}}>Color</InputLabel>
                 <Select
                   value={selectedOption ? selectedOption.tagColour : ''}
                   onChange={handleChange}
@@ -837,7 +838,7 @@ const Tags = () => {
             <Box sx={{ pr: 2, pl: 2, pt: 2 }}>
               <Box>
 
-                <label className='tag-input-label'>Name</label>
+                <InputLabel sx={{color:'black'}}>Name</InputLabel>
 
                 <TextField
 
@@ -846,19 +847,18 @@ const Tags = () => {
                   onChange={(e) => handleInputChange(e.target.value)}
                   fullWidth
                   margin="normal"
-                  size="small"
+                  size="medium"
                   sx={{ width: '100%' }}
                
                 />
               </Box>
               <Box sx={{ mt: 3 }}>
-                <label className='tag-input-label'>Color</label>
+                <InputLabel >Color</InputLabel>
 
                 <Select
                   value={selectedOption ? selectedOption.tagColour : ''}
                   onChange={handleChange}
-                  labelId="color-select-label"
-                  id="color-select"
+                  
                   size="medium"
                   sx={{ width: '100%', marginTop: '10px', backgroundColor: '#fff' }}
                   renderValue={(selected) => (

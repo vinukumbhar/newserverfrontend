@@ -482,7 +482,7 @@ const ChatTempUpdate = () => {
                                                 fullWidth
                                                 name="TemplateName"
                                                 placeholder="Template Name"
-                                                size="small"
+                                                size="medium"
                                                 sx={{ mt: 2 }}
                                             />
                                         </Box>
@@ -497,7 +497,7 @@ const ChatTempUpdate = () => {
 
                                                 options={options}
                                                 sx={{ mt: 2, mb: 2 }}
-                                                size='small'
+                                                size="medium"
                                                 value={selecteduser}
                                                 onChange={handleuserChange}
                                                 isOptionEqualToValue={(option, value) => option.value === value.value}
@@ -525,7 +525,7 @@ const ChatTempUpdate = () => {
                                                 name="subject"
                                                 value={inputText + selectedShortcut} onChange={handlechatsubject}
                                                 placeholder="Subject"
-                                                size="small"
+                                                size="medium"
                                             />
                                         </Box>
                                         <Box>
@@ -619,7 +619,7 @@ const ChatTempUpdate = () => {
                                                                 value={daysuntilNextReminder}
                                                                 onChange={(e) => setDaysuntilNextReminder(e.target.value)}
                                                                 placeholder="Days until next reminder"
-                                                                size="small"
+                                                                size="medium"
                                                                 sx={{ mt: 2 }}
                                                             />
                                                         </Box>
@@ -634,7 +634,7 @@ const ChatTempUpdate = () => {
                                                                 onChange={(e) => setNoOfReminder(e.target.value)}
 
                                                                 placeholder="NoOfreminders"
-                                                                size="small"
+                                                                size="medium"
                                                                 sx={{ mt: 2 }}
                                                             />
                                                         </Box>
@@ -689,7 +689,7 @@ const ChatTempUpdate = () => {
                                                                                     <TextField
                                                                                         placeholder="Things To do"
                                                                                         value={subtask.text}
-                                                                                        size='small'
+                                                                                        size="medium"
                                                                                         margin='normal'
                                                                                         fullWidth
                                                                                         onChange={(e) => handleInputChange(subtask.id, e.target.value)}

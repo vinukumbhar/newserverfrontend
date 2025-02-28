@@ -13,21 +13,38 @@ import { FaRegFolderClosed } from "react-icons/fa6";
 import { HiDocumentArrowUp } from "react-icons/hi2";
 import UploadDocument from "./uploadDocumentWorking";
 import CreateFolder from "./CreateFolder";
-import UploadFolder from "./UploadFolder";
-import { MdOutlineDriveFolderUpload } from "react-icons/md";
+
 
 
 function FolderTempEdit({templateId}) {
- 
-  const [isSendFolderForm, setIsSendFolderForm] = useState(false);
+
+  const [templateName, setTemplateName] = useState("");
+
+  useEffect(() => {
+    if (!templateId) return; // Ensure templateId exists before fetching
+
+    const fetchTemplateName = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1/foldertemp/folder/${templateId}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(data)
+        setTemplateName(data.folderTemplate.templatename);
+      } catch (error) {
+        console.error("Error fetching template name:", error);
+      }
+    };
+
+    fetchTemplateName();
+  }, [templateId]);
   const [structFolder, setStructFolder] = useState(null);
   const [error, setError] = useState(null);
   const [selectedFolderId, setSelectedFolderId] = useState(null);
   const [newFolderName, setNewFolderName] = useState("");
   const [newFolderPath, setNewFolderPath] = useState("");
   const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, folderId: null });
-
-
   //function related to folder 
   const [isFolderFormOpen, setIsFolderFormOpen] = useState(false);
   const handleCreateFolderClick = () => {
@@ -38,7 +55,6 @@ function FolderTempEdit({templateId}) {
   };
   //function related to document 
   const [isDocumentForm, setIsDocumentForm] = useState(false);
-  const [contents, setContents] = useState([]);
   const [file, setFile] = useState(null);
 
   const handleUploadFormClose = () => {
@@ -57,7 +73,7 @@ function FolderTempEdit({templateId}) {
       try {
         const url = `${API_KEY}/allFolders/${templateId}`;
         const response = await axios.get(url);
-  
+ 
         const addIsOpenProperty = (folders, parentId = null) =>
           folders.map((folder, index) => ({
             ...folder,
@@ -75,7 +91,7 @@ function FolderTempEdit({templateId}) {
           ...response.data,
           folders: addIsOpenProperty(response.data.folders || []),
         };
-  
+        console.log("res",processedData)
         setStructFolder(processedData);
       } catch (err) {
         console.error("Error fetching all folders:", err);
@@ -241,8 +257,9 @@ function FolderTempEdit({templateId}) {
 
 
   return (
-    <div>
-      
+    <div >
+     <Typography>Edit folder template</Typography>
+     <Typography>Template Name :{templateName}</Typography> 
       <Box className="uploads-documents-links" sx={{ display: "flex", gap: 2 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <IconButton

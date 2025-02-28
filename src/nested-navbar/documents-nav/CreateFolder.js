@@ -102,7 +102,7 @@ export default function CreateFolder({
           value={newFolderName}
           onChange={(e) => setNewFolderName(e.target.value)}
           // style={{ marginBottom: 16 }}
-          size="small"
+          size="medium"
           margin="normal"
         />
 <Box >
