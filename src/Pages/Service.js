@@ -628,7 +628,7 @@ const paginatedServices = ServiceTemplates.slice(
                                     fullWidth
                                     name="ServiceName"
                                     placeholder="Service Name"
-                                    size="medium"
+                                    size="small"
                                     margin='normal'
                                     onChange={(e) => setservicename(e.target.value)}
                                 />
@@ -640,7 +640,7 @@ const paginatedServices = ServiceTemplates.slice(
                                     fullWidth
                                     name="Description"
                                     placeholder="Description"
-                                    size="medium"
+                                    size="small"
                                     margin='normal'
                                 />
                             </Box>
@@ -653,7 +653,7 @@ const paginatedServices = ServiceTemplates.slice(
                                                 fullWidth
                                                 name="Rate"
                                                 placeholder="Rate"
-                                                size="medium"
+                                                size="small"
                                                 margin='normal'
                                                 value={rate}
                                                 // onChange={(e) => setrate(e.target.value)}
@@ -666,7 +666,7 @@ const paginatedServices = ServiceTemplates.slice(
                                         <Box sx={{ mr: '15px' }}>
                                             <InputLabel sx={{ color: 'black' }}>Rate Type</InputLabel>
                                             <Autocomplete
-                                                size="medium"
+                                                size="small"
                                                 fullWidth
                                                 sx={{ mt: 2 }}
                                                 options={options}
@@ -720,7 +720,7 @@ const paginatedServices = ServiceTemplates.slice(
                                 <Box >
                                     <InputLabel sx={{ color: 'black', mt: 2 }}>Category Name</InputLabel>
                                     <Autocomplete
-                                     size="medium"
+                                     size="small"
                                      fullWidth
                                      sx={{ mt: 2 }}
                                         options={categoryoptions}
@@ -785,7 +785,7 @@ const paginatedServices = ServiceTemplates.slice(
                                             fullWidth
                                             name="Rate"
                                             placeholder="Category Name"
-                                            size="medium"
+                                            size="small"
                                             margin='normal'
                                             value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)}
                                         />

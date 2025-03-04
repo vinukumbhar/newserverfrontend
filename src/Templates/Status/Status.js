@@ -129,6 +129,7 @@ const Status = ({ onStatusChange, selectedStatus }) => {
     <FormControl fullWidth>
       
       <Select
+      size="small"
         value={selectedStatus}
         onChange={handleChange}
         renderValue={(selected) => (

@@ -382,36 +382,36 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
                 display: "flex",
                 alignItems: "center",
               }}>First name</InputLabel>
-          <TextField size="medium" margin="normal" fullWidth name="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First Name" />
+          <TextField size="small" margin="normal" fullWidth name="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First Name" />
         </Box>
         <Box>
           <InputLabel sx={{ color: "black" }}>Middle Name</InputLabel>
-          <TextField margin="normal" fullWidth name="middleName" value={middleName} onChange={(e) => setMiddleName(e.target.value)} placeholder="Middle Name" size="medium" />
+          <TextField margin="normal" fullWidth name="middleName" value={middleName} onChange={(e) => setMiddleName(e.target.value)} placeholder="Middle Name" size="small" />
         </Box>
         <Box>
           <InputLabel sx={{ color: "black" }}>Last Name</InputLabel>
-          <TextField fullWidth name="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} margin="normal" placeholder="Last name" size="medium" />
+          <TextField fullWidth name="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} margin="normal" placeholder="Last name" size="small" />
         </Box>
       </Box>
       <Box mt={1}>
         <InputLabel sx={{ color: "black" }}>Contact Name</InputLabel>
-        <TextField name="contactName" value={contactName} onChange={(e) => setContactName(e.target.value)} fullWidth placeholder="Contact Name" margin="normal" size="medium" />
+        <TextField name="contactName" value={contactName} onChange={(e) => setContactName(e.target.value)} fullWidth placeholder="Contact Name" margin="normal" size="small" />
       </Box>
       <Box mt={1}>
         <InputLabel sx={{ color: "black" }}>Company Name</InputLabel>
-        <TextField fullWidth name="companyName" value={companyName} onChange={(e) => setCompanyName(e.target.value)} margin="normal" placeholder="Company Name" size="medium"/>
+        <TextField fullWidth name="companyName" value={companyName} onChange={(e) => setCompanyName(e.target.value)} margin="normal" placeholder="Company Name" size="small"/>
       </Box>
       <Box mt={1}>
         <InputLabel sx={{ color: "black" }}>Note</InputLabel>
-        <TextField fullWidth name="note" value={note} onChange={(e) => setNote(e.target.value)} margin="normal" placeholder="Note" size="medium" />
+        <TextField fullWidth name="note" value={note} onChange={(e) => setNote(e.target.value)} margin="normal" placeholder="Note" size="small" />
       </Box>
       <Box mt={1}>
         <InputLabel sx={{ color: "black" }}>SSN</InputLabel>
-        <TextField fullWidth name="ssn" value={ssn} onChange={(e) => setSsn(e.target.value)} margin="normal" placeholder="SSN" size="medium" />
+        <TextField fullWidth name="ssn" value={ssn} onChange={(e) => setSsn(e.target.value)} margin="normal" placeholder="SSN" size="small" />
       </Box>
       <Box mt={1}>
         <InputLabel sx={{ color: "black" }}>Email</InputLabel>
-        <TextField fullWidth name="email" value={email} onChange={(e) => setEmail(e.target.value)} margin="normal" placeholder="Email" size="medium" />
+        <TextField fullWidth name="email" value={email} onChange={(e) => setEmail(e.target.value)} margin="normal" placeholder="Email" size="small" />
       </Box>
       <Box mt={1}>
         {/* <InputLabel sx={{ color: "black" }}>Tags</InputLabel>
@@ -435,7 +435,7 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
 <FormControl sx={{ width: "100%" }}>
   <Select
     multiple
-    size="medium"
+    size="small"
     id="tags-outlined"
     value={tagsNew}
     onChange={handleTagChange}
@@ -563,7 +563,7 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
       <Box>
         <InputLabel sx={{ color: "black" }}>Country</InputLabel>
         <Select
-          size="medium"
+          size="small"
           value={selectedCountry.code}
           onChange={handleCountryChange}
           sx={{
@@ -580,20 +580,20 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
       </Box>
       <Box mt={1}>
         <InputLabel sx={{ color: "black" }}>Street Address</InputLabel>
-        <TextField fullWidth name="streetAddress" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} margin="normal" placeholder="Street Address" size="medium" />
+        <TextField fullWidth name="streetAddress" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} margin="normal" placeholder="Street Address" size="small" />
       </Box>
       <Box sx={{mt:1, display: "flex", flexDirection: isSmallScreen ? "column" : "row", gap: isSmallScreen ? 2 : 5, padding: "1px 5px 0 5px" }}>
         <Box>
           <InputLabel sx={{ color: "black" }}>City</InputLabel>
-          <TextField fullWidth name="city" value={city} onChange={(e) => setCity(e.target.value)} margin="normal" placeholder="City" size="medium" />
+          <TextField fullWidth name="city" value={city} onChange={(e) => setCity(e.target.value)} margin="normal" placeholder="City" size="small" />
         </Box>
         <Box>
           <InputLabel sx={{ color: "black" }}>State</InputLabel>
-          <TextField fullWidth name="state" value={state} onChange={(e) => setState(e.target.value)} margin="normal" placeholder="State" size="medium"/>
+          <TextField fullWidth name="state" value={state} onChange={(e) => setState(e.target.value)} margin="normal" placeholder="State" size="small"/>
         </Box>
         <Box>
           <InputLabel sx={{ color: "black" }}>Postal Code</InputLabel>
-          <TextField fullWidth name="postalCode" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} margin="normal" placeholder="Postal Code" size="medium" />
+          <TextField fullWidth name="postalCode" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} margin="normal" placeholder="Postal Code" size="small" />
         </Box>
       </Box>
 

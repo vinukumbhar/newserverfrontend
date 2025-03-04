@@ -602,10 +602,10 @@ const Invoices = ({ charLimit = 4000 }) => {
       let subtotal = 0;
 
       rows.forEach((row) => {
-        if (row.tax) {
-          subtotal += parseFloat(row.amount.replace("$", "")) || 0;
-        }
-        // subtotal += parseFloat(row.amount.replace("$", "")) || 0;
+        // if (row.tax) {
+        //   subtotal += parseFloat(row.amount.replace("$", "")) || 0;
+        // }
+        subtotal += parseFloat(row.amount.replace("$", "")) || 0;
       });
       console.log(subtotal);
       setSubtotal(subtotal);
@@ -1316,7 +1316,7 @@ const Invoices = ({ charLimit = 4000 }) => {
                 color: "primary.main",
               }}
             >
-              <PlagiarismIcon sx={{ marginRight: 0.5 }} fontsize="medium" />
+              <PlagiarismIcon sx={{ marginRight: 0.5 }} fontsize="small" />
               <Typography color="primary">Preview</Typography>
             </Box>
 
@@ -1603,7 +1603,7 @@ const Invoices = ({ charLimit = 4000 }) => {
                         {...params}
                         placeholder="Select Account"
                         variant="outlined"
-                        size="medium"
+                        size="small"
                         sx={{ backgroundColor: "#fff" }}
                       />
                     )}
@@ -1619,7 +1619,7 @@ const Invoices = ({ charLimit = 4000 }) => {
                   <Autocomplete
                     options={invoiceoptions}
                     sx={{ mt: 1, mb: 2, backgroundColor: "#fff" }}
-                    size="medium"
+                    size="small"
                     value={selectInvoiceTemp}
                     onChange={handleInvoiceTempChange}
                     isOptionEqualToValue={(option, value) =>
@@ -1648,7 +1648,7 @@ const Invoices = ({ charLimit = 4000 }) => {
                     fullWidth
                     onChange={(e) => setinvoicenumber(e.target.value)}
                     placeholder="Invoice Number"
-                    size="medium"
+                    size="small"
                     sx={{ mt: 1 }}
                   />
                 </Box>
@@ -1659,7 +1659,7 @@ const Invoices = ({ charLimit = 4000 }) => {
                     Choose payment method
                   </InputLabel>
                   <Autocomplete
-                    size="medium"
+                    size="small"
                     fullWidth
                     sx={{ mt: 1 }}
                     options={paymentsOptions}
@@ -1700,7 +1700,7 @@ const Invoices = ({ charLimit = 4000 }) => {
                         selected={startDate}
                         onChange={handleStartDateChange}
                         renderInput={(params) => (
-                          <TextField {...params} size="medium" />
+                          <TextField {...params} size="small" />
                         )}
                       />
                     </LocalizationProvider>
@@ -1714,7 +1714,7 @@ const Invoices = ({ charLimit = 4000 }) => {
                   <Autocomplete
                     options={useroptions}
                     sx={{ mt: 2, mb: 2, backgroundColor: "#fff" }}
-                    size="medium"
+                    size="small"
                     value={selecteduser}
                     onChange={handleuserChange}
                     isOptionEqualToValue={(option, value) =>
@@ -1733,7 +1733,7 @@ const Invoices = ({ charLimit = 4000 }) => {
               <InputLabel sx={{ color: "black" }}>Description</InputLabel>
               <TextField
                 fullWidth
-                size="medium"
+                size="small"
                 margin="normal"
                 type="text"
                 value={description}
@@ -2212,7 +2212,7 @@ const Invoices = ({ charLimit = 4000 }) => {
                   fullWidth
                   name="ServiceName"
                   placeholder="Service Name"
-                  size="medium"
+                  size="small"
                   margin="normal"
                   value={selectedRowData?.productName || ""} // Use selected row data
                   onChange={(e) =>
@@ -2229,7 +2229,7 @@ const Invoices = ({ charLimit = 4000 }) => {
                   fullWidth
                   name="Description"
                   placeholder="Description"
-                  size="medium"
+                  size="small"
                   margin="normal"
                   value={selectedRowData?.description || ""} // Use selected row data
                   onChange={(e) =>
@@ -2249,7 +2249,7 @@ const Invoices = ({ charLimit = 4000 }) => {
                         fullWidth
                         name="Rate"
                         placeholder="Rate"
-                        size="medium"
+                        size="small"
                         margin="normal"
                         value={selectedRowData?.rate || ""} // Use selected row data
                         onChange={(e) => setSelectedRowData({ ...selectedRowData, rate: e.target.value })}
@@ -2260,7 +2260,7 @@ const Invoices = ({ charLimit = 4000 }) => {
                     <Box sx={{ mr: "15px" }}>
                       <InputLabel sx={{ color: "black" }}>Rate Type</InputLabel>
                       <Autocomplete
-                        size="medium"
+                        size="small"
                         fullWidth
                         sx={{ mt: 2 }}
                         options={options}
@@ -2293,7 +2293,7 @@ const Invoices = ({ charLimit = 4000 }) => {
                     fullWidth
                     name="Rate"
                     placeholder="Rate"
-                    size="medium"
+                    size="small"
                     sx={{ mt: 1 }}
                     value={selectedRowData?.rate || ""} // Use selected row data
                     onChange={(e) =>
@@ -2308,7 +2308,7 @@ const Invoices = ({ charLimit = 4000 }) => {
                 <Box width="50%">
                   <Typography sx={{ color: "black" }}>Rate Type</Typography>
                   <Autocomplete
-                    size="medium"
+                    size="small"
                     fullWidth
                     sx={{ mt: 1 }}
                     options={options}
@@ -2369,7 +2369,7 @@ const Invoices = ({ charLimit = 4000 }) => {
                     Category Name
                   </InputLabel>
                   <Autocomplete
-                    size="medium"
+                    size="small"
                     fullWidth
                     sx={{ mt: 2 }}
                     options={categoryoptions}
@@ -2447,7 +2447,7 @@ const Invoices = ({ charLimit = 4000 }) => {
                       fullWidth
                       name="Rate"
                       placeholder="Category Name"
-                      size="medium"
+                      size="small"
                       margin="normal"
                       value={categorycreate}
                       onChange={(e) => setcategorycreate(e.target.value)}
@@ -2582,7 +2582,7 @@ const Invoices = ({ charLimit = 4000 }) => {
             fullWidth
             name="Rate"
             placeholder="Category Name"
-            size="medium"
+            size="small"
             margin="normal"
             value={categorycreate}
             onChange={(e) => setcategorycreate(e.target.value)}
@@ -2672,7 +2672,7 @@ const Invoices = ({ charLimit = 4000 }) => {
                 Product or service
               </Typography>
               <TextField
-                size="medium"
+                size="small"
                 margin="normal"
                 value={selectedRowData?.productName || ""}
                 fullWidth
@@ -2686,7 +2686,7 @@ const Invoices = ({ charLimit = 4000 }) => {
               <Box>
                 <Typography>Description</Typography>
                 <TextField
-                  size="medium"
+                  size="small"
                   margin="normal"
                   value={selectedRowData?.description || ""}
                   fullWidth
@@ -2710,7 +2710,7 @@ const Invoices = ({ charLimit = 4000 }) => {
                 <Box>
                   <Typography>Rate</Typography>
                   <TextField
-                    size="medium"
+                    size="small"
                     margin="normal"
                     value={selectedRowData?.rate || ""}
                     fullWidth
@@ -2725,7 +2725,7 @@ const Invoices = ({ charLimit = 4000 }) => {
                 <Box>
                   <Typography>QTY</Typography>
                   <TextField
-                    size="medium"
+                    size="small"
                     margin="normal"
                     value={selectedRowData?.qty || ""}
                     fullWidth
@@ -2740,7 +2740,7 @@ const Invoices = ({ charLimit = 4000 }) => {
                 <Box>
                   <Typography>Amount</Typography>
                   <TextField
-                    size="medium"
+                    size="small"
                     margin="normal"
                     fullWidth
                     disabled

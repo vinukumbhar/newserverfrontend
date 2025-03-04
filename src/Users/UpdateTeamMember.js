@@ -78,37 +78,7 @@ const handleCloseLoginDetials=()=>{
 
   const [error, setError] = useState(""); // Error state
 
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-
-    if (file) {
-      // Check if file size exceeds 1MB (1048576 bytes)
-      if (file.size > 1048576) {
-        setError("File size exceeds 1MB. Please upload a smaller file.");
-        return;
-      }
-
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
-
-      img.onload = () => {
-        const width = img.width;
-        const height = img.height;
-
-        // Check if the image size exceeds 512x512 pixels
-        if (width > 512 || height > 512) {
-          setError(
-            "Image dimensions exceed 512x512 pixels. Please resize the image."
-          );
-        } else {
-          // File is valid, proceed with setting the file
-          setError("");
-          setSelectedFile(file);
-          setProfilePicture(URL.createObjectURL(file)); // For displaying the preview
-        }
-      };
-    }
-  };
+  
 
   // const handleFileChange = (event) => {
   //   const file = event.target.files[0];
@@ -299,28 +269,7 @@ const handleCloseLoginDetials=()=>{
   // };
 
   const handleUpdateTeamMember = () => {
-    if (firstName !== "" && firstNameValidation !== "") {
-      setFirstNameValidation("First Name can't be blank");
-    } else {
-      setFirstNameValidation("");
-    }
-
-    // Validation for Last Name
-    if (lastName !== "" && lastNameValidation !== "") {
-      setLastNameValidation("Last Name can't be blank");
-    } else {
-      setLastNameValidation("");
-    }
-
-    // Validation for Phone Number
-    if (email === "") {
-      setEmailValidation("Email is compalsary");
-    } else {
-      setEmailValidation("");
-    }
-
-    // If all validations pass, proceed to next step
-    if (firstName && lastName && email) {
+    
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
 
@@ -367,24 +316,53 @@ const handleCloseLoginDetials=()=>{
 
       fetch(`${LOGIN_API}/admin/teammember/${id}`, requestOptions)
         .then((response) => {
-          if (!response.ok) {
-            toast.error("Team member with this email already exists.");
-          } else {
-            return response.json();
-          }
-        })
+                 if (!response.ok) {
+                   toast.error("Failed to update team member");
+                 }
+                 return response.json();
+               })
         .then((result) => {
-          if (result) {
-            console.log(result);
-            // toast.success("Team member updated successfully.");
-            toast.success("Tagdata deleted successfully");
-            handleNewDrawerClose();
+          if (result && result.teamMember && result.teamMember.userid) {
+            const userId = result.teamMember.userid;
+            const updatedUsername = `${firstName} ${middleName ? middleName + " " : ""}${lastName}`.trim();
+    
+            // Call function to update the username
+            updateUserUsername(userId, updatedUsername);
           }
         })
 
         .catch((error) => console.error(error));
     }
-  };
+    const updateUserUsername = (userId, username) => {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+    
+      const raw = JSON.stringify({ username });
+    
+      const requestOptions = {
+        method: "PATCH",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+    
+      fetch(`${LOGIN_API}/common/user/${userId}`, requestOptions)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to update username");
+          }
+          return response.json();
+        })
+        .then((result) => {
+          console.log("Username updated:", result);
+           toast.success("Team member updated successfully");
+           handleNewDrawerClose();
+          })
+        .catch((error) => {
+          console.error(error);
+          toast.error("Failed to update username");
+        });
+    };
   const handleSaveButtonClick = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -409,7 +387,7 @@ const handleCloseLoginDetials=()=>{
       .then((result) => {
         console.log(result);
         // toast.success("Data updated successful!");
-        updateProfilePicture();
+        // updateProfilePicture();
         setIsEditable(false);
         setShowSaveButtons(false);
       })
@@ -485,37 +463,11 @@ const handleCloseLoginDetials=()=>{
         );
         setIsCheckedDocuments(teamMembers.teamMember.manageDocuments);
 
-        const profilePicFilename = teamMembers.teamMember.profilePicture
-          .split("\\")
-          .pop(); // Extract filename
-
-        setProfilePicture(`${LOGIN_API}/uploads/${profilePicFilename}`); // Use the correct URL
+        
       })
       .catch((error) => console.error(error));
   };
-  const [profilePicture, setProfilePicture] = useState("");
-  const updateProfilePicture = () => {
-    const formdata = new FormData();
-
-    if (selectedFile) {
-      // Check directly if selectedFile is set
-      formdata.append("ProfilePicture", selectedFile);
-      console.log(selectedFile); // Debugging: Log the selected file
-
-      const requestOptions = {
-        method: "PATCH",
-        body: formdata,
-        redirect: "follow",
-      };
-
-      fetch(`${LOGIN_API}/admin/teammember/${id}`, requestOptions)
-        .then((response) => response.text())
-        .then((result) => console.log(result))
-        .catch((error) => console.error(error));
-    } else {
-      console.error("No file selected"); // This will execute if no file is selected
-    }
-  };
+  
 
   // Function to check if email exists
   const checkEmailExists = async (enteredEmail) => {
@@ -782,7 +734,7 @@ const handleCloseLoginDetials=()=>{
                       onChange={(e) => setFirstName(e.target.value)}
                       placeholder="First Name"
                       fullWidth
-                      size="medium"
+                      size="small"
                       disabled={!isEditable}
                     />
                   </Box>
@@ -794,7 +746,7 @@ const handleCloseLoginDetials=()=>{
                       onChange={(e) => setMiddleName(e.target.value)}
                       placeholder="Middle Name"
                       fullWidth
-                      size="medium"
+                      size="small"
                       disabled={!isEditable}
                     />
                   </Box>
@@ -806,7 +758,7 @@ const handleCloseLoginDetials=()=>{
                       onChange={(e) => setLastName(e.target.value)}
                       placeholder="Last Name"
                       fullWidth
-                      size="medium"
+                      size="small"
                       disabled={!isEditable}
                     />
                   </Box>
@@ -819,7 +771,7 @@ const handleCloseLoginDetials=()=>{
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     placeholder="Phone Number"
                     fullWidth
-                    size="medium"
+                    size="small"
                     disabled={!isEditable}
                   />
                 </Box>
@@ -938,7 +890,7 @@ const handleCloseLoginDetials=()=>{
                 disabled
                 fullWidth
                 margin="normal"
-                size="medium"
+                size="small"
                 value={email}
                 onChange={handleEmail}
                 sx={{ backgroundColor: "#fff" }}
@@ -952,7 +904,7 @@ const handleCloseLoginDetials=()=>{
                     <OutlinedInput
                       type={showPassword ? "text" : "password"}
                       value={password}
-                      size="medium"
+                      size="small"
                       placeholder="Password"
                       onChange={handlePasswordChange}
                       sx={{ width: "100%", borderRadius: "10px", mt: 1 }}
@@ -975,7 +927,7 @@ const handleCloseLoginDetials=()=>{
                     <OutlinedInput
                       type={showPassword ? "text" : "password"}
                       value={confirmPassword}
-                      size="medium"
+                      size="small"
                       placeholder="Confirm Password"
                       onChange={handleConfirmPasswordChange}
                       onPaste={handleConfirmPasswordPaste} // Allow pasting
@@ -1097,7 +1049,7 @@ const handleCloseLoginDetials=()=>{
                             value={firstName}
                             fullWidth
                             margin="normal"
-                            size="medium"
+                            size="small"
                             sx={{ backgroundColor: "#fff" }}
                           />
                         </Box>
@@ -1109,7 +1061,7 @@ const handleCloseLoginDetials=()=>{
                             value={middleName}
                             fullWidth
                             margin="normal"
-                            size="medium"
+                            size="small"
                             sx={{ backgroundColor: "#fff" }}
                           />
                         </Box>
@@ -1121,7 +1073,7 @@ const handleCloseLoginDetials=()=>{
                             value={lastName}
                             fullWidth
                             margin="normal"
-                            size="medium"
+                            size="small"
                             sx={{ backgroundColor: "#fff" }}
                           />
                         </Box>
@@ -1137,14 +1089,14 @@ const handleCloseLoginDetials=()=>{
                           value={email}
                           // onChange={handleEmail}
                           placeholder="Email"
-                          size="medium"
+                          size="small"
                           sx={{ mt: 2 }}
                         />
                       </Box>
 
                       <Box>
                         <Select
-                          size="medium"
+                          size="small"
                           sx={{ width: "100%", mt: 2 }}
                           value={selectedOption}
                           // onChange={handleOptionChange}

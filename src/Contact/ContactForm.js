@@ -373,7 +373,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                 }
               }}
               placeholder="First Name"
-              size="medium"
+              size="small"
               error={!!firstNameError}
             />
             {!!firstNameError && (
@@ -420,7 +420,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
               value={middleName}
               onChange={(e) => setMiddleName(e.target.value)}
               placeholder="Middle Name"
-              size="medium"
+              size="small"
             />
           </Box>
           <Box>
@@ -449,7 +449,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
               // onChange={(e) => setLastName(e.target.value)}
               // margin="normal"
               placeholder="Last name"
-              size="medium"
+              size="small"
               sx={{ mt: 1.5, backgroundColor: "#fff" }}
               // onChange={(e) => setFirstName(e.target.value)}
               onChange={(e) => {
@@ -499,7 +499,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
             fullWidth
             placeholder="Contact Name"
             margin="normal"
-            size="medium"
+            size="small"
           />
         </Box>
         <Box mt={1}>
@@ -512,7 +512,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
             onChange={(e) => setCompanyName(e.target.value)}
             margin="normal"
             placeholder="Company Name"
-            size="medium"
+            size="small"
           />
         </Box>
         <Box mt={1}>
@@ -540,7 +540,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
             // onChange={(e) => setEmail(e.target.value)}
             // margin="normal"
             placeholder="Email"
-            size="medium"
+            size="small"
             sx={{ mt: 1.5, backgroundColor: "#fff" }}
             // onChange={(e) => setFirstName(e.target.value)}
             onChange={(e) => {
@@ -586,7 +586,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
          <FormControl sx={{ width: "100%" }}>
   <Select
     multiple
-    size="medium"
+    size="small"
     fullWidth
     value={selectedTags}
     onChange={handleTagChange}
@@ -697,7 +697,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
             onChange={(e) => setNote(e.target.value)}
             margin="normal"
             placeholder="Note"
-            size="medium"
+            size="small"
           />
         </Box>
         <Box mt={1}>
@@ -710,7 +710,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
             onChange={(e) => setSsn(e.target.value)}
             margin="normal"
             placeholder="SSN"
-            size="medium"
+            size="small"
           />
         </Box>
 
@@ -807,7 +807,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                         ))}
                     </Select> */}
           <Autocomplete
-            size="medium"
+            size="small"
             options={countries}
             getOptionLabel={(option) => option.name}
             value={selectedCountry}
@@ -848,7 +848,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
             onChange={(e) => setStreetAddress(e.target.value)}
             margin="normal"
             placeholder="Street address"
-            size="medium"
+            size="small"
           />
         </Box>
         <Box
@@ -868,7 +868,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
               value={city}
               onChange={(e) => setCity(e.target.value)}
               placeholder="City"
-              size="medium"
+              size="small"
             />
           </Box>
           <Box>
@@ -881,7 +881,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
               value={state}
               onChange={(e) => setState(e.target.value)}
               placeholder="State/Province"
-              size="medium"
+              size="small"
             />
           </Box>
           <Box>
@@ -894,7 +894,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
               value={postalCode}
               onChange={(e) => setPostalCode(e.target.value)}
               placeholder="ZIP/Postal Code"
-              size="medium"
+              size="small"
             />
           </Box>
         </Box>
@@ -966,7 +966,7 @@ export default ContactForm;
             <Select
               multiple
               multiline
-              size="medium"
+              size="small"
               fullWidth
               value={selectedTags}
               onChange={handleTagChange}

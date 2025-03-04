@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState,useRef } from 'react'
 import {
   Box,
   Button,
@@ -140,21 +140,44 @@ const OrganizersTempUpdate = () => {
     setShowDropdown(false);
     setAnchorEl(null);
   };
-  const handlejobName = (e) => {
-    const { value } = e.target;
-    setOrganizerName(value);
-  };
+  // const handlejobName = (e) => {
+  //   const { value } = e.target;
+  //   setOrganizerName(value);
+  // };
+
+  const [cursorPosition, setCursorPosition] = useState(0);
+    const textFieldRef = useRef(null);
+    const handlejobName = (e) => {
+      const { value,selectionStart  } = e.target;
+      setOrganizerName(value);
+      setCursorPosition(selectionStart);
+    };
   const toggleDropdown = (event) => {
     setAnchorEl(event.currentTarget);
     setShowDropdown(!showDropdown);
   };
 
+  // const handleAddShortcut = (shortcut) => {
+  //   setOrganizerName((prevText) => prevText + `[${shortcut}]`);
+  //   setShowDropdown(false);
+  // };
+
   const handleAddShortcut = (shortcut) => {
-    setOrganizerName((prevText) => prevText + `[${shortcut}]`);
+    setOrganizerName((prevText) => {
+        const newText =
+            prevText.slice(0, cursorPosition) + `[${shortcut}]` + prevText.slice(cursorPosition);
+        return newText;
+    });
+
+    setTimeout(() => {
+        if (textFieldRef.current) {
+            textFieldRef.current.focus();
+            textFieldRef.current.setSelectionRange(cursorPosition + shortcut.length + 2, cursorPosition + shortcut.length + 2);
+        }
+    }, 0);
+
     setShowDropdown(false);
-  };
-
-
+};
   const [templateName, setTemplateName] = useState('');
   const [organizerName, setOrganizerName] = useState('');
   const [sections, setSections] = useState([]);
@@ -776,10 +799,12 @@ const shouldShowSection = (section) => {
         <Box mt={2}>
           <label className='organizer-input-label'>Organizer name</label>
           <TextField
-value={organizerName + selectedShortcut}
+// value={organizerName + selectedShortcut}
+// onChange={handlejobName}
+inputRef={textFieldRef}
+value={organizerName}
 onChange={handlejobName}
-            // value={organizerName}
-            // onChange={(e) => setOrganizerName(e.target.value)}
+onClick={(e) => setCursorPosition(e.target.selectionStart)}
             fullWidth
             size='small'
             margin='normal'
@@ -995,7 +1020,7 @@ onChange={handlejobName}
                               value={daysuntilNextReminder}
                               onChange={(e) => setDaysuntilNextReminder(e.target.value)}
                               placeholder="Days until next reminder"
-                              size="medium"
+                              size="small"
                               sx={{ mt: 2 }}
                             />
                           </Box>
@@ -1010,7 +1035,7 @@ onChange={handlejobName}
                               onChange={(e) => setNoOfReminder(e.target.value)}
 
                               placeholder="NoOfreminders"
-                              size="medium"
+                              size="small"
                               sx={{ mt: 2 }}
                             />
                           </Box>
@@ -1077,7 +1102,7 @@ onChange={handlejobName}
                         {section.formElements.map((element) => (
                           shouldShowElement(element) && (
                             <Box key={element.text} >
-                              {(element.type === 'Free Entry' || element.type === 'Number' || element.type === 'Email') && (
+                              {(element.type === 'Free Entry'  || element.type === 'Email') && (
                                 <Box>
                                   <Typography fontSize='18px' mb={1} mt={1}>{element.text}</Typography>
                                   <TextField
@@ -1097,7 +1122,32 @@ onChange={handlejobName}
                                   />
                                 </Box>
                               )}
+{(  element.type === 'Number') && (
+                                    <Box>
+                                      <Typography fontSize='18px' mb={1} mt={1}>{element.text}</Typography>
+                                      
+                                      <TextField
+  variant="outlined"
+  size="small"
+  multiline
+  fullWidth
+  placeholder={`${element.type} Answer`}
+  inputProps={{
+    type: "text", // Keep as text to prevent default number input styling
+    inputMode: "numeric", // Mobile keyboard optimization
+    pattern: "[0-9]*", // Ensures only numbers
+  }}
+  maxRows={8}
+  style={{ display: "block", marginTop: "15px" }}
+  value={inputValues[element.text] || ""}
+  onChange={(e) => {
+    const numericValue = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+    handleInputChange({ target: { value: numericValue } }, element.text);
+  }}
+/>
 
+                                    </Box>
+                                  )}
                               {element.type === 'Radio Buttons' && (
                                 <Box>
                                   <Typography fontSize='18px' mb={1} mt={1} >{element.text}</Typography>
@@ -1108,7 +1158,7 @@ onChange={handlejobName}
                                         variant={radioValues[element.text] === option.text ? 'contained' : 'outlined'}
                                         onClick={() => handleRadioChange(option.text, element.text)}
                                         sx={{
-                                          width: '80px',
+                                          // width: '80px',
                                           borderRadius: '15px',
                                           ...(radioValues[element.text] === option.text
                                             ? {
@@ -1145,7 +1195,7 @@ onChange={handlejobName}
                                         variant={checkboxValues[element.text]?.[option.text] ? 'contained' : 'outlined'}
                                         onClick={() => handleCheckboxChange(option.text, element.text)}
                                         sx={{
-                                          width: '80px',
+                                          // width: '80px',
                                           borderRadius: '15px',
                                           ...(checkboxValues[element.text]?.[option.text]
                                             ? {
@@ -1182,7 +1232,7 @@ onChange={handlejobName}
                                         variant={selectedValue === option.text ? 'contained' : 'outlined'}
                                         onClick={(event) => handleChange(event, element.text)}
                                         sx={{
-                                          width: '80px',
+                                          // width: '80px',
                                           borderRadius: '15px',
                                           ...(selectedValue === option.text
                                             ? {
@@ -1236,7 +1286,7 @@ onChange={handlejobName}
                                     sx={{ width: '100%', backgroundColor: '#fff' }}
                                     selected={startDate}
                                     onChange={handleStartDateChange}
-                                    renderInput={(params) => <TextField {...params} size="medium" />}
+                                    renderInput={(params) => <TextField {...params} size="small" />}
                                     onOpen={() => setAnsweredElements((prevAnswered) => ({
                                       ...prevAnswered,
                                       [element.text]: true,
@@ -1259,7 +1309,7 @@ onChange={handlejobName}
                                     <Box sx={{ position: 'relative', width: '100%' }}>
                                       <TextField
                                         variant="outlined"
-                                        size="medium"
+                                        size="small"
                                         fullWidth
                                         // margin="normal"
                                         disabled

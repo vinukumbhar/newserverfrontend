@@ -1127,7 +1127,7 @@ const AddJobs = ({
                   {...params}
                   placeholder="Accounts"
                   variant="outlined"
-                 size="medium"
+                 size="small"
                   multiline
                   sx={{ backgroundColor: "#fff" }}
                 />
@@ -1138,7 +1138,7 @@ const AddJobs = ({
           <Box mt={2}>
             <label className="job-input-label">Stage</label>
             <Autocomplete
-              size="medium"
+              size="small"
              
               options={stagesoptions}
               getOptionLabel={(option) => option.label}
@@ -1158,7 +1158,7 @@ const AddJobs = ({
           <Box mt={2}>
             <label className="job-input-label">Template</label>
             <Autocomplete
-            size="medium"
+            size="small"
               options={optiontemp}
               getOptionLabel={(option) => option.label}
               value={selectedtemp}
@@ -1181,7 +1181,7 @@ const AddJobs = ({
                   sx={{ backgroundColor: "#fff" }}
                   placeholder="Job Template"
                   variant="outlined"
-                  size="medium"
+                  size="small"
                 />
               )}
               sx={{ width: "100%", marginTop: "15px" }}
@@ -1195,7 +1195,7 @@ const AddJobs = ({
               value={jobName}
               onChange={(e) => setJobName(e.target.value)}
               margin="normal"
-              size="medium"
+              size="small"
               placeholder="Job Name"
               sx={{ backgroundColor: "#fff" }}
             />
@@ -1206,7 +1206,7 @@ const AddJobs = ({
               multiple
               sx={{ marginTop: "8px" }}
               options={assigneesoptions}
-             size="medium"
+             size="small"
               getOptionLabel={(option) => option.label}
               value={selectedUser}
               onChange={handleUserChange}
@@ -1294,7 +1294,7 @@ const AddJobs = ({
                   value={dueDate}
                   onChange={handleDueDateChange}
                   renderInput={(params) => (
-                    <TextField {...params} size="medium"/>
+                    <TextField {...params} size="small"/>
                   )}
                 />
               </Box>
@@ -1305,7 +1305,7 @@ const AddJobs = ({
               <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                 <Typography>Start In</Typography>
                 <TextField
-                  size="medium"
+                  size="small"
                   margin="normal"
                   fullWidth
                   defaultValue={0}
@@ -1315,7 +1315,7 @@ const AddJobs = ({
                 />
                 <Autocomplete
                   options={dayOptions}
-                  ssize="medium"
+                  ssize="small"
                   getOptionLabel={(option) => option.label}
                   value={
                     startsInDuration
@@ -1351,7 +1351,7 @@ const AddJobs = ({
               <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                 <Typography>Due In</Typography>
                 <TextField
-                size="medium"
+                size="small"
                   margin="normal"
                   fullWidth
                   defaultValue={0}
@@ -1374,7 +1374,7 @@ const AddJobs = ({
                       : null
                   }
                   onChange={handleDueInDateChange}
-                size="medium"
+                size="small"
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -1446,7 +1446,7 @@ const AddJobs = ({
                           value={inputText + selectedJobShortcut}
                           onChange={handlechatsubject}
                           placeholder="Job name for client"
-                         size="medium"
+                         size="small"
                           sx={{ background: "#fff", mt: 2 }}
                         />
 
@@ -1454,7 +1454,7 @@ const AddJobs = ({
                           <Typography>Status</Typography>
                           <Autocomplete
                             options={optionstatus}
-                           size="medium"
+                           size="small"
                             sx={{ mt: 1 }}
                             value={selectedJob}
                             onChange={handleJobChange}
@@ -1466,7 +1466,7 @@ const AddJobs = ({
                               <Box component="li" {...props}>
                                 {/* Color dot */}
                                 <Chip
-                                  size="medium"
+                                  size="small"
                                   style={{
                                     backgroundColor: option.clientfacingColour,
                                     marginRight: 8,
@@ -1514,7 +1514,7 @@ const AddJobs = ({
                           </InputLabel>
                           <TextField
                             fullWidth
-                            size="medium"
+                            size="small"
                             margin="normal"
                             type="text"
                             multiline

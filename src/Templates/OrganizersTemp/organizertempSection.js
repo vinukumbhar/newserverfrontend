@@ -184,12 +184,25 @@ const Section = ({
       // setSelectedQuestions(questionsectionsettings?.conditions?.question || []);
       // setSelectedAnswers(questionsectionsettings?.conditions?.answer || []);
       // Set selectedQuestions and selectedAnswers by mapping through conditions
-      const conditions = questionsectionsettings?.conditions || [];
-      const questions = conditions.map((cond) => cond.question || null); // Extract questions
-      const answers = conditions.map((cond) => cond.answer || null); // Extract answers
+
+      // const conditions = questionsectionsettings?.conditions || [];
+      // const questions = conditions.map((cond) => cond.question || null); // Extract questions
+      // const answers = conditions.map((cond) => cond.answer || null); // Extract answers
+
+      // setSelectedQuestions(questions);
+      // setSelectedAnswers(answers);
+
+      // Ensure conditions are set properly if conditional is true
+    if (questionsectionsettings?.conditional && questionsectionsettings?.conditions?.length > 0) {
+      const questions = questionsectionsettings.conditions.map((cond) => cond.question || null);
+      const answers = questionsectionsettings.conditions.map((cond) => cond.answer || null);
 
       setSelectedQuestions(questions);
       setSelectedAnswers(answers);
+    } else {
+      setSelectedQuestions([]);
+      setSelectedAnswers([]);
+    }
     }
   }, [selectedElement]);
 
@@ -560,7 +573,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="Option"
                 value={option.text}
-                size="medium"
+                size="small"
                 margin="normal"
                 fullWidth
                 className="organizer-input-label"
@@ -607,7 +620,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="Free Entry"
                 value={element.text}
-                size="medium"
+                size="small"
                 margin="normal"
                 fullWidth
                 sx={{ backgroundColor: "#fff" }}
@@ -618,7 +631,20 @@ const Section = ({
               <IconButton onClick={() => handleSettingsClick(element.id)}>
                 <IoSettingsOutline />
               </IconButton>
-
+              {element.questionsectionsettings?.conditional && (
+  <span
+    style={{
+      backgroundColor: "green",
+      color: "white",
+      borderRadius: "10px",
+      padding: "4px 8px",
+      fontSize: "12px",
+      marginLeft: "8px",
+    }}
+  >
+    Conditional
+  </span>
+)}
               <IconButton onClick={() => handleDeleteFormElement(element.id)}>
                 <RiDeleteBinLine />
               </IconButton>
@@ -641,7 +667,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="Email"
                 value={element.text}
-                size="medium"
+                size="small"
                 margin="normal"
                 fullWidth
                 onChange={(e) =>
@@ -652,7 +678,20 @@ const Section = ({
               <IconButton onClick={() => handleSettingsClick(element.id)}>
                 <IoSettingsOutline />
               </IconButton>
-
+              {element.questionsectionsettings?.conditional && (
+  <span
+    style={{
+      backgroundColor: "green",
+      color: "white",
+      borderRadius: "10px",
+      padding: "4px 8px",
+      fontSize: "12px",
+      marginLeft: "8px",
+    }}
+  >
+    Conditional
+  </span>
+)}
               <IconButton onClick={() => handleDeleteFormElement(element.id)}>
                 <RiDeleteBinLine />
               </IconButton>
@@ -675,7 +714,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="Number"
                 value={element.text}
-                size="medium"
+                size="small"
                 margin="normal"
                 fullWidth
                 onChange={(e) =>
@@ -686,7 +725,20 @@ const Section = ({
               <IconButton onClick={() => handleSettingsClick(element.id)}>
                 <IoSettingsOutline />
               </IconButton>
-
+              {element.questionsectionsettings?.conditional && (
+  <span
+    style={{
+      backgroundColor: "green",
+      color: "white",
+      borderRadius: "10px",
+      padding: "4px 8px",
+      fontSize: "12px",
+      marginLeft: "8px",
+    }}
+  >
+    Conditional
+  </span>
+)}
               <IconButton onClick={() => handleDeleteFormElement(element.id)}>
                 <RiDeleteBinLine />
               </IconButton>
@@ -709,7 +761,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="Date"
                 value={element.text}
-                size="medium"
+                size="small"
                 margin="normal"
                 fullWidth
                 onChange={(e) =>
@@ -720,7 +772,20 @@ const Section = ({
               <IconButton onClick={() => handleSettingsClick(element.id)}>
                 <IoSettingsOutline />
               </IconButton>
-
+              {element.questionsectionsettings?.conditional && (
+  <span
+    style={{
+      backgroundColor: "green",
+      color: "white",
+      borderRadius: "10px",
+      padding: "4px 8px",
+      fontSize: "12px",
+      marginLeft: "8px",
+    }}
+  >
+    Conditional
+  </span>
+)}
               <IconButton onClick={() => handleDeleteFormElement(element.id)}>
                 <RiDeleteBinLine />
               </IconButton>
@@ -737,7 +802,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="Radio Buttons"
                 value={element.text}
-                size="medium"
+                size="small"
                 margin="normal"
                 fullWidth
                 onChange={(e) =>
@@ -748,7 +813,20 @@ const Section = ({
               <IconButton onClick={() => handleSettingsClick(element.id)}>
                 <IoSettingsOutline />
               </IconButton>
-
+              {element.questionsectionsettings?.conditional && (
+  <span
+    style={{
+      backgroundColor: "green",
+      color: "white",
+      borderRadius: "10px",
+      padding: "4px 8px",
+      fontSize: "12px",
+      marginLeft: "8px",
+    }}
+  >
+    Conditional
+  </span>
+)}
               <IconButton onClick={() => handleDeleteFormElement(element.id)}>
                 <RiDeleteBinLine />
               </IconButton>
@@ -766,7 +844,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="Checkboxes"
                 value={element.text}
-                size="medium"
+                size="small"
                 margin="normal"
                 fullWidth
                 onChange={(e) =>
@@ -777,7 +855,20 @@ const Section = ({
               <IconButton onClick={() => handleSettingsClick(element.id)}>
                 <IoSettingsOutline />
               </IconButton>
-
+              {element.questionsectionsettings?.conditional && (
+  <span
+    style={{
+      backgroundColor: "green",
+      color: "white",
+      borderRadius: "10px",
+      padding: "4px 8px",
+      fontSize: "12px",
+      marginLeft: "8px",
+    }}
+  >
+    Conditional
+  </span>
+)}
               <IconButton onClick={() => handleDeleteFormElement(element.id)}>
                 <RiDeleteBinLine />
               </IconButton>
@@ -794,7 +885,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="Dropdown"
                 value={element.text}
-                size="medium"
+                size="small"
                 margin="normal"
                 fullWidth
                 onChange={(e) =>
@@ -805,7 +896,20 @@ const Section = ({
               <IconButton onClick={() => handleSettingsClick(element.id)}>
                 <IoSettingsOutline />
               </IconButton>
-
+              {element.questionsectionsettings?.conditional && (
+  <span
+    style={{
+      backgroundColor: "green",
+      color: "white",
+      borderRadius: "10px",
+      padding: "4px 8px",
+      fontSize: "12px",
+      marginLeft: "8px",
+    }}
+  >
+    Conditional
+  </span>
+)}
               <IconButton onClick={() => handleDeleteFormElement(element.id)}>
                 <RiDeleteBinLine />
               </IconButton>
@@ -823,7 +927,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="Yes/No"
                 value={element.text}
-                size="medium"
+                size="small"
                 margin="normal"
                 fullWidth
                 onChange={(e) =>
@@ -834,7 +938,20 @@ const Section = ({
               <IconButton onClick={() => handleSettingsClick(element.id)}>
                 <IoSettingsOutline />
               </IconButton>
-
+              {element.questionsectionsettings?.conditional && (
+  <span
+    style={{
+      backgroundColor: "green",
+      color: "white",
+      borderRadius: "10px",
+      padding: "4px 8px",
+      fontSize: "12px",
+      marginLeft: "8px",
+    }}
+  >
+    Conditional
+  </span>
+)}
               <IconButton onClick={() => handleDeleteFormElement(element.id)}>
                 <RiDeleteBinLine />
               </IconButton>
@@ -852,7 +969,7 @@ const Section = ({
                 variant="outlined"
                 placeholder="File Upload"
                 value={element.text}
-                size="medium"
+                size="small"
                 margin="normal"
                 fullWidth
                 onChange={(e) =>
@@ -863,7 +980,20 @@ const Section = ({
               <IconButton onClick={() => handleSettingsClick(element.id)}>
                 <IoSettingsOutline />
               </IconButton>
-
+              {element.questionsectionsettings?.conditional && (
+  <span
+    style={{
+      backgroundColor: "green",
+      color: "white",
+      borderRadius: "10px",
+      padding: "4px 8px",
+      fontSize: "12px",
+      marginLeft: "8px",
+    }}
+  >
+    Conditional
+  </span>
+)}
               <IconButton onClick={() => handleDeleteFormElement(element.id)}>
                 <RiDeleteBinLine />
               </IconButton>
@@ -994,7 +1124,7 @@ const Section = ({
           variant="outlined"
           fullWidth
           value={text}
-          size="medium"
+          size="small"
           margin="normal"
           onChange={handleTextChange}
           placeholder="Section text"
@@ -1130,7 +1260,7 @@ const Section = ({
                 <TextField
                   variant="outlined"
                   fullWidth
-                  size="medium"
+                  size="small"
                   margin="normal"
                   // defaultValue="Repeat Section"
                   value={repeatButtonName}
@@ -1186,7 +1316,7 @@ const Section = ({
                       <TextField
                         {...params}
                         variant="outlined"
-                        size="medium"
+                        size="small"
                         margin="normal"
                       />
                     )}
@@ -1223,7 +1353,7 @@ const Section = ({
                           <TextField
                             {...params}
                             variant="outlined"
-                            size="medium"
+                            size="small"
                             margin="normal"
                             placeholder="Question"
                           />
@@ -1254,7 +1384,7 @@ const Section = ({
                           <TextField
                             {...params}
                             variant="outlined"
-                            size="medium"
+                            size="small"
                             margin="normal"
                             placeholder="Answer"
                           />
@@ -1401,7 +1531,7 @@ const Section = ({
               </Box>
               <Divider />
               <p>Ask question only in certain scenarios</p>
-              {queConditionButton && (
+              {/* {queConditionButton && (
                 <Box mb={3} mt={2}>
                   <Box
                     sx={{
@@ -1429,7 +1559,7 @@ const Section = ({
                         <TextField
                           {...params}
                           variant="outlined"
-                          size="medium"
+                          size="small"
                           margin="normal"
                         />
                       )}
@@ -1466,7 +1596,7 @@ const Section = ({
                             <TextField
                               {...params}
                               variant="outlined"
-                              size="medium"
+                              size="small"
                               margin="normal"
                               placeholder="Question"
                             />
@@ -1495,7 +1625,7 @@ const Section = ({
                             <TextField
                               {...params}
                               variant="outlined"
-                              size="medium"
+                              size="small"
                               margin="normal"
                               placeholder="Answer"
                             />
@@ -1520,7 +1650,149 @@ const Section = ({
                     </Box>
                   ))}
                 </Box>
-              )}
+              )} */}
+              {queConditionButton && selectedQuestions.length > 0 && (
+  <Box mb={3} mt={2}>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+      }}
+    >
+      <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+        Conditions
+      </Typography>
+      <Button variant="text" onClick={handleAddQuestionAnswer}>
+                      Add
+                    </Button>
+    </Box>
+    <Divider />
+    <Box mt={2}>
+      <Typography>Mode</Typography>
+      <Autocomplete
+        options={["Any", "All"]}
+        value={mode}
+        onChange={(event, newValue) => setMode(newValue)}
+        renderInput={(params) => (
+          <TextField {...params} variant="outlined" size="small" margin="normal" />
+        )}
+      />
+    </Box>
+
+    {/* {selectedQuestions.map((question, index) => (
+      <Box key={index} sx={{ display: "flex", alignItems: "center", gap: 3, mt: 2 }}>
+        <Box sx={{ width: "380px" }}>
+          <Typography>Question</Typography>
+          <Autocomplete
+            options={getRadioButtonOptions()}
+            value={selectedQuestions[index] || null}
+            onChange={(event, newValue) => handleQuestionSelect(newValue, index)}
+            renderInput={(params) => (
+              <TextField {...params} variant="outlined" size="small" margin="normal" placeholder="Question" />
+            )}
+          />
+        </Box>
+        <Box>
+          <Typography>Answer</Typography>
+          <Autocomplete
+            options={getAnswerOptions(selectedQuestions[index])}
+            value={selectedAnswers[index] || null}
+            onChange={(event, newValue) => {
+              const updatedAnswers = [...selectedAnswers];
+              updatedAnswers[index] = newValue;
+              setSelectedAnswers(updatedAnswers);
+            }}
+            renderInput={(params) => (
+              <TextField {...params} variant="outlined" size="small" margin="normal" placeholder="Answer" />
+            )}
+          />
+        </Box>
+        <Box mt={5}>
+          <IconButton onClick={() => handleRemoveQuestionAnswer(index)}>
+            <RiDeleteBinLine />
+          </IconButton>
+        </Box>
+      </Box>
+    ))} */}
+    {questionAnswers.map((qa, index) => (
+                    <Box
+                      key={index}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 3,
+                        mt: 2,
+                      }}
+                    >
+                      <Box sx={{ width: "380px" }}>
+                        <Typography>Question</Typography>
+                        <Autocomplete
+                          options={getRadioButtonOptions()}
+                          value={selectedQuestions[index] || null}
+                          onChange={(event, newValue) =>
+                            handleQuestionSelect(newValue, index)
+                          }
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant="outlined"
+                              size="small"
+                              margin="normal"
+                              placeholder="Question"
+                            />
+                          )}
+                          renderOption={(props, option) => (
+                            <li
+                              {...props}
+                              style={{ margin: "5px", cursor: "pointer" }}
+                            >
+                              {option}
+                            </li>
+                          )}
+                        />
+                      </Box>
+                      <Box>
+                        <Typography>Answer</Typography>
+                        <Autocomplete
+                          options={getAnswerOptions(selectedQuestions[index])} // Get options based on selected question
+                          value={selectedAnswers[index] || null}
+                          onChange={(event, newValue) => {
+                            const updatedAnswers = [...selectedAnswers];
+                            updatedAnswers[index] = newValue;
+                            setSelectedAnswers(updatedAnswers);
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant="outlined"
+                              size="small"
+                              margin="normal"
+                              placeholder="Answer"
+                            />
+                          )}
+                          renderOption={(props, option) => (
+                            <li
+                              {...props}
+                              style={{ margin: "5px", cursor: "pointer" }}
+                            >
+                              {option}
+                            </li>
+                          )}
+                        />
+                      </Box>
+                      <Box mt={5}>
+                        <IconButton
+                          onClick={() => handleRemoveQuestionAnswer(index)}
+                        >
+                          <RiDeleteBinLine />
+                        </IconButton>
+                      </Box>
+                    </Box>
+                  ))}
+  </Box>
+)}
+
             </Paper>
             <Paper style={{ padding: "15px", marginTop: "20px" }}>
               <Box display={"flex"} alignItems={"center"} m={1}>

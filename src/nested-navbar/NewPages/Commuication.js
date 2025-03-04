@@ -1294,7 +1294,7 @@ console.log(raw)
                                       </Typography>
                                       <Button
 
-                                        size="medium"
+                                        size="small"
                                         startIcon={<AddCircleIcon sx={{ fontSize: 12 }} />}
                                         sx={{ ml: 2, whiteSpace: 'nowrap' }}
                                         onClick={() => handleAddTask(groupIndex)}
@@ -1426,7 +1426,7 @@ console.log(raw)
             <InputLabel sx={{ color: 'black' }}>To</InputLabel>
             <Autocomplete
               multiple
-              size="medium"
+              size="small"
               // sx={{ marginTop: "10px" }}
               options={AccountsOptions}
               getOptionLabel={(option) => option.label}
@@ -1470,7 +1470,7 @@ console.log(raw)
                   sx={{ backgroundColor: '#fff' }}
                   placeholder="Job Template"
                   variant="outlined"
-                  size="medium"
+                  size="small"
                 />
               )}
               sx={{ width: '100%', marginTop: '8px' }}
@@ -1486,7 +1486,7 @@ console.log(raw)
               name="subject"
               value={inputText + selectedShortcut} onChange={handlechatsubject}
               placeholder="Subject"
-              size="medium"
+              size="small"
               error={!!inputTextError}
             />
           </Box>
@@ -1578,7 +1578,7 @@ borderRadius:'15px',mt:2
                       value={daysuntilNextReminder}
                       onChange={(e) => setDaysuntilNextReminder(e.target.value)}
                       placeholder="Days until next reminder"
-                      size="medium"
+                      size="small"
                       sx={{ mt: 2 }}
                     />
                   </Box>
@@ -1593,7 +1593,7 @@ borderRadius:'15px',mt:2
                       onChange={(e) => setNoOfReminder(e.target.value)}
 
                       placeholder="NoOfreminders"
-                      size="medium"
+                      size="small"
                       sx={{ mt: 2 }}
                     />
                   </Box>

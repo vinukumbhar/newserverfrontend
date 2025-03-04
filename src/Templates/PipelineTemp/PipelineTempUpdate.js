@@ -20,7 +20,7 @@ import {
   Divider,
   IconButton,
   useMediaQuery,
-  useTheme,
+  useTheme,InputAdornment
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -971,7 +971,7 @@ const PipelineTempUpdate = () => {
                       sx={{ backgroundColor: "#fff" }}
                       placeholder="Select Template"
                       variant="outlined"
-                      size="medium"
+                      size="small"
                     />
                   </>
                 )}
@@ -1018,7 +1018,7 @@ const PipelineTempUpdate = () => {
                 </Typography>
                 <TextField
                   fullWidth
-                  size="medium"
+                  size="small"
                   variant="outlined"
                   placeholder="Search..."
                   value={searchTerm}
@@ -1130,7 +1130,7 @@ const PipelineTempUpdate = () => {
                       sx={{ backgroundColor: "#fff" }}
                       placeholder="Select Template"
                       variant="outlined"
-                      size="medium"
+                      size="small"
                     />
                   </>
                 )}
@@ -1178,7 +1178,7 @@ const PipelineTempUpdate = () => {
                 </Typography>
                 <TextField
                   fullWidth
-                  size="medium"
+                  size="small"
                   variant="outlined"
                   placeholder="Search..."
                   value={searchTerm}
@@ -1291,7 +1291,7 @@ const PipelineTempUpdate = () => {
                         sx={{ backgroundColor: "#fff" }}
                         placeholder="Select Template"
                         variant="outlined"
-                        size="medium"
+                        size="small"
                       />
                     </>
                   )}
@@ -1343,7 +1343,7 @@ const PipelineTempUpdate = () => {
                 </Typography>
                 <TextField
                   fullWidth
-                  size="medium"
+                  size="small"
                   variant="outlined"
                   placeholder="Search..."
                   value={searchTerm}
@@ -1457,7 +1457,7 @@ const PipelineTempUpdate = () => {
                         sx={{ backgroundColor: "#fff" }}
                         placeholder="Select Template"
                         variant="outlined"
-                        size="medium"
+                        size="small"
                       />
                     </>
                   )}
@@ -1509,7 +1509,7 @@ const PipelineTempUpdate = () => {
                 </Typography>
                 <TextField
                   fullWidth
-                  size="medium"
+                  size="small"
                   variant="outlined"
                   placeholder="Search..."
                   value={searchTerm}
@@ -1603,7 +1603,7 @@ const PipelineTempUpdate = () => {
                       <label className="task-input-label">Add Tags</label>
                       <Autocomplete
                         multiple
-                        size="medium"
+                        size="small"
                         id="tags-add-outlined"
                         options={filteredAddTagsOptions}
                         getOptionLabel={(option) => option.label}
@@ -1649,7 +1649,7 @@ const PipelineTempUpdate = () => {
                       <label className="task-input-label">Remove Tags</label>
                       <Autocomplete
                         multiple
-                        size="medium"
+                        size="small"
                         id="tags-remove-outlined"
                         options={filteredRemoveTagsOptions}
                         getOptionLabel={(option) => option.label}
@@ -1736,7 +1736,7 @@ const PipelineTempUpdate = () => {
                   </Typography>
                   <TextField
                     fullWidth
-                    size="medium"
+                    size="small"
                     variant="outlined"
                     placeholder="Search..."
                     value={searchTerm}
@@ -1852,7 +1852,7 @@ const PipelineTempUpdate = () => {
                         sx={{ backgroundColor: "#fff" }}
                         placeholder="Select Template"
                         variant="outlined"
-                        size="medium"
+                        size="small"
                       />
                     </>
                   )}
@@ -1904,7 +1904,7 @@ const PipelineTempUpdate = () => {
                 </Typography>
                 <TextField
                   fullWidth
-                  size="medium"
+                  size="small"
                   variant="outlined"
                   placeholder="Search..."
                   value={searchTerm}
@@ -2070,7 +2070,7 @@ const PipelineTempUpdate = () => {
                     </InputLabel>
 
                     <TextField
-                      size="medium"
+                      size="small"
                       margin="normal"
                       placeholder="Pipeline Name"
                       fullWidth
@@ -2086,7 +2086,7 @@ const PipelineTempUpdate = () => {
                       multiple
                       sx={{ marginTop: "8px" }}
                       options={options}
-                      size="medium"
+                      size="small"
                       getOptionLabel={(option) => option.label}
                       value={selectedUser}
                       onChange={handleUserChange}
@@ -2137,7 +2137,7 @@ const PipelineTempUpdate = () => {
                         <TextField
                           {...params}
                           placeholder="Sort By Job"
-                          size="medium"
+                          size="small"
                           sx={{ width: "100%", marginTop: "8px" }}
                           variant="outlined"
                           InputLabelProps={{ shrink: true }}
@@ -2175,7 +2175,7 @@ const PipelineTempUpdate = () => {
                         <TextField
                           {...params}
                           placeholder="Default job template"
-                          size="medium"
+                          size="small"
                           sx={{ width: "100%", marginTop: "8px" }}
                           variant="outlined"
                           InputLabelProps={{ shrink: true }}
@@ -2355,33 +2355,56 @@ const PipelineTempUpdate = () => {
               <Box mt={2}>
                 <hr />
               </Box>
-              <Box sx={{ margin: "20px 0 10px 10px" }}>
+              <Box >
                 <Box
                   sx={{
                     display: "flex",
-                    gap: "10px",
-                    overflowX: "auto",
-                    marginBottom: "10%",
+                    gap: "25px",
+                  alignContent:'center',
+                    marginBottom: "10px",
                     flexDirection: isSmallScreen ? "column" : "row",
+                    
                   }}
                 >
+                  <Box sx={{
+       display: "flex",
+       gap: "10px",
+       overflowX: "auto",
+       overflowY: "auto",
+       whiteSpace: "nowrap",
+       paddingBottom: "8px",
+       maxWidth: "100%",
+       alignItems: "flex-start",
+       minHeight: "300px",  // Set a minimum height
+       maxHeight: "500px",  // Set a maximum height to trigger vertical scrolling
+    }}
+    className="stage-scroll">
                  {stages.map((stage, index) => (
                       <Paper
                         key={index}
+                        // sx={{
+                        //   height: "auto",
+                        //   marginTop: "20px",
+                        //   borderRadius: "10px",
+                        //   boxShadow:
+                        //     "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+                        //   width: isSmallScreen ? "90%" : "20%",
+                        //   marginBottom: "20px",
+                        //   marginLeft: isSmallScreen ? "0" : "5px",
+                        //   alignSelf: isSmallScreen ? "center" : "flex-start",
+                        // }}
                         sx={{
-                          height: "auto",
-                          marginTop: "20px",
+                          minWidth: "250px",
+                          maxWidth: "250px",
+                          padding: "20px",
                           borderRadius: "10px",
-                          boxShadow:
-                            "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-                          width: isSmallScreen ? "90%" : "20%",
-                          marginBottom: "20px",
-                          marginLeft: isSmallScreen ? "0" : "5px",
-                          alignSelf: isSmallScreen ? "center" : "flex-start",
+                          // boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+                          backgroundColor: "#fff",
+                          flexShrink: 0, // Prevent resizing when more stages are added
                         }}
                       >
-                        <Box sx={{ margin: "10px" }}>
-                          <Box
+                        <Box >
+                          {/* <Box
                             sx={{
                               display: "flex",
                               gap: "10px",
@@ -2402,7 +2425,7 @@ const PipelineTempUpdate = () => {
                                 variant="outlined"
                                 placeholder="Stage Name"
                                 sx={{ flexGrow: 1 }}
-                                size="medium"
+                                size="small"
                                 margin="normal"
                                 value={stage.name}
                                 onChange={(e) =>
@@ -2417,16 +2440,51 @@ const PipelineTempUpdate = () => {
                                 sx={{ color: "red", cursor: "pointer" }}
                               />
                             </IconButton>
-                          </Box>
+                          </Box> */}
+                           <Box sx={{ display: "flex", alignItems: "center", gap: "10px",marginBottom:'10px' }}>
+                                  <RxDragHandleDots2 />
+                                  {/* <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, gap: "5px" }}>
+                                    <LuPenLine />
+                                    <TextField
+                                      variant="outlined"
+                                      placeholder="Stage Name"
+                                      fullWidth
+                                      size="small"
+                                      value={stage.name}
+                                      onChange={(e) => handleStageNameChange(e, index)}
+                                    />
+                                  </Box> */}
+                                     <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, gap: "5px" }}>
+  <TextField
+    variant="standard"
+    placeholder="Stage Name"
+    fullWidth
+    size="small"
+    value={stage.name}
+    onChange={(e) => handleStageNameChange(e, index)}
+    multiline // Allow multiple lines
+    // minRows={2} // Minimum number of rows to display
+    sx={{
+      fontSize: '16px', // Adjust the font size
+      fontWeight: '500', // Adjust the font weight
+    }}
+    InputProps={{
+      endAdornment: (
+        <InputAdornment position="end">
+          <LuPenLine style={{ fontSize: '20px' }} /> {/* Adjust pen icon size */}
+        </InputAdornment>
+      ),
+    }}
+  />
+</Box>
+                                  <IconButton onClick={() => handleDeleteStage(index)}>
+                                    <RiDeleteBin6Line sx={{ color: "red", cursor: "pointer" }} />
+                                  </IconButton>
+                                </Box>
                           <Divider />
-                          <Box m={2}>
-                            <Typography
-                              variant="h6"
-                              sx={{ fontSize: "15px", fontWeight: "bold" }}
-                            >
-                              Stage conditions
-                            </Typography>
-                            {index === 0 ? (
+                          <Box >
+                             <Box sx={{ fontWeight: 'medium', }}>Stage conditions</Box>
+                            {/* {index === 0 ? (
                               <Typography variant="body2">
                                 First stage can't have conditions
                               </Typography>
@@ -2438,7 +2496,15 @@ const PipelineTempUpdate = () => {
                               <Typography variant="body2">
                                 Job enters this stage if conditions are met
                               </Typography>
-                            )}
+                            )} */}
+                             <Box sx={{typography: 'body2'}}>
+                                    {index === 0
+                                      ? "First stage can't have conditions"
+                                      : index === stages.length - 1
+                                      ? "Last stage can't have conditions"
+                                      : "Job enters this stage if conditions are met"}
+                                  </Box>
+                                  <Box sx={{ fontWeight: 'medium', }}>Automations</Box>
                             {/* {index > 0 && index !== stages.length - 1 && (
                               <Box sx={{ marginTop: "10px" }}>
                                 <Typography
@@ -2454,16 +2520,6 @@ const PipelineTempUpdate = () => {
                               </Box>
                             )} */}
 
-                            <Typography
-                              variant="h6"
-                              sx={{
-                                fontSize: "15px",
-                                fontWeight: "bold",
-                                mt: 2,
-                              }}
-                            >
-                              Automations
-                            </Typography>
                             <Typography variant="body2">
                               Triggered when job enters stage
                             </Typography>
@@ -2671,7 +2727,7 @@ const PipelineTempUpdate = () => {
                                                       </label>
                                                       <Autocomplete
                                                         multiple
-                                                        size="medium"
+                                                        size="small"
                                                         id={`tags-add-outlined-${index}`}
                                                         options={
                                                           filteredAddTagsOptions
@@ -2742,7 +2798,7 @@ const PipelineTempUpdate = () => {
                                                       </label>
                                                       <Autocomplete
                                                         multiple
-                                                        size="medium"
+                                                        size="small"
                                                         id={`tags-remove-outlined-${index}`}
                                                         options={
                                                           filteredRemoveTagsOptions
@@ -2907,7 +2963,7 @@ const PipelineTempUpdate = () => {
                                                         </Typography>
                                                         <TextField
                                                           fullWidth
-                                                          size="medium"
+                                                          size="small"
                                                           variant="outlined"
                                                           placeholder="Search..."
                                                           value={searchTerm}
@@ -3094,7 +3150,7 @@ const PipelineTempUpdate = () => {
                                                       <TextField
                                                         {...params}
                                                         variant="outlined"
-                                                        size="medium"
+                                                        size="small"
                                                         placeholder="Select Template"
                                                       />
                                                     )}
@@ -3199,7 +3255,7 @@ const PipelineTempUpdate = () => {
                                                         </Typography>
                                                         <TextField
                                                           fullWidth
-                                                          size="medium"
+                                                          size="small"
                                                           variant="outlined"
                                                           placeholder="Search..."
                                                           value={searchTerm}
@@ -3457,19 +3513,26 @@ const PipelineTempUpdate = () => {
                                   {stage.automations.map((automation, idx) => (
                                     <Card key={idx} sx={{ width: "100%" }}>
                                       <CardContent>
-                                        <Typography
+                                        {/* <Typography
                                           variant="h6"
                                           component="div"
                                         >
                                           <b>
                                             {idx + 1}.{automation.type}
                                           </b>
-                                        </Typography>
-                                        {automation.template && (
-                                          <Typography color="text.secondary">
-                                            {automation.template.label}
-                                          </Typography>
-                                        )}
+                                        </Typography> */}
+                                         <Box sx={{ fontWeight: 'medium',  }}>{idx + 1}.{automation.type}</Box>
+                                        {/* {automation.template && (
+                                          // <Typography color="text.secondary">
+                                          //   {automation.template.label}
+                                          // </Typography>
+                                          <Box  color="text.secondary" sx={{ fontWeight: 'regular',  }}>{automation.template.label}</Box>
+                                        )} */}
+<Box color="text.secondary" sx={{ fontWeight: 'regular' }}>
+  {automation.template.label.length > 25 
+    ? `${automation.template.label.slice(0, 25)}...` 
+    : automation.template.label}
+</Box>
 
                                         {/* Add Tags Section */}
                                         {automation.addTags &&
@@ -3632,7 +3695,8 @@ const PipelineTempUpdate = () => {
                         </Box>
                       </Paper>
                     ))}
-                  <Box mt={3}>
+                    </Box>
+                  <Box mt={3} sx={{ flexShrink: 0,}}>
                     <Button
                       variant="contained"
                       startIcon={<LuPlusCircle />}

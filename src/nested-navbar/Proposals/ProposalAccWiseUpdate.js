@@ -1411,7 +1411,7 @@ const MyStepperUpdateAcc = () => {
 
             {/* <Box mt={2}>
               <label className="custom-input-label">Template name (not visible to clients)</label>
-              <TextField error={!!errors.templatename} placeholder="Template name (not visible to clients)" value={templatename} onChange={(e) => settemplatename(e.target.value)} size="medium" margin="normal" fullWidth sx={{ backgroundColor: "#fff" }} />
+              <TextField error={!!errors.templatename} placeholder="Template name (not visible to clients)" value={templatename} onChange={(e) => settemplatename(e.target.value)} size="small" margin="normal" fullWidth sx={{ backgroundColor: "#fff" }} />
               {!!errors.templatename && (
                 <Alert
                   sx={{
@@ -1443,7 +1443,7 @@ const MyStepperUpdateAcc = () => {
                 sx={{ mt: 2, backgroundColor: "#fff" }}
                 options={templateOptions} // Array of template options
                 getOptionLabel={(option) => option.label || ""} // Ensure it handles undefined options
-                size="medium"
+                size="small"
                 value={selectedProposalTemp}
                 onChange={handleProposalTempChange}
                 renderInput={(params) => (
@@ -1464,13 +1464,13 @@ const MyStepperUpdateAcc = () => {
                 <Grid item xs={12} sm={6}>
                   <Box ml={2}>
                     <label className="custom-input-label">Team Member</label>
-                    <Autocomplete multiple sx={{ mt: 2, backgroundColor: "#fff" }} options={options} size="medium" getOptionLabel={(option) => option.label} value={selectedUser} onChange={handleUserChange} renderInput={(params) => <TextField {...params} variant="outlined" placeholder="Assignees" />} isOptionEqualToValue={(option, value) => option.value === value.value} />
+                    <Autocomplete multiple sx={{ mt: 2, backgroundColor: "#fff" }} options={options} size="small" getOptionLabel={(option) => option.label} value={selectedUser} onChange={handleUserChange} renderInput={(params) => <TextField {...params} variant="outlined" placeholder="Assignees" />} isOptionEqualToValue={(option, value) => option.value === value.value} />
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Box ml={3}>
                     <label className="custom-input-label">Proposal name (visible to clients)</label>
-                    <TextField fullWidth value={proposalName + selectedShortcut} onChange={handleProposalName} placeholder="Proposal name (visible to clients)" size="medium" sx={{ mt: 2, backgroundColor: "#fff" }} />
+                    <TextField fullWidth value={proposalName + selectedShortcut} onChange={handleProposalName} placeholder="Proposal name (visible to clients)" size="small" sx={{ mt: 2, backgroundColor: "#fff" }} />
                     <Box>
                       <Button variant="contained" color="primary" onClick={toggleDropdown} sx={{
                 backgroundColor: 'var(--color-save-btn)',  // Normal background
@@ -1609,14 +1609,14 @@ const MyStepperUpdateAcc = () => {
                           value={daysuntilNextReminder}
                           onChange={(e) => setDaysuntilNextReminder(e.target.value)}
                           placeholder="Days until next reminder"
-                          size="medium"
+                          size="small"
                           sx={{ mt: 2 }}
                         />
                       </Box>
 
                       <Box>
                         <InputLabel sx={{ color: "black" }}>No Of reminders</InputLabel>
-                        <TextField fullWidth name="No Of reminders" value={noOfReminder} onChange={(e) => setNoOfReminder(e.target.value)} placeholder="NoOfreminders" size="medium" sx={{ mt: 2 }} />
+                        <TextField fullWidth name="No Of reminders" value={noOfReminder} onChange={(e) => setNoOfReminder(e.target.value)} placeholder="NoOfreminders" size="small" sx={{ mt: 2 }} />
                       </Box>
                     </Box>
                   </Box>
@@ -1631,7 +1631,7 @@ const MyStepperUpdateAcc = () => {
             <Typography variant="h6">Introduction</Typography>
             <Box mt={1} mb={3}>
               <TextField
-                size="medium"
+                size="small"
                 // variant="standard"
                 fullWidth
                 margin="normal"
@@ -1651,7 +1651,7 @@ const MyStepperUpdateAcc = () => {
 
             <Box mt={1} mb={3}>
               <TextField
-                size="medium"
+                size="small"
                 // variant="standard"
                 fullWidth
                 margin="normal"
@@ -1853,7 +1853,7 @@ const MyStepperUpdateAcc = () => {
                             fullWidth
                             name="ServiceName"
                             placeholder="Service Name"
-                            size="medium"
+                            size="small"
                             margin="normal"
                             value={selectedRowData?.productName || ""} // Use selected row data
                             onChange={(e) => setSelectedRowData({ ...selectedRowData, productName: e.target.value })}
@@ -1865,7 +1865,7 @@ const MyStepperUpdateAcc = () => {
                             fullWidth
                             name="Description"
                             placeholder="Description"
-                            size="medium"
+                            size="small"
                             margin="normal"
                             value={selectedRowData?.description || ""} // Use selected row data
                             onChange={(e) => setSelectedRowData({ ...selectedRowData, description: e.target.value })}
@@ -1880,7 +1880,7 @@ const MyStepperUpdateAcc = () => {
                                   fullWidth
                                   name="Rate"
                                   placeholder="Rate"
-                                  size="medium"
+                                  size="small"
                                   margin="normal"
                                   value={selectedRowData?.rate || ""} // Use selected row data
                                   onChange={(e) => setSelectedRowData({ ...selectedRowData, rate: e.target.value })}
@@ -1891,7 +1891,7 @@ const MyStepperUpdateAcc = () => {
                               <Box sx={{ mr: "15px" }}>
                                 <InputLabel sx={{ color: "black" }}>Rate Type</InputLabel>
                                 <Autocomplete
-                                  size="medium"
+                                  size="small"
                                   fullWidth
                                   sx={{ mt: 2 }}
                                   options={Rateoptions}
@@ -1924,7 +1924,7 @@ const MyStepperUpdateAcc = () => {
                               fullWidth
                               name="Rate"
                               placeholder="Rate"
-                              size="medium"
+                              size="small"
                               sx={{ mt: 1 }}
 
                               value={selectedRowData?.rate || ""} // Use selected row data
@@ -1935,7 +1935,7 @@ const MyStepperUpdateAcc = () => {
                           <Box width="50%">
                             <Typography sx={{ color: "black" }}>Rate Type</Typography>
                             <Autocomplete
-                              size="medium"
+                              size="small"
                               fullWidth
                               sx={{ mt: 1 }}
                               options={options}
@@ -1980,7 +1980,7 @@ const MyStepperUpdateAcc = () => {
                           <Box>
                             <InputLabel sx={{ color: "black", mt: 2 }}>Category Name</InputLabel>
                             <Autocomplete
-                              size="medium"
+                              size="small"
                               fullWidth
                               sx={{ mt: 2 }}
                               options={categoryoptions}
@@ -2027,7 +2027,7 @@ const MyStepperUpdateAcc = () => {
                             <Box p={3}>
                               <InputLabel sx={{ color: "black", mt: 2 }}>Category Name</InputLabel>
 
-                              <TextField fullWidth name="Rate" placeholder="Category Name" size="medium" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
+                              <TextField fullWidth name="Rate" placeholder="Category Name" size="small" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
                             </Box>
                             <Box sx={{ pt: 2, display: "flex", alignItems: "center", gap: 5, margin: "8px", ml: 3 }}>
                               <Button variant="contained" color="primary" onClick={createCategory} sx={{
@@ -2105,7 +2105,7 @@ const MyStepperUpdateAcc = () => {
                   <Box p={3}>
                     <InputLabel sx={{ color: "black", mt: 2 }}>Category Name</InputLabel>
 
-                    <TextField fullWidth name="Rate" placeholder="Category Name" size="medium" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
+                    <TextField fullWidth name="Rate" placeholder="Category Name" size="small" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
                   </Box>
                   <Box sx={{ pt: 2, display: "flex", alignItems: "center", gap: 5, margin: "8px", ml: 3 }}>
                     <Button variant="contained" color="primary" onClick={createCategory}>
@@ -2140,23 +2140,23 @@ const MyStepperUpdateAcc = () => {
                         <Typography variant="h6" fontWeight="bold">
                           Product or service
                         </Typography>
-                        <TextField size="medium" margin="normal" value={selectedRowData?.productName || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, productName: e.target.value })} />
+                        <TextField size="small" margin="normal" value={selectedRowData?.productName || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, productName: e.target.value })} />
                         <Box>
                           <Typography>Description</Typography>
-                          <TextField size="medium" margin="normal" value={selectedRowData?.description || ""} fullWidth multiline onChange={(e) => setSelectedRowData({ ...selectedRowData, description: e.target.value })} />
+                          <TextField size="small" margin="normal" value={selectedRowData?.description || ""} fullWidth multiline onChange={(e) => setSelectedRowData({ ...selectedRowData, description: e.target.value })} />
                         </Box>
                         <Box sx={{ display: "flex", alignItems: "center", gap: "10px", mt: 1 }}>
                           <Box>
                             <Typography>Rate</Typography>
-                            <TextField size="medium" margin="normal" value={selectedRowData?.rate || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, rate: e.target.value })} />
+                            <TextField size="small" margin="normal" value={selectedRowData?.rate || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, rate: e.target.value })} />
                           </Box>
                           <Box>
                             <Typography>QTY</Typography>
-                            <TextField size="medium" margin="normal" value={selectedRowData?.qty || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, qty: e.target.value })} />
+                            <TextField size="small" margin="normal" value={selectedRowData?.qty || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, qty: e.target.value })} />
                           </Box>
                           <Box>
                             <Typography>Amount</Typography>
-                            <TextField size="medium" margin="normal" fullWidth disabled value={totalamount} />
+                            <TextField size="small" margin="normal" fullWidth disabled value={totalamount} />
                           </Box>
                         </Box>
                         <Box mt={2}>
@@ -2204,13 +2204,13 @@ const MyStepperUpdateAcc = () => {
           <Box>
             <Typography variant="h6">Payment Information</Typography>
             <Box mt={1} mb={3}>
-              <TextField size="medium" fullWidth margin="normal" placeholder="Payment terms" sx={{ backgroundColor: "#fff" }} onChange={handlePaymentTerms} value={paymentterms} />
+              <TextField size="small" fullWidth margin="normal" placeholder="Payment terms" sx={{ backgroundColor: "#fff" }} onChange={handlePaymentTerms} value={paymentterms} />
             </Box>
             <Box mt={1} mb={3}>
-              <TextField size="medium" fullWidth margin="normal" placeholder="Payment due date" sx={{ backgroundColor: "#fff" }} onChange={handlePaymentDueDate} value={paymentduedate} />
+              <TextField size="small" fullWidth margin="normal" placeholder="Payment due date" sx={{ backgroundColor: "#fff" }} onChange={handlePaymentDueDate} value={paymentduedate} />
             </Box>
             <Box mt={1} mb={3}>
-              <TextField size="medium" fullWidth margin="normal" placeholder="Payment amount" sx={{ backgroundColor: "#fff" }} onChange={handlePaymentAmount} value={paymentamount} />
+              <TextField size="small" fullWidth margin="normal" placeholder="Payment amount" sx={{ backgroundColor: "#fff" }} onChange={handlePaymentAmount} value={paymentamount} />
             </Box>
             {/* Add more fields for payment details if necessary */}
           </Box>

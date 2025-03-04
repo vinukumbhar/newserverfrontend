@@ -899,31 +899,31 @@ const FirmSetting = () => {
                 <Box display={"flex"} alignItems={"center"} m={2} gap={2}>
                   <Box flex={1}>
                     <InputLabel sx={{ color: "black", textAlign: "left", mb: 1, width: "100%" }}>Firm Name</InputLabel>
-                    <TextField fullWidth value={firmName} onChange={(e) => setFirmName(e.target.value)} name="Firm Name" placeholder="Enter Your Firm Name" size="medium" id="Firm Name" />
+                    <TextField fullWidth value={firmName} onChange={(e) => setFirmName(e.target.value)} name="Firm Name" placeholder="Enter Your Firm Name" size="small" id="Firm Name" />
                   </Box>
 
                   <Box flex={1}>
                     <InputLabel sx={{ color: "black", textAlign: "left", mb: 1, width: "100%" }}>Firm Email</InputLabel>
-                    <TextField fullWidth value={firmEmail} onChange={(e) => setFirmEmail(e.target.value)} placeholder="Enter Your Firm Email" size="medium" />
+                    <TextField fullWidth value={firmEmail} onChange={(e) => setFirmEmail(e.target.value)} placeholder="Enter Your Firm Email" size="small" />
                   </Box>
                 </Box>
 
                 <Box m={2}>
                   <InputLabel sx={{ color: "black", textAlign: "left", mb: 1 }}>Street address</InputLabel>
-                  <TextField fullWidth value={address} onChange={(e) => setAddress(e.target.value)} name="Firm Name" placeholder="Street address" size="medium" id="Firm Name" />
+                  <TextField fullWidth value={address} onChange={(e) => setAddress(e.target.value)} name="Firm Name" placeholder="Street address" size="small" id="Firm Name" />
                 </Box>
 
                 <Box display={"flex"} alignItems={"center"} m={2} gap={1} sx={{ flexWrap: "wrap" }}>
                   <Box flex={1} m={1}>
                     <InputLabel sx={{ color: "black", textAlign: "left", mb: 1 }}>City</InputLabel>
-                    <TextField fullWidth value={City} onChange={(e) => setCity(e.target.value)} name="City" placeholder="City" size="medium" id="City" />
+                    <TextField fullWidth value={City} onChange={(e) => setCity(e.target.value)} name="City" placeholder="City" size="small" id="City" />
                   </Box>
 
                   <Box flex={1} m={1}>
                     {/* State Autocomplete */}
                     <InputLabel sx={{ color: "black", textAlign: "left", mb: 1 }}>State</InputLabel>
                     <Autocomplete
-                      size="medium"
+                      size="small"
                       value={selectedState}
                       onChange={(event, newValue) => {
                         setSelectedState(newValue);
@@ -936,14 +936,14 @@ const FirmSetting = () => {
 
                   <Box flex={1} m={1}>
                     <InputLabel sx={{ color: "black", textAlign: "left", mb: 1 }}>Zip/Postal code</InputLabel>
-                    <TextField fullWidth name="Zip/Postal code" value={zipCode} onChange={(e) => setZipCode(e.target.value)} placeholder="Zip/Postal code" size="medium" id="ZipPostalCode" />
+                    <TextField fullWidth name="Zip/Postal code" value={zipCode} onChange={(e) => setZipCode(e.target.value)} placeholder="Zip/Postal code" size="small" id="ZipPostalCode" />
                   </Box>
                 </Box>
 
                 <Box display={"flex"} alignItems={"center"} m={2} gap={2}>
                   <Box flex={1}>
                     <InputLabel sx={{ color: "black", textAlign: "left", mb: 1, width: "100%" }}>Firm phone number</InputLabel>
-                    <TextField fullWidth value={firmPhoneNumber} onChange={(e) => setFirmPhoneNumber(e.target.value)} name="Firm phone number" placeholder="Enter Your Firm phone number" size="medium" id="Firm phone number" />
+                    <TextField fullWidth value={firmPhoneNumber} onChange={(e) => setFirmPhoneNumber(e.target.value)} name="Firm phone number" placeholder="Enter Your Firm phone number" size="small" id="Firm phone number" />
                   </Box>
 
                   <Box flex={1}>
@@ -956,7 +956,7 @@ const FirmSetting = () => {
                       value={firmwebsite}
                       onChange={(e) => setFirmWebsite(e.target.value)}
                       placeholder="Firm Website"
-                      size="medium"
+                      size="small"
                       id="Firm Website"
                     />
                   </Box>
@@ -964,7 +964,7 @@ const FirmSetting = () => {
 
                 <Box m={2}>
                   <InputLabel sx={{ color: "black", textAlign: "left", mb: 1 }}>Default reply-to address for system emails</InputLabel>
-                  <TextField fullWidth value={defaultreplytoemails} onChange={(e) => setDefaultreplytoemails(e.target.value)} name="Default reply-to address for system emails" placeholder="Default reply-to address for system emails" size="medium" id="Default reply-to address for system emails" />
+                  <TextField fullWidth value={defaultreplytoemails} onChange={(e) => setDefaultreplytoemails(e.target.value)} name="Default reply-to address for system emails" placeholder="Default reply-to address for system emails" size="small" id="Default reply-to address for system emails" />
                 </Box>
 
                 <Box display={"flex"} alignItems={"center"} textAlign={"left"} m={2}>
@@ -1060,11 +1060,11 @@ const FirmSetting = () => {
                   <Box mt={2}>
                     <Box>
                       <InputLabel sx={{ color: "black", textAlign: "left" }}>Domain name</InputLabel>
-                      <TextField fullWidth name="Domain name" value={domainname} onChange={(e) => setDomainName(e.target.value)} placeholder="Domain name" size="medium" sx={{ mt: 1 }} id="Domain name" />
+                      <TextField fullWidth name="Domain name" value={domainname} onChange={(e) => setDomainName(e.target.value)} placeholder="Domain name" size="small" sx={{ mt: 1 }} id="Domain name" />
                     </Box>
 
                     <Box mt={2}>
-                      <Button onClick={CustomDomain} variant="outlined" size="medium">
+                      <Button onClick={CustomDomain} variant="outlined" size="small">
                         Link Custom Domain
                       </Button>
                     </Box>
@@ -1082,7 +1082,7 @@ const FirmSetting = () => {
                 <Box>
                   <Box m={3}>
                     <InputLabel sx={{ color: "black", textAlign: "left" }}>Email address to receive manual 2FA disable requests</InputLabel>
-                    <TextField fullWidth name="Email address to receive manual 2FA disable requests" placeholder="Email address to receive manual 2FA disable requests" size="medium" sx={{ mt: 1 }} id="Domain name" value={defaultreplytoemails} onChange={(e) => setDefaultreplytoemails(e.target.value)} />
+                    <TextField fullWidth name="Email address to receive manual 2FA disable requests" placeholder="Email address to receive manual 2FA disable requests" size="small" sx={{ mt: 1 }} id="Domain name" value={defaultreplytoemails} onChange={(e) => setDefaultreplytoemails(e.target.value)} />
                   </Box>
 
                   <Box textAlign={"left"} ml={2} alignItems={"center"}>
@@ -1161,7 +1161,7 @@ const FirmSetting = () => {
                       value={facebooklink}
                       onChange={(e) => setFacebooklink(e.target.value)}
                       placeholder="Facebook"
-                      size="medium"
+                      size="small"
                       id="Facebook"
                       InputProps={{
                         startAdornment: (
@@ -1181,7 +1181,7 @@ const FirmSetting = () => {
                       placeholder="LinkedIn"
                       value={linkedinlink}
                       onChange={(e) => setLinkedinlink(e.target.value)}
-                      size="medium"
+                      size="small"
                       id="LinkedIn"
                       InputProps={{
                         startAdornment: (
@@ -1201,7 +1201,7 @@ const FirmSetting = () => {
                       value={xlink}
                       onChange={(e) => setXlink(e.target.value)}
                       placeholder="X"
-                      size="medium"
+                      size="small"
                       id="X"
                       InputProps={{
                         startAdornment: (
@@ -1221,7 +1221,7 @@ const FirmSetting = () => {
                       placeholder="Instagram"
                       value={instagramlink}
                       onChange={(e) => setInstagramlink(e.target.value)}
-                      size="medium"
+                      size="small"
                       id="Instagram"
                       InputProps={{
                         startAdornment: (
@@ -1303,18 +1303,18 @@ const FirmSetting = () => {
                                                     <TextField
                                                         {...params}
                                                         placeholder="Default language"
-                                                        size="medium"
+                                                        size="small"
                                                         variant="outlined"
                                                     />
                                                 )}
                                                 id="default-language"
                                             /> */}
-                    <Autocomplete size="medium" margin="normal" value={selectedLanguage} onChange={(event, newValue) => handleLanguageChange(newValue)} options={languages} getOptionLabel={(option) => option.label || ""} renderInput={(params) => <TextField {...params} placeholder="Select a language" />} />
+                    <Autocomplete size="small" margin="normal" value={selectedLanguage} onChange={(event, newValue) => handleLanguageChange(newValue)} options={languages} getOptionLabel={(option) => option.label || ""} renderInput={(params) => <TextField {...params} placeholder="Select a language" />} />
                   </Box>
 
                   <Box m={2}>
                     <InputLabel sx={{ color: "black", textAlign: "left", mb: 1 }}>Time Zone </InputLabel>
-                    <TextField fullWidth name="Time Zone" placeholder="Time Zone" size="medium" id="Time Zone" />
+                    <TextField fullWidth name="Time Zone" placeholder="Time Zone" size="small" id="Time Zone" />
                   </Box>
                   <Box display="flex" justifyContent="flex-start" padding={2}>
                     <Button onClick={InternationalSettings} variant="contained"  sx={{
@@ -1349,7 +1349,7 @@ const FirmSetting = () => {
                       onChange={(event, newValue) => {
                         setSelectedFormat(newValue); // Update the selected value when user selects an option
                       }}
-                      renderInput={(params) => <TextField {...params} placeholder="Select format" size="medium" />}
+                      renderInput={(params) => <TextField {...params} placeholder="Select format" size="small" />}
                     />
                   </Box>
                   <Box textAlign={"left"} ml={3}>
@@ -1391,7 +1391,7 @@ const FirmSetting = () => {
                       onChange={(event, newValue) => {
                         setSelectedSignatures(newValue);
                       }}
-                      renderInput={(params) => <TextField {...params} placeholder="Select Signature" size="medium" />}
+                      renderInput={(params) => <TextField {...params} placeholder="Select Signature" size="small" />}
                     />
                   </Box>
 
@@ -1435,7 +1435,7 @@ const FirmSetting = () => {
                       multiple
                       sx={{ background: "#fff", mt: 1 }}
                       options={options}
-                      size="medium"
+                      size="small"
                       getOptionLabel={(option) => option.label}
                       value={selectedUser}
                       onChange={handleUserChange}
@@ -1491,7 +1491,7 @@ const FirmSetting = () => {
                             // label="Select Date"
                             value={allowsupportteamsetuplandingdate}
                             onChange={(newValue) => setAllowsupportteamsetuplandingdate(newValue)}
-                            renderInput={(params) => <TextField {...params} size="medium" margin="normal" />}
+                            renderInput={(params) => <TextField {...params} size="small" margin="normal" />}
                           />
                         </Box>
                       </LocalizationProvider>
@@ -1545,7 +1545,7 @@ const FirmSetting = () => {
                     <InputLabel sx={{ color: "black", textAlign: "left", mb: 1 }}>Folder Templates </InputLabel>
                     <FormControl fullWidth>
                       <Select
-                        size="medium"
+                        size="small"
                         multiple
                         input={<OutlinedInput id="select-multiple" />}
                         renderValue={(selected) => selected.join(", ")} // Display as a comma-separated string
@@ -1639,7 +1639,7 @@ const FirmSetting = () => {
                       name="Emails each firm member can send (max 10,000)"
                       value={emailfirmmembercansend}
                       onChange={(e) => setEmailfirmmembercansend(e.target.value)}
-                      size="medium"
+                      size="small"
                       id="Emails each firm member can send (max 10,000)"
                       InputProps={{
                         endAdornment: (
@@ -1752,7 +1752,7 @@ const FirmSetting = () => {
                                                 fullWidth
                                                 name="Tittle"
                                                 placeholder="Tittle"
-                                                size="medium"
+                                                size="small"
                                                 id="firmName"
                                             />
                                         </Box>

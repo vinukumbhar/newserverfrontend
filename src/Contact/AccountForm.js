@@ -1574,7 +1574,7 @@ const handleOpenModal = (id) => {
                       </InputLabel>
 
                       <TextField
-                         size="medium"
+                         size="small"
                         fullWidth
                         placeholder="Account Name"
                         value={accountName}
@@ -1625,7 +1625,7 @@ const handleOpenModal = (id) => {
 
                       <Autocomplete
                         multiple
-                        size="medium"
+                        size="small"
                       
                         options={tagsOptions}
                         getOptionLabel={(option) => option.label}
@@ -1699,7 +1699,7 @@ const handleOpenModal = (id) => {
          <FormControl sx={{ width: "100%" }}>
   <Select
     multiple
-    size="medium"
+    size="small"
     fullWidth
     value={selectedTags}
     onChange={handleTagChange}
@@ -1808,7 +1808,7 @@ const handleOpenModal = (id) => {
                         multiple
                         sx={{ mt: 2 }}
                         options={options}
-                        size="medium"
+                        size="small"
                         getOptionLabel={(option) => option.label}
                         value={selectedUser}
                         onChange={handleUserChange}
@@ -1896,7 +1896,7 @@ const handleOpenModal = (id) => {
                               sx={{ backgroundColor: "#fff" }}
                               placeholder="select folder template"
                               variant="outlined"
-                              size="medium"
+                              size="small"
                               error={!!foldertemplateError}
                             />
                             {!!foldertemplateError && (
@@ -1965,7 +1965,7 @@ const handleOpenModal = (id) => {
                           placeholder="Account Name"
                           fullWidth
                          
-                          size="medium"
+                          size="small"
                           error={!!accountNameError}
                           // helperText={pipelineNameError}
                           sx={{ mt:1.5, backgroundColor: "#fff" }}
@@ -2014,7 +2014,7 @@ const handleOpenModal = (id) => {
                         </InputLabel>
                         <TextField
                           fullWidth
-                          size="medium"
+                          size="small"
                           //  margin="normal"
                           error={!!companyNameError}
                           // helperText={pipelineNameError}
@@ -2125,7 +2125,7 @@ const handleOpenModal = (id) => {
                             <TextField
                               {...params}
                               variant="outlined"
-                              size="medium"
+                              size="small"
                               placeholder="select tags"
                             />
                           )}
@@ -2136,7 +2136,7 @@ const handleOpenModal = (id) => {
          <FormControl sx={{ width: "100%" }}>
   <Select
     multiple
-    size="medium"
+    size="small"
     fullWidth
     value={selectedTags}
     onChange={handleTagChange}
@@ -2246,7 +2246,7 @@ const handleOpenModal = (id) => {
                           multiple
                           sx={{ mt: 2 }}
                           options={options}
-                          size="medium"
+                          size="small"
                           getOptionLabel={(option) => option.label}
                           value={selectedUser}
                           onChange={handleUserChange}
@@ -2334,7 +2334,7 @@ const handleOpenModal = (id) => {
                               sx={{ backgroundColor: "#fff" }}
                               placeholder="select folder template"
                               variant="outlined"
-                              size="medium"
+                              size="small"
                               error={!!foldertemplateError}
                             />
                             {!!foldertemplateError && (
@@ -2375,7 +2375,7 @@ const handleOpenModal = (id) => {
                       <Box mt={2}>
                         <InputLabel sx={{ color: "black" }}>Country</InputLabel>
                         <Autocomplete
-                          size="medium"
+                          size="small"
                           options={countries}
                           getOptionLabel={(option) => option.name}
                           // value={cCountry}
@@ -2439,7 +2439,7 @@ const handleOpenModal = (id) => {
                           placeholder="Street address"
                           value={cStreetAddress}
                           onChange={(e) => SetCStreetAddress(e.target.value)}
-                          size="medium"
+                          size="small"
                           fullWidth
                           margin="normal"
                         />
@@ -2462,7 +2462,7 @@ const handleOpenModal = (id) => {
                             value={cCity}
                             onChange={(e) => setCcity(e.target.value)}
                             placeholder="City"
-                            size="medium"
+                            size="small"
                           />
                         </Box>
                         <Box>
@@ -2477,7 +2477,7 @@ const handleOpenModal = (id) => {
                             value={cStateProvince}
                             onChange={(e) => SetCStateProvince(e.target.value)}
                             placeholder="State/Province"
-                            size="medium"
+                            size="small"
                           />
                         </Box>
                         <Box>
@@ -2492,7 +2492,7 @@ const handleOpenModal = (id) => {
                             value={cZipPostalCode}
                             onChange={(e) => SetCZipPostalCode(e.target.value)}
                             placeholder="ZIP/Postal Code"
-                            size="medium"
+                            size="small"
                           />
                         </Box>
                       </Box>
@@ -2587,7 +2587,7 @@ const handleOpenModal = (id) => {
                           <Grid item xs="auto">
                             <IconButton
                               aria-label="more options"
-                              size="medium"
+                              size="small"
                               onClick={(e) =>
                                 handleMenuClick(e, contact._id, contactName)
                               }
@@ -2948,7 +2948,7 @@ const handleOpenModal = (id) => {
                             fullWidth
                             name="firstName"
                             placeholder="First Name"
-                            size="medium"
+                            size="small"
                             onChange={(e) => handleContactInputChange(index, e)}
                             error={!!firstNameError}
                             // helperText={pipelineNameError}
@@ -2988,7 +2988,7 @@ const handleOpenModal = (id) => {
                             fullWidth
                             name="middleName"
                             placeholder="Middle Name"
-                            size="medium"
+                            size="small"
                             onChange={(e) => handleContactInputChange(index, e)}
                           />
                         </Box>
@@ -3012,7 +3012,7 @@ const handleOpenModal = (id) => {
                             fullWidth
                             name="lastName"
                             placeholder="Last name"
-                            size="medium"
+                            size="small"
                             onChange={(e) => handleContactInputChange(index, e)}
                             error={!!lastNameError}
                             // helperText={pipelineNameError}
@@ -3054,7 +3054,7 @@ const handleOpenModal = (id) => {
                           fullWidth
                           placeholder="Contact Name"
                           margin="normal"
-                          size="medium"
+                          size="small"
                           value={contact.contactName}
                           onChange={(e) => handleContactInputChange(index, e)}
                         />
@@ -3068,7 +3068,7 @@ const handleOpenModal = (id) => {
                           name="companyName"
                           margin="normal"
                           placeholder="Company Name"
-                          size="medium"
+                          size="small"
                           onChange={(e) => handleContactInputChange(index, e)}
                         />
                       </Box>
@@ -3080,7 +3080,7 @@ const handleOpenModal = (id) => {
                           name="note"
                           margin="normal"
                           placeholder="Note"
-                          size="medium"
+                          size="small"
                           onChange={(e) => handleContactInputChange(index, e)}
                         />
                       </Box>
@@ -3091,7 +3091,7 @@ const handleOpenModal = (id) => {
                           name="ssn"
                           margin="normal"
                           placeholder="SSN"
-                          size="medium"
+                          size="small"
                           onChange={(e) => handleContactInputChange(index, e)}
                         />
                       </Box>
@@ -3113,7 +3113,7 @@ const handleOpenModal = (id) => {
                           fullWidth
                           name="email"
                           placeholder="Email"
-                          size="medium"
+                          size="small"
                           onChange={(e) => handleContactInputChange(index, e)}
                           error={!!emailError}
                           // helperText={pipelineNameError}
@@ -3239,7 +3239,7 @@ const handleOpenModal = (id) => {
                             <TextField
                               {...params}
                               variant="outlined"
-                              size="medium"
+                              size="small"
                               placeholder="Select tags"
                               sx={{ width: "100%", marginTop: "8px" }}
                             />
@@ -3278,7 +3278,7 @@ const handleOpenModal = (id) => {
                             <Chip
                               label="Primary phone"
                               color="primary"
-                              size="medium"
+                              size="small"
                               sx={{ position: "absolute", mt: -3 }}
                             />
                           )}
@@ -3344,7 +3344,7 @@ const handleOpenModal = (id) => {
                           </InputLabel>
 
                           <Autocomplete
-                            size="medium"
+                            size="small"
                             options={countries}
                             getOptionLabel={(option) => option.name}
                             value={contact.country} // Update to reflect the contact's current country
@@ -3401,7 +3401,7 @@ const handleOpenModal = (id) => {
                           name="streetAddress"
                           margin="normal"
                           placeholder="Street address"
-                          size="medium"
+                          size="small"
                           onChange={(e) =>
                             handleContactAddressChange(
                               index,
@@ -3426,7 +3426,7 @@ const handleOpenModal = (id) => {
                             margin="normal"
                             name="city"
                             placeholder="City"
-                            size="medium"
+                            size="small"
                             onChange={(e) =>
                               handleContactAddressChange(
                                 index,
@@ -3445,7 +3445,7 @@ const handleOpenModal = (id) => {
                             name="state"
                             fullWidth
                             placeholder="State/Province"
-                            size="medium"
+                            size="small"
                             onChange={(e) =>
                               handleContactAddressChange(
                                 index,
@@ -3464,7 +3464,7 @@ const handleOpenModal = (id) => {
                             fullWidth
                             name="postalCode"
                             placeholder="ZIP/Postal Code"
-                            size="medium"
+                            size="small"
                             onChange={(e) =>
                               handleContactAddressChange(
                                 index,

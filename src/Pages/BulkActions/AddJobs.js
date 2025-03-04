@@ -1621,7 +1621,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                   <FormControl sx={{ width: "100%", marginTop: "8px" }}>
                     <Select
                       multiple
-                      size="medium"
+                      size="small"
                       value={selectedaccount}
                       onChange={(event) => {
                         const newSelected = event.target.value;
@@ -1681,7 +1681,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                         sx={{ backgroundColor: "#fff" }}
                         placeholder="Pipeline"
                         variant="outlined"
-                        size="medium"
+                        size="small"
                       />
                     )}
                     sx={{ width: "100%", marginTop: "8px" }}
@@ -1693,7 +1693,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                   <label className="job-input-label">Stage</label>
                   <Autocomplete
                     disabled // Disable the Autocomplete input
-                    size="medium"
+                    size="small"
                     options={stagesoptions}
                     getOptionLabel={(option) => option.label}
                     value={selectedStage}
@@ -1734,7 +1734,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                         sx={{ backgroundColor: "#fff" }}
                         placeholder="Job Template"
                         variant="outlined"
-                        size="medium"
+                        size="small"
                       />
                     )}
                     sx={{ width: "100%", marginTop: "8px" }}
@@ -1748,7 +1748,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                     value={jobName}
                     onChange={(e) => setJobName(e.target.value)}
                     margin="normal"
-                    size="medium"
+                    size="small"
                     placeholder="Job Name"
                     sx={{ backgroundColor: "#fff" }}
                   />
@@ -1759,7 +1759,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                     multiple
                     sx={{ marginTop: "8px" }}
                     options={assigneesoptions}
-                    size="medium"
+                    size="small"
                     getOptionLabel={(option) => option.label}
                     value={selectedUser}
                     onChange={handleUserChange}
@@ -1858,7 +1858,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                       <Typography>Start In</Typography>
                       <TextField
-                        size="medium"
+                        size="small"
                         margin="normal"
                         fullWidth
                         defaultValue={0}
@@ -1869,7 +1869,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                       />
                       <Autocomplete
                         options={dayOptions}
-                        size="medium"
+                        size="small"
                         getOptionLabel={(option) => option.label}
                         value={
                           startsInDuration
@@ -1905,7 +1905,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                       <Typography>Due In</Typography>
                       <TextField
-                        size="medium"
+                        size="small"
                         margin="normal"
                         fullWidth
                         defaultValue={0}
@@ -1928,7 +1928,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                             : null
                         }
                         onChange={handleDueInDateChange}
-                        size="medium"
+                        size="small"
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -2000,7 +2000,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                                 value={inputText + selectedJobShortcut}
                                 onChange={handlechatsubject}
                                 placeholder="Job name for client"
-                                size="medium"
+                                size="small"
                                 sx={{ background: "#fff", mt: 2 }}
                               />
 
@@ -2008,7 +2008,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                                 <Typography>Status</Typography>
                                 <Autocomplete
                                   options={optionstatus}
-                                  size="medium"
+                                  size="small"
                                   sx={{ mt: 1 }}
                                   value={selectedJob}
                                   onChange={handleJobChange}
@@ -2069,7 +2069,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                                 </InputLabel>
                                 <TextField
                                   fullWidth
-                                  size="medium"
+                                  size="small"
                                   margin="normal"
                                   type="text"
                                   multiline

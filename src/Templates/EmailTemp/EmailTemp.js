@@ -888,7 +888,7 @@ console.log(formData)
                       // helperText={templateNameError}
                       onChange={(e) => setTemplateName(e.target.value)}
                       placeholder="Template Name"
-                      size="medium"
+                      size="small"
                     />
                     {!!templateNameError && (
                       <Alert
@@ -944,7 +944,7 @@ console.log(formData)
                     <Autocomplete
                       options={options}
                       sx={{ mt: 2, mb: 2, backgroundColor: "#fff" }}
-                      size="medium"
+                      size="small"
                       value={selecteduser}
                       onChange={handleuserChange}
                       isOptionEqualToValue={(option, value) =>
@@ -996,7 +996,7 @@ console.log(formData)
                       value={inputText + selectedShortcut}
                       onChange={handlechatsubject}
                       placeholder="Subject"
-                      size="medium"
+                      size="small"
                       error={!!inputTextError}
                       // helperText={inputTextError}
                       sx={{ background: "#fff", mt: 2 }}

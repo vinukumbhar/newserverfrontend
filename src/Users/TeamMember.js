@@ -29,33 +29,91 @@ const TeamMember = () => {
   const WINDOWS_PORT = process.env.REACT_APP_SERVER_URI;
   const [loading, setLoading] = useState(true);
   const [teamMembers, setTeamMembers] = useState([]);
-  const fetchData = async () => {
-    try {
-      const requestOptions = {
-        method: "GET",
-        redirect: "follow",
-      };
+   const { logindata } = useContext(LoginContext);
+  
+    // const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
+    const [userData, setUserData] = useState([]);
+    const fetchuserData = async () => {
+      try {
+        const url = `${LOGIN_API}/common/user/${logindata.user.id}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        setUserData(data);
+        console.log(data.user.id);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+     useEffect(() => {
+        fetchuserData();
+      }, []);
+  // const fetchData = async () => {
+  //   try {
+  //     const requestOptions = {
+  //       method: "GET",
+  //       redirect: "follow",
+  //     };
 
-      const url = `${LOGIN_API}/admin/teammember/teammemberlist/list/true`;
+  //     const url = `${LOGIN_API}/admin/teammember/teammemberlist/list/true`;
 
-      const response = await fetch(url, requestOptions);
-      const result = await response.json();
+  //     const response = await fetch(url, requestOptions);
+  //     const result = await response.json();
 
-      setTeamMembers(result.teamMemberslist);
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
-  };
-  useEffect(() => {
-    fetchData();
-  }, []);
+  //     setTeamMembers(result.teamMemberslist);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.error(error);
+  //     setLoading(false);
+  //   }
+  // };
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
+   const fetchData = async () => {
+      try {
+        const requestOptions = {
+          method: "GET",
+          redirect: "follow",
+        };
+  
+        const url = `${LOGIN_API}/admin/teammember/teammemberlist/list/true`;
+  
+        const response = await fetch(url, requestOptions);
+        const result = await response.json();
+  
+        const loggedInUser = {
+          _id: userData._id,
+          FirstName: userData.username, // Assuming you want to display the username in FirstName
+          MiddleName: "",
+          LastName: "",
+          // Name: userData.username,
+          Email: userData.email,
+          Role: userData.role,
+          has2FA: "Disabled",
+          Created: userData.updatedAt,
+        };
+  
+        const updatedTeamMembers = [loggedInUser, ...result.teamMemberslist];
+  
+        setTeamMembers(updatedTeamMembers);
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
+        setLoading(false);
+      }
+    };
+    useEffect(() => {
+      if (userData) {
+        fetchData();
+      }
+    }, [userData]);
+    console.log("teamsdata",teamMembers)
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [isNewDrawerOpen, setIsNewDrawerOpen] = useState(false);
   const handleNewDrawerClose = () => {
     setIsNewDrawerOpen(false);
+    fetchData();
   };
   //Integration
   const [isCheckedPayments, setIsCheckedPayments] = useState(false);
@@ -405,7 +463,6 @@ const TeamMember = () => {
           console.log(result);
           console.log(result.teamMember._id);
           setTeamMemberId(result.teamMember._id);
-          // createSidebar(result.teamMember._id)
           newUser(result.teamMember._id);
         })
 
@@ -414,180 +471,14 @@ const TeamMember = () => {
   };
   console.log(teamMemberIdUpdate);
 
-  // const createSidebar = (newTeamMemberUserid)=>{
-  //   const myHeaders = new Headers();
-  //   myHeaders.append("Content-Type", "application/json");
-
-  //   const raw = JSON.stringify({
-  //     "userrole": "teammember",
-  //     // "userstatus": "active",
-  //     "sidebardata": [
-  //       {
-  //         "label": "Insights",
-  //         "path": "/",
-  //         "icon": "AiOutlineAppstoreAdd",
-  //         "permissions": false
-  //       },
-  //       {
-  //         "label": "Inbox +",
-  //         "path": "/inbox",
-  //         "icon": "LiaMoneyBillSolid",
-  //         "permissions": false
-  //       },
-  //       {
-  //         "label": "Clients",
-  //         "path": "/clients/accounts",
-  //         "icon": "IoPeopleOutline",
-  //         "permissions": false,
-  //         "submenu": [
-  //           {
-  //             "label": "Accounts",
-  //             "path": "/clients/accounts",
-  //             "icon": "GoDotFill",
-  //             "permissions": false
-  //           },
-  //           {
-  //             "label": "Contacts",
-  //             "path": "/clients/contacts",
-  //             "icon": "GoDotFill",
-  //             "permissions": false
-  //           }
-  //         ]
-  //       },
-  //       {
-  //         "label": "Workflow",
-  //         "path": "/workflow/tasks",
-  //         "icon": "LuWorkflow",
-  //         "permissions": false,
-  //         "submenu": [
-
-  //           {
-  //             "label": "Jobs",
-  //             "path": "/workflow/jobs",
-  //             "icon": "GoDotFill",
-  //             "permissions": false
-  //           },
-
-  //           {
-  //             "label": "Pipelines",
-  //             "path": "/workflow/pipelines",
-  //             "icon": "LiaMoneyBillSolid",
-  //             "permission": false
-  //           }
-  //         ]
-  //       },
-  //       {
-  //         "label": "Billing",
-  //         "path": "/billing/time",
-  //         "icon": "LiaMoneyBillSolid",
-  //         "permissions": false,
-  //         "submenu": [
-  //           {
-  //             "label": "Time Entries",
-  //             "path": "/billing/time",
-  //             "icon": "GoDotFill",
-  //             "permissions": false
-  //           },
-  //           {
-  //             "label": "Invoices",
-  //             "path": "/billing/Invoices",
-  //             "icon": "GoDotFill",
-  //             "permissions": false
-  //           },
-  //           {
-  //             "label": "Proposals&Els",
-  //             "path": "/billing/proposalsandels",
-  //             "icon": "LiaMoneyBillSolid",
-  //             "permission": false
-  //           }
-  //         ]
-  //       },
-  //       {
-  //         "label": "Settings",
-  //         "path": "/settings/myaccount",
-  //         "icon": "FiSettings",
-  //         "permissions": false,
-  //         "submenu": [
-  //           {
-  //             "label": "My Account",
-  //             "path": "/settings/myaccount",
-  //             "icon": "GoDotFill",
-  //             "permissions": false
-  //           },
-
-  //         ]
-  //       },
-  //       {
-  //         "label": "Templates",
-  //         "path": "/firmtemp/templates/marketplace",
-  //         "icon": "MdFormatListBulletedAdd",
-  //         "permissions": false,
-  //         "submenu": [
-  //           {
-  //             "label": "MarketPlace",
-  //             "path": "/firmtemp/templates/marketplace",
-  //             "icon": "GoDotFill",
-  //             "permissions": false
-  //           },
-  //           {
-  //             "label": "Firm Templates",
-  //             "path": "/firmtemp/templates/tasks",
-  //             "icon": "GoDotFill",
-  //             "permissions": false
-  //           },
-  //           {
-  //             "label": "Services",
-  //             "path": "/firmtemp/service",
-  //             "icon": "GoDotFill",
-  //             "permissions": false
-  //           },
-
-  //           {
-  //             "label": "Tags",
-  //             "path": "/firmtemp/tags",
-  //             "icon": "LiaMoneyBillSolid",
-  //             "permission": false
-  //           },
-  //           {
-  //             "label": "Pipeline Templates",
-  //             "path": "/firmtemp/pipelines",
-  //             "icon": "GoDotFill",
-  //             "permissions": false
-  //           }
-  //         ]
-  //       }
-  //     ]
-
-  //   });
-
-  //   const requestOptions = {
-  //     method: "POST",
-  //     headers: myHeaders,
-  //     body: raw,
-  //     redirect: "follow"
-  //   };
-
-  //   fetch("http://127.0.0.1:7000/api/create", requestOptions)
-  //     .then((response) => response.text())
-  //     .then((result) =>{
-  //       console.log("sidebar",result)
-  //       // console.log(result);
-  //       console.log(result.user._id);
-  //       // updateTeammemberNewUserid(result._id, newTeamMemberUserid);
-  //     })
-  //     .catch((error) => console.error(error));
-  // }
-
-  //************************ */
-
   const newUser = (teammemberuserid) => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-
+const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
     const password = `${firstName}@123`;
 
     const raw = JSON.stringify({
-      username: firstName,
+      username: username,
       email: email,
       role: "TeamMember",
       password: password,
@@ -607,7 +498,10 @@ const TeamMember = () => {
         console.log(result);
         console.log(result._id);
         updateTeammemberUserid(result._id, teammemberuserid);
-        sendmail();
+      
+       
+        // ******************required to send email************
+        // sendmail();
       })
 
       .catch((error) => console.error(error));
@@ -632,14 +526,15 @@ const TeamMember = () => {
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
-        toast.success("Team Member saved successfully!");
-        fetchData();
+        toast.success("Team Member created successfully!");
+       handleNewDrawerClose()
+
         // navigate
       })
 
       .catch((error) => console.error(error));
   };
-  const { logindata } = useContext(LoginContext);
+  // const { logindata } = useContext(LoginContext);
   const sendmail = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -669,8 +564,8 @@ const TeamMember = () => {
         console.log(result);
         toast.success("Team Member saved successfully!");
         // createNewSidebarData();
-        handleNewDrawerClose();
-        fetchData();
+        // handleNewDrawerClose();
+        // fetchData();
         // navigate("/firmtemp/teammember/activemember");
         // window.location.reload();
       })
@@ -694,48 +589,7 @@ const TeamMember = () => {
   return (
     <Box>
       <Box>
-        {/* <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "row",
-              mt: 5,
-              width: "100%",
-              margin: "20px",
-              gap: "10px",
-              "& a": {
-                textDecoration: "none",
-                padding: "5px 10px",
-                borderRadius: "15px",
-                fontSize:'14px',
-                // color: "primary.main",
-                "&:hover": {
-                  backgroundColor: "var(--color-save-btn)",
-                  color: "white",
-                },
-                "&.active": {
-                  backgroundColor: "var(--color-save-btn)",
-                  color: "white",
-                },
-              },
-            }}
-          >
-             <NavLink to="/firmtemp/teammember/activemember">Active Members</NavLink> 
-             <NavLink to="/firmtemp/teammember/deactivatemember">Deactivated Members</NavLink> 
-          </Box>
-          <Box>
-            <Button onClick={setIsNewDrawerOpen} variant="contained"  sx={{
-                  backgroundColor: 'var(--color-save-btn)',  // Normal background
-                 
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                  },
-  borderRadius:'15px', whiteSpace: "nowrap" 
-                }}>
-              Team Member
-            </Button>
-          </Box>
-        </Box> */}
+       
         <Box sx={{display:'flex', alignItems:'center',justifyContent:'space-between'}}> 
         <Box
           sx={{
@@ -848,7 +702,7 @@ const TeamMember = () => {
                         id="firstname"
                         name="firstname"
                         placeholder="First name"
-                        size="medium"
+                        size="small"
                         sx={{ mt: 1 }}
                       />
                     </Box>
@@ -867,7 +721,7 @@ const TeamMember = () => {
                         name="middlename"
                         id="middlename"
                         placeholder="Middle Name"
-                        size="medium"
+                        size="small"
                         sx={{ mt: 1 }}
                       />
                     </Box>
@@ -882,7 +736,7 @@ const TeamMember = () => {
                         id="lastname"
                         onChange={handleLastName}
                         placeholder="Last Name"
-                        size="medium"
+                        size="small"
                         sx={{ mt: 1 }}
                       />
                     </Box>
@@ -902,14 +756,14 @@ const TeamMember = () => {
                   id="email"
                   onChange={handleEmail}
                   placeholder="Email"
-                  size="medium"
+                  size="small"
                   sx={{ mt: 2 }}
                 />
               </Box>
 
               <Box>
                 <Select
-                  size="medium"
+                  size="small"
                   sx={{ width: "100%", mt: 2 }}
                   value={selectedOption}
                   // onChange={handleOptionChange}

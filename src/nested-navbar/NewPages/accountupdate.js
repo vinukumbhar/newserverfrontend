@@ -826,11 +826,11 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                   </Box>
                   <Box>
                     <InputLabel sx={{ color: "black" }}>Account Name</InputLabel>
-                    <TextField size="medium" fullWidth placeholder="Account Name" margin="normal" value={accountName} onChange={(e) => setaccountName(e.target.value)} />
+                    <TextField size="small" fullWidth placeholder="Account Name" margin="normal" value={accountName} onChange={(e) => setaccountName(e.target.value)} />
                   </Box>
                   <Box>
                     <InputLabel sx={{ color: "black" }}>Company Name</InputLabel>
-                    <TextField size="medium" fullWidth placeholder="Company Name" margin="normal" value={companyname} onChange={(e) => setcompanyname(e.target.value)} />
+                    <TextField size="small" fullWidth placeholder="Company Name" margin="normal" value={companyname} onChange={(e) => setcompanyname(e.target.value)} />
                   </Box>
                   <Box>
                     {/* <InputLabel sx={{ color: "black" }}>Tags</InputLabel>
@@ -854,7 +854,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
 <FormControl sx={{ width: "100%" }}>
   <Select
     multiple
-    size="medium"
+    size="small"
     fullWidth
     value={combinedTagsValues}
     onChange={(event) => setCombinedTagsValues(event.target.value)}
@@ -976,7 +976,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                       multiple
                       sx={{ mt: 2 }}
                       options={options}
-                      size="medium"
+                      size="small"
                       getOptionLabel={(option) => option.label}
                       value={options.filter((option) => selectedUser.some((selected) => selected.value === option.value))}
                       onChange={handleUserChange} // Updated to use `handleUserChange` function
@@ -1012,7 +1012,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                                               sx={{ backgroundColor: "#fff" }}
                                               placeholder="select folder template"
                                               variant="outlined"
-                                              size="medium"
+                                              size="small"
                                             />
                                           )}
                                           sx={{ width: "100%", marginTop: "8px" }}
@@ -1027,7 +1027,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                   <Box>
                     <InputLabel sx={{ color: "black" }}>Country</InputLabel>
                     <Select
-                     size="medium"
+                     size="small"
                       value={selectedCountry.code}
                       onChange={handleCountryChange}
                       sx={{
@@ -1049,7 +1049,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                       value={streetAddress}
                       onChange={(e) => setStreetAddress(e.target.value)}
                       // onChange={(e) => SetCStreetAddress(e.target.value)}
-                     size="medium"
+                     size="small"
                       fullWidth
                       margin="normal"
                     />
@@ -1064,7 +1064,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                   >
                     <Box>
                       <InputLabel sx={{ color: "black" }}>City</InputLabel>
-                      <TextField fullWidth margin="normal" name="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" size="medium"/>
+                      <TextField fullWidth margin="normal" name="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" size="small"/>
                     </Box>
                     <Box>
                       <InputLabel sx={{ color: "black" }}>State/Province</InputLabel>
@@ -1076,7 +1076,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                         onChange={(e) => setState(e.target.value)}
                         // onChange={(e) => SetCStateProvince(e.target.value)}
                         placeholder="State/Province"
-                        size="medium"
+                        size="small"
                       />
                     </Box>
                     <Box>
@@ -1090,7 +1090,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                         onChange={(e) => setPostalCode(e.target.value)}
                         // onChange={(e) => SetCZipPostalCode(e.target.value)}
                         placeholder="ZIP/Postal Code"
-                        size="medium"
+                        size="small"
                       />
                     </Box>
                   </Box>
@@ -1419,36 +1419,36 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                       >
                         <Box>
                           <InputLabel sx={{ color: "black" }}>First Name</InputLabel>
-                          <TextField margin="normal" fullWidth name="firstName" placeholder="First Name" size="medium" onChange={(e) => handleContactInputChange(index, e)} />
+                          <TextField margin="normal" fullWidth name="firstName" placeholder="First Name" size="small" onChange={(e) => handleContactInputChange(index, e)} />
                         </Box>
                         <Box>
                           <InputLabel sx={{ color: "black" }}>Middle Name</InputLabel>
-                          <TextField margin="normal" fullWidth name="middleName" placeholder="Middle Name" size="medium" onChange={(e) => handleContactInputChange(index, e)} />
+                          <TextField margin="normal" fullWidth name="middleName" placeholder="Middle Name" size="small" onChange={(e) => handleContactInputChange(index, e)} />
                         </Box>
                         <Box>
                           <InputLabel sx={{ color: "black" }}>Last Name</InputLabel>
-                          <TextField fullWidth name="lastName" margin="normal" placeholder="Last name" size="medium" onChange={(e) => handleContactInputChange(index, e)} />
+                          <TextField fullWidth name="lastName" margin="normal" placeholder="Last name" size="small" onChange={(e) => handleContactInputChange(index, e)} />
                         </Box>
                       </Box>
                       <Box>
                         <InputLabel sx={{ color: "black" }}>Contact Name</InputLabel>
-                        <TextField name="contactName" fullWidth placeholder="Contact Name" margin="normal" size="medium" value={contact.contactName} onChange={(e) => handleContactInputChange(index, e)} />
+                        <TextField name="contactName" fullWidth placeholder="Contact Name" margin="normal" size="small" value={contact.contactName} onChange={(e) => handleContactInputChange(index, e)} />
                       </Box>
                       <Box>
                         <InputLabel sx={{ color: "black" }}>Company Name</InputLabel>
-                        <TextField fullWidth name="companyName" margin="normal" placeholder="Company Name" size="medium" onChange={(e) => handleContactInputChange(index, e)} />
+                        <TextField fullWidth name="companyName" margin="normal" placeholder="Company Name" size="small" onChange={(e) => handleContactInputChange(index, e)} />
                       </Box>
                       <Box>
                         <InputLabel sx={{ color: "black" }}>Note</InputLabel>
-                        <TextField fullWidth multiline name="note" margin="normal" placeholder="Note" size="medium" onChange={(e) => handleContactInputChange(index, e)} />
+                        <TextField fullWidth multiline name="note" margin="normal" placeholder="Note" size="small" onChange={(e) => handleContactInputChange(index, e)} />
                       </Box>
                       <Box>
                         <InputLabel sx={{ color: "black" }}>SSN</InputLabel>
-                        <TextField fullWidth name="ssn" margin="normal" placeholder="SSN" size="medium" onChange={(e) => handleContactInputChange(index, e)} />
+                        <TextField fullWidth name="ssn" margin="normal" placeholder="SSN" size="small" onChange={(e) => handleContactInputChange(index, e)} />
                       </Box>
                       <Box>
                         <InputLabel sx={{ color: "black" }}>Email</InputLabel>
-                        <TextField fullWidth name="email" margin="normal" placeholder="Email" size="medium" onChange={(e) => handleContactInputChange(index, e)} />
+                        <TextField fullWidth name="email" margin="normal" placeholder="Email" size="small" onChange={(e) => handleContactInputChange(index, e)} />
                       </Box>
                       {/* Switches for Login, Notify, and Email Sync */}
                       <Box sx={{ mt: 1 }}>
@@ -1480,7 +1480,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                                  <FormControl sx={{ width: "100%" }}>
                           <Select
                             multiple
-                            size="medium"
+                            size="small"
                             fullWidth
                             value={contact.tags || []}
     onChange={(event) => handleContactTagChange(index)(event)}
@@ -1642,7 +1642,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                           <InputLabel sx={{ color: "black" }}>Country</InputLabel>
 
                           <Autocomplete
-                            size="medium"
+                            size="small"
                             options={countries}
                             getOptionLabel={(option) => option.name}
                             value={contact.country} // Update to reflect the contact's current country
@@ -1679,7 +1679,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                       </Box>
                       <Box>
                         <InputLabel sx={{ color: "black", mt: 2 }}>Street address</InputLabel>
-                        <TextField fullWidth name="streetAddress" margin="normal" placeholder="Street address" size="medium" onChange={(e) => handleContactAddressChange(index, "streetAddress", e.target.value)} />
+                        <TextField fullWidth name="streetAddress" margin="normal" placeholder="Street address" size="small" onChange={(e) => handleContactAddressChange(index, "streetAddress", e.target.value)} />
                       </Box>
                       <Box
                         sx={{
@@ -1691,15 +1691,15 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                       >
                         <Box>
                           <InputLabel sx={{ color: "black" }}>City</InputLabel>
-                          <TextField fullWidth margin="normal" name="city" placeholder="City" size="medium" onChange={(e) => handleContactAddressChange(index, "city", e.target.value)} />
+                          <TextField fullWidth margin="normal" name="city" placeholder="City" size="small" onChange={(e) => handleContactAddressChange(index, "city", e.target.value)} />
                         </Box>
                         <Box>
                           <InputLabel sx={{ color: "black" }}>State/Province</InputLabel>
-                          <TextField margin="normal" name="state" fullWidth placeholder="State/Province" size="medium" onChange={(e) => handleContactAddressChange(index, "state", e.target.value)} />
+                          <TextField margin="normal" name="state" fullWidth placeholder="State/Province" size="small" onChange={(e) => handleContactAddressChange(index, "state", e.target.value)} />
                         </Box>
                         <Box>
                           <InputLabel sx={{ color: "black" }}>ZIP/Postal Code</InputLabel>
-                          <TextField margin="normal" fullWidth name="postalCode" placeholder="ZIP/Postal Code" size="medium" onChange={(e) => handleContactAddressChange(index, "postalCode", e.target.value)} />
+                          <TextField margin="normal" fullWidth name="postalCode" placeholder="ZIP/Postal Code" size="small" onChange={(e) => handleContactAddressChange(index, "postalCode", e.target.value)} />
                         </Box>
                       </Box>
                     </form>

@@ -19,13 +19,13 @@ import CreateFolder from "./CreateFolder";
 function FolderTempEdit({templateId}) {
 
   const [templateName, setTemplateName] = useState("");
-
+ 
   useEffect(() => {
     if (!templateId) return; // Ensure templateId exists before fetching
 
     const fetchTemplateName = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1/foldertemp/folder/${templateId}`);
+        const response = await fetch(`${API_KEY}/foldertemp/folder/${templateId}`);
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }

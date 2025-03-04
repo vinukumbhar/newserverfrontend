@@ -112,7 +112,9 @@ const Pipeline = ({ charLimit = 4000 }) => {
       const response = await fetch(url);
       const data = await response.json();
       console.log(data);
-      setPipelineData(data.pipeline);
+      // setPipelineData(data.pipeline);
+      setPipelineData(data.pipeline || []);
+
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -1865,7 +1867,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                       sx={{ backgroundColor: "#fff" }}
                       placeholder="Pipeline"
                       variant="outlined"
-                      size="medium"
+                      size="small"
                     />
                   )}
                   sx={{ width: "100%", marginTop: "8px" }}
@@ -1934,7 +1936,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                 <Select
                   multiple
                   multiline
-                  size="medium"
+                  size="small"
                   // sx={{ marginTop: "8px", marginBottom: "8px", width: "100%" }}
                  input={<OutlinedInput />}
                     displayEmpty
@@ -2027,7 +2029,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                   multiple
                   sx={{ background: "#fff", mt: 1 }}
                   options={useroptions}
-                  size="medium"
+                  size="small"
                   getOptionLabel={(option) => option.label}
                   value={selecteduser}
                   onChange={handleUserChange}
@@ -2077,7 +2079,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                       sx={{ backgroundColor: "#fff" }}
                       placeholder="Select stages"
                       variant="outlined"
-                      size="medium"
+                      size="small"
                     />
                   )}
                   clearOnEscape // Enable clearable functionality
@@ -2099,7 +2101,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                 // onChange={handleStartDateChange}
                 value={startDate}
                 onChange={handleStartDateChange}
-                renderInput={(params) => <TextField {...params} size="medium" />}
+                renderInput={(params) => <TextField {...params} size="small" />}
               />
               </Box>
               <Box mt={2}>
@@ -2111,7 +2113,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                 // onChange={handleDueDateChange}
                 value={dueDate}
                 onChange={handleDueDateChange}
-                renderInput={(params) => <TextField {...params} size="medium" />}
+                renderInput={(params) => <TextField {...params} size="small" />}
               />
               </Box>
               <Box mt={2} mb={5}>
@@ -2164,7 +2166,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                             value={inputText + selectedJobShortcut}
                             onChange={handlechatsubject}
                             placeholder="Job name for client"
-                            size="medium"
+                            size="small"
                             sx={{ background: "#fff", mt: 2 }}
                           />
 
@@ -2172,7 +2174,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                             <InputLabel sx={{ color: "black",}}>Status</InputLabel>
                             <Autocomplete
                               options={optionstatus}
-                             size="medium"
+                             size="small"
                               sx={{ mt: 1 }}
                               value={selectedjob}
                               onChange={handleJobChange}
@@ -2232,7 +2234,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                             </InputLabel>
                             <TextField
                               fullWidth
-                              size="medium"
+                              size="small"
                               margin="normal"
                               type="text"
                               multiline

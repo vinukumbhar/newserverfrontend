@@ -509,7 +509,7 @@ export default function CreateFolder({
         <Box style={{ display: "flex", alignItems: "center", gap: "10px", margin:'20px' }}>
         <TextField
           fullWidth
-          size="medium"
+          size="small"
           variant="outlined"
           placeholder="Folder Name"
           value={newFolderName}

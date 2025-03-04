@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import { useNavigate, } from "react-router-dom";
 import {
   Box,
@@ -143,13 +143,34 @@ const ChatTemp = () => {
     setAnchorEl(event.currentTarget);
     setShowDropdown(!showDropdown);
   };
-
-
-
-  const handleAddShortcut = (shortcut) => {
-    setInputText((prevText) => prevText + `[${shortcut}]`);
-    setShowDropdown(false);
+  const [cursorPosition, setCursorPosition] = useState(0);
+  const textFieldRef = useRef(null);
+  const handlesubject = (e) => {
+    const { value,selectionStart  } = e.target;
+    setInputText(value);
+    setCursorPosition(selectionStart);
   };
+  const handleAddShortcut = (shortcut) => {
+    setInputText((prevText) => {
+        const newText =
+            prevText.slice(0, cursorPosition) + `[${shortcut}]` + prevText.slice(cursorPosition);
+        return newText;
+    });
+
+    setTimeout(() => {
+        if (textFieldRef.current) {
+            textFieldRef.current.focus();
+            textFieldRef.current.setSelectionRange(cursorPosition + shortcut.length + 2, cursorPosition + shortcut.length + 2);
+        }
+    }, 0);
+
+    setShowDropdown(false);
+};
+
+  // const handleAddShortcut = (shortcut) => {
+  //   setInputText((prevText) => prevText + `[${shortcut}]`);
+  //   setShowDropdown(false);
+  // };
 
   useEffect(() => {
     // Simulate filtered shortcuts based on some logic (e.g., search)
@@ -771,7 +792,7 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
                           fullWidth
                           name="TemplateName"
                           placeholder="Template Name"
-                          size="medium"
+                          size="small"
                           sx={{ mt: 2 }}
                         />
                         {(!!templateNameError) && <Alert sx={{
@@ -803,7 +824,7 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
 
                           options={options}
                           sx={{ mt: 2, mb: 2 }}
-                          size="medium"
+                          size="small"
                           value={selecteduser}
                           onChange={handleuserChange}
                           isOptionEqualToValue={(option, value) => option.value === value.value}
@@ -849,9 +870,13 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
                           sx={{ mt: 2 }}
                           fullWidth
                           name="subject"
-                          value={inputText + selectedShortcut} onChange={handlechatsubject}
+                          // value={inputText + selectedShortcut} onChange={handlechatsubject}
+                          inputRef={textFieldRef}
+                          value={inputText}
+                          onChange={handlesubject}
+                          onClick={(e) => setCursorPosition(e.target.selectionStart)}
                           placeholder="Subject"
-                          size="medium"
+                          size="small"
                           error={!!inputTextError}
 
                         />
@@ -961,7 +986,7 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
                                   value={daysuntilNextReminder}
                                   onChange={(e) => setDaysuntilNextReminder(e.target.value)}
                                   placeholder="Days until next reminder"
-                                  size="medium"
+                                  size="small"
                                   sx={{ mt: 2 }}
                                 />
                               </Box>
@@ -976,7 +1001,7 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
                                   onChange={(e) => setNoOfReminder(e.target.value)}
 
                                   placeholder="NoOfreminders"
-                                  size="medium"
+                                  size="small"
                                   sx={{ mt: 2 }}
                                 />
                               </Box>
@@ -1032,7 +1057,7 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
                                             <TextField
                                               placeholder="Things To do"
                                               value={subtask.text}
-                                              size="medium"
+                                              size="small"
                                               margin='normal'
                                               fullWidth
                                               onChange={(e) => handleInputChange(subtask.id, e.target.value)}

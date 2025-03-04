@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { AiOutlinePlusCircle } from "react-icons/ai";
 import { CiDiscount1 } from "react-icons/ci";
 import { BsThreeDotsVertical } from "react-icons/bs";
@@ -64,17 +64,38 @@ const InvoiceTemp = () => {
   const [description, setDescription] = useState("");
 
   const [anchorEl, setAnchorEl] = useState(null);
-
+ const [cursorPosition, setCursorPosition] = useState(0);
+  const textFieldRef = useRef(null);
+  const handleDescriptions = (e) => {
+    const { value,selectionStart  } = e.target;
+    setDescription(value);
+    setCursorPosition(selectionStart);
+  };
   const toggleDropdown = (event) => {
     setAnchorEl(event.currentTarget);
     setShowDropdown(!showDropdown);
   };
 
+  // const handleAddShortcut = (shortcut) => {
+  //   setDescription((prevText) => prevText + `[${shortcut}]`);
+  //   setShowDropdown(false);
+  // };
   const handleAddShortcut = (shortcut) => {
-    setDescription((prevText) => prevText + `[${shortcut}]`);
-    setShowDropdown(false);
-  };
+    setDescription((prevText) => {
+        const newText =
+            prevText.slice(0, cursorPosition) + `[${shortcut}]` + prevText.slice(cursorPosition);
+        return newText;
+    });
 
+    setTimeout(() => {
+        if (textFieldRef.current) {
+            textFieldRef.current.focus();
+            textFieldRef.current.setSelectionRange(cursorPosition + shortcut.length + 2, cursorPosition + shortcut.length + 2);
+        }
+    }, 0);
+
+    setShowDropdown(false);
+};
   useEffect(() => {
     // Simulate filtered shortcuts based on some logic (e.g., search)
     setFilteredShortcuts(shortcuts.filter((shortcut) => shortcut.title.toLowerCase().includes("")));
@@ -536,10 +557,8 @@ const InvoiceTemp = () => {
       let subtotal = 0;
 
       rows.forEach((row) => {
-        if (row.tax) {
-          subtotal += parseFloat(row.amount.replace("$", "")) || 0;
-        }
-        // subtotal += parseFloat(row.amount.replace("$", "")) || 0;
+      
+        subtotal += parseFloat(row.amount.replace("$", "")) || 0;
       });
       console.log(subtotal);
       setSubtotal(subtotal);
@@ -1129,7 +1148,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                       onClick={handleOpen}
                       sx={{ display: 'flex', alignItems: 'center', color: '#1168bf', cursor: 'pointer' }}
                     >
-                      <PlagiarismIcon fontsize="medium" />
+                      <PlagiarismIcon fontsize="small" />
                       <Typography sx={{ marginLeft: 0.5 }}>Preview</Typography>
                     </Box>
                   </Box>
@@ -1292,7 +1311,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                           fullWidth
                           name="TemplateName"
                           placeholder="Template Name"
-                          size="medium"
+                          size="small"
                           sx={{ mt: 2 }}
                           error={!!templatenameError}
                           value={templatename}
@@ -1326,7 +1345,17 @@ onRowsPerPageChange={handleChangeRowsPerPage}
 
                       <Box>
                         <InputLabel sx={{ color: "black", mt: 2 }}>Description</InputLabel>
-                        <TextField error={!!descriptionError} fullWidth name="Description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" size="medium" inputProps={{ maxLength: 50000 }} sx={{ mt: 2 }} />
+                        <TextField 
+                        error={!!descriptionError} 
+                        fullWidth name="Description" 
+                        // value={description} 
+                        // onChange={(e) => setDescription(e.target.value)} 
+                        inputRef={textFieldRef}
+                        value={description}
+                        onChange={handleDescriptions}
+                        onClick={(e) => setCursorPosition(e.target.selectionStart)}
+                        placeholder="Description" size="small" 
+                        inputProps={{ maxLength: 50000 }} sx={{ mt: 2 }} />
                         {!!descriptionError && (
                           <Alert
                             sx={{
@@ -1400,7 +1429,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                       <Box>
                         <InputLabel sx={{ color: "black", mt: 2 }}>Choose payment method</InputLabel>
 
-                        <Autocomplete size="medium" fullWidth sx={{ mt: 2 }} options={paymentsOptions} getOptionLabel={(option) => option?.label || ""} onChange={handlePaymentOptionChange} value={paymentMode} renderInput={(params) => <TextField {...params} placeholder="Select Payment Mode" variant="outlined" />} isOptionEqualToValue={(option, value) => option.value === value?.value} clearOnEscape />
+                        <Autocomplete size="small" fullWidth sx={{ mt: 2 }} options={paymentsOptions} getOptionLabel={(option) => option?.label || ""} onChange={handlePaymentOptionChange} value={paymentMode} renderInput={(params) => <TextField {...params} placeholder="Select Payment Mode" variant="outlined" />} isOptionEqualToValue={(option, value) => option.value === value?.value} clearOnEscape />
                       </Box>
 
                       <Box mt={2}>
@@ -1480,7 +1509,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                   fullWidth
                                   name="Days until next reminder"
                                   placeholder="Days until next reminder"
-                                  size="medium"
+                                  size="small"
                                   sx={{ mt: 2 }}
                                   value={daysNextReminder}
                                   onChange={(e) => setDaysNextReminder(e.target.value)}
@@ -1494,7 +1523,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                   fullWidth
                                   name="Number of reminders"
                                   placeholder="Number of reminders"
-                                  size="medium"
+                                  size="small"
                                   sx={{ mt: 2 }}
                                   value={numOfReminder}
                                   onChange={(e) => setnumOfReminder(e.target.value)}
@@ -1730,7 +1759,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                   fullWidth
                   name="ServiceName"
                   placeholder="Service Name"
-                  size="medium"
+                  size="small"
                   margin="normal"
                   value={selectedRowData?.productName || ""} // Use selected row data
                   onChange={(e) => setSelectedRowData({ ...selectedRowData, productName: e.target.value })}
@@ -1742,7 +1771,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                   fullWidth
                   name="Description"
                   placeholder="Description"
-                  size="medium"
+                  size="small"
                   margin="normal"
                   value={selectedRowData?.description || ""} // Use selected row data
                   onChange={(e) => setSelectedRowData({ ...selectedRowData, description: e.target.value })}
@@ -1801,7 +1830,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                     fullWidth
                     name="Rate"
                     placeholder="Rate"
-                    size="medium"
+                    size="small"
                     sx={{ mt: 1 }}
 
                     value={selectedRowData?.rate || ""} // Use selected row data
@@ -1812,7 +1841,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                 <Box width="50%">
                   <Typography sx={{ color: "black" }}>Rate Type</Typography>
                   <Autocomplete
-                    size="medium"
+                    size="small"
                     fullWidth
                     sx={{ mt: 1 }}
                     options={options}
@@ -1857,7 +1886,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                 <Box>
                   <InputLabel sx={{ color: "black", mt: 2 }}>Category Name</InputLabel>
                   <Autocomplete
-                    size="medium"
+                    size="small"
                     fullWidth
                     sx={{ mt: 2 }}
                     options={categoryoptions}
@@ -1904,7 +1933,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                   <Box p={3}>
                     <InputLabel sx={{ color: "black", mt: 2 }}>Category Name</InputLabel>
 
-                    <TextField fullWidth name="Rate" placeholder="Category Name" size="medium" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
+                    <TextField fullWidth name="Rate" placeholder="Category Name" size="small" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
                   </Box>
                   <Box sx={{ pt: 2, display: "flex", alignItems: "center", gap: 5, margin: "8px", ml: 3 }}>
                     <Button variant="contained" color="primary" onClick={createCategory} sx={{
@@ -1982,7 +2011,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
         <Box p={3}>
           <InputLabel sx={{ color: "black", mt: 2 }}>Category Name</InputLabel>
 
-          <TextField fullWidth name="Rate" placeholder="Category Name" size="medium" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
+          <TextField fullWidth name="Rate" placeholder="Category Name" size="small" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
         </Box>
         <Box sx={{ pt: 2, display: "flex", alignItems: "center", gap: 5, margin: "8px", ml: 3 }}>
           <Button variant="contained" color="primary" onClick={createCategory} sx={{
@@ -2033,23 +2062,23 @@ onRowsPerPageChange={handleChangeRowsPerPage}
               <Typography variant="h6" fontWeight="bold">
                 Product or service
               </Typography>
-              <TextField size="medium" margin="normal" value={selectedRowData?.productName || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, productName: e.target.value })} />
+              <TextField size="small" margin="normal" value={selectedRowData?.productName || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, productName: e.target.value })} />
               <Box>
                 <Typography>Description</Typography>
-                <TextField size="medium" margin="normal" value={selectedRowData?.description || ""} fullWidth multiline onChange={(e) => setSelectedRowData({ ...selectedRowData, description: e.target.value })} />
+                <TextField size="small" margin="normal" value={selectedRowData?.description || ""} fullWidth multiline onChange={(e) => setSelectedRowData({ ...selectedRowData, description: e.target.value })} />
               </Box>
               <Box sx={{ display: "flex", alignItems: "center", gap: "10px", mt: 1 }}>
                 <Box>
                   <Typography>Rate</Typography>
-                  <TextField size="medium" margin="normal" value={selectedRowData?.rate || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, rate: e.target.value })} />
+                  <TextField size="small" margin="normal" value={selectedRowData?.rate || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, rate: e.target.value })} />
                 </Box>
                 <Box>
                   <Typography>QTY</Typography>
-                  <TextField size="medium" margin="normal" value={selectedRowData?.qty || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, qty: e.target.value })} />
+                  <TextField size="small" margin="normal" value={selectedRowData?.qty || ""} fullWidth onChange={(e) => setSelectedRowData({ ...selectedRowData, qty: e.target.value })} />
                 </Box>
                 <Box>
                   <Typography>Amount</Typography>
-                  <TextField size="medium" margin="normal" fullWidth disabled value={totalamount} />
+                  <TextField size="small" margin="normal" fullWidth disabled value={totalamount} />
                 </Box>
               </Box>
               <Box mt={2}>

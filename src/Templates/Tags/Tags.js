@@ -370,7 +370,7 @@ const Tags = () => {
   });
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5); // Default rows per page
+  const [rowsPerPage, setRowsPerPage] = useState(30); // Default rows per page
 
   const handleChangePage = (event, newPage) => setPage(newPage);
   const handleChangeRowsPerPage = (event) => {
@@ -632,7 +632,7 @@ const Tags = () => {
                   onChange={(e) => handleInputChange(e.target.value)}
                   fullWidth
                   // margin="normal"
-                  size="medium"
+                  size="small"
                   sx={{ backgroundColor: '#fff', mt:1 }}
 
                 error={!!tagNameError}
@@ -663,7 +663,7 @@ const Tags = () => {
                   onChange={handleChange}
                   labelId="color-select-label"
                   id="color-select"
-                  size="medium"
+                  size="small"
                   sx={{ width: '100%', marginTop: '10px', backgroundColor: '#fff' }}
                   renderValue={(selected) => (
                     <Chip
@@ -847,7 +847,7 @@ const Tags = () => {
                   onChange={(e) => handleInputChange(e.target.value)}
                   fullWidth
                   margin="normal"
-                  size="medium"
+                  size="small"
                   sx={{ width: '100%' }}
                
                 />
@@ -859,7 +859,7 @@ const Tags = () => {
                   value={selectedOption ? selectedOption.tagColour : ''}
                   onChange={handleChange}
                   
-                  size="medium"
+                  size="small"
                   sx={{ width: '100%', marginTop: '10px', backgroundColor: '#fff' }}
                   renderValue={(selected) => (
                     <Chip

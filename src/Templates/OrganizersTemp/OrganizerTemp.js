@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Section from './organizertempSection';
 import { toast } from 'react-toastify';
 import { CircularProgress, TableContainer } from "@mui/material";
@@ -132,19 +132,38 @@ const OrganizersTemp = () => {
     setShowDropdown(false);
     setAnchorEl(null);
   };
+  const [cursorPosition, setCursorPosition] = useState(0);
+  const textFieldRef = useRef(null);
   const handlejobName = (e) => {
-    const { value } = e.target;
+    const { value,selectionStart  } = e.target;
     setOrganizerName(value);
+    setCursorPosition(selectionStart);
   };
   const toggleDropdown = (event) => {
     setAnchorEl(event.currentTarget);
     setShowDropdown(!showDropdown);
   };
 
+  // const handleAddShortcut = (shortcut) => {
+  //   setOrganizerName((prevText) => prevText + `[${shortcut}]`);
+  //   setShowDropdown(false);
+  // };
   const handleAddShortcut = (shortcut) => {
-    setOrganizerName((prevText) => prevText + `[${shortcut}]`);
+    setOrganizerName((prevText) => {
+        const newText =
+            prevText.slice(0, cursorPosition) + `[${shortcut}]` + prevText.slice(cursorPosition);
+        return newText;
+    });
+
+    setTimeout(() => {
+        if (textFieldRef.current) {
+            textFieldRef.current.focus();
+            textFieldRef.current.setSelectionRange(cursorPosition + shortcut.length + 2, cursorPosition + shortcut.length + 2);
+        }
+    }, 0);
+
     setShowDropdown(false);
-  };
+};
   const [templateName, setTemplateName] = useState('');
   const [organizerName, setOrganizerName] = useState('');
   const [sections, setSections] = useState([]);
@@ -1080,7 +1099,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                 value={templateName}
                 onChange={(e) => setTemplateName(e.target.value)}
                 fullWidth
-                size="medium"
+                size="small"
 
                 placeholder='Template name'
                 sx={{ backgroundColor: '#fff', mt: 2 }}
@@ -1108,12 +1127,15 @@ onRowsPerPageChange={handleChangeRowsPerPage}
             <Box mt={2}>
               <label className='organizer-input-label'>Organizer name</label>
               <TextField
-                value={organizerName + selectedShortcut}
-                onChange={handlejobName}
-                // value={organizerName}
-                // onChange={(e) => setOrganizerName(e.target.value)}
+              inputRef={textFieldRef}
+              value={organizerName}
+              onChange={handlejobName}
+              onClick={(e) => setCursorPosition(e.target.selectionStart)}
+                // value={organizerName + selectedShortcut}
+                // onChange={handlejobName}
+                
                 fullWidth
-                size="medium"
+                size="small"
                 error={!!organizerError}
                 placeholder='Organizer name'
                 className='organizer-input-label'
@@ -1191,7 +1213,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                     <TextField
                       placeholder={`Section Name`}
                       className='section-name'
-                      size="medium"
+                      size="small"
                       margin='normal'
                       value={truncateText(section.text, 5)}
                       InputProps={{
@@ -1346,7 +1368,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                               value={daysuntilNextReminder}
                               onChange={(e) => setDaysuntilNextReminder(e.target.value)}
                               placeholder="Days until next reminder"
-                              size="medium"
+                              size="small"
                               sx={{ mt: 2 }}
                             />
                           </Box>
@@ -1361,7 +1383,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                               onChange={(e) => setNoOfReminder(e.target.value)}
 
                               placeholder="NoOfreminders"
-                              size="medium"
+                              size="small"
                               sx={{ mt: 2 }}
                             />
                           </Box>
@@ -1398,7 +1420,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                       <Select
                         value={activeStep}
                         onChange={handleDropdownChange}
-                        size="medium"
+                        size="small"
                       >
                         {/* {sections.map((section, index) => (
                             <MenuItem key={index} value={index}>
@@ -1428,12 +1450,12 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                             {section.formElements.map((element) => (
                               shouldShowElement(element) && (
                                 <Box key={element.text} >
-                                  {(element.type === 'Free Entry' || element.type === 'Number' || element.type === 'Email') && (
+                                  {(element.type === 'Free Entry'  || element.type === 'Email') && (
                                     <Box>
                                       <Typography fontSize='18px' mb={1} mt={1}>{element.text}</Typography>
                                       <TextField
                                         variant="outlined"
-                                        size="medium"
+                                        size="small"
                                         multiline
                                         fullWidth
                                         // margin='normal'
@@ -1448,7 +1470,32 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                       />
                                     </Box>
                                   )}
+{(  element.type === 'Number') && (
+                                    <Box>
+                                      <Typography fontSize='18px' mb={1} mt={1}>{element.text}</Typography>
+                                      
+                                      <TextField
+  variant="outlined"
+  size="small"
+  multiline
+  fullWidth
+  placeholder={`${element.type} Answer`}
+  inputProps={{
+    type: "text", // Keep as text to prevent default number input styling
+    inputMode: "numeric", // Mobile keyboard optimization
+    pattern: "[0-9]*", // Ensures only numbers
+  }}
+  maxRows={8}
+  style={{ display: "block", marginTop: "15px" }}
+  value={inputValues[element.text] || ""}
+  onChange={(e) => {
+    const numericValue = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
+    handleInputChange({ target: { value: numericValue } }, element.text);
+  }}
+/>
 
+                                    </Box>
+                                  )}
                                   {element.type === 'Radio Buttons' && (
                                     <Box>
                                       <Typography fontSize='18px' mb={1} mt={1} >{element.text}</Typography>
@@ -1459,7 +1506,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                             variant={radioValues[element.text] === option.text ? 'contained' : 'outlined'}
                                             onClick={() => handleRadioChange(option.text, element.text)}
                                             sx={{
-                                              width: '80px',
+                                              // width: '80px',
                                               borderRadius: '15px',
                                               ...(radioValues[element.text] === option.text
                                                 ? {
@@ -1496,7 +1543,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                             variant={checkboxValues[element.text]?.[option.text] ? 'contained' : 'outlined'}
                                             onClick={() => handleCheckboxChange(option.text, element.text)}
                                             sx={{
-                                              width: '80px',
+                                              // width: '80px',
                                               borderRadius: '15px',
                                               ...(checkboxValues[element.text]?.[option.text]
                                                 ? {
@@ -1533,7 +1580,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                             variant={selectedValue === option.text ? 'contained' : 'outlined'}
                                             onClick={(event) => handleChange(event, element.text)}
                                             sx={{
-                                              width: '80px',
+                                              // width: '80px',
                                               borderRadius: '15px',
                                               ...(selectedValue === option.text
                                                 ? {
@@ -1567,7 +1614,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                         <Select
                                           value={selectedDropdownValue}
                                           onChange={(event) => handleDropdownValueChange(event, element.text)}
-                                          size="medium"
+                                          size="small"
                                         >
                                           {element.options.map((option) => (
                                             <MenuItem key={option.text} value={option.text}>
@@ -1587,7 +1634,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                         sx={{ width: '100%', backgroundColor: '#fff' }}
                                         selected={startDate}
                                         onChange={handleStartDateChange}
-                                        renderInput={(params) => <TextField {...params} size="medium" />}
+                                        renderInput={(params) => <TextField {...params} size="small" />}
                                         onOpen={() => setAnsweredElements((prevAnswered) => ({
                                           ...prevAnswered,
                                           [element.text]: true,
@@ -1610,7 +1657,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                         <Box sx={{ position: 'relative', width: '100%' }}>
                                           <TextField
                                             variant="outlined"
-                                            size="medium"
+                                            size="small"
                                             fullWidth
                                             // margin="normal"
                                             disabled

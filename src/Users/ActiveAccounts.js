@@ -292,12 +292,12 @@ const ActiveAccounts = () => {
             To activate your account, please fill in the requested information.
           </Typography>
           <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-            <TextField value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First Name" fullWidth margin="normal" size="medium" variant="outlined" sx={{ backgroundColor: "#fff" }} />
+            <TextField value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First Name" fullWidth margin="normal" size="small" variant="outlined" sx={{ backgroundColor: "#fff" }} />
             <Box style={{ color: "red", fontSize: "9px" }}>{firstNameValidation}</Box>
 
-            <TextField placeholder="Middle Name" value={middleName} onChange={(e) => setMiddleName(e.target.value)} fullWidth margin="normal" size="medium" variant="outlined" sx={{ backgroundColor: "#fff" }} />
+            <TextField placeholder="Middle Name" value={middleName} onChange={(e) => setMiddleName(e.target.value)} fullWidth margin="normal" size="small" variant="outlined" sx={{ backgroundColor: "#fff" }} />
 
-            <TextField value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Last Name" fullWidth margin="normal" size="medium" variant="outlined" sx={{ backgroundColor: "#fff" }} />
+            <TextField value={lastName} onChange={(e) => setLastName(e.target.value)} placeholder="Last Name" fullWidth margin="normal" size="small" variant="outlined" sx={{ backgroundColor: "#fff" }} />
             <Box style={{ color: "red", fontSize: "9px" }}>{lastNameValidation}</Box>
           </Box>
 
@@ -306,7 +306,7 @@ const ActiveAccounts = () => {
               <FormControl variant="outlined">
                 <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
                 <OutlinedInput
-                  size="medium"
+                  size="small"
                   id="outlined-adornment-password"
                   type={showPassword ? "text" : "password"}
                   value={password}
@@ -328,7 +328,7 @@ const ActiveAccounts = () => {
               <FormControl variant="outlined">
                 <InputLabel htmlFor="outlined-adornment-password"> Confirm Password</InputLabel>
                 <OutlinedInput
-                  size="medium"
+                  size="small"
                   id="outlined-adornment-password"
                   type={showConfirmPassword ? "text" : "password"}
                   // onChange = {handleConfirmPasswordChange}

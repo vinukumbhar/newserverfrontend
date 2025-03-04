@@ -527,36 +527,36 @@ const ActiveMember = () => {
   }));
 
   // Function to check if email exists
-  const newUser = () => {
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+  // const newUser = () => {
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Content-Type", "application/json");
 
-    const raw = JSON.stringify({
-      username: firstName,
-      email: email,
-      role: "TeamMember",
-      password: firstName,
-    });
+  //   const raw = JSON.stringify({
+  //     username: firstName,
+  //     email: email,
+  //     role: "TeamMember",
+  //     password: firstName,
+  //   });
 
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow",
-    };
-    const url = `${LOGIN_API}/common/login/signup/`;
-    fetch(url, requestOptions)
-      .then((response) => response.text())
+  //   const requestOptions = {
+  //     method: "POST",
+  //     headers: myHeaders,
+  //     body: raw,
+  //     redirect: "follow",
+  //   };
+  //   const url = `${LOGIN_API}/common/login/signup/`;
+  //   fetch(url, requestOptions)
+  //     .then((response) => response.text())
 
-      .then((result) => {
-        console.log(result);
-        toast.success("Team Member Updated Successfully");
-        handleNewDrawerClose();
-        // sendmail();
-      })
+  //     .then((result) => {
+  //       console.log(result);
+  //       toast.success("Team Member Updated Successfully");
+  //       handleNewDrawerClose();
+  //       // sendmail();
+  //     })
 
-      .catch((error) => console.error(error));
-  };
+  //     .catch((error) => console.error(error));
+  // };
   //for bydefault showing login data
   //     const { logindata } = useContext(LoginContext);
   //     console.log(logindata)
@@ -613,28 +613,7 @@ const ActiveMember = () => {
   };
 
   const handleUpdateTeamMember = () => {
-    if (firstName === "") {
-      setFirstNameValidation("First Name can't be blank");
-    } else {
-      setFirstNameValidation("");
-    }
-
-    // Validation for Last Name
-    if (lastName === "") {
-      setLastNameValidation("Last Name can't be blank");
-    } else {
-      setLastNameValidation("");
-    }
-
-    // Validation for Phone Number
-    if (email === "") {
-      setEmailValidation("Email is compalsary");
-    } else {
-      setEmailValidation("");
-    }
-
-    // If all validations pass, proceed to next step
-    if (firstName && lastName && email) {
+   
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
 
@@ -683,22 +662,59 @@ const ActiveMember = () => {
       fetch(url, requestOptions)
         .then((response) => {
           if (!response.ok) {
-            toast.error("Team member with this email already  exist.");
+            toast.error("Failed to update team member");
           }
-          return response.text();
+          return response.json();
         })
         .then((result) => {
-          console.log(result);
-          // toast.success("Team Member Upadted Successfully");
-          // handleNewDrawerClose();
-          newUser();
+          // console.log(result);
+          // console.log(result.teamMember.userid);
+          //  toast.success("Team Member Upadted Successfully");
+          // // handleNewDrawerClose();
+          // // newUser();
+          if (result && result.teamMember && result.teamMember.userid) {
+            const userId = result.teamMember.userid;
+            const updatedUsername = `${firstName} ${middleName ? middleName + " " : ""}${lastName}`.trim();
+    
+            // Call function to update the username
+            updateUserUsername(userId, updatedUsername);
+          }
         })
 
         .catch((error) => console.error(error));
     }
-  };
+   const updateUserUsername = (userId, username) => {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+    
+      const raw = JSON.stringify({ username });
+    
+      const requestOptions = {
+        method: "PATCH",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+    
+      fetch(`${LOGIN_API}/common/user/${userId}`, requestOptions)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to update username");
+          }
+          return response.json();
+        })
+        .then((result) => {
+          console.log("Username updated:", result);
+          toast.success("Team member updated successfully");
+          handleNewDrawerClose();
+        })
+        .catch((error) => {
+          console.error(error);
+          toast.error("Failed to update username");
+        });
+    };
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(30);
 
   
 
@@ -829,6 +845,7 @@ const ActiveMember = () => {
   return (
     <>
       {/* <MaterialReactTable table={table} /> */}
+      
       <TableContainer component={Paper} sx={{ overflow: "visible" }}>
       <Table sx={{ width: "100%" }}>
         {/* Table Head */}
@@ -1064,7 +1081,7 @@ const ActiveMember = () => {
               >
                 <Typography  variant="h6">
                   {" "}
-                  update Team Member
+                  update Team Member 22
                 </Typography>
                 <CloseRoundedIcon
                   onClick={handleNewDrawerClose}

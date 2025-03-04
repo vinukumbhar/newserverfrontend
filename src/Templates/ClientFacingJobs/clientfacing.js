@@ -375,7 +375,7 @@ const Clientfacing = () => {
                     <InputLabel sx={{color:'black'}}>Color</InputLabel>
                     <FormControl fullWidth>
                       <Select
-                      size="medium"
+                      size="small"
                     
                         sx={{width:'100%',mt:2}}
                         value={selectedColor}
@@ -422,7 +422,7 @@ const Clientfacing = () => {
                       placeholder="Status Name"
                       fullWidth
                       margin="normal"
-                      size="medium"
+                      size="small"
                       sx={{ backgroundColor: "#fff" }}
                       value={clientFacingName}
                       onChange={(e) => setClientFacingName(e.target.value)}
@@ -444,7 +444,7 @@ const Clientfacing = () => {
                     <FormControl fullWidth>
                       <Select
                         displayEmpty
-                        size="medium"
+                        size="small"
                         sx={{
                           width: "100%",
                           backgroundColor: "#fff",
@@ -505,7 +505,7 @@ const Clientfacing = () => {
                     <TextField
                       placeholder="Enter a name"
                       fullWidth
-                      size="medium"
+                      size="small"
                       sx={{
                         backgroundColor: "#fff",
                         mt: 2,
@@ -523,7 +523,7 @@ const Clientfacing = () => {
                   <TextField
                     sx={{ marginTop: 2 }}
                     fullWidth
-                    size="medium"
+                    size="small"
                     placeholder="Status description for client"
                     // label="Multiline"
                     multiline
@@ -629,7 +629,7 @@ const Clientfacing = () => {
                     <Select
                       value={selectedColor}
                       onChange={handleColorChange}
-                      size="medium"
+                      size="small"
                       sx={{
                         width: "100%",
                         marginTop: "10px",
@@ -676,7 +676,7 @@ const Clientfacing = () => {
                       placeholder="Status Name"
                       fullWidth
                       margin="normal"
-                      size="medium"
+                      size="small"
                       sx={{ backgroundColor: "#fff" }}
                       value={clientFacingName}
                       onChange={(e) => setClientFacingName(e.target.value)}
@@ -697,7 +697,7 @@ const Clientfacing = () => {
                     <FormControl fullWidth>
                       <Select
                         displayEmpty
-                        size="medium"
+                        size="small"
                         sx={{
                           width: "100%",
                           backgroundColor: "#fff",
@@ -758,7 +758,7 @@ const Clientfacing = () => {
                     <TextField
                       placeholder="Enter a name"
                       fullWidth
-                      size="medium"
+                      size="small"
                       sx={{
                         backgroundColor: "#fff",
                         mt: 2,
@@ -778,7 +778,7 @@ const Clientfacing = () => {
                    
                     placeholder="Status description for client"
                     multiline
-                  size="medium"
+                  size="small"
                     value={clientFacingDescription}
                     onChange={(e) => setClientFacingDescription(e.target.value)}
                   />

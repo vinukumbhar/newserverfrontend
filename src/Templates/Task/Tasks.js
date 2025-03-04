@@ -156,6 +156,7 @@ const Tasks = () => {
       const url = `${LOGIN_API}/common/users/roles?roles=TeamMember,Admin`;
       const response = await fetch(url);
       const data = await response.json();
+      console.log("task assigne",data)
       setUserData(data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -812,7 +813,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                 fullWidth
                                 name="TemplateName"
                                 placeholder="Template Name"
-                                size="medium"
+                                size="small"
                                 margin='normal'
                                 sx={{
                                   background: '#fff', 
@@ -855,7 +856,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                 multiple
                                 sx={{ background: '#fff', mt: 2, }}
                                 options={options}
-                                size="medium"
+                                size="small"
                                 getOptionLabel={(option) => option.label}
                                 value={selectedUser}
                                 onChange={handleUserChange}
@@ -928,7 +929,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
         <FormControl sx={{ width: "100%" }}>
  <Select
    multiple
-   size="medium"
+   size="small"
    fullWidth
    value={selectedTags}
    onChange={handleTagChange}
@@ -1079,7 +1080,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                             </Grid>
                             <Grid item xs={12} sm={5}>
                               <TextField
-                                 size="medium"
+                                 size="small"
                                 placeholder='0'
                                 defaultValue={0}
                                 value={startsin}
@@ -1092,7 +1093,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                             <Grid item xs={12} sm={5}>
                               <Autocomplete
                                 options={dayOptions}
-                                 size="medium"
+                                 size="small"
                                 getOptionLabel={(option) => option.label}
                                 onChange={handleStartInDateChange}
                                 renderInput={(params) => (
@@ -1117,7 +1118,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                             </Grid>
                             <Grid item xs={12} sm={5}>
                               <TextField
-                                size="medium"
+                                size="small"
                                 placeholder='0'
                                 value={duein}
                                 fullWidth
@@ -1132,7 +1133,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                 options={dayOptions}
                                 getOptionLabel={(option) => option.label}
                                 onChange={handledueindateChange}
-                                size="medium"
+                                size="small"
                                 renderInput={(params) => (
                                   <>
                                     <TextField {...params} variant="outlined" sx={{ backgroundColor: '#fff' }}  />
@@ -1193,7 +1194,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                             <TextField
                                               placeholder="Things To do"
                                               value={subtask.text}
-                                              size="medium"
+                                              size="small"
                                               margin='normal'
                                               fullWidth
                                               onChange={(e) => handleInputChange(subtask.id, e.target.value)}

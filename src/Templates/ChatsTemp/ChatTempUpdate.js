@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { PiDotsSixVerticalBold } from "react-icons/pi";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -73,10 +73,33 @@ const ChatTempUpdate = () => {
         setAnchorEl(event.currentTarget);
         setShowDropdown(!showDropdown);
     };
-    const handleAddShortcut = (shortcut) => {
-        setInputText((prevText) => prevText + `[${shortcut}]`);
+    const [cursorPosition, setCursorPosition] = useState(0);
+      const textFieldRef = useRef(null);
+      const handlesubject = (e) => {
+        const { value,selectionStart  } = e.target;
+        setInputText(value);
+        setCursorPosition(selectionStart);
+      };
+      const handleAddShortcut = (shortcut) => {
+        setInputText((prevText) => {
+            const newText =
+                prevText.slice(0, cursorPosition) + `[${shortcut}]` + prevText.slice(cursorPosition);
+            return newText;
+        });
+    
+        setTimeout(() => {
+            if (textFieldRef.current) {
+                textFieldRef.current.focus();
+                textFieldRef.current.setSelectionRange(cursorPosition + shortcut.length + 2, cursorPosition + shortcut.length + 2);
+            }
+        }, 0);
+    
         setShowDropdown(false);
     };
+    // const handleAddShortcut = (shortcut) => {
+    //     setInputText((prevText) => prevText + `[${shortcut}]`);
+    //     setShowDropdown(false);
+    // };
 
     useEffect(() => {
         // Simulate filtered shortcuts based on some logic (e.g., search)
@@ -482,7 +505,7 @@ const ChatTempUpdate = () => {
                                                 fullWidth
                                                 name="TemplateName"
                                                 placeholder="Template Name"
-                                                size="medium"
+                                                size="small"
                                                 sx={{ mt: 2 }}
                                             />
                                         </Box>
@@ -497,7 +520,7 @@ const ChatTempUpdate = () => {
 
                                                 options={options}
                                                 sx={{ mt: 2, mb: 2 }}
-                                                size="medium"
+                                                size="small"
                                                 value={selecteduser}
                                                 onChange={handleuserChange}
                                                 isOptionEqualToValue={(option, value) => option.value === value.value}
@@ -523,9 +546,13 @@ const ChatTempUpdate = () => {
                                                 margin="normal"
                                                 fullWidth
                                                 name="subject"
-                                                value={inputText + selectedShortcut} onChange={handlechatsubject}
+                                                inputRef={textFieldRef}
+                                                value={inputText}
+                                                onChange={handlesubject}
+                                                onClick={(e) => setCursorPosition(e.target.selectionStart)}
+                                                // value={inputText + selectedShortcut} onChange={handlechatsubject}
                                                 placeholder="Subject"
-                                                size="medium"
+                                                size="small"
                                             />
                                         </Box>
                                         <Box>
@@ -619,7 +646,7 @@ const ChatTempUpdate = () => {
                                                                 value={daysuntilNextReminder}
                                                                 onChange={(e) => setDaysuntilNextReminder(e.target.value)}
                                                                 placeholder="Days until next reminder"
-                                                                size="medium"
+                                                                size="small"
                                                                 sx={{ mt: 2 }}
                                                             />
                                                         </Box>
@@ -634,7 +661,7 @@ const ChatTempUpdate = () => {
                                                                 onChange={(e) => setNoOfReminder(e.target.value)}
 
                                                                 placeholder="NoOfreminders"
-                                                                size="medium"
+                                                                size="small"
                                                                 sx={{ mt: 2 }}
                                                             />
                                                         </Box>
@@ -689,7 +716,7 @@ const ChatTempUpdate = () => {
                                                                                     <TextField
                                                                                         placeholder="Things To do"
                                                                                         value={subtask.text}
-                                                                                        size="medium"
+                                                                                        size="small"
                                                                                         margin='normal'
                                                                                         fullWidth
                                                                                         onChange={(e) => handleInputChange(subtask.id, e.target.value)}

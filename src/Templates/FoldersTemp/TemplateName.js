@@ -42,7 +42,7 @@ function TemplateName({
             value={tempName}
             onChange={(e) => setTempName(e.target.value)}
             fullWidth
-            size="medium"
+            size="small"
             margin="normal"
           />
         </Box>

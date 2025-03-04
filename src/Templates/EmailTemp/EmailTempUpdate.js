@@ -631,7 +631,7 @@ const EmailTempUpdate = () => {
                                         value={templateName}
                                         onChange={(e) => setTemplateName(e.target.value)}
                                         placeholder="Template Name"
-                                        size="medium"
+                                        size="small"
                                     />
                                 </Box>
                                 <Box>
@@ -673,7 +673,7 @@ const EmailTempUpdate = () => {
                                     <Autocomplete
                                                           options={options}
                                                           sx={{ mt: 2, mb: 2, backgroundColor: "#fff" }}
-                                                          size="medium"
+                                                          size="small"
                                                           value={selecteduser}
                                                           onChange={handleuserChange}
                                                           isOptionEqualToValue={(option, value) =>
@@ -703,7 +703,7 @@ const EmailTempUpdate = () => {
                                         value={inputText + selectedShortcut}
                                         onChange={handlechatsubject}
                                         placeholder="Subject"
-                                        size="medium"
+                                        size="small"
                                     />
                                 </Box>
                                 <Box>

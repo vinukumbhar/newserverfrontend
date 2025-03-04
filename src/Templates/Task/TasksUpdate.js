@@ -1216,7 +1216,7 @@ const Tasks = () => {
                                                             fullWidth
                                                             name="TemplateName"
                                                             placeholder="Template Name"
-                                                            size="medium"
+                                                            size="small"
                                                             margin='normal'
                                                             sx={{ background: '#fff',  }}
                                                             onChange={(e) => setTempNameNew(e.target.value)} value={tempNameNew}
@@ -1239,7 +1239,7 @@ const Tasks = () => {
                                                             multiple
                                                             sx={{ mt: 2 }}
                                                             options={options}
-                                                            size="medium"
+                                                            size="small"
                                                             getOptionLabel={(option) => option.label}
                                                             value={AssigneesNew}
                                                             onChange={handleuserChange}
@@ -1311,7 +1311,7 @@ const Tasks = () => {
 <FormControl sx={{ width: "100%" }}>
   <Select
     multiple
-    size="medium"
+    size="small"
     id="tags-outlined"
     value={combinedTagsValues}
     onChange={handleTagChange}
@@ -1425,7 +1425,7 @@ const Tasks = () => {
                                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                                                     <Typography className='task-input-label'>Start In</Typography>
                                                     <TextField
-                                                         size="medium"
+                                                         size="small"
                                                         margin='normal'
                                                         fullWidth
                                                         defaultValue={0}
@@ -1436,7 +1436,7 @@ const Tasks = () => {
                                                     />
                                                     <Autocomplete
                                                         options={dayOptions}
-                                                       size="medium"
+                                                       size="small"
                                                         getOptionLabel={(option) => option.label}
                                                         onChange={(event, newValue) => {
                                                             if (newValue) {
@@ -1452,7 +1452,7 @@ const Tasks = () => {
                                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                                                     <Typography className='task-input-label'>Due In</Typography>
                                                     <TextField
-                                                       size="medium"
+                                                       size="small"
                                                         margin='normal'
                                                         value={DueInNew}
                                                         onChange={(e) => setDueInNew(e.target.value)}
@@ -1465,7 +1465,7 @@ const Tasks = () => {
 
                                                     <Autocomplete
                                                         options={dayOptions}
-                                                        size="medium"
+                                                        size="small"
                                                         getOptionLabel={(option) => option.label}
                                                         onChange={(event, newValue) => {
                                                             if (newValue) {
@@ -1525,7 +1525,7 @@ const Tasks = () => {
                                                                                     <TextField
                                                                                         placeholder="Things To do"
                                                                                         value={subtask.text}
-                                                                                        size="medium"
+                                                                                        size="small"
                                                                                         margin='normal'
                                                                                         fullWidth
                                                                                         onChange={(e) => handleInputChange(subtask.id, e.target.value)}

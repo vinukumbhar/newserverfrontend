@@ -121,7 +121,7 @@ const Priority = ({ onPriorityChange, selectedPriority }) => {
       <FormControl fullWidth>
         
         <Select
-        size="medium"
+        size="small"
 
           value={selectedPriority || ""}
           onChange={handleChange}
