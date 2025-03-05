@@ -18,6 +18,7 @@ import {
   Autocomplete,
   Paper,
 } from "@mui/material";
+import { Badge } from "@mui/material";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Quill Snow theme
 import "quill-emoji/dist/quill-emoji.css"; // Emoji styles
@@ -35,7 +36,9 @@ const Section = ({
   onDuplicate,
   onSaveFormData,
   onSaveSectionData,
+  
 }) => {
+ console.log("selected section",section)
   const [text, setText] = useState(section.text);
   const [formElements, setFormElements] = useState(section.formElements || []);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -59,11 +62,11 @@ const Section = ({
     { question: "", answer: "" },
   ]);
   const [selectedElement, setSelectedElement] = useState(null);
-  const [sectionSettingsData, setSectionSettings] = useState(null);
+  const [sectionConditionBadge, setSectionConditionBadge] = useState(false);
 
   const handleSectionSave = () => {
     // Construct the sectionSettings object
-    const sectionSettings = {
+    const sectionsettings = {
       // id: selectedSectionId,
       sectionRepeatingMode: repeateButton,
       buttonName: repeateButton ? repeatButtonName : "", // You can store the text input value instead of hardcoding it
@@ -78,9 +81,12 @@ const Section = ({
       // conditions: conditionButton ? questionAnswers : [], // assuming questionAnswers is an array of {question, answer} objects
     };
 
-    console.log("Section Settings:", sectionSettings);
+    
     if (onSaveSectionData) {
-      onSaveSectionData(sectionSettings);
+      onSaveSectionData(sectionsettings);
+      console.log("Section Settings:", sectionsettings);
+      setSectionConditionBadge(sectionsettings.conditional)
+      // console.log(sectionsettings.conditional)
       toggleDrawer(false);
       setRepeateButton(false);
       setRepeatButtonName("");
@@ -93,7 +99,7 @@ const Section = ({
   };
 
   // Reset to initial state
-  console.log(sections);
+  // console.log("settings sections",section.sectionsettings)
 
   // const sectionSettings = sections[0].sectionsettings;
   // console.log(sectionSettings);
@@ -109,18 +115,18 @@ const Section = ({
     setQuestionAnswers([]);
   };
   const [questionsAnswersMap, setQuestionsAnswersMap] = useState({});
-  const handleElementSelect = (element) => {
-    setSelectedElement(element);
+  // const handleElementSelect = (element) => {
+  //   setSelectedElement(element);
 
-    // Check if we have existing questions and answers for this element
-    const existingData = questionsAnswersMap[element.id] || {
-      questionAnswers: [],
-      description: "",
-    };
+  //   // Check if we have existing questions and answers for this element
+  //   const existingData = questionsAnswersMap[element.id] || {
+  //     questionAnswers: [],
+  //     description: "",
+  //   };
 
-    setQuestionAnswers(existingData.questionAnswers);
-    setDescriptionText(existingData.description);
-  };
+  //   setQuestionAnswers(existingData.questionAnswers);
+  //   setDescriptionText(existingData.description);
+  // };
 
   const handleSave = () => {
     if (selectedElement) {
@@ -160,7 +166,7 @@ const Section = ({
           : element
       );
       setFormElements(updatedFormElements); // Update form elements in state
-
+console.log("updated",updatedFormElements)
       // Clear form and close drawer
       clearForm();
       setQueDrawerOpen(false);
@@ -181,28 +187,17 @@ const Section = ({
       );
       setDescriptionText(questionsectionsettings?.description || "");
       setMode(questionsectionsettings?.mode || "Any");
-      // setSelectedQuestions(questionsectionsettings?.conditions?.question || []);
-      // setSelectedAnswers(questionsectionsettings?.conditions?.answer || []);
-      // Set selectedQuestions and selectedAnswers by mapping through conditions
+    
 
-      // const conditions = questionsectionsettings?.conditions || [];
-      // const questions = conditions.map((cond) => cond.question || null); // Extract questions
-      // const answers = conditions.map((cond) => cond.answer || null); // Extract answers
-
-      // setSelectedQuestions(questions);
-      // setSelectedAnswers(answers);
-
-      // Ensure conditions are set properly if conditional is true
-    if (questionsectionsettings?.conditional && questionsectionsettings?.conditions?.length > 0) {
-      const questions = questionsectionsettings.conditions.map((cond) => cond.question || null);
-      const answers = questionsectionsettings.conditions.map((cond) => cond.answer || null);
-
+      const conditions = questionsectionsettings?.conditions || [];
+      const questions = conditions.map((cond) => cond.question || null);
+      const answers = conditions.map((cond) => cond.answer || null);
+  console.log("que",questions)
+  console.log("ans",answers)
+  console.log("conditions",conditions);
+  setQuestionAnswers(conditions); 
       setSelectedQuestions(questions);
       setSelectedAnswers(answers);
-    } else {
-      setSelectedQuestions([]);
-      setSelectedAnswers([]);
-    }
     }
   }, [selectedElement]);
 
@@ -217,7 +212,10 @@ const Section = ({
   };
   const handleAddQuestionAnswer = () => {
     setQuestionAnswers([...questionAnswers, { question: "", answer: "" }]);
+   
   };
+  
+  
   const handleAddSectionQuestionAnswer = () => {
     setSectionQuestionAnswers([
       ...sectionQuestionAnswers,
@@ -253,38 +251,58 @@ const Section = ({
 
   const [selectedSectionData, setSelectedSectionData] = useState(null);
   
-  const handleSectionSettingsClick = () => {
-
-    if (section && section.sectionSettings) {
-      console.log("sections",section.sectionSettings)
-        // Open the drawer with the updated data
-        toggleDrawer(true); // Open the drawer
-      // Set the selected section data before opening the drawer
-      setSelectedSectionData(section);
-      setSelectedSectionId(section.id); // Store the ID of the section to open
+  // const handleSectionSettingsClick = () => {
+  //   setSelectedSectionData(section);
+  //   setSelectedSectionId(section.id); 
+  //   if (section && section.sectionSettings) {
+  //     console.log("sections",section.sectionSettings)
+   
+  //       // Open the drawer with the updated data
+  //       toggleDrawer(true); // Open the drawer
+  //     // Set the selected section data before opening the drawer
+  //    // Store the ID of the section to open
   
-      // Set the section settings 
-      setRepeateButton(section.sectionSettings.sectionRepeatingMode || false);
-      setRepeatButtonName(section.sectionSettings.buttonName || "Repeat Section");
-      setConditionButton(section.sectionSettings.conditional || false);
-      setSectionMode(section.sectionSettings.sectionMode || "Any");
-      setSectionQuestionAnswers(section.sectionSettings.conditions || []);
+  //     // Set the section settings 
+  //     setRepeateButton(section.sectionSettings.sectionRepeatingMode || false);
+  //     setRepeatButtonName(section.sectionSettings.buttonName || "Repeat Section");
+  //     setConditionButton(section.sectionSettings.conditional || false);
+  //     setSectionMode(section.sectionSettings.sectionMode || "Any");
+  //     setSectionQuestionAnswers(section.sectionSettings.conditions || []);
   
     
-      console.log("Selected single Section Data:", section);
-    } else {
-      // Handle case where sectionSettings is not available
-      console.log("Section settings not found.");
-      toggleDrawer(true); // Optionally close the drawer if sectionSettings is missing
-    }
-  };
+  //     console.log("Selected single Section Data:", section);
+  //   } else {
+  //     // Handle case where sectionSettings is not available
+  //     // console.log("Section settings not found.");
+  //     toggleDrawer(true); // Optionally close the drawer if sectionSettings is missing
+  //   }
+  // };
   
   // useEffect(() => {
   //   if (isDrawerOpen && selectedSectionData) {
   //     console.log("Drawer opened with section data:", selectedSectionData);
   //   }
   // }, [isDrawerOpen, selectedSectionData]);
-  
+  //  Update the badge state when updatedSection changes
+useEffect(() => {
+  setSectionConditionBadge(section?.sectionsettings?.conditional);
+}, [section]);
+  const handleSectionSettingsClick = () => {
+    const updatedSection = sections.find((sec) => sec.id === section.id);
+    console.log("Latest Section Data:", updatedSection); // Check if settings are updated
+    toggleDrawer(true);
+    if (updatedSection && updatedSection.sectionsettings) {
+      setSelectedSectionData(updatedSection);
+      setSelectedSectionId(updatedSection.id);
+      setRepeateButton(updatedSection.sectionsettings.sectionRepeatingMode || false);
+      setRepeatButtonName(updatedSection.sectionsettings.buttonName || "Repeat Section");
+      setConditionButton(updatedSection.sectionsettings.conditional || false);
+      // setSectionConditionBadge(updatedSection.sectionsettings.conditional)
+      setSectionMode(updatedSection.sectionsettings.sectionMode || "Any");
+      setSectionQuestionAnswers(updatedSection.sectionsettings.conditions || []);
+     
+    }
+  };
   
   const toggleDrawer = (open) => {
     setDrawerOpen(open);
@@ -628,23 +646,24 @@ const Section = ({
                   handleElementTextChange(element.id, e.target.value)
                 }
               />
+                           {element.questionsectionsettings?.conditional && (
+  <Box
+  style={{
+    backgroundColor: "green",
+    color: "white",
+    borderRadius: "10px",
+    padding: "4px 8px",
+    fontSize: "12px",
+    marginLeft: "8px",
+  }}
+  >
+    Conditional
+  </Box>
+)}
               <IconButton onClick={() => handleSettingsClick(element.id)}>
                 <IoSettingsOutline />
               </IconButton>
-              {element.questionsectionsettings?.conditional && (
-  <span
-    style={{
-      backgroundColor: "green",
-      color: "white",
-      borderRadius: "10px",
-      padding: "4px 8px",
-      fontSize: "12px",
-      marginLeft: "8px",
-    }}
-  >
-    Conditional
-  </span>
-)}
+ 
               <IconButton onClick={() => handleDeleteFormElement(element.id)}>
                 <RiDeleteBinLine />
               </IconButton>
@@ -1129,6 +1148,22 @@ const Section = ({
           onChange={handleTextChange}
           placeholder="Section text"
         />
+                  {/* {section.sectionsettings?.conditional && ( */}
+                  {sectionConditionBadge && (
+    <Box
+    style={{
+      backgroundColor: "green",
+      color: "white",
+      borderRadius: "10px",
+      padding: "4px 8px",
+      fontSize: "12px",
+      marginLeft: "8px",
+    }}
+    >
+      Conditional
+    </Box>
+  )}
+  
         <Box
           sx={{
             display: "flex",
@@ -1144,6 +1179,7 @@ const Section = ({
           <IconButton onClick={handleSectionSettingsClick}>
             <IoSettingsOutline />
           </IconButton>
+
           <IconButton onClick={handleDelete}>
             <RiDeleteBinLine />
           </IconButton>
@@ -1531,7 +1567,8 @@ const Section = ({
               </Box>
               <Divider />
               <p>Ask question only in certain scenarios</p>
-              {/* {queConditionButton && (
+              {queConditionButton && (
+             
                 <Box mb={3} mt={2}>
                   <Box
                     sx={{
@@ -1650,149 +1687,8 @@ const Section = ({
                     </Box>
                   ))}
                 </Box>
-              )} */}
-              {queConditionButton && selectedQuestions.length > 0 && (
-  <Box mb={3} mt={2}>
-    <Box
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-      }}
-    >
-      <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-        Conditions
-      </Typography>
-      <Button variant="text" onClick={handleAddQuestionAnswer}>
-                      Add
-                    </Button>
-    </Box>
-    <Divider />
-    <Box mt={2}>
-      <Typography>Mode</Typography>
-      <Autocomplete
-        options={["Any", "All"]}
-        value={mode}
-        onChange={(event, newValue) => setMode(newValue)}
-        renderInput={(params) => (
-          <TextField {...params} variant="outlined" size="small" margin="normal" />
-        )}
-      />
-    </Box>
-
-    {/* {selectedQuestions.map((question, index) => (
-      <Box key={index} sx={{ display: "flex", alignItems: "center", gap: 3, mt: 2 }}>
-        <Box sx={{ width: "380px" }}>
-          <Typography>Question</Typography>
-          <Autocomplete
-            options={getRadioButtonOptions()}
-            value={selectedQuestions[index] || null}
-            onChange={(event, newValue) => handleQuestionSelect(newValue, index)}
-            renderInput={(params) => (
-              <TextField {...params} variant="outlined" size="small" margin="normal" placeholder="Question" />
-            )}
-          />
-        </Box>
-        <Box>
-          <Typography>Answer</Typography>
-          <Autocomplete
-            options={getAnswerOptions(selectedQuestions[index])}
-            value={selectedAnswers[index] || null}
-            onChange={(event, newValue) => {
-              const updatedAnswers = [...selectedAnswers];
-              updatedAnswers[index] = newValue;
-              setSelectedAnswers(updatedAnswers);
-            }}
-            renderInput={(params) => (
-              <TextField {...params} variant="outlined" size="small" margin="normal" placeholder="Answer" />
-            )}
-          />
-        </Box>
-        <Box mt={5}>
-          <IconButton onClick={() => handleRemoveQuestionAnswer(index)}>
-            <RiDeleteBinLine />
-          </IconButton>
-        </Box>
-      </Box>
-    ))} */}
-    {questionAnswers.map((qa, index) => (
-                    <Box
-                      key={index}
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 3,
-                        mt: 2,
-                      }}
-                    >
-                      <Box sx={{ width: "380px" }}>
-                        <Typography>Question</Typography>
-                        <Autocomplete
-                          options={getRadioButtonOptions()}
-                          value={selectedQuestions[index] || null}
-                          onChange={(event, newValue) =>
-                            handleQuestionSelect(newValue, index)
-                          }
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              variant="outlined"
-                              size="small"
-                              margin="normal"
-                              placeholder="Question"
-                            />
-                          )}
-                          renderOption={(props, option) => (
-                            <li
-                              {...props}
-                              style={{ margin: "5px", cursor: "pointer" }}
-                            >
-                              {option}
-                            </li>
-                          )}
-                        />
-                      </Box>
-                      <Box>
-                        <Typography>Answer</Typography>
-                        <Autocomplete
-                          options={getAnswerOptions(selectedQuestions[index])} // Get options based on selected question
-                          value={selectedAnswers[index] || null}
-                          onChange={(event, newValue) => {
-                            const updatedAnswers = [...selectedAnswers];
-                            updatedAnswers[index] = newValue;
-                            setSelectedAnswers(updatedAnswers);
-                          }}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              variant="outlined"
-                              size="small"
-                              margin="normal"
-                              placeholder="Answer"
-                            />
-                          )}
-                          renderOption={(props, option) => (
-                            <li
-                              {...props}
-                              style={{ margin: "5px", cursor: "pointer" }}
-                            >
-                              {option}
-                            </li>
-                          )}
-                        />
-                      </Box>
-                      <Box mt={5}>
-                        <IconButton
-                          onClick={() => handleRemoveQuestionAnswer(index)}
-                        >
-                          <RiDeleteBinLine />
-                        </IconButton>
-                      </Box>
-                    </Box>
-                  ))}
-  </Box>
-)}
-
+              )}
+              
             </Paper>
             <Paper style={{ padding: "15px", marginTop: "20px" }}>
               <Box display={"flex"} alignItems={"center"} m={1}>

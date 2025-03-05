@@ -27,7 +27,8 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TablePagination,InputAdornment
+  TablePagination,
+  InputAdornment,
 } from "@mui/material";
 import { AiOutlineSearch } from "react-icons/ai";
 import { IoMdArrowRoundBack } from "react-icons/io";
@@ -2753,6 +2754,11 @@ const PipelineTemp = () => {
     const newStages = [...stages]; // Create a copy of the stages array
     newStages[index].name = e.target.value; // Update the name of the specific stage
     setStages(newStages); // Update the state with the modified stages array
+
+    // Clear error when user types
+    const newStageErrors = [...stageNameErrors];
+    newStageErrors[index] = e.target.value ? "" : "Stage name is required";
+    setStageNameErrors(newStageErrors);
   };
 
   const handleDeleteStage = (index) => {
@@ -3110,6 +3116,8 @@ const PipelineTemp = () => {
   const [sortByJobError, setSortByJobError] = useState("");
   const [templateError, setTemplateError] = useState("");
   const [userError, setUserError] = useState("");
+  const [stageNameErrors, setStageNameErrors] = useState([]);
+
   const validateForm = () => {
     let isValid = true;
     if (!pipelineName) {
@@ -3139,7 +3147,15 @@ const PipelineTemp = () => {
     } else {
       setUserError("");
     }
+    // Validate stage names
+    const newStageErrors = stages.map((stage) =>
+      stage.name ? "" : "Stage name is required"
+    );
+    setStageNameErrors(newStageErrors);
 
+    if (newStageErrors.some((error) => error !== "")) {
+      isValid = false;
+    }
     return isValid;
   };
   const [searchQuery, setSearchQuery] = useState("");
@@ -3731,41 +3747,39 @@ const PipelineTemp = () => {
                 <Box mt={2}>
                   <hr />
                 </Box>
-                <Box >
+                <Box>
                   <Box
                     sx={{
                       display: "flex",
                       gap: "25px",
-                    alignContent:'center',
+                      alignContent: "center",
                       marginBottom: "10px",
                       flexDirection: isSmallScreen ? "column" : "row",
-                      
                     }}
                   >
                     <Box
-    //                  sx={{
-    //   display: "flex",
-    //   gap: "10px",
-    //   overflowX: "auto",
-    //   whiteSpace: "nowrap", // Prevent wrapping
-    //   paddingBottom: "8px", // For better scrolling UX
-    //   maxWidth: "100%", // Prevents growing beyond parent width
-    // }}
-    sx={{
-     
-      display: "flex",
-      gap: "10px",
-      overflowX: "auto",
-      overflowY: "auto",
-      whiteSpace: "nowrap",
-      paddingBottom: "8px",
-      maxWidth: "100%",
-      alignItems: "flex-start",
-      minHeight: "300px",  // Set a minimum height
-      maxHeight: "500px",  // Set a maximum height to trigger vertical scrolling
-    }}
-    className="stage-scroll"
-    >
+                      //                  sx={{
+                      //   display: "flex",
+                      //   gap: "10px",
+                      //   overflowX: "auto",
+                      //   whiteSpace: "nowrap", // Prevent wrapping
+                      //   paddingBottom: "8px", // For better scrolling UX
+                      //   maxWidth: "100%", // Prevents growing beyond parent width
+                      // }}
+                      sx={{
+                        display: "flex",
+                        gap: "10px",
+                        overflowX: "auto",
+                        overflowY: "auto",
+                        whiteSpace: "nowrap",
+                        paddingBottom: "8px",
+                        maxWidth: "100%",
+                        alignItems: "flex-start",
+                        minHeight: "300px", // Set a minimum height
+                        maxHeight: "500px", // Set a maximum height to trigger vertical scrolling
+                      }}
+                      className="stage-scroll"
+                    >
                       {stages.map((stage, index) => (
                         <Box
                           key={index}
@@ -3779,29 +3793,33 @@ const PipelineTemp = () => {
                           //   // marginBottom: "20px",
                           //   marginLeft: isSmallScreen ? "0" : "5px",
                           //   alignSelf: isSmallScreen ? "center" : "flex-start",
-                            
+
                           //     minWidth: "250px", // Fixed width for each stage
                           //     maxWidth: "250px", // Ensures consistency
                           //     // padding: "15px",
-                             
-                           
+
                           // }}
                           sx={{
-                           
                             minWidth: "200px",
                             maxWidth: "250px",
                             padding: "20px",
                             borderRadius: "10px",
                             // boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-                            backgroundColor: "#D9EAFD",
+                            backgroundColor: "#F5F5F7",
                             flexShrink: 0, // Prevent resizing when more stages are added
                           }}
                         >
-                          <Box >
-                           
-                              <Box sx={{ display: "flex", alignItems: "center", gap: "10px",marginBottom:'10px' }}>
-        <RxDragHandleDots2 />
-        {/* <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, gap: "5px" }}>
+                          <Box>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "10px",
+                                marginBottom: "10px",
+                              }}
+                            >
+                              <RxDragHandleDots2 />
+                              {/* <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, gap: "5px" }}>
           <LuPenLine />
           <TextField
             variant="outlined"
@@ -3813,64 +3831,66 @@ const PipelineTemp = () => {
             
           />
         </Box> */}
-        <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, gap: "5px" }}>
-  <TextField
-    variant="standard"
-    placeholder="Stage Name"
-    fullWidth
-    size="small"
-    value={stage.name}
-    onChange={(e) => handleStageNameChange(e, index)}
-    multiline // Allow multiple lines
-    // minRows={2} // Minimum number of rows to display
-    sx={{
-      fontSize: '16px', // Adjust the font size
-      fontWeight: '500', // Adjust the font weight
-    }}
-    InputProps={{
-      endAdornment: (
-        <InputAdornment position="end">
-          <LuPenLine style={{ fontSize: '10px' }} /> {/* Adjust pen icon size */}
-        </InputAdornment>
-      ),
-    }}
-  />
-</Box>
-        <IconButton onClick={() => handleDeleteStage(index)} sx={{fontSize: '15px',color: "red",}}>
-          <RiDeleteBin6Line sx={{  cursor: "pointer", }} />
-        </IconButton>
-      </Box>
-                            <Divider />
-                            <Box >
-                              {/* <Typography
-                                // variant="h6"
-                                sx={{ fontSize: "15px", fontWeight: "bold" }}
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  flexGrow: 1,
+                                  gap: "5px",
+                                }}
                               >
+                                <TextField
+                                  variant="standard"
+                                  placeholder="Stage Name"
+                                  fullWidth
+                                  size="small"
+                                  value={stage.name}
+                                  onChange={(e) =>
+                                    handleStageNameChange(e, index)
+                                  }
+                                  multiline // Allow multiple lines
+                                  // minRows={2} // Minimum number of rows to display
+                                  sx={{
+                                    fontSize: "16px", // Adjust the font size
+                                    fontWeight: "500", // Adjust the font weight
+                                  }}
+                                  error={!!stageNameErrors[index]}
+                                  helperText={stageNameErrors[index]}
+                                  InputProps={{
+                                    endAdornment: (
+                                      <InputAdornment position="end">
+                                        <LuPenLine
+                                          style={{ fontSize: "10px" }}
+                                        />{" "}
+                                        {/* Adjust pen icon size */}
+                                      </InputAdornment>
+                                    ),
+                                  }}
+                                />
+                              </Box>
+                              <IconButton
+                                onClick={() => handleDeleteStage(index)}
+                                sx={{ fontSize: "15px", color: "red" }}
+                              >
+                                <RiDeleteBin6Line sx={{ cursor: "pointer" }} />
+                              </IconButton>
+                            </Box>
+                            <Divider />
+                            <Box>
+                              <Box sx={{ fontWeight: "medium" }}>
                                 Stage conditions
-                              </Typography> */}
-                               <Box sx={{ fontWeight: 'medium', }}>Stage conditions</Box>
-                              {/* {index === 0 ? (
-                                <Typography variant="body2">
-                                  First stage can't have conditions
-                                </Typography>
-                              ) : index === stages.length - 1 ? (
-                                <Typography variant="body2">
-                                  Last stage can't have conditions
-                                </Typography>
-                              ) : (
-                                <Typography variant="body1">
-                                  Job enters this stage if conditions are met
-                                </Typography>
-                              )}
-                              */}
-                              <Box sx={{typography: 'body2'}}>
-        {index === 0
-          ? "First stage can't have conditions"
-          : index === stages.length - 1
-          ? "Last stage can't have conditions"
-          : "Job enters this stage if conditions are met"}
-      </Box>
-      <Box sx={{ fontWeight: 'medium', }}>Automations</Box>
+                              </Box>
+
+                              <Box sx={{ typography: "body2" }}>
+                                {index === 0
+                                  ? "First stage can't have conditions"
+                                  : index === stages.length - 1
+                                    ? "Last stage can't have conditions"
+                                    : "Job enters this stage if conditions are met"}
+                              </Box>
+                              <Box sx={{ fontWeight: "medium" }}>
+                                Automations
+                              </Box>
                               <Typography variant="body2">
                                 Triggered when job enters stage
                               </Typography>
@@ -4920,14 +4940,20 @@ const PipelineTemp = () => {
                                                 {idx + 1}.{automation.type}
                                               </b>
                                             </Typography> */}
-                                            <Box sx={{ fontWeight: 'medium',  }}>{idx + 1}.{automation.type}</Box>
+                                            <Box sx={{ fontWeight: "medium" }}>
+                                              {idx + 1}.{automation.type}
+                                            </Box>
                                             {automation.template && (
                                               // <Typography color="text.secondary">
                                               //   {automation.template.label}
                                               // </Typography>
-                                              <Box color="text.secondary" sx={{ fontWeight: 'regular' }}>
-                                                {automation.template.label.length > 25 
-                                                  ? `${automation.template.label.slice(0, 25)}...` 
+                                              <Box
+                                                color="text.secondary"
+                                                sx={{ fontWeight: "regular" }}
+                                              >
+                                                {automation.template.label
+                                                  .length > 25
+                                                  ? `${automation.template.label.slice(0, 25)}...`
                                                   : automation.template.label}
                                               </Box>
                                             )}
@@ -5066,16 +5092,15 @@ const PipelineTemp = () => {
                           </Box>
                         </Box>
                       ))}
-                      
                     </Box>
-                    <Box mt={3} sx={{ flexShrink: 0,}}>
+                    <Box mt={3} sx={{ flexShrink: 0 }}>
                       <Button
                         variant="contained"
                         startIcon={<LuPlusCircle />}
                         onClick={handleAddStage}
                         sx={{
                           backgroundColor: "var(--color-save-btn)", // Normal background
-                         
+
                           "&:hover": {
                             backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                           },
@@ -5088,9 +5113,7 @@ const PipelineTemp = () => {
                   </Box>
                 </Box>
 
-                <Box
-                  sx={{ display: "flex", alignItems: "center", gap: 5 }}
-                >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 5 }}>
                   <Button
                     variant="contained"
                     onClick={createPipe}

@@ -123,6 +123,11 @@ const PipelineTempUpdate = () => {
     const newStages = [...stages];
     newStages[index].name = e.target.value;
     setStages(newStages);
+
+    // Clear error when user types
+  const newStageErrors = [...stageNameErrors];
+  newStageErrors[index] = e.target.value ? "" : "Stage name is required";
+  setStageNameErrors(newStageErrors);
   };
 
   const handleDeleteStage = (index) => {
@@ -217,6 +222,9 @@ const PipelineTempUpdate = () => {
 
   //data send
   const updatePipe = () => {
+     if (!validateForm()) {
+      return; // Prevent form submission if validation fails
+    }
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -253,12 +261,32 @@ const PipelineTempUpdate = () => {
       })
       .then((result) => {
         toast.success("Pipeline Updated successfully");
+        navigate("/firmtemp/pipelines");
       })
       .catch((error) => {
         toast.error("Failed to Updated pipeline");
       });
   };
+  const [stageNameErrors, setStageNameErrors] = useState([]);
+  const validateForm = () => {
+    let isValid = true;
+   
+    // Validate stage names
+    const newStageErrors = stages.map(stage => (stage.name ? "" : "Stage name is required"));
+    setStageNameErrors(newStageErrors);
+  
+    if (newStageErrors.some(error => error !== "")) {
+      isValid = false;
+    }
+  
+    return isValid;
+  };
+  
   const updateSavePipe = () => {
+
+    if (!validateForm()) {
+      return; // Prevent form submission if validation fails
+    }
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -2380,7 +2408,7 @@ const PipelineTempUpdate = () => {
     }}
     className="stage-scroll">
                  {stages.map((stage, index) => (
-                      <Paper
+                      <Box
                         key={index}
                         // sx={{
                         //   height: "auto",
@@ -2399,7 +2427,7 @@ const PipelineTempUpdate = () => {
                           padding: "20px",
                           borderRadius: "10px",
                           // boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-                          backgroundColor: "#fff",
+                          backgroundColor: "#F5F5F7",
                           flexShrink: 0, // Prevent resizing when more stages are added
                         }}
                       >
@@ -2454,7 +2482,32 @@ const PipelineTempUpdate = () => {
                                       onChange={(e) => handleStageNameChange(e, index)}
                                     />
                                   </Box> */}
-                                     <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, gap: "5px" }}>
+                                     {/* <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, gap: "5px" }}>
+  <TextField
+    variant="standard"
+    placeholder="Stage Name"
+    fullWidth
+    size="small"
+    value={stage.name}
+    onChange={(e) => handleStageNameChange(e, index)}
+    multiline 
+    
+    sx={{
+      fontSize: '16px', 
+      fontWeight: '500', 
+    }}
+    error={!!stageNameErrors[index]}
+    helperText={stageNameErrors[index]}
+    InputProps={{
+      endAdornment: (
+        <InputAdornment position="end">
+          <LuPenLine style={{ fontSize: '20px' }} /> 
+        </InputAdornment>
+      ),
+    }}
+  />
+</Box> */}
+  <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, gap: "5px" }}>
   <TextField
     variant="standard"
     placeholder="Stage Name"
@@ -2468,18 +2521,20 @@ const PipelineTempUpdate = () => {
       fontSize: '16px', // Adjust the font size
       fontWeight: '500', // Adjust the font weight
     }}
+    error={!!stageNameErrors[index]}
+    helperText={stageNameErrors[index]}
     InputProps={{
       endAdornment: (
         <InputAdornment position="end">
-          <LuPenLine style={{ fontSize: '20px' }} /> {/* Adjust pen icon size */}
+          <LuPenLine style={{ fontSize: '10px' }} /> {/* Adjust pen icon size */}
         </InputAdornment>
       ),
     }}
   />
 </Box>
-                                  <IconButton onClick={() => handleDeleteStage(index)}>
-                                    <RiDeleteBin6Line sx={{ color: "red", cursor: "pointer" }} />
-                                  </IconButton>
+                                  <IconButton onClick={() => handleDeleteStage(index)} sx={{fontSize: '15px',color: "red",}}>
+                                            <RiDeleteBin6Line sx={{  cursor: "pointer", }} />
+                                          </IconButton>
                                 </Box>
                           <Divider />
                           <Box >
@@ -3693,26 +3748,26 @@ const PipelineTempUpdate = () => {
                             </Box> */}
                           </Box>
                         </Box>
-                      </Paper>
+                      </Box>
                     ))}
                     </Box>
-                  <Box mt={3} sx={{ flexShrink: 0,}}>
+                  {/* <Box mt={3} sx={{ flexShrink: 0,}}>
                     <Button
-                      variant="contained"
+                      variant="text"
                       startIcon={<LuPlusCircle />}
                       onClick={handleAddStage}
-                      sx={{
-                        backgroundColor: 'var(--color-save-btn)',  // Normal background
+                      // sx={{
+                      //   backgroundColor: 'var(--color-save-btn)',  // Normal background
                        
-                        '&:hover': {
-                          backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                        },
-                        borderRadius:'15px', 
-                      }}
+                      //   '&:hover': {
+                      //     backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                      //   },
+                      //   borderRadius:'15px', 
+                      // }}
                     >
                       Add stage
                     </Button>
-                  </Box>
+                  </Box> */}
                 </Box>
               </Box>
 
@@ -3720,7 +3775,7 @@ const PipelineTempUpdate = () => {
                 sx={{ pt: 2, display: "flex", alignItems: "center", gap: 5 }}
               >
                 <Button
-                  onClick={handleButtonClick}
+                  onClick={updatePipe}
                   variant="contained"
                   sx={{
                     backgroundColor: 'var(--color-save-btn)',  // Normal background

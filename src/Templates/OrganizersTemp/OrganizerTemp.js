@@ -174,7 +174,7 @@ const OrganizersTemp = () => {
     setSections((prevSections) =>
       prevSections.map((section) =>
         section.id === selectedSection.id
-          ? { ...section, sectionSettings: settings }
+    ? { ...section, sectionsettings: settings }
           : section
       )
     );
@@ -287,7 +287,7 @@ const OrganizersTemp = () => {
         name: section.text,
         text: section.text,
         id: section.id.toString(),
-        sectionsettings: section.sectionSettings || {},
+        sectionsettings: section.sectionsettings || {},
         formElements: section.formElements.map(element => ({
           type: element.type,
           id: element.id,
@@ -940,7 +940,7 @@ const OrganizersTemp = () => {
   
   
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(30);
   
   
      const handleChangePage = (_, newPage) => {

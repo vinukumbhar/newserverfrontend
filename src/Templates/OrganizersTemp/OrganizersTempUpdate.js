@@ -390,7 +390,7 @@ const OrganizersTempUpdate = () => {
         name: section.text,
         text: section.text,
         id: section.id.toString(),
-        sectionsettings: section.sectionSettings || {},
+        sectionsettings: section.sectionsettings || {},
         formElements: section.formElements.map(element => ({
           type: element.type,
           id: element.id,
@@ -472,12 +472,11 @@ const OrganizersTempUpdate = () => {
     setSections((prevSections) =>
       prevSections.map((section) =>
         section.id === selectedSection.id
-          ? { ...section, sectionSettings: settings }
+          ? { ...section, sectionsettings: settings }
           : section
       )
     );
   };
-
 
   const [previewDialogOpen, setPreviewDialogOpen] = useState(false);
   const handlePreview = () => {
@@ -899,6 +898,7 @@ onClick={(e) => setCursorPosition(e.target.selectionStart)}
         <Box className="right-container" sx={{ borderRadius: '20px', width: "70%", height: "auto" }}>
           {selectedSection && (
             <Section
+            key={selectedSection.id}
               section={selectedSection}
               onDelete={handleDeleteSection}
               onUpdate={handleUpdateSection}
