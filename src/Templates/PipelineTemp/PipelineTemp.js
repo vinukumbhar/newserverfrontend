@@ -577,626 +577,88 @@ const PipelineTemp = () => {
     (option) => !addTags.includes(option.value)
   );
 
-  // Function to render content based on action
-  // const renderActionContent = (automationSelect, index) => {
-  //   switch (automationSelect) {
-  //     case "Send Invoice":
-  //       return (
-  //         <>
-  //           <Grid item ml={2}>
-  //             <Typography mb={1}>Select template</Typography>
-  //             <Autocomplete
-  //               options={invoiceTemplateOptions}
-  //               getOptionLabel={(option) => option.label}
-  //               value={selectedtemp}
-  //               onChange={(event, newValue) => handletemp(newValue)}
-  //               isOptionEqualToValue={(option, value) =>
-  //                 option.value === value.value
-  //               }
-  //               renderOption={(props, option) => (
-  //                 <Box
-  //                   component="li"
-  //                   {...props}
-  //                   sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
-  //                 >
-  //                   {option.label}
-  //                 </Box>
-  //               )}
-  //               renderInput={(params) => (
-  //                 <>
-  //                   <TextField
-  //                     {...params}
-  //                     // helperText={templateError}
-  //                     sx={{ backgroundColor: "#fff" }}
-  //                     placeholder="Select Template"
-  //                     variant="outlined"
-  //                     size="small"
-  //                   />
-  //                 </>
-  //               )}
-  //               sx={{ width: "100%", marginTop: "8px" }}
-  //               clearOnEscape // Enable clearable functionality
-  //             />
-  //             {selectedTags.length > 0 && (
-  //               <Grid container alignItems="center" gap={1}>
-  //                 <Typography>Only for:</Typography>
-  //                 <Grid item>{selectedTagElements}</Grid>
-  //               </Grid>
-  //             )}
-  //             <Button variant="text" onClick={handleAddConditions}>
-  //               Add Conditions
-  //             </Button>
-
-  //             <Button variant="contained" onClick={handleSaveAutomation(index)}>
-  //               Save Automation
-  //             </Button>
-  //           </Grid>
-  //           <Drawer
-  //             anchor="right"
-  //             open={isConditionsFormOpen}
-  //             onClose={handleGoBack}
-  //             PaperProps={{ sx: { width: "550px", padding: 2 } }}
-  //           >
-  //             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-  //               <IconButton onClick={handleGoBack}>
-  //                 <IoMdArrowRoundBack fontSize="large" color="blue" />
-  //               </IconButton>
-  //               <Typography variant="h6">Add conditions</Typography>
-  //             </Box>
-
-  //             <Box sx={{ padding: 2 }}>
-  //               <Typography variant="body1">
-  //                 Apply automation only for accounts with these tags
-  //               </Typography>
-  //               <TextField
-  //                 fullWidth
-  //                 size="small"
-  //                 variant="outlined"
-  //                 placeholder="Search..."
-  //                 value={searchTerm}
-  //                 onChange={handleSearchChange}
-  //                 InputProps={{
-  //                   startAdornment: (
-  //                     <AiOutlineSearch style={{ marginRight: 8 }} />
-  //                   ),
-  //                 }}
-  //                 sx={{ marginTop: 2 }}
-  //               />
-
-  //               <Box sx={{ marginTop: 2 }}>
-  //                 {filteredTags.map((tag) => (
-  //                   <Box
-  //                     key={tag._id}
-  //                     sx={{
-  //                       display: "flex",
-  //                       alignItems: "center",
-  //                       gap: 3,
-  //                       borderBottom: "1px solid grey",
-  //                       paddingBottom: 1,
-  //                     }}
-  //                   >
-  //                     <Checkbox
-  //                       checked={tempSelectedTags.includes(tag)}
-  //                       onChange={() => handleCheckboxChange(tag)}
-  //                     />
-  //                     <Chip
-  //                       label={tag.tagName}
-  //                       sx={{
-  //                         backgroundColor: tag.tagColour,
-  //                         color: "#fff",
-  //                         fontWeight: "500",
-  //                         borderRadius: "20px",
-  //                         marginRight: 1,
-  //                       }}
-  //                     />
-  //                   </Box>
-  //                 ))}
-  //               </Box>
-
-  //               <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
-  //                 <Button
-  //                   variant="contained"
-  //                   color="primary"
-  //                   disabled={!isAnyCheckboxChecked}
-  //                   onClick={handleAddTags}
-  //                 >
-  //                   Add
-  //                 </Button>
-  //                 <Button
-  //                   variant="outlined"
-  //                   color="primary"
-  //                   onClick={handleGoBack}
-  //                 >
-  //                   Cancel
-  //                 </Button>
-  //               </Box>
-  //             </Box>
-  //           </Drawer>
-  //         </>
-  //       );
-  //     case "Send Proposal/Els":
-  //       return (
-  //         <Box p={2}>
-  //           <Grid item>
-  //             <Typography mb={1}>Select template</Typography>
-  //             <Autocomplete
-  //               options={proposalElsOptions}
-  //               getOptionLabel={(option) => option.label}
-  //               value={selectedtemp}
-  //               onChange={(event, newValue) => handletemp(newValue)}
-  //               isOptionEqualToValue={(option, value) =>
-  //                 option.value === value.value
-  //               }
-  //               renderOption={(props, option) => (
-  //                 <Box
-  //                   component="li"
-  //                   {...props}
-  //                   sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
-  //                 >
-  //                   {option.label}
-  //                 </Box>
-  //               )}
-  //               renderInput={(params) => (
-  //                 <>
-  //                   <TextField
-  //                     {...params}
-  //                     // helperText={templateError}
-  //                     sx={{ backgroundColor: "#fff" }}
-  //                     placeholder="Select Template"
-  //                     variant="outlined"
-  //                     size="small"
-  //                   />
-  //                 </>
-  //               )}
-  //               sx={{ width: "100%", marginTop: "8px" }}
-  //               clearOnEscape // Enable clearable functionality
-  //             />
-
-  //             {selectedTags.length > 0 && (
-  //               <Grid container alignItems="center" gap={1}>
-  //                 <Typography>Only for:</Typography>
-  //                 <Grid item>{selectedTagElements}</Grid>
-  //               </Grid>
-  //             )}
-  //             <Button variant="text" onClick={handleAddConditions}>
-  //               Add Conditions
-  //             </Button>
-  //           </Grid>
-  //           <Button variant="contained" onClick={handleSaveAutomation(index)}>
-  //             Save Automation
-  //           </Button>
-
-  //           <Drawer
-  //             anchor="right"
-  //             open={isConditionsFormOpen}
-  //             onClose={handleGoBack}
-  //             PaperProps={{ sx: { width: "550px", padding: 2 } }}
-  //           >
-  //             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-  //               <IconButton onClick={handleGoBack}>
-  //                 <IoMdArrowRoundBack fontSize="large" color="blue" />
-  //               </IconButton>
-  //               <Typography variant="h6">Add conditions</Typography>
-  //             </Box>
-
-  //             <Box sx={{ padding: 2 }}>
-  //               <Typography variant="body1">
-  //                 Apply automation only for accounts with these tags
-  //               </Typography>
-  //               <TextField
-  //                 fullWidth
-  //                 size="small"
-  //                 variant="outlined"
-  //                 placeholder="Search..."
-  //                 value={searchTerm}
-  //                 onChange={handleSearchChange}
-  //                 InputProps={{
-  //                   startAdornment: (
-  //                     <AiOutlineSearch style={{ marginRight: 8 }} />
-  //                   ),
-  //                 }}
-  //                 sx={{ marginTop: 2 }}
-  //               />
-
-  //               <Box sx={{ marginTop: 2 }}>
-  //                 {filteredTags.map((tag) => (
-  //                   <Box
-  //                     key={tag._id}
-  //                     sx={{
-  //                       display: "flex",
-  //                       alignItems: "center",
-  //                       gap: 3,
-  //                       borderBottom: "1px solid grey",
-  //                       paddingBottom: 1,
-  //                     }}
-  //                   >
-  //                     <Checkbox
-  //                       checked={tempSelectedTags.includes(tag)}
-  //                       onChange={() => handleCheckboxChange(tag)}
-  //                     />
-  //                     <Chip
-  //                       label={tag.tagName}
-  //                       sx={{
-  //                         backgroundColor: tag.tagColour,
-  //                         color: "#fff",
-  //                         fontWeight: "500",
-  //                         borderRadius: "20px",
-  //                         marginRight: 1,
-  //                       }}
-  //                     />
-  //                   </Box>
-  //                 ))}
-  //               </Box>
-
-  //               <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
-  //                 <Button
-  //                   variant="contained"
-  //                   color="primary"
-  //                   disabled={!isAnyCheckboxChecked}
-  //                   onClick={handleAddTags}
-  //                 >
-  //                   Add
-  //                 </Button>
-  //                 <Button
-  //                   variant="outlined"
-  //                   color="primary"
-  //                   onClick={handleGoBack}
-  //                 >
-  //                   Cancel
-  //                 </Button>
-  //               </Box>
-  //             </Box>
-  //           </Drawer>
-  //         </Box>
-  //       );
-  //     case "Send Email":
-  //       return (
-  //         <>
-  //           <Box p={2}>
-  //             <Grid item>
-  //               <Typography mb={1}>Select template</Typography>
-  //               <Autocomplete
-  //                 options={emailTemplateOptions}
-  //                 getOptionLabel={(option) => option.label}
-  //                 value={selectedtemp}
-  //                 onChange={(event, newValue) => handletemp(newValue)}
-  //                 isOptionEqualToValue={(option, value) =>
-  //                   option.value === value.value
-  //                 }
-  //                 renderOption={(props, option) => (
-  //                   <Box
-  //                     component="li"
-  //                     {...props}
-  //                     sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
-  //                   >
-  //                     {option.label}
-  //                   </Box>
-  //                 )}
-  //                 renderInput={(params) => (
-  //                   <>
-  //                     <TextField
-  //                       {...params}
-  //                       // helperText={templateError}
-  //                       sx={{ backgroundColor: "#fff" }}
-  //                       placeholder="Select Template"
-  //                       variant="outlined"
-  //                       size="small"
-  //                     />
-  //                   </>
-  //                 )}
-  //                 sx={{ width: "100%", marginTop: "8px" }}
-  //                 clearOnEscape // Enable clearable functionality
-  //               />
-  //               {selectedTags.length > 0 && (
-  //                 <Grid container alignItems="center" gap={1}>
-  //                   <Typography>Only for:</Typography>
-  //                   <Grid item>{selectedTagElements}</Grid>
-  //                 </Grid>
-  //               )}
-  //               <Button variant="text" onClick={handleAddConditions}>
-  //                 Add Conditions
-  //               </Button>
-  //             </Grid>
-  //             <Button
-  //               variant="contained"
-  //               onClick={handleSaveAutomation(stageSelected)}
-  //             >
-  //               Save Automation
-  //             </Button>
-  //           </Box>
-  //           {/* Condition tags for automation */}
-  //           <Drawer
-  //             anchor="right"
-  //             open={isConditionsFormOpen}
-  //             onClose={handleGoBack}
-  //             PaperProps={{ sx: { width: "550px", padding: 2 } }}
-  //           >
-  //             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-  //               <IconButton onClick={handleGoBack}>
-  //                 <IoMdArrowRoundBack fontSize="large" color="blue" />
-  //               </IconButton>
-  //               <Typography variant="h6">Add conditions</Typography>
-  //             </Box>
-
-  //             <Box sx={{ padding: 2 }}>
-  //               <Typography variant="body1">
-  //                 Apply automation only for accounts with these tags
-  //               </Typography>
-  //               <TextField
-  //                 fullWidth
-  //                 size="small"
-  //                 variant="outlined"
-  //                 placeholder="Search..."
-  //                 value={searchTerm}
-  //                 onChange={handleSearchChange}
-  //                 InputProps={{
-  //                   startAdornment: (
-  //                     <AiOutlineSearch style={{ marginRight: 8 }} />
-  //                   ),
-  //                 }}
-  //                 sx={{ marginTop: 2 }}
-  //               />
-
-  //               <Box sx={{ marginTop: 2 }}>
-  //                 {filteredTags.map((tag) => (
-  //                   <Box
-  //                     key={tag._id}
-  //                     sx={{
-  //                       display: "flex",
-  //                       alignItems: "center",
-  //                       gap: 3,
-  //                       borderBottom: "1px solid grey",
-  //                       paddingBottom: 1,
-  //                     }}
-  //                   >
-  //                     <Checkbox
-  //                       checked={tempSelectedTags.includes(tag)}
-  //                       onChange={() => handleCheckboxChange(tag)}
-  //                     />
-  //                     <Chip
-  //                       label={tag.tagName}
-  //                       sx={{
-  //                         backgroundColor: tag.tagColour,
-  //                         color: "#fff",
-  //                         fontWeight: "500",
-  //                         borderRadius: "20px",
-  //                         marginRight: 1,
-  //                       }}
-  //                     />
-  //                   </Box>
-  //                 ))}
-  //               </Box>
-
-  //               <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
-  //                 <Button
-  //                   variant="contained"
-  //                   color="primary"
-  //                   disabled={!isAnyCheckboxChecked}
-  //                   onClick={handleAddTags}
-  //                 >
-  //                   Add
-  //                 </Button>
-  //                 <Button
-  //                   variant="outlined"
-  //                   color="primary"
-  //                   onClick={handleGoBack}
-  //                 >
-  //                   Cancel
-  //                 </Button>
-  //               </Box>
-  //             </Box>
-  //           </Drawer>
-  //         </>
-  //       );
-  //     case "Create Organizer":
-  //       return (
-  //         <>
-  //           <Box p={2}>
-  //             <Grid item>
-  //               <Typography mb={1}>Select template</Typography>
-  //               <Autocomplete
-  //                 options={organizerOptions}
-  //                 getOptionLabel={(option) => option.label}
-  //                 value={selectedtemp}
-  //                 onChange={(event, newValue) => handletemp(newValue)}
-  //                 isOptionEqualToValue={(option, value) =>
-  //                   option.value === value.value
-  //                 }
-  //                 renderOption={(props, option) => (
-  //                   <Box
-  //                     component="li"
-  //                     {...props}
-  //                     sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
-  //                   >
-  //                     {option.label}
-  //                   </Box>
-  //                 )}
-  //                 renderInput={(params) => (
-  //                   <>
-  //                     <TextField
-  //                       {...params}
-  //                       // helperText={templateError}
-  //                       sx={{ backgroundColor: "#fff" }}
-  //                       placeholder="Select Template"
-  //                       variant="outlined"
-  //                       size="small"
-  //                     />
-  //                   </>
-  //                 )}
-  //                 sx={{ width: "100%", marginTop: "8px" }}
-  //                 clearOnEscape // Enable clearable functionality
-  //               />
-  //               {selectedTags.length > 0 && (
-  //                 <Grid container alignItems="center" gap={1}>
-  //                   <Typography>Only for:</Typography>
-  //                   <Grid item>{selectedTagElements}</Grid>
-  //                 </Grid>
-  //               )}
-  //               <Button variant="text" onClick={handleAddConditions}>
-  //                 Add Conditions
-  //               </Button>
-  //             </Grid>
-  //             <Button
-  //               variant="contained"
-  //               onClick={handleSaveAutomation(stageSelected)}
-  //             >
-  //               Save Automation
-  //             </Button>
-  //           </Box>
-  //           {/* Condition tags for automation */}
-  //           <Drawer
-  //             anchor="right"
-  //             open={isConditionsFormOpen}
-  //             onClose={handleGoBack}
-  //             PaperProps={{ sx: { width: "550px", padding: 2 } }}
-  //           >
-  //             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-  //               <IconButton onClick={handleGoBack}>
-  //                 <IoMdArrowRoundBack fontSize="large" color="blue" />
-  //               </IconButton>
-  //               <Typography variant="h6">Add conditions</Typography>
-  //             </Box>
-
-  //             <Box sx={{ padding: 2 }}>
-  //               <Typography variant="body1">
-  //                 Apply automation only for accounts with these tags
-  //               </Typography>
-  //               <TextField
-  //                 fullWidth
-  //                 size="small"
-  //                 variant="outlined"
-  //                 placeholder="Search..."
-  //                 value={searchTerm}
-  //                 onChange={handleSearchChange}
-  //                 InputProps={{
-  //                   startAdornment: (
-  //                     <AiOutlineSearch style={{ marginRight: 8 }} />
-  //                   ),
-  //                 }}
-  //                 sx={{ marginTop: 2 }}
-  //               />
-
-  //               <Box sx={{ marginTop: 2 }}>
-  //                 {filteredTags.map((tag) => (
-  //                   <Box
-  //                     key={tag._id}
-  //                     sx={{
-  //                       display: "flex",
-  //                       alignItems: "center",
-  //                       gap: 3,
-  //                       borderBottom: "1px solid grey",
-  //                       paddingBottom: 1,
-  //                     }}
-  //                   >
-  //                     <Checkbox
-  //                       checked={tempSelectedTags.includes(tag)}
-  //                       onChange={() => handleCheckboxChange(tag)}
-  //                     />
-  //                     <Chip
-  //                       label={tag.tagName}
-  //                       sx={{
-  //                         backgroundColor: tag.tagColour,
-  //                         color: "#fff",
-  //                         fontWeight: "500",
-  //                         borderRadius: "20px",
-  //                         marginRight: 1,
-  //                       }}
-  //                     />
-  //                   </Box>
-  //                 ))}
-  //               </Box>
-
-  //               <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
-  //                 <Button
-  //                   variant="contained"
-  //                   color="primary"
-  //                   disabled={!isAnyCheckboxChecked}
-  //                   onClick={handleAddTags}
-  //                 >
-  //                   Add
-  //                 </Button>
-  //                 <Button
-  //                   variant="outlined"
-  //                   color="primary"
-  //                   onClick={handleGoBack}
-  //                 >
-  //                   Cancel
-  //                 </Button>
-  //               </Box>
-  //             </Box>
-  //           </Drawer>
-  //         </>
-  //       );
-  //     // Add cases for other actions here
-  //     default:
-  //       return null;
-  //   }
-  // };
-
   const renderActionContent = (automationSelect, index) => {
     switch (automationSelect) {
       case "Send Invoice":
         return (
           <>
-            <Grid item ml={2}>
-              {automationSelect}
-              <Typography mb={1}>Select template</Typography>
-              <Autocomplete
-                options={invoiceTemplateOptions}
-                getOptionLabel={(option) => option.label}
-                value={selectedtemp}
-                onChange={(event, newValue) => handletemp(newValue)}
-                isOptionEqualToValue={(option, value) =>
-                  option.value === value.value
-                }
-                renderOption={(props, option) => (
-                  <Box
-                    component="li"
-                    {...props}
-                    sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
-                  >
-                    {option.label}
-                  </Box>
-                )}
-                renderInput={(params) => (
-                  <>
-                    <TextField
-                      {...params}
-                      // helperText={templateError}
-                      sx={{ backgroundColor: "#fff" }}
-                      placeholder="Select Template"
-                      variant="outlined"
-                      size="small"
-                    />
-                  </>
-                )}
-                sx={{ width: "100%", marginTop: "8px" }}
-                clearOnEscape // Enable clearable functionality
-              />
-              {selectedTags.length > 0 && (
-                <Grid container alignItems="center" gap={1}>
-                  <Typography>Only for:</Typography>
-                  <Grid item>{selectedTagElements}</Grid>
-                </Grid>
-              )}
-              <Button variant="text" onClick={handleAddConditions}>
-                Add Conditions
-              </Button>
-
-              <Button
-                variant="contained"
-                onClick={handleSaveAutomation(index)}
+            <Grid item>
+              {/* {automationSelect} */}
+              <Box
                 sx={{
-                  backgroundColor: "var(--color-save-btn)", // Normal background
-
-                  "&:hover": {
-                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-                  },
-                  borderRadius: "15px",
+                  border: "2px solid #ddd",
+                  borderRadius: "8px",
+                  padding: 2,
+                  // marginBottom: 2,
                 }}
               >
-                Save Automation
-              </Button>
+                <Typography gutterBottom>
+                  1. {automationSelect || "No Type"}
+                </Typography>
+
+                <Typography mb={1}>Select templates</Typography>
+                <Autocomplete
+                  options={invoiceTemplateOptions}
+                  getOptionLabel={(option) => option.label}
+                  value={selectedtemp}
+                  onChange={(event, newValue) => handletemp(newValue)}
+                  isOptionEqualToValue={(option, value) =>
+                    option.value === value.value
+                  }
+                  renderOption={(props, option) => (
+                    <Box
+                      component="li"
+                      {...props}
+                      sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
+                    >
+                      {option.label}
+                    </Box>
+                  )}
+                  renderInput={(params) => (
+                    <>
+                      <TextField
+                        {...params}
+                        // helperText={templateError}
+                        sx={{ backgroundColor: "#fff" }}
+                        placeholder="Select Template"
+                        variant="outlined"
+                        size="small"
+                      />
+                    </>
+                  )}
+                  sx={{ width: "100%", marginTop: "8px" }}
+                  clearOnEscape // Enable clearable functionality
+                />
+                <Box mt={2}>
+                  {" "}
+                  {selectedTags.length > 0 && (
+                    <Grid container alignItems="center" gap={1}>
+                      <Typography>Only for:</Typography>
+                      <Grid item>{selectedTagElements}</Grid>
+                    </Grid>
+                  )}
+                </Box>
+
+                <Button variant="text" onClick={handleAddConditions}>
+                  Add Conditions
+                </Button>
+              </Box>
+              <Box mt={2}>
+                <Button
+                  variant="contained"
+                  onClick={handleSaveAutomation(index)}
+                  sx={{
+                    backgroundColor: "var(--color-save-btn)", // Normal background
+
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                    },
+                    borderRadius: "15px",
+                  }}
+                >
+                  Save Automation
+                </Button>
+              </Box>
             </Grid>
             <Drawer
               anchor="right"
@@ -1303,67 +765,82 @@ const PipelineTemp = () => {
         );
       case "Send Proposal/Els":
         return (
-          <Box p={2}>
+          <>
             <Grid item>
-              {automationSelect}
-              <Typography mb={1}>Select template</Typography>
-              <Autocomplete
-                options={proposalElsOptions}
-                getOptionLabel={(option) => option.label}
-                value={selectedtemp}
-                onChange={(event, newValue) => handletemp(newValue)}
-                isOptionEqualToValue={(option, value) =>
-                  option.value === value.value
-                }
-                renderOption={(props, option) => (
-                  <Box
-                    component="li"
-                    {...props}
-                    sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
-                  >
-                    {option.label}
-                  </Box>
-                )}
-                renderInput={(params) => (
-                  <>
-                    <TextField
-                      {...params}
-                      // helperText={templateError}
-                      sx={{ backgroundColor: "#fff" }}
-                      placeholder="Select Template"
-                      variant="outlined"
-                      size="small"
-                    />
-                  </>
-                )}
-                sx={{ width: "100%", marginTop: "8px" }}
-                clearOnEscape // Enable clearable functionality
-              />
+              <Box
+                sx={{
+                  border: "2px solid #ddd",
+                  borderRadius: "8px",
+                  padding: 2,
+                  // marginBottom: 2,
+                }}
+              >
+                <Typography gutterBottom>
+                  1. {automationSelect || "No Type"}
+                </Typography>
+                <Typography mb={1}>Select template</Typography>
+                <Autocomplete
+                  options={proposalElsOptions}
+                  getOptionLabel={(option) => option.label}
+                  value={selectedtemp}
+                  onChange={(event, newValue) => handletemp(newValue)}
+                  isOptionEqualToValue={(option, value) =>
+                    option.value === value.value
+                  }
+                  renderOption={(props, option) => (
+                    <Box
+                      component="li"
+                      {...props}
+                      sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
+                    >
+                      {option.label}
+                    </Box>
+                  )}
+                  renderInput={(params) => (
+                    <>
+                      <TextField
+                        {...params}
+                        // helperText={templateError}
+                        sx={{ backgroundColor: "#fff" }}
+                        placeholder="Select Template"
+                        variant="outlined"
+                        size="small"
+                      />
+                    </>
+                  )}
+                  sx={{ width: "100%", marginTop: "8px" }}
+                  clearOnEscape // Enable clearable functionality
+                />
+                <Box mt={2}>
+                  {" "}
+                  {selectedTags.length > 0 && (
+                    <Grid container alignItems="center" gap={1}>
+                      <Typography>Only for:</Typography>
+                      <Grid item>{selectedTagElements}</Grid>
+                    </Grid>
+                  )}
+                </Box>
+                <Button variant="text" onClick={handleAddConditions}>
+                  Add Conditions
+                </Button>
+              </Box>
+              <Box mt={2}>
+                <Button
+                  variant="contained"
+                  onClick={handleSaveAutomation(index)}
+                  sx={{
+                    backgroundColor: "var(--color-save-btn)", // Normal background
 
-              {selectedTags.length > 0 && (
-                <Grid container alignItems="center" gap={1}>
-                  <Typography>Only for:</Typography>
-                  <Grid item>{selectedTagElements}</Grid>
-                </Grid>
-              )}
-              <Button variant="text" onClick={handleAddConditions}>
-                Add Conditions
-              </Button>
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                    },
+                    borderRadius: "15px",
+                  }}
+                >
+                  Save Automation
+                </Button>
+              </Box>
             </Grid>
-            <Button
-              variant="contained"
-              onClick={handleSaveAutomation(index)}
-              sx={{
-                backgroundColor: "var(--color-save-btn)", // Normal background
-
-                "&:hover": {
-                  backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-                },
-                borderRadius: "15px",
-              }}
-            >
-              Save Automation
-            </Button>
 
             <Drawer
               anchor="right"
@@ -1466,15 +943,23 @@ const PipelineTemp = () => {
                 </Box>
               </Box>
             </Drawer>
-          </Box>
+          </>
         );
       case "Send Email":
         return (
           <>
-            <Box p={2}>
-              <Grid item>
-                {automationSelect}
-                <Typography mb={1}>Select template</Typography>
+            <Grid item>
+              <Box
+                sx={{
+                  border: "2px solid #ddd",
+                  borderRadius: "8px",
+                  padding: 2,
+                  // marginBottom: 2,
+                }}
+              >
+                <Typography gutterBottom>
+                  1. {automationSelect || "No Type"}
+                </Typography>
                 <Autocomplete
                   options={emailTemplateOptions}
                   getOptionLabel={(option) => option.label}
@@ -1507,31 +992,37 @@ const PipelineTemp = () => {
                   sx={{ width: "100%", marginTop: "8px" }}
                   clearOnEscape // Enable clearable functionality
                 />
-                {selectedTags.length > 0 && (
-                  <Grid container alignItems="center" gap={1}>
-                    <Typography>Only for:</Typography>
-                    <Grid item>{selectedTagElements}</Grid>
-                  </Grid>
-                )}
+                <Box mt={2}>
+                  {" "}
+                  {selectedTags.length > 0 && (
+                    <Grid container alignItems="center" gap={1}>
+                      <Typography>Only for:</Typography>
+                      <Grid item>{selectedTagElements}</Grid>
+                    </Grid>
+                  )}
+                </Box>
                 <Button variant="text" onClick={handleAddConditions}>
                   Add Conditions
                 </Button>
-              </Grid>
-              <Button
-                variant="contained"
-                onClick={handleSaveAutomation(stageSelected)}
-                sx={{
-                  backgroundColor: "var(--color-save-btn)", // Normal background
+              </Box>
+              <Box mt={2}>
+                <Button
+                  variant="contained"
+                  onClick={handleSaveAutomation(stageSelected)}
+                  sx={{
+                    backgroundColor: "var(--color-save-btn)", // Normal background
 
-                  "&:hover": {
-                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-                  },
-                  borderRadius: "15px",
-                }}
-              >
-                Save Automation
-              </Button>
-            </Box>
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                    },
+                    borderRadius: "15px",
+                  }}
+                >
+                  Save Automation
+                </Button>
+              </Box>
+            </Grid>
+
             {/* Condition tags for automation */}
             <Drawer
               anchor="right"
@@ -1639,9 +1130,19 @@ const PipelineTemp = () => {
       case "Apply folder template":
         return (
           <>
-            <Box p={2}>
-              <Grid item>
-                {automationSelect}
+            <Grid item>
+              <Box
+                sx={{
+                  border: "2px solid #ddd",
+                  borderRadius: "8px",
+                  padding: 2,
+                  // marginBottom: 2,
+                }}
+              >
+                <Typography gutterBottom>
+                  1. {automationSelect || "No Type"}
+                </Typography>
+
                 <Typography mb={1}>Select template</Typography>
                 <Autocomplete
                   options={optionfolder}
@@ -1675,16 +1176,21 @@ const PipelineTemp = () => {
                   sx={{ width: "100%", marginTop: "8px" }}
                   clearOnEscape // Enable clearable functionality
                 />
-                {selectedTags.length > 0 && (
-                  <Grid container alignItems="center" gap={1}>
-                    <Typography>Only for:</Typography>
-                    <Grid item>{selectedTagElements}</Grid>
-                  </Grid>
-                )}
+                <Box mt={2}>
+                  {" "}
+                  {selectedTags.length > 0 && (
+                    <Grid container alignItems="center" gap={1}>
+                      <Typography>Only for:</Typography>
+                      <Grid item>{selectedTagElements}</Grid>
+                    </Grid>
+                  )}
+                </Box>
                 <Button variant="text" onClick={handleAddConditions}>
                   Add Conditions
                 </Button>
-              </Grid>
+              </Box>
+            </Grid>
+            <Box mt={2}>
               <Button
                 variant="contained"
                 onClick={handleSaveAutomation(stageSelected)}
@@ -1700,6 +1206,7 @@ const PipelineTemp = () => {
                 Save Automation
               </Button>
             </Box>
+
             {/* Condition tags for automation */}
             <Drawer
               anchor="right"
@@ -2038,9 +1545,18 @@ const PipelineTemp = () => {
       case "Create Organizer":
         return (
           <>
-            <Box p={2}>
-              <Grid item>
-                <Typography mb={1}>Select template</Typography>
+            <Grid item>
+              <Box
+                sx={{
+                  border: "2px solid #ddd",
+                  borderRadius: "8px",
+                  padding: 2,
+                  // marginBottom: 2,
+                }}
+              >
+                <Typography gutterBottom>
+                  1. {automationSelect || "No Type"}
+                </Typography>
                 <Autocomplete
                   options={organizerOptions}
                   getOptionLabel={(option) => option.label}
@@ -2073,16 +1589,21 @@ const PipelineTemp = () => {
                   sx={{ width: "100%", marginTop: "8px" }}
                   clearOnEscape // Enable clearable functionality
                 />
-                {selectedTags.length > 0 && (
-                  <Grid container alignItems="center" gap={1}>
-                    <Typography>Only for:</Typography>
-                    <Grid item>{selectedTagElements}</Grid>
-                  </Grid>
-                )}
+                <Box mt={2}>
+                  {" "}
+                  {selectedTags.length > 0 && (
+                    <Grid container alignItems="center" gap={1}>
+                      <Typography>Only for:</Typography>
+                      <Grid item>{selectedTagElements}</Grid>
+                    </Grid>
+                  )}
+                </Box>
                 <Button variant="text" onClick={handleAddConditions}>
                   Add Conditions
                 </Button>
-              </Grid>
+              </Box>
+            </Grid>
+            <Box mt={2}>
               <Button
                 variant="contained"
                 onClick={handleSaveAutomation(stageSelected)}
@@ -2098,6 +1619,7 @@ const PipelineTemp = () => {
                 Save Automation
               </Button>
             </Box>
+
             {/* Condition tags for automation */}
             <Drawer
               anchor="right"
@@ -2237,380 +1759,80 @@ const PipelineTemp = () => {
 
     console.log("janvai", newValue);
   };
-  // renderActionContentedit
-  const renderActionContentedit = (
-    automationSelectEditType,
-    automationSelectEdit,
-    index
-  ) => {
-    switch (automationSelectEditType) {
-      case "Send Invoice":
-        return (
-          <>
-            <Grid item ml={2}>
-              <Typography mb={1}>Select template</Typography>
+  
+  // const handleSaveAutomation = (index) => {
+  //   return () => {
+  //     const updatedStages = [...stages];
+  //     const selectedAutomation = {
+  //       type: automationSelect, // The type of automation (e.g., "Send Email")
+  //       template: selectedtemp
+  //         ? { label: selectedtemp.label, value: selectedtemp.value }
+  //         : null, // Store label and value of selected template
+  //       tags: selectedTags.map((tag) => ({
+  //         // Map selectedTags to include necessary tag data
+  //         _id: tag._id,
+  //         tagName: tag.tagName,
+  //         tagColour: tag.tagColour,
+  //       })),
+  //     };
+  //     updatedStages[index].automations.push(selectedAutomation);
+  //     setStages(updatedStages);
+  //     console.log("Automation saved for stage:", index, selectedAutomation);
+  //     setselectedTemp(null); // Clear the selected template after saving
+  //     setSelectedTags([]);
+  //     setIsAnyCheckboxChecked(false);
+  //     handleDrawerClose();
+  //   };
+  // };
 
-              <Autocomplete
-                options={invoiceTemplateOptions}
-                getOptionLabel={(option) => option.label}
-                value={defaultValueInvoice} // Set default value
-                onChange={(event, newValue) => handleEdittemp(newValue, index)}
-                isOptionEqualToValue={(option, value) =>
-                  option.value === value.value
-                }
-                renderOption={(props, option) => (
-                  <Box
-                    component="li"
-                    {...props}
-                    sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
-                  >
-                    {option.label}
-                  </Box>
-                )}
-                renderInput={(params) => (
-                  <>
-                    <TextField
-                      {...params}
-                      // helperText={templateError}
-                      sx={{ backgroundColor: "#fff" }}
-                      placeholder="Select Template"
-                      variant="outlined"
-                      size="small"
-                    />
-                  </>
-                )}
-                sx={{ width: "100%", marginTop: "8px" }}
-                clearOnEscape // Enable clearable functionality
-              />
-              {selectedTags.length > 0 && (
-                <Grid container alignItems="center" gap={1}>
-                  <Typography>Only for:</Typography>
-                  <Grid item>{selectedTagElements}</Grid>
-                </Grid>
-              )}
-              <Button variant="text" onClick={handleAddConditions}>
-                Add Conditions
-              </Button>
 
-              <Button
-                variant="contained"
-                onClick={handleEditSaveAutomation(defaultValueInvoice, index)}
-                sx={{
-                  backgroundColor: "var(--color-save-btn)", // Normal background
-
-                  "&:hover": {
-                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-                  },
-                  borderRadius: "15px",
-                }}
-              >
-                Save Automation
-              </Button>
-            </Grid>
-            <Drawer
-              anchor="right"
-              open={isConditionsFormOpen}
-              onClose={handleGoBack}
-              PaperProps={{ sx: { width: "550px", padding: 2 } }}
-            >
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <IconButton onClick={handleGoBack}>
-                  <IoMdArrowRoundBack fontSize="large" color="blue" />
-                </IconButton>
-                <Typography variant="h6">Add conditions</Typography>
-              </Box>
-
-              <Box sx={{ padding: 2 }}>
-                <Typography variant="body1">
-                  Apply automation only for accounts with these tags
-                </Typography>
-                <TextField
-                  fullWidth
-                  size="small"
-                  variant="outlined"
-                  placeholder="Search..."
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                  InputProps={{
-                    startAdornment: (
-                      <AiOutlineSearch style={{ marginRight: 8 }} />
-                    ),
-                  }}
-                  sx={{ marginTop: 2 }}
-                />
-
-                <Box sx={{ marginTop: 2 }}>
-                  {filteredTags.map((tag) => (
-                    <Box
-                      key={tag._id}
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 3,
-                        borderBottom: "1px solid grey",
-                        paddingBottom: 1,
-                      }}
-                    >
-                      <Checkbox
-                        checked={tempSelectedTags.includes(tag)}
-                        onChange={() => handleCheckboxChange(tag)}
-                      />
-                      <Chip
-                        label={tag.tagName}
-                        sx={{
-                          backgroundColor: tag.tagColour,
-                          color: "#fff",
-                          fontWeight: "500",
-                          borderRadius: "20px",
-                          marginRight: 1,
-                        }}
-                      />
-                    </Box>
-                  ))}
-                </Box>
-
-                <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    disabled={!isAnyCheckboxChecked}
-                    onClick={handleAddTags}
-                    sx={{
-                      backgroundColor: "var(--color-save-btn)", // Normal background
-
-                      "&:hover": {
-                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-                      },
-                      borderRadius: "15px",
-                      width: "80px",
-                    }}
-                  >
-                    Add
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={handleGoBack}
-                    sx={{
-                      borderColor: "var(--color-border-cancel-btn)", // Normal background
-                      color: "var(--color-save-btn)",
-                      "&:hover": {
-                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-                        color: "#fff",
-                        border: "none",
-                      },
-                      width: "80px",
-                      borderRadius: "15px",
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                </Box>
-              </Box>
-            </Drawer>
-          </>
-        );
-      case "Create Organizer":
-        return <></>;
-      case "Send Email":
-        return (
-          <>
-            <Box p={2}>
-              <Grid item>
-                <Typography mb={1}>Select template</Typography>
-                {automationSelectEdit}
-                <Autocomplete
-                  options={emailTemplateOptions}
-                  getOptionLabel={(option) => option.label}
-                  value={defaultValueEmail} // Set default value
-                  onChange={(event, newValue) => handletemp(newValue)}
-                  isOptionEqualToValue={(option, value) =>
-                    option.value === value.value
-                  }
-                  renderOption={(props, option) => (
-                    <Box
-                      component="li"
-                      {...props}
-                      sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
-                    >
-                      {option.label}
-                    </Box>
-                  )}
-                  renderInput={(params) => (
-                    <>
-                      <TextField
-                        {...params}
-                        // helperText={templateError}
-                        sx={{ backgroundColor: "#fff" }}
-                        placeholder="Select Template"
-                        variant="outlined"
-                        size="small"
-                      />
-                    </>
-                  )}
-                  sx={{ width: "100%", marginTop: "8px" }}
-                  clearOnEscape // Enable clearable functionality
-                />
-
-                {selectedTags.length > 0 && (
-                  <Grid container alignItems="center" gap={1}>
-                    <Typography>Only for:</Typography>
-                    <Grid item>{selectedTagElements}</Grid>
-                  </Grid>
-                )}
-                <Button variant="text" onClick={handleAddConditions}>
-                  Add Conditions
-                </Button>
-              </Grid>
-              <Button
-                variant="contained"
-                onClick={handleSaveAutomation(stageSelected)}
-                sx={{
-                  backgroundColor: "var(--color-save-btn)", // Normal background
-
-                  "&:hover": {
-                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-                  },
-                  borderRadius: "15px",
-                }}
-              >
-                Save Automation
-              </Button>
-            </Box>
-            {/* Condition tags for automation */}
-            <Drawer
-              anchor="right"
-              open={isConditionsFormOpen}
-              onClose={handleGoBack}
-              PaperProps={{ sx: { width: "550px", padding: 2 } }}
-            >
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <IconButton onClick={handleGoBack}>
-                  <IoMdArrowRoundBack fontSize="large" color="blue" />
-                </IconButton>
-                <Typography variant="h6">Add conditions</Typography>
-              </Box>
-
-              <Box sx={{ padding: 2 }}>
-                <Typography variant="body1">
-                  Apply automation only for accounts with these tags
-                </Typography>
-                <TextField
-                  fullWidth
-                  size="small"
-                  variant="outlined"
-                  placeholder="Search..."
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                  InputProps={{
-                    startAdornment: (
-                      <AiOutlineSearch style={{ marginRight: 8 }} />
-                    ),
-                  }}
-                  sx={{ marginTop: 2 }}
-                />
-
-                <Box sx={{ marginTop: 2 }}>
-                  {filteredTags.map((tag) => (
-                    <Box
-                      key={tag._id}
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 3,
-                        borderBottom: "1px solid grey",
-                        paddingBottom: 1,
-                      }}
-                    >
-                      <Checkbox
-                        checked={tempSelectedTags.includes(tag)}
-                        onChange={() => handleCheckboxChange(tag)}
-                      />
-                      <Chip
-                        label={tag.tagName}
-                        sx={{
-                          backgroundColor: tag.tagColour,
-                          color: "#fff",
-                          fontWeight: "500",
-                          borderRadius: "20px",
-                          marginRight: 1,
-                        }}
-                      />
-                    </Box>
-                  ))}
-                </Box>
-
-                <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    disabled={!isAnyCheckboxChecked}
-                    onClick={handleAddTags}
-                    sx={{
-                      backgroundColor: "var(--color-save-btn)", // Normal background
-
-                      "&:hover": {
-                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-                      },
-                      borderRadius: "15px",
-                      width: "80px",
-                    }}
-                  >
-                    Add
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={handleGoBack}
-                    sx={{
-                      borderColor: "var(--color-border-cancel-btn)", // Normal background
-                      color: "var(--color-save-btn)",
-                      "&:hover": {
-                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-                        color: "#fff",
-                        border: "none",
-                      },
-                      width: "80px",
-                      borderRadius: "15px",
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                </Box>
-              </Box>
-            </Drawer>
-          </>
-        );
-      // Add cases for other actions here
-      default:
-        return null;
-    }
-  };
-  const handleSaveAutomation = (index) => {
+  const handleSaveAutomation = () => {
     return () => {
+      if (stageSelected === null || stageSelected === undefined) {
+        console.error("No stage selected for automation.");
+        return;
+      }
+  console.log("stage index for automations:",stageSelected)
       const updatedStages = [...stages];
+  
       const selectedAutomation = {
         type: automationSelect, // The type of automation (e.g., "Send Email")
         template: selectedtemp
           ? { label: selectedtemp.label, value: selectedtemp.value }
           : null, // Store label and value of selected template
         tags: selectedTags.map((tag) => ({
-          // Map selectedTags to include necessary tag data
           _id: tag._id,
           tagName: tag.tagName,
           tagColour: tag.tagColour,
         })),
       };
-      updatedStages[index].automations.push(selectedAutomation);
+  
+      // Ensure selected stage exists before pushing automation
+      // if (!updatedStages[stageSelected].automations) {
+      //   updatedStages[stageSelected].automations = [];
+      // }
+  
+      // updatedStages[stageSelected].automations.push(selectedAutomation);
+      updatedStages[stageSelected] = {
+        ...updatedStages[stageSelected], // Ensure we keep the other properties of the stage intact
+        automations: [...updatedStages[stageSelected].automations, selectedAutomation], // Add the new automation to automations
+      };
       setStages(updatedStages);
-      console.log("Automation saved for stage:", index, selectedAutomation);
-      setselectedTemp(null); // Clear the selected template after saving
+  console.log("updatedstages",updatedStages)
+      console.log(
+        "Automation saved for stage:",
+        stageSelected,
+        selectedAutomation
+      );
+  
+      // Reset states after saving
+      setselectedTemp(null);
       setSelectedTags([]);
       setIsAnyCheckboxChecked(false);
       handleDrawerClose();
     };
   };
-
+  
   const handleSaveTagsAutomation = (index) => {
     return () => {
       const updatedStages = [...stages];
@@ -3754,59 +2976,34 @@ const PipelineTemp = () => {
                       gap: "25px",
                       alignContent: "center",
                       marginBottom: "10px",
-                      flexDirection: isSmallScreen ? "column" : "row",
+                      flexDirection: { xs: "column", sm: "row" },
                     }}
                   >
                     <Box
-                      //                  sx={{
-                      //   display: "flex",
-                      //   gap: "10px",
-                      //   overflowX: "auto",
-                      //   whiteSpace: "nowrap", // Prevent wrapping
-                      //   paddingBottom: "8px", // For better scrolling UX
-                      //   maxWidth: "100%", // Prevents growing beyond parent width
-                      // }}
                       sx={{
                         display: "flex",
                         gap: "10px",
                         overflowX: "auto",
-                        overflowY: "auto",
                         whiteSpace: "nowrap",
                         paddingBottom: "8px",
                         maxWidth: "100%",
                         alignItems: "flex-start",
-                        minHeight: "300px", // Set a minimum height
-                        maxHeight: "500px", // Set a maximum height to trigger vertical scrolling
+                        minHeight: "300px",
+                        maxHeight: "500px",
                       }}
                       className="stage-scroll"
                     >
                       {stages.map((stage, index) => (
                         <Box
                           key={index}
-                          // sx={{
-                          //   height: "auto",
-                          //   // marginTop: "20px",
-                          //   borderRadius: "10px",
-                          //   boxShadow:
-                          //     "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-                          //   // width: isSmallScreen ? "90%" : "20%",
-                          //   // marginBottom: "20px",
-                          //   marginLeft: isSmallScreen ? "0" : "5px",
-                          //   alignSelf: isSmallScreen ? "center" : "flex-start",
-
-                          //     minWidth: "250px", // Fixed width for each stage
-                          //     maxWidth: "250px", // Ensures consistency
-                          //     // padding: "15px",
-
-                          // }}
                           sx={{
-                            minWidth: "200px",
-                            maxWidth: "250px",
+                            minWidth: "250px",
+                            maxWidth: "270px",
                             padding: "20px",
-                            borderRadius: "10px",
-                            // boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+                            borderRadius: "12px",
                             backgroundColor: "#F5F5F7",
-                            flexShrink: 0, // Prevent resizing when more stages are added
+                            boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
+                            flexShrink: 0,
                           }}
                         >
                           <Box>
@@ -3819,18 +3016,7 @@ const PipelineTemp = () => {
                               }}
                             >
                               <RxDragHandleDots2 />
-                              {/* <Box sx={{ display: "flex", alignItems: "center", flexGrow: 1, gap: "5px" }}>
-          <LuPenLine />
-          <TextField
-            variant="outlined"
-            placeholder="Stage Name"
-            fullWidth
-            size="small"
-            value={stage.name}
-            onChange={(e) => handleStageNameChange(e, index)}
-            
-          />
-        </Box> */}
+
                               <Box
                                 sx={{
                                   display: "flex",
@@ -3849,7 +3035,6 @@ const PipelineTemp = () => {
                                     handleStageNameChange(e, index)
                                   }
                                   multiline // Allow multiple lines
-                                  // minRows={2} // Minimum number of rows to display
                                   sx={{
                                     fontSize: "16px", // Adjust the font size
                                     fontWeight: "500", // Adjust the font weight
@@ -3862,7 +3047,6 @@ const PipelineTemp = () => {
                                         <LuPenLine
                                           style={{ fontSize: "10px" }}
                                         />{" "}
-                                        {/* Adjust pen icon size */}
                                       </InputAdornment>
                                     ),
                                   }}
@@ -3876,22 +3060,32 @@ const PipelineTemp = () => {
                               </IconButton>
                             </Box>
                             <Divider />
-                            <Box>
-                              <Box sx={{ fontWeight: "medium" }}>
+                            <Box sx={{ mt: 2 }}>
+                              <Typography variant="subtitle2" fontWeight="bold">
                                 Stage conditions
-                              </Box>
-
-                              <Box sx={{ typography: "body2" }}>
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
                                 {index === 0
                                   ? "First stage can't have conditions"
                                   : index === stages.length - 1
                                     ? "Last stage can't have conditions"
                                     : "Job enters this stage if conditions are met"}
-                              </Box>
-                              <Box sx={{ fontWeight: "medium" }}>
+                              </Typography>
+
+                              <Typography
+                                variant="subtitle2"
+                                fontWeight="bold"
+                                sx={{ mt: 2 }}
+                              >
                                 Automations
-                              </Box>
-                              <Typography variant="body2">
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
                                 Triggered when job enters stage
                               </Typography>
                               <Typography
@@ -3900,11 +3094,10 @@ const PipelineTemp = () => {
                                   cursor: "pointer",
                                   color: "blue",
                                   fontWeight: "bold",
-                                  mt: 2,
+                                  mt: 1,
                                 }}
                                 onClick={(e) => handleClick(e, index, "edit")}
                               >
-                                {" "}
                                 {stage.automations.length > 0
                                   ? "Edit automation"
                                   : "Add automation"}
@@ -3997,10 +3190,33 @@ const PipelineTemp = () => {
                                   },
                                 }}
                               >
-                                {/* {automationSelect} */}
-                                <Box>Add Automation</Box>
-
-                                {renderActionContent(automationSelect, index)}
+                                {/* <Box color={'red'}>Add Automation</Box> */}
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    p: 2,
+                                    // mb: 2,
+                                  }}
+                                >
+                                  <Typography
+                                    variant="h6"
+                                    sx={{ fontWeight: "bold" }}
+                                  >
+                                    Add Automations
+                                  </Typography>
+                                  <RxCross2
+                                    onClick={handleDrawerClose}
+                                    style={{
+                                      fontSize: "30px",
+                                      cursor: "pointer",
+                                    }}
+                                  />
+                                </Box>
+                                <Box sx={{ p: 2 }}>
+                                  {renderActionContent(automationSelect, index)}
+                                </Box>
                               </Drawer>
                               <Drawer
                                 anchor="right"
@@ -4500,8 +3716,8 @@ const PipelineTemp = () => {
                                                 ) : (
                                                   <>
                                                     <Typography
+                                                      gutterBottom
                                                       variant="body2"
-                                                      sx={{ marginTop: 2 }}
                                                     >
                                                       Select Template
                                                     </Typography>
@@ -4912,25 +4128,27 @@ const PipelineTemp = () => {
                               </Drawer>
 
                               <Box
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  flexDirection: "column",
-                                  gap: 2,
-                                }}
+                              
                               >
                                 {stage.automations.length > 0 && (
                                   <Box
                                     sx={{
                                       display: "flex",
                                       flexDirection: "column",
-                                      gap: 2,
-                                      width: "100%",
+                                      gap: 1,
+                                      mt: 2,
                                     }}
                                   >
                                     {stage.automations.map(
                                       (automation, idx) => (
-                                        <Card key={idx} sx={{ width: "100%" }}>
+                                        <Card
+                                          key={idx}
+                                          sx={{
+                                            width: "100%",
+                                            boxShadow:
+                                              "0px 1px 5px rgba(0,0,0,0.1)",
+                                          }}
+                                        >
                                           <CardContent>
                                             {/* <Typography
                                               variant="h6"
@@ -4940,22 +4158,25 @@ const PipelineTemp = () => {
                                                 {idx + 1}.{automation.type}
                                               </b>
                                             </Typography> */}
-                                            <Box sx={{ fontWeight: "medium" }}>
-                                              {idx + 1}.{automation.type}
-                                            </Box>
+                                            <Typography
+                                              variant="body2"
+                                              fontWeight="bold"
+                                            >
+                                              {idx + 1}. {automation.type}
+                                            </Typography>
                                             {automation.template && (
                                               // <Typography color="text.secondary">
                                               //   {automation.template.label}
                                               // </Typography>
-                                              <Box
+                                              <Typography
+                                                variant="body2"
                                                 color="text.secondary"
-                                                sx={{ fontWeight: "regular" }}
                                               >
                                                 {automation.template.label
                                                   .length > 25
                                                   ? `${automation.template.label.slice(0, 25)}...`
                                                   : automation.template.label}
-                                              </Box>
+                                              </Typography>
                                             )}
 
                                             {/* Add Tags Section */}
@@ -5090,9 +4311,14 @@ const PipelineTemp = () => {
                               </Box>
                             </Box>
                           </Box>
+                          
                         </Box>
+                      
                       ))}
+                      
                     </Box>
+
+                    
                     <Box mt={3} sx={{ flexShrink: 0 }}>
                       <Button
                         variant="contained"

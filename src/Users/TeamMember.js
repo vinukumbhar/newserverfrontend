@@ -813,6 +813,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
                               checkedIcon={false}
                               height={20}
                               width={32}
+                              disabled
                               className="react-switch"
                             />
                             <p style={{ color: "black" }}>Manage payments</p>
@@ -860,6 +861,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
                               height={20}
                               width={32}
                               className="react-switch"
+                              disabled
                             />
                             <p style={{ color: "black" }}>
                               Manage time entries
@@ -931,6 +933,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
                               height={20}
                               width={32}
                               className="react-switch"
+                              disabled
                             />
                             <p style={{ color: "black" }}>Manage organizers</p>
                           </Box>
@@ -953,7 +956,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
                               checkedIcon={false}
                               height={20}
                               width={32}
-                              className="react-switch"
+                              className="react-switch"disabled
                             />
                             <p style={{ color: "black" }}>
                               Manage firm balance
@@ -1002,6 +1005,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
                               height={20}
                               width={32}
                               className="react-switch"
+                              disabled
                             />
                             <p style={{ color: "black" }}>Manage site</p>
                           </Box>
@@ -1048,6 +1052,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
                               height={20}
                               width={32}
                               className="react-switch"
+                              disabled
                             />
                             <p style={{ color: "black" }}>
                               Manage public filter templates
@@ -1096,6 +1101,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
                               height={20}
                               width={32}
                               className="react-switch"
+                              disabled
                             />
                             <p style={{ color: "black" }}>Manage marketplace</p>
                           </Box>
@@ -1122,6 +1128,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
                               height={20}
                               width={32}
                               className="react-switch"
+                              disabled
                             />
                             <p style={{ color: "black" }}>Manage invoices</p>
                           </Box>
@@ -1145,6 +1152,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
                               height={20}
                               width={32}
                               className="react-switch"
+                              disabled
                             />
                             <p style={{ color: "black" }}>
                               Manage job recurrences
@@ -1170,6 +1178,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
                               height={20}
                               width={32}
                               className="react-switch"
+                              disabled
                             />
                             <p style={{ color: "black" }}>
                               Manage rates in time entries
@@ -1217,7 +1226,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
                               checkedIcon={false}
                               height={20}
                               width={32}
-                              className="react-switch"
+                              className="react-switch"disabled
                             />
                             <p style={{ color: "black" }}>
                               Manage custome fields
@@ -1243,6 +1252,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
                               height={20}
                               width={32}
                               className="react-switch"
+                              disabled
                             />
                             <p style={{ color: "black" }}>Manage teammates</p>
                           </Box>
@@ -1289,6 +1299,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
                               height={20}
                               width={32}
                               className="react-switch"
+                              
                             />
                             <p style={{ color: "black" }}>Manage proposals</p>
                           </Box>
@@ -1312,6 +1323,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
                               height={20}
                               width={32}
                               className="react-switch"
+                              disabled
                             />
                             <p style={{ color: "black" }}>Mute emails</p>
                           </Box>
@@ -1335,6 +1347,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
                               height={20}
                               width={32}
                               className="react-switch"
+                              disabled
                             />
                             <p style={{ color: "black" }}>
                               Edit orgnizer answers
@@ -1360,6 +1373,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
                               height={20}
                               width={32}
                               className="react-switch"
+                              disabled
                             />
                             <p style={{ color: "black" }}>Manage documents</p>
                           </Box>
@@ -1383,6 +1397,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
                               height={20}
                               width={32}
                               className="react-switch"
+                              disabled
                             />
                             <p style={{ color: "black" }}>
                               Manage IRS Transcripts
@@ -1407,6 +1422,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
                               checkedIcon={false}
                               height={20}
                               width={32}
+                              disabled
                               className="react-switch"
                             />
                             <p style={{ color: "black" }}>View reporting</p>
