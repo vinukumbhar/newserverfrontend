@@ -168,7 +168,10 @@ const PipelineTemp = () => {
   };
   const handleEditConditions = (index) => {
     const currentAutomation = selectedAutomationData[index];
-    setStageAutomationTags(currentAutomation.tags || []); // Use existing tags or default to an empty array
+    console.log("stageindex",currentAutomation)
+    setSelectedAutomationIndex(index);
+    setStageAutomationTags(currentAutomation?.tags || []); // Use existing tags or default to an empty array
+    console.log(currentAutomation.tags)
     setIsConditionsEditFormOpen(true); // Open the drawer
   };
   const handleDeleteAutomation = (index) => {
@@ -269,30 +272,47 @@ const PipelineTemp = () => {
     setAnchorEl(null);
   };
 
-  const handleEditCheckboxChange = (tag, index) => {
-    // Find the selected automation by index
-    const updatedAutomation = [...selectedAutomationData];
-    const automation = updatedAutomation[index];
+  // const handleEditCheckboxChange = (tag, index) => {
+  //   // Find the selected automation by index
+  //   const updatedAutomation = [...selectedAutomationData];
+  //   const automation = updatedAutomation[index];
 
-    // Check if the tag is already selected
-    const isTagSelected = automation.tags.some(
-      (existingTag) => existingTag._id === tag._id
-    );
+  //   // Check if the tag is already selected
+  //   const isTagSelected = automation.tags.some(
+  //     (existingTag) => existingTag._id === tag._id
+  //   );
 
-    if (isTagSelected) {
-      // Remove the tag if already selected
-      automation.tags = automation.tags.filter(
-        (existingTag) => existingTag._id !== tag._id
-      );
-    } else {
-      // Add the tag if not selected
-      automation.tags.push(tag);
-    }
+  //   if (isTagSelected) {
+  //     // Remove the tag if already selected
+  //     automation.tags = automation.tags.filter(
+  //       (existingTag) => existingTag._id !== tag._id
+  //     );
+  //   } else {
+  //     // Add the tag if not selected
+  //     automation.tags.push(tag);
+  //   }
 
-    // Update the state with the modified automation
-    setSelectedAutomationData(updatedAutomation);
-  };
+  //   // Update the state with the modified automation
+  //   setSelectedAutomationData(updatedAutomation);
+  // };
+
+
+
+
   // handleUpdateDrawer
+  
+  const handleEditCheckboxChange = (tag) => {
+    setStageAutomationTags((prevTags) => {
+      const isTagSelected = prevTags.some((existingTag) => existingTag._id === tag._id);
+  
+      if (isTagSelected) {
+        return prevTags.filter((existingTag) => existingTag._id !== tag._id);
+      } else {
+        return [...prevTags, tag];
+      }
+    });
+  };
+  
   const [updateDrawer, setupdateDrawer] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [automationSelect, SetAutomationSelect] = useState();
@@ -478,9 +498,10 @@ const PipelineTemp = () => {
 
   const fetchTags = async () => {
     try {
-      const url = `${TAGS_API}/tags`;
+      const url = `${TAGS_API}/tags/`;
       const response = await fetch(url);
       const data = await response.json();
+      console.log("tags dtata", data.tags);
       setTags(data.tags);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -1759,7 +1780,7 @@ const PipelineTemp = () => {
 
     console.log("janvai", newValue);
   };
-  
+
   // const handleSaveAutomation = (index) => {
   //   return () => {
   //     const updatedStages = [...stages];
@@ -1785,16 +1806,15 @@ const PipelineTemp = () => {
   //   };
   // };
 
-
   const handleSaveAutomation = () => {
     return () => {
       if (stageSelected === null || stageSelected === undefined) {
         console.error("No stage selected for automation.");
         return;
       }
-  console.log("stage index for automations:",stageSelected)
+      console.log("stage index for automations:", stageSelected);
       const updatedStages = [...stages];
-  
+
       const selectedAutomation = {
         type: automationSelect, // The type of automation (e.g., "Send Email")
         template: selectedtemp
@@ -1806,25 +1826,28 @@ const PipelineTemp = () => {
           tagColour: tag.tagColour,
         })),
       };
-  
+
       // Ensure selected stage exists before pushing automation
       // if (!updatedStages[stageSelected].automations) {
       //   updatedStages[stageSelected].automations = [];
       // }
-  
+
       // updatedStages[stageSelected].automations.push(selectedAutomation);
       updatedStages[stageSelected] = {
         ...updatedStages[stageSelected], // Ensure we keep the other properties of the stage intact
-        automations: [...updatedStages[stageSelected].automations, selectedAutomation], // Add the new automation to automations
+        automations: [
+          ...updatedStages[stageSelected].automations,
+          selectedAutomation,
+        ], // Add the new automation to automations
       };
       setStages(updatedStages);
-  console.log("updatedstages",updatedStages)
+      console.log("updatedstages", updatedStages);
       console.log(
         "Automation saved for stage:",
         stageSelected,
         selectedAutomation
       );
-  
+
       // Reset states after saving
       setselectedTemp(null);
       setSelectedTags([]);
@@ -1832,7 +1855,7 @@ const PipelineTemp = () => {
       handleDrawerClose();
     };
   };
-  
+
   const handleSaveTagsAutomation = (index) => {
     return () => {
       const updatedStages = [...stages];
@@ -1893,35 +1916,46 @@ const PipelineTemp = () => {
   };
   const [selectedAutomationIndex, setSelectedAutomationIndex] = useState(null);
 
-  const handleEditAddTags = () => {
-    const updatedTags = [
-      ...selectedAutomationData[selectedAutomationIndex].tags, // Only update tags for the selected automation
-      ...tempSelectedTags.filter(
-        (newTag) =>
-          !selectedAutomationData[selectedAutomationIndex].tags.some(
-            (existingTag) => existingTag._id === newTag._id
-          )
-      ),
-    ];
+//   const handleEditAddTags = () => {
+//     console.log("automation index", selectedAutomationIndex);
+//     const updatedTags = [
+//       ...selectedAutomationData[selectedAutomationIndex].tags, // Only update tags for the selected automation
+//       ...tempSelectedTags.filter(
+//         (newTag) =>
+//           !selectedAutomationData[selectedAutomationIndex].tags.some(
+//             (existingTag) => existingTag._id === newTag._id
+//           )
+//       ),
+//     ];
+// console.log("new selcted atgs",tempSelectedTags)
+//     console.log("Updated Tags for Selected Automation:", updatedTags);
 
-    console.log("Updated Tags for Selected Automation:", updatedTags);
+//     // Update the tags for the selected automation only
+//     setSelectedAutomationData((prevData) =>
+//       prevData.map((automation, idx) => {
+//         if (idx === selectedAutomationIndex) {
+//           return {
+//             ...automation,
+//             tags: updatedTags, // Add updated tags to the selected automation
+//           };
+//         }
+//         return automation;
+//       })
+//     );
 
-    // Update the tags for the selected automation only
-    setSelectedAutomationData((prevData) =>
-      prevData.map((automation, idx) => {
-        if (idx === selectedAutomationIndex) {
-          return {
-            ...automation,
-            tags: updatedTags, // Add updated tags to the selected automation
-          };
-        }
-        return automation;
-      })
-    );
+//     setTempSelectedTags([]); // Clear the temporary selected tags
+//     setIsConditionsEditFormOpen(false); // Close the drawer
+//   };
 
-    setTempSelectedTags([]); // Clear the temporary selected tags
-    setIsConditionsEditFormOpen(false); // Close the drawer
-  };
+
+
+
+
+
+
+
+
+  
   //handle automation save edit
 
   // const handleEditSaveAutomation = (defaultValueInvoice, index) => {
@@ -1956,6 +1990,21 @@ const PipelineTemp = () => {
   //     handleDrawerClose();
   //   };
   // };
+  
+  const handleEditAddTags = () => {
+    if (selectedAutomationIndex !== null) {
+      setSelectedAutomationData((prevData) => {
+        const updatedData = [...prevData];
+        updatedData[selectedAutomationIndex] = {
+          ...updatedData[selectedAutomationIndex],
+          tags: stageAutomationTags, // Save selected tags
+        };
+        return updatedData;
+      });
+    }
+    setIsConditionsEditFormOpen(false);
+  };
+  
   const handleEditSaveAutomation = () => {
     if (editingStageIndex === null) return; // Ensure the stage index is valid
 
@@ -2214,7 +2263,7 @@ const PipelineTemp = () => {
       try {
         const response = await axios.request(config);
         console.log("Delete response:", response.data);
-        toast.success("Item deleted successfully");
+        toast.success("Pipeline deleted successfully");
         fetchPipelineData();
         // Optionally, you can refresh the data or update the state to reflect the deletion
       } catch (error) {
@@ -2390,7 +2439,7 @@ const PipelineTemp = () => {
     setSearchQuery(event.target.value);
   };
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5); // Default rows per page
+  const [rowsPerPage, setRowsPerPage] = useState(30); // Default rows per page
 
   // Pagination: Slice the filtered data
   const paginatedPipelines = filteredPipelines.slice(
@@ -2553,7 +2602,7 @@ const PipelineTemp = () => {
             onPageChange={handleChangePage}
             rowsPerPage={rowsPerPage}
             onRowsPerPageChange={handleChangeRowsPerPage}
-            rowsPerPageOptions={[5, 10, 25, 30, 40, 50]} // Rows per page options
+            rowsPerPageOptions={[30, 40, 50, 60, 100]} // Rows per page options
           />
         </Box>
       ) : (
@@ -3300,418 +3349,7 @@ const PipelineTemp = () => {
                                                 {automation.type ===
                                                 "Update account tags" ? (
                                                   <>
-                                                    <Box
-                                                      sx={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        gap: 5,
-                                                      }}
-                                                    >
-                                                      <Box mt={2}>
-                                                        <label className="task-input-label">
-                                                          Add Tags
-                                                        </label>
-                                                        <Autocomplete
-                                                          multiple
-                                                          size="small"
-                                                          id={`tags-add-outlined-${index}`}
-                                                          options={
-                                                            filteredAddTagsOptions
-                                                          }
-                                                          getOptionLabel={(
-                                                            option
-                                                          ) => option.label}
-                                                          value={tagsoptions.filter(
-                                                            (option) =>
-                                                              addTags.includes(
-                                                                option.value
-                                                              )
-                                                          )}
-                                                          onChange={(
-                                                            event,
-                                                            newValue
-                                                          ) =>
-                                                            handleAddTagChange(
-                                                              event,
-                                                              newValue,
-                                                              index
-                                                            )
-                                                          }
-                                                          renderTags={(
-                                                            selected,
-                                                            getTagProps
-                                                          ) =>
-                                                            selected.map(
-                                                              (option, idx) => (
-                                                                <Chip
-                                                                  key={
-                                                                    option.value
-                                                                  }
-                                                                  label={
-                                                                    option.label
-                                                                  }
-                                                                  style={
-                                                                    option.customTagStyle
-                                                                  }
-                                                                  {...getTagProps(
-                                                                    {
-                                                                      index:
-                                                                        idx,
-                                                                    }
-                                                                  )}
-                                                                />
-                                                              )
-                                                            )
-                                                          }
-                                                          renderInput={(
-                                                            params
-                                                          ) => (
-                                                            <TextField
-                                                              {...params}
-                                                              variant="outlined"
-                                                              placeholder="Tags"
-                                                              sx={{
-                                                                width: "100%",
-                                                                marginTop:
-                                                                  "8px",
-                                                                backgroundColor:
-                                                                  "#fff",
-                                                              }}
-                                                            />
-                                                          )}
-                                                        />
-                                                      </Box>
-
-                                                      <Box mt={2}>
-                                                        <label className="task-input-label">
-                                                          Remove Tags
-                                                        </label>
-                                                        <Autocomplete
-                                                          multiple
-                                                          size="small"
-                                                          id={`tags-remove-outlined-${index}`}
-                                                          options={
-                                                            filteredRemoveTagsOptions
-                                                          }
-                                                          getOptionLabel={(
-                                                            option
-                                                          ) => option.label}
-                                                          value={tagsoptions.filter(
-                                                            (option) =>
-                                                              removeTags.includes(
-                                                                option.value
-                                                              )
-                                                          )}
-                                                          onChange={(
-                                                            event,
-                                                            newValue
-                                                          ) =>
-                                                            handleRemoveTagChange(
-                                                              event,
-                                                              newValue,
-                                                              index
-                                                            )
-                                                          }
-                                                          renderTags={(
-                                                            selected,
-                                                            getTagProps
-                                                          ) =>
-                                                            selected.map(
-                                                              (option, idx) => (
-                                                                <Chip
-                                                                  key={
-                                                                    option.value
-                                                                  }
-                                                                  label={
-                                                                    option.label
-                                                                  }
-                                                                  style={
-                                                                    option.customTagStyle
-                                                                  }
-                                                                  {...getTagProps(
-                                                                    {
-                                                                      index:
-                                                                        idx,
-                                                                    }
-                                                                  )}
-                                                                />
-                                                              )
-                                                            )
-                                                          }
-                                                          renderInput={(
-                                                            params
-                                                          ) => (
-                                                            <TextField
-                                                              {...params}
-                                                              variant="outlined"
-                                                              placeholder="Tags"
-                                                              sx={{
-                                                                width: "100%",
-                                                                marginTop:
-                                                                  "8px",
-                                                                backgroundColor:
-                                                                  "#fff",
-                                                              }}
-                                                            />
-                                                          )}
-                                                        />
-                                                      </Box>
-                                                    </Box>
-                                                    {automation.tags &&
-                                                      automation.tags.length >
-                                                        0 && (
-                                                        <Box
-                                                          sx={{
-                                                            marginTop: "10px",
-                                                          }}
-                                                        >
-                                                          <Typography variant="body2">
-                                                            Only For:
-                                                          </Typography>
-                                                          <Box
-                                                            sx={{
-                                                              display: "flex",
-                                                              gap: 1,
-                                                              flexWrap: "wrap",
-                                                            }}
-                                                          >
-                                                            {automation.tags.map(
-                                                              (tag) => (
-                                                                <Chip
-                                                                  key={tag._id}
-                                                                  label={
-                                                                    tag.tagName
-                                                                  }
-                                                                  sx={{
-                                                                    backgroundColor:
-                                                                      tag.tagColour,
-                                                                    color:
-                                                                      "#fff",
-                                                                    fontWeight:
-                                                                      "500",
-                                                                    borderRadius:
-                                                                      "20px",
-                                                                    marginRight: 1,
-                                                                  }}
-                                                                />
-                                                              )
-                                                            )}
-                                                          </Box>
-                                                        </Box>
-                                                      )}
-                                                    <Button
-                                                      variant="text"
-                                                      sx={{ marginTop: 2 }}
-                                                      // onClick={() => handleEditConditions(index)}
-                                                      onClick={() => {
-                                                        setSelectedAutomationIndex(
-                                                          index
-                                                        ); // Set the selected index here
-                                                        handleEditConditions(
-                                                          index
-                                                        );
-                                                      }}
-                                                    >
-                                                      Add Conditions
-                                                    </Button>
-                                                    <Box>
-                                                      <Drawer
-                                                        anchor="right"
-                                                        open={
-                                                          isConditionsEditFormOpen
-                                                        }
-                                                        onClose={
-                                                          handleEditGoBack
-                                                        }
-                                                        PaperProps={{
-                                                          sx: {
-                                                            width: "550px",
-                                                            padding: 2,
-                                                          },
-                                                        }}
-                                                      >
-                                                        <Box
-                                                          sx={{
-                                                            display: "flex",
-                                                            alignItems:
-                                                              "center",
-                                                            gap: 1,
-                                                          }}
-                                                        >
-                                                          <IconButton
-                                                            onClick={
-                                                              handleEditGoBack
-                                                            }
-                                                          >
-                                                            <IoMdArrowRoundBack
-                                                              fontSize="large"
-                                                              color="blue"
-                                                            />
-                                                          </IconButton>
-                                                          <Typography variant="h6">
-                                                            Add conditions
-                                                          </Typography>
-                                                        </Box>
-
-                                                        <Box
-                                                          sx={{ padding: 2 }}
-                                                        >
-                                                          <Typography variant="body1">
-                                                            Apply automation
-                                                            only for accounts
-                                                            with these tags
-                                                          </Typography>
-                                                          <TextField
-                                                            fullWidth
-                                                            size="small"
-                                                            variant="outlined"
-                                                            placeholder="Search..."
-                                                            value={searchTerm}
-                                                            onChange={
-                                                              handleSearchChange
-                                                            }
-                                                            InputProps={{
-                                                              startAdornment: (
-                                                                <AiOutlineSearch
-                                                                  style={{
-                                                                    marginRight: 8,
-                                                                  }}
-                                                                />
-                                                              ),
-                                                            }}
-                                                            sx={{
-                                                              marginTop: 2,
-                                                            }}
-                                                          />
-
-                                                          <Box
-                                                            sx={{
-                                                              marginTop: 2,
-                                                              height: "68vh",
-                                                              overflowY: "auto",
-                                                            }}
-                                                          >
-                                                            {filteredTags.map(
-                                                              (tag) => (
-                                                                <Box
-                                                                  key={tag._id}
-                                                                  sx={{
-                                                                    display:
-                                                                      "flex",
-                                                                    alignItems:
-                                                                      "center",
-                                                                    gap: 3,
-                                                                    borderBottom:
-                                                                      "1px solid grey",
-                                                                    paddingBottom: 1,
-                                                                  }}
-                                                                >
-                                                                  <Checkbox
-                                                                    // checked={
-                                                                    //   stageAutomationTags.some((existingTag) => existingTag._id === tag._id) ||
-                                                                    //   tempSelectedTags.some((selectedTag) => selectedTag._id === tag._id)
-                                                                    // }
-                                                                    // onChange={() => handleEditCheckboxChange(tag)}
-
-                                                                    checked={selectedAutomationData[
-                                                                      index
-                                                                    ]?.tags.some(
-                                                                      (
-                                                                        existingTag
-                                                                      ) =>
-                                                                        existingTag._id ===
-                                                                        tag._id
-                                                                    )}
-                                                                    onChange={() =>
-                                                                      handleEditCheckboxChange(
-                                                                        tag,
-                                                                        index
-                                                                      )
-                                                                    }
-                                                                  />
-
-                                                                  <Chip
-                                                                    label={
-                                                                      tag.tagName
-                                                                    }
-                                                                    sx={{
-                                                                      backgroundColor:
-                                                                        tag.tagColour,
-                                                                      color:
-                                                                        "#fff",
-                                                                      fontWeight:
-                                                                        "500",
-                                                                      borderRadius:
-                                                                        "20px",
-                                                                      marginRight: 1,
-                                                                    }}
-                                                                  />
-                                                                </Box>
-                                                              )
-                                                            )}
-                                                          </Box>
-
-                                                          <Box
-                                                            sx={{
-                                                              display: "flex",
-                                                              gap: 2,
-                                                              marginTop: 2,
-                                                            }}
-                                                          >
-                                                            <Button
-                                                              variant="contained"
-                                                              color="primary"
-                                                              onClick={() => {
-                                                                handleEditAddTags();
-                                                                // Clear the selected tags
-                                                                setTempSelectedTags(
-                                                                  []
-                                                                );
-                                                              }}
-                                                              sx={{
-                                                                backgroundColor:
-                                                                  "var(--color-save-btn)", // Normal background
-
-                                                                "&:hover": {
-                                                                  backgroundColor:
-                                                                    "var(--color-save-hover-btn)", // Hover background color
-                                                                },
-                                                                borderRadius:
-                                                                  "15px",
-                                                                width: "80px",
-                                                              }}
-                                                            >
-                                                              Add
-                                                            </Button>
-                                                            <Button
-                                                              variant="outlined"
-                                                              color="primary"
-                                                              onClick={
-                                                                handleEditGoBack
-                                                              }
-                                                              sx={{
-                                                                borderColor:
-                                                                  "var(--color-border-cancel-btn)", // Normal background
-                                                                color:
-                                                                  "var(--color-save-btn)",
-                                                                "&:hover": {
-                                                                  backgroundColor:
-                                                                    "var(--color-save-hover-btn)", // Hover background color
-                                                                  color: "#fff",
-                                                                  border:
-                                                                    "none",
-                                                                },
-                                                                width: "80px",
-                                                                borderRadius:
-                                                                  "15px",
-                                                              }}
-                                                            >
-                                                              Cancel
-                                                            </Button>
-                                                          </Box>
-                                                        </Box>
-                                                      </Drawer>
-                                                    </Box>
+                                                    
                                                   </>
                                                 ) : (
                                                   <>
@@ -3859,6 +3497,7 @@ const PipelineTemp = () => {
                                                           <Typography variant="h6">
                                                             Add conditions
                                                           </Typography>
+                                                          automation index:{selectedAutomationIndex}
                                                         </Box>
 
                                                         <Box
@@ -3915,27 +3554,8 @@ const PipelineTemp = () => {
                                                                   }}
                                                                 >
                                                                   <Checkbox
-                                                                    // checked={
-                                                                    //   stageAutomationTags.some((existingTag) => existingTag._id === tag._id) ||
-                                                                    //   tempSelectedTags.some((selectedTag) => selectedTag._id === tag._id)
-                                                                    // }
-                                                                    // onChange={() => handleEditCheckboxChange(tag)}
-
-                                                                    checked={selectedAutomationData[
-                                                                      index
-                                                                    ]?.tags.some(
-                                                                      (
-                                                                        existingTag
-                                                                      ) =>
-                                                                        existingTag._id ===
-                                                                        tag._id
-                                                                    )}
-                                                                    onChange={() =>
-                                                                      handleEditCheckboxChange(
-                                                                        tag,
-                                                                        index
-                                                                      )
-                                                                    }
+                                                                     checked={stageAutomationTags.some((existingTag) => existingTag._id === tag._id)}
+                                                                     onChange={() => handleEditCheckboxChange(tag)}
                                                                   />
 
                                                                   <Chip
@@ -4127,9 +3747,7 @@ const PipelineTemp = () => {
                                 </Box>
                               </Drawer>
 
-                              <Box
-                              
-                              >
+                              <Box>
                                 {stage.automations.length > 0 && (
                                   <Box
                                     sx={{
@@ -4311,14 +3929,10 @@ const PipelineTemp = () => {
                               </Box>
                             </Box>
                           </Box>
-                          
                         </Box>
-                      
                       ))}
-                      
                     </Box>
 
-                    
                     <Box mt={3} sx={{ flexShrink: 0 }}>
                       <Button
                         variant="contained"

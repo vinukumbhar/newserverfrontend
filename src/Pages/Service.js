@@ -207,7 +207,7 @@ const Service = () => {
       };
       // Pagination state
 const [page, setPage] = useState(0);
-const [rowsPerPage, setRowsPerPage] = useState(5);
+const [rowsPerPage, setRowsPerPage] = useState(30);
 
 // Handle page change
 const handleChangePage = (event, newPage) => {
@@ -520,7 +520,8 @@ const paginatedServices = ServiceTemplates.slice(
                                   cursor: "pointer",
                                 }}
                               >
-                                {row.category.categoryName}
+                                {/* {row.category.categoryName}  */}
+                                {row.category?.categoryName || ""}
                               </TableCell>
                              
                            
@@ -580,7 +581,7 @@ const paginatedServices = ServiceTemplates.slice(
                      
                     </TableContainer>
                     <TablePagination
-      rowsPerPageOptions={[5, 10, 25,30,35,40,45,50]}
+    rowsPerPageOptions={[30,40,50,60,100]}
       component="div"
       count={ServiceTemplates.length}
       rowsPerPage={rowsPerPage}

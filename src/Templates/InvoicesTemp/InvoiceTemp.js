@@ -970,7 +970,7 @@ const InvoiceTemp = () => {
 
 
   const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(30);
   
   
      const handleChangePage = (_, newPage) => {
@@ -1107,7 +1107,7 @@ const InvoiceTemp = () => {
           </TableContainer>
 
 <TablePagination
-rowsPerPageOptions={[5, 10, 25]}
+rowsPerPageOptions={[30,40,50,60,100]}
 component="div"
 count={invoiceTemplates.length}
 rowsPerPage={rowsPerPage}

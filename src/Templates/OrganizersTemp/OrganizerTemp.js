@@ -1065,7 +1065,7 @@ const OrganizersTemp = () => {
             </Table>
             </TableContainer>
             <TablePagination
-rowsPerPageOptions={[5, 10, 25]}
+rowsPerPageOptions={[30,40,50,60,100]}
 component="div"
 count={organizerTemplatesData.length}
 rowsPerPage={rowsPerPage}

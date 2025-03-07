@@ -479,7 +479,10 @@ const PipelineTempUpdate = () => {
   };
   const handleEditConditions = (index) => {
     const currentAutomation = selectedAutomationData[index];
-    setStageAutomationTags(currentAutomation.tags || []); // Use existing tags or default to an empty array
+    console.log("stageindex",currentAutomation)
+    setSelectedAutomationIndex(index);
+    setStageAutomationTags(currentAutomation?.tags || []); // Use existing tags or default to an empty array
+    console.log(currentAutomation.tags)
     setIsConditionsEditFormOpen(true); // Open the drawer
   };
   const handleDeleteAutomation = (index) => {
@@ -561,31 +564,42 @@ const PipelineTempUpdate = () => {
     }
     console.log("Stage Index:", index);
   };
-  const handleEditCheckboxChange = (tag, index) => {
-    // Find the selected automation by index
-    const updatedAutomation = [...selectedAutomationData];
-    const automation = updatedAutomation[index];
+  // const handleEditCheckboxChange = (tag, index) => {
+  //   // Find the selected automation by index
+  //   const updatedAutomation = [...selectedAutomationData];
+  //   const automation = updatedAutomation[index];
 
-    // Check if the tag is already selected
-    const isTagSelected = automation.tags.some(
-      (existingTag) => existingTag._id === tag._id
-    );
+  //   // Check if the tag is already selected
+  //   const isTagSelected = automation.tags.some(
+  //     (existingTag) => existingTag._id === tag._id
+  //   );
 
-    if (isTagSelected) {
-      // Remove the tag if already selected
-      automation.tags = automation.tags.filter(
-        (existingTag) => existingTag._id !== tag._id
-      );
-    } else {
-      // Add the tag if not selected
-      automation.tags.push(tag);
-    }
+  //   if (isTagSelected) {
+  //     // Remove the tag if already selected
+  //     automation.tags = automation.tags.filter(
+  //       (existingTag) => existingTag._id !== tag._id
+  //     );
+  //   } else {
+  //     // Add the tag if not selected
+  //     automation.tags.push(tag);
+  //   }
 
-    // Update the state with the modified automation
-    setSelectedAutomationData(updatedAutomation);
+  //   // Update the state with the modified automation
+  //   setSelectedAutomationData(updatedAutomation);
+  // };
+
+ 
+  const handleEditCheckboxChange = (tag) => {
+    setStageAutomationTags((prevTags) => {
+      const isTagSelected = prevTags.some((existingTag) => existingTag._id === tag._id);
+  
+      if (isTagSelected) {
+        return prevTags.filter((existingTag) => existingTag._id !== tag._id);
+      } else {
+        return [...prevTags, tag];
+      }
+    });
   };
-
-
   const handleSaveTagsAutomation = (index) => {
     return () => {
       const updatedStages = [...stages];
@@ -646,35 +660,35 @@ const PipelineTempUpdate = () => {
   };
   const [selectedAutomationIndex, setSelectedAutomationIndex] = useState(null);
 
-  const handleEditAddTags = () => {
-    const updatedTags = [
-      ...selectedAutomationData[selectedAutomationIndex].tags, // Only update tags for the selected automation
-      ...tempSelectedTags.filter(
-        (newTag) =>
-          !selectedAutomationData[selectedAutomationIndex].tags.some(
-            (existingTag) => existingTag._id === newTag._id
-          )
-      ),
-    ];
+  // const handleEditAddTags = () => {
+  //   const updatedTags = [
+  //     ...selectedAutomationData[selectedAutomationIndex].tags, // Only update tags for the selected automation
+  //     ...tempSelectedTags.filter(
+  //       (newTag) =>
+  //         !selectedAutomationData[selectedAutomationIndex].tags.some(
+  //           (existingTag) => existingTag._id === newTag._id
+  //         )
+  //     ),
+  //   ];
 
-    console.log("Updated Tags for Selected Automation:", updatedTags);
+  //   console.log("Updated Tags for Selected Automation:", updatedTags);
 
-    // Update the tags for the selected automation only
-    setSelectedAutomationData((prevData) =>
-      prevData.map((automation, idx) => {
-        if (idx === selectedAutomationIndex) {
-          return {
-            ...automation,
-            tags: updatedTags, // Add updated tags to the selected automation
-          };
-        }
-        return automation;
-      })
-    );
+  //   // Update the tags for the selected automation only
+  //   setSelectedAutomationData((prevData) =>
+  //     prevData.map((automation, idx) => {
+  //       if (idx === selectedAutomationIndex) {
+  //         return {
+  //           ...automation,
+  //           tags: updatedTags, // Add updated tags to the selected automation
+  //         };
+  //       }
+  //       return automation;
+  //     })
+  //   );
 
-    setTempSelectedTags([]); // Clear the temporary selected tags
-    setIsConditionsEditFormOpen(false); // Close the drawer
-  };
+  //   setTempSelectedTags([]); // Clear the temporary selected tags
+  //   setIsConditionsEditFormOpen(false); // Close the drawer
+  // };
 
   // const handleEditSaveAutomation = (index) => {
   //   // Ensure the automation data has been updated
@@ -689,6 +703,19 @@ const PipelineTempUpdate = () => {
   //   toast.success("automation edited successfully")
   // };
 
+  const handleEditAddTags = () => {
+    if (selectedAutomationIndex !== null) {
+      setSelectedAutomationData((prevData) => {
+        const updatedData = [...prevData];
+        updatedData[selectedAutomationIndex] = {
+          ...updatedData[selectedAutomationIndex],
+          tags: stageAutomationTags, // Save selected tags
+        };
+        return updatedData;
+      });
+    }
+    setIsConditionsEditFormOpen(false);
+  };
   const handleEditSaveAutomation = () => {
     if (editingStageIndex === null) return; // Ensure the stage index is valid
 
@@ -867,7 +894,7 @@ const PipelineTempUpdate = () => {
 
   const fetchTags = async () => {
     try {
-      const url = `${TAGS_API}/tags`;
+      const url = `${TAGS_API}/tags/`;
       const response = await fetch(url);
       const data = await response.json();
       setTags(data.tags);
@@ -4145,27 +4172,8 @@ const PipelineTempUpdate = () => {
                                                                 }}
                                                               >
                                                                 <Checkbox
-                                                                  // checked={
-                                                                  //   stageAutomationTags.some((existingTag) => existingTag._id === tag._id) ||
-                                                                  //   tempSelectedTags.some((selectedTag) => selectedTag._id === tag._id)
-                                                                  // }
-                                                                  // onChange={() => handleEditCheckboxChange(tag)}
-
-                                                                  checked={selectedAutomationData[
-                                                                    index
-                                                                  ]?.tags.some(
-                                                                    (
-                                                                      existingTag
-                                                                    ) =>
-                                                                      existingTag._id ===
-                                                                      tag._id
-                                                                  )}
-                                                                  onChange={() =>
-                                                                    handleEditCheckboxChange(
-                                                                      tag,
-                                                                      index
-                                                                    )
-                                                                  }
+                                                                   checked={stageAutomationTags.some((existingTag) => existingTag._id === tag._id)}
+                                                                   onChange={() => handleEditCheckboxChange(tag)}
                                                                 />
 
                                                                 <Chip
@@ -4436,29 +4444,10 @@ const PipelineTempUpdate = () => {
                                                                   paddingBottom: 1,
                                                                 }}
                                                               >
-                                                                <Checkbox
-                                                                  // checked={
-                                                                  //   stageAutomationTags.some((existingTag) => existingTag._id === tag._id) ||
-                                                                  //   tempSelectedTags.some((selectedTag) => selectedTag._id === tag._id)
-                                                                  // }
-                                                                  // onChange={() => handleEditCheckboxChange(tag)}
-
-                                                                  checked={selectedAutomationData[
-                                                                    index
-                                                                  ]?.tags.some(
-                                                                    (
-                                                                      existingTag
-                                                                    ) =>
-                                                                      existingTag._id ===
-                                                                      tag._id
-                                                                  )}
-                                                                  onChange={() =>
-                                                                    handleEditCheckboxChange(
-                                                                      tag,
-                                                                      index
-                                                                    )
-                                                                  }
-                                                                />
+                                                                 <Checkbox
+                                                                                                                                     checked={stageAutomationTags.some((existingTag) => existingTag._id === tag._id)}
+                                                                                                                                     onChange={() => handleEditCheckboxChange(tag)}
+                                                                                                                                  />
 
                                                                 <Chip
                                                                   label={

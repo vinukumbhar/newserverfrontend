@@ -1046,7 +1046,7 @@ const ActiveMember = () => {
       
     </TableContainer>
     <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[30,40,50,60,100]}
         component="div"
         count={teamMembers.length}
         rowsPerPage={rowsPerPage}

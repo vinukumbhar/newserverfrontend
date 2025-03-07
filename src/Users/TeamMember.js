@@ -501,7 +501,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
       
        
         // ******************required to send email************
-        // sendmail();
+        sendmail();
       })
 
       .catch((error) => console.error(error));

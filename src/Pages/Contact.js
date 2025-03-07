@@ -250,6 +250,7 @@ const filteredData = useMemo(() => {
       const response = await fetch(url);
       const data = await response.json();
       setSelectedContact(data.contact);
+      console.log("edit contact data",data.contact)
       setIsDrawerOpen(true);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -787,7 +788,7 @@ const filteredData = useMemo(() => {
   onPageChange={handleChangePage}
   rowsPerPage={rowsPerPage}
   onRowsPerPageChange={handleChangeRowsPerPage}
-  rowsPerPageOptions={[30,40, 50,60,100]} // Added row options
+  rowsPerPageOptions={[30,40,50,60,100]} // Added row options
   
 />
 

@@ -376,30 +376,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
               size="small"
               error={!!firstNameError}
             />
-            {!!firstNameError && (
-              <Alert
-                sx={{
-                  width: "96%",
-                  p: "0", // Adjust padding to control the size
-                  pl: "4%",
-                  height: "23px",
-                  borderRadius: "10px",
-                  borderTopLeftRadius: "0",
-                  borderTopRightRadius: "0",
-                  fontSize: "11px",
-                  display: "flex",
-                  alignItems: "center", // Center content vertically
-                  "& .MuiAlert-icon": {
-                    fontSize: "16px", // Adjust the size of the icon
-                    mr: "8px", // Add margin to the right of the icon
-                  },
-                }}
-                variant="filled"
-                severity="error"
-              >
-                {firstNameError}
-              </Alert>
-            )}
+            1.5
           </Box>
           <Box>
             {/* <InputLabel sx={{ color: "black" }}>Middle Name</InputLabel> */}

@@ -907,7 +907,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
 
 
         // clientemail to activate client portal
-        // clientCreatedmail(email, personalMessage, result._id);
+        clientCreatedmail(email, personalMessage, result._id);
 
 
         

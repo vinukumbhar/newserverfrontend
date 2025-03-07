@@ -2196,7 +2196,7 @@ const Example = ({ charLimit = 4000 }) => {
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[30, 40, 50, 60, 100]}
+        rowsPerPageOptions={[30,40,50,60,100]}
         component="div"
         count={jobData.length}
         rowsPerPage={rowsPerPage}

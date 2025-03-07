@@ -1978,7 +1978,7 @@ const FixedColumnTable = () => {
             </TableContainer>
 
             <TablePagination
-              rowsPerPageOptions={[30, 40, 50, 60, 100]}
+             rowsPerPageOptions={[30,40,50,60,100]}
               component="div"
               count={filteredData.length}
               rowsPerPage={rowsPerPage}

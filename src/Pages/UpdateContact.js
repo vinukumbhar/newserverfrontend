@@ -96,8 +96,8 @@ const ContactForm = ({ onContactUpdated, selectedContact, handleClose, isSmallSc
       const flatPhoneNumbers = selectedContact.phoneNumbers?.flat() || [];
 setPhoneNumbers(
   flatPhoneNumbers.map((phoneObj, index) => ({
-    id: index, // Or generate a more unique ID
-    phone: phoneObj, // Assuming phoneObj itself is a string or a simple object
+    id: Date.now() + Math.random(), // Improved unique ID generation
+    phone: String(phoneObj.phone), // Access the phone property correctly
     isPrimary: false, // Set accordingly
   }))
 );
