@@ -96,9 +96,18 @@ const MyAccount = () => {
   };
 
   //******************* */
+  // const { logindata } = useContext(LoginContext);
+  const [loginuserid, setLoginUserId] = useState("");
+
+  useEffect(() => {
+    if (logindata?.user?.id) {
+      // Check if logindata and user.id exist
+      setLoginUserId(logindata.user.id);
+    }
+  }, [logindata]);
   const fetchData = async () => {
     try {
-      const url = `${LOGIN_API}/common/user/${logindata.user.id}`;
+      const url = `${LOGIN_API}/common/user/${loginuserid}`;
       const response = await fetch(url);
       const data = await response.json();
 
@@ -108,7 +117,7 @@ const MyAccount = () => {
       setuserdata(data);
       fetchAdminData(data.email);
 
-      fetchNotificationData(logindata.user.id);
+      fetchNotificationData(loginuserid);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -1144,20 +1153,34 @@ const [username,setUserName]= useState("")
   const [croppedImage, setCroppedImage] = useState(""); // The cropped image
 
   // Fetch the last uploaded image when the page loads
-  useEffect(() => {
-    axios
-      .get(`${LOGIN_API}/lastimage`)
-      .then((response) => {
-        const imageUrl = response.data.imageUrl;
-        setCroppedImage(imageUrl); // Set the last uploaded image URL as the profile picture
-        console.log("viayak",imageUrl)
-      })
-      .catch((error) => {
-        console.error("Error fetching last image:", error);
-      });
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get(`${LOGIN_API}/lastimage`)
+  //     .then((response) => {
+  //       const imageUrl = response.data.imageUrl;
+  //       setCroppedImage(imageUrl); // Set the last uploaded image URL as the profile picture
+  //       console.log("viayak",imageUrl)
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching last image:", error);
+  //     });
+  // }, []);
   // const imageUrlWithCacheBuster = `${croppedImage}`;
-
+  const fetchLastUploadedImage = async () => {
+    try {
+      const response = await axios.get(`${LOGIN_API}/lastimage`);
+      if (response.status === 200) {
+        console.log("Last uploaded image:", response.data.imageUrl);
+        setCroppedImage(response.data.imageUrl); // Set the image URL in state
+      }
+    } catch (error) {
+      console.error("Error fetching last image:", error);
+    }
+  };
+  useEffect(() => {
+    fetchLastUploadedImage()
+  }, []);
+  
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -1175,40 +1198,82 @@ const [username,setUserName]= useState("")
     setImage(null); // Hide the cropper
   };
 
-  const handleSubmit = async () => {
+  // const handleSubmit = async () => {
+  //   if (croppedImage) {
+  //     try {
+  //       // Convert the blob URL to a Blob object
+  //       const response = await fetch(croppedImage);
+  //       const blob = await response.blob();
+
+  //       // Create a File object (optional: you can give it a name and MIME type)
+  //       const file = new File([blob], "cropped_image.jpg", { type: blob.type });
+
+  //       // Prepare FormData
+  //       const formData = new FormData();
+  //       formData.append("image", file); // Add the File object
+
+  //       // Make POST request using axios
+  //       axios
+  //         .post(`${LOGIN_API}/userprofilepic`, formData, {
+  //           headers: {
+  //             "Content-Type": "multipart/form-data",
+  //           },
+  //         })
+  //         .then((response) => {
+  //           console.log("Image uploaded successfully:", response.data);
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error uploading image:", error);
+  //         });
+  //     } catch (error) {
+  //       console.error("Error converting blob URL to Blob:", error);
+  //     }
+  //   } else {
+  //     console.error("No cropped image to send!");
+  //   }
+  // };
+
+
+  
+  
+  const handleSubmit = async (userId) => {
+    if (!userId) {
+      console.error("User ID is required!");
+      return;
+    }
+  
     if (croppedImage) {
       try {
         // Convert the blob URL to a Blob object
         const response = await fetch(croppedImage);
         const blob = await response.blob();
-
-        // Create a File object (optional: you can give it a name and MIME type)
-        const file = new File([blob], "cropped_image.jpg", { type: blob.type });
-
+  
+        // Create a File object
+        const file = new File([blob], `${userId}.jpg`, { type: blob.type });
+  
         // Prepare FormData
         const formData = new FormData();
-        formData.append("image", file); // Add the File object
-
-        // Make POST request using axios
-        axios
-          .post(`${LOGIN_API}/userprofilepic`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
-          .then((response) => {
-            console.log("Image uploaded successfully:", response.data);
-          })
-          .catch((error) => {
-            console.error("Error uploading image:", error);
-          });
+        formData.append("image", file);
+  
+        // Make POST request with userId in URL
+        const result = await axios.post(
+          `${LOGIN_API}/userprofilepic?userId=${userId}`,
+          formData,
+          {
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
+  
+        console.log("Image uploaded successfully:", result.data);
       } catch (error) {
-        console.error("Error converting blob URL to Blob:", error);
+        console.error("Error uploading image:", error);
       }
     } else {
       console.error("No cropped image to send!");
     }
   };
+  
+
   const getInitials = (name) => {
     if (!name) return "";
     const nameParts = name.split(" ");
@@ -1389,7 +1454,7 @@ const [username,setUserName]= useState("")
                     <Button
                       variant="contained"
                       sx={{ mt: 2 }}
-                      onClick={handleSubmit}
+                      onClick={() => handleSubmit(loginuserid)}
                     >
                       Submit Image
                     </Button>

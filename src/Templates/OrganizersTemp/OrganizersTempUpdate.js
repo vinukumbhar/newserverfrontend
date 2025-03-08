@@ -329,7 +329,7 @@ const OrganizersTempUpdate = () => {
         name: section.text,
         text: section.text,
         id: section.id.toString(),
-        sectionsettings: section.sectionSettings || {},
+        sectionsettings: section.sectionsettings || {},
         formElements: section.formElements.map(element => ({
           type: element.type,
           id: element.id,
@@ -861,7 +861,11 @@ onClick={(e) => setCursorPosition(e.target.selectionStart)}
         <Box className="left-org-container" sx={{ padding: '10px', width: "30%", height: "auto", p: 2 }}>
           <Box className="smooth-dnd-container vertical">
             {sections.map((section) => (
-              <Box key={section.id} sx={{ display: "flex", alignItems: "center" }}>
+              <Box key={section.id} sx={{
+                display: "flex",
+                alignItems: "center",
+                
+              }}>
                 <TextField
                   placeholder={`Section Name`}
                   className='section-name'
@@ -871,7 +875,7 @@ onClick={(e) => setCursorPosition(e.target.selectionStart)}
                   InputProps={{
                     readOnly: true
                   }}
-                  sx={{ backgroundColor: '#fff' }}
+                  sx={{ backgroundColor: selectedSection?.id === section.id ? "#E0F7FA" : "#fff", cursor: "pointer" }}
                   onClick={() => handleSectionClick(section)}
                   fullWidth
                 />

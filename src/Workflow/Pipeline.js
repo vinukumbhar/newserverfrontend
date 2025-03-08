@@ -114,7 +114,6 @@ const Pipeline = ({ charLimit = 4000 }) => {
       console.log(data);
       // setPipelineData(data.pipeline);
       setPipelineData(data.pipeline || []);
-
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -1366,11 +1365,11 @@ const Pipeline = ({ charLimit = 4000 }) => {
       const { value } = event.target; // Get selected tag objects
       setSelectedTags(value); // Keep full tag objects in state
 
-     // Extract selected tag values
-     const selectedTagsValues = value.map((val) => {
-      const option = tagoptions.find((opt) => opt.value === val);
-      return option?.value;
-    });
+      // Extract selected tag values
+      const selectedTagsValues = value.map((val) => {
+        const option = tagoptions.find((opt) => opt.value === val);
+        return option?.value;
+      });
 
       setCombinedTagsValues(selectedTagsValues); // Send only tag IDs to backend
     };
@@ -1513,7 +1512,11 @@ const Pipeline = ({ charLimit = 4000 }) => {
         setDueDate(dayjs(data.jobList.DueDate) || null);
         // (dayjs(tempvalues.startdate) || null)
         setStartDate(dayjs(data.jobList.StartDate) || null);
-        if (data.jobList && data.jobList.Stage && data.jobList.Stage.length > 0) {
+        if (
+          data.jobList &&
+          data.jobList.Stage &&
+          data.jobList.Stage.length > 0
+        ) {
           const stageData = {
             value: data.jobList.Stage[0]._id, // Access first element of array
             label: data.jobList.Stage[0].name,
@@ -1521,7 +1524,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
           setSelectedstage(stageData);
           console.log("stages", stageData);
         }
-        
+
         setPriority(data.jobList.Priority);
         setDescription(data.jobList.Description);
         setClientFacingStatus(data.jobList.ShowinClientPortal);
@@ -1560,7 +1563,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
           const selectedValues = tagsData.map((option) => option.value);
           setCombinedTagsValues(selectedValues);
         }
-        
+
         if (data.jobList && data.jobList.JobAssignee) {
           const assigneesData = data.jobList.JobAssignee.map((assignee) => ({
             value: assignee._id,
@@ -1700,75 +1703,169 @@ const Pipeline = ({ charLimit = 4000 }) => {
         });
     };
     return (
+      // <Box
+      //   className={`job-card ${isDragging ? "dragging" : ""}`}
+      //   ref={drag}
+      //   onMouseEnter={() => setIsHovered(true)}
+      //   onMouseLeave={() => setIsHovered(false)}
+      //   onDrop={updateLastUpdatedTime}
+      // >
+      //   <Box
+      //     sx={{
+      //       display: "flex",
+      //       alignItems: "center",
+      //       justifyContent: "space-between",
+      //       paddingBottom: "10px",
+      //     }}
+      //   >
+      //     <Typography color={"black"}>{job.Account.join(", ")}</Typography>
+      //     {isHovered ? (
+      //       <RiDeleteBin5Line
+      //         onClick={handleOpen}
+      //         style={{ cursor: "pointer" }}
+      //       />
+      //     ) : (
+      //       <span className="automation-batch">1</span>
+      //     )}
+      //   </Box>
+      //   <Typography
+      //     sx={{
+      //       fontWeight: "bold",
+      //       marginBottom: "8px",
+      //       cursor: "pointer",
+      //       whiteSpace: "normal", // Allows text to wrap
+      //       wordBreak: "break-word", // Breaks long words if necessary
+      //       overflowWrap: "break-word", // Ensures wrapping works in all cases
+      //     }}
+      //     color="black"
+      //     onClick={() => handleEditJobCard(job.id)}
+      //   >
+      //     {job.Name}
+      //   </Typography>
+
+      //   <Typography
+      //     color={"black"}
+      //     variant="body2"
+      //     sx={{ marginBottom: "8px" }}
+      //   >
+      //     {job.JobAssignee.join(", ")}
+      //   </Typography>
+      //   <Typography
+      //     color={"black"}
+      //     variant="body2"
+      //     sx={{ marginBottom: "8px" }}
+      //   >
+      //     {truncateDescription(stripHtmlTags(job.Description))}
+      //   </Typography>
+
+      //   <span style={getPriorityStyle(job.Priority)}>{job.Priority}</span>
+
+      //   <br />
+
+      //   <Typography
+      //     color={"black"}
+      //     sx={{ marginBottom: "4px", mt: 2 }}
+      //     variant="body2"
+      //   >
+      //     Starts : {startDateFormatted}
+      //   </Typography>
+      //   <Typography color={"black"} variant="body2">
+      //     Due : {dueDateFormatted}
+      //   </Typography>
+      //   <Typography
+      //     color={"black"}
+      //     variant="body2"
+      //     sx={{ marginBottom: "5px", mt: 2 }}
+      //   >
+      //     {timeAgo()}
+      //   </Typography>
       <Box
-        className={`job-card ${isDragging ? "dragging" : ""}`}
-        ref={drag}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        onDrop={updateLastUpdatedTime}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingBottom: "10px",
-          }}
-        >
-          <Typography color={"black"}>{job.Account.join(", ")}</Typography>
-          {isHovered ? (
-            <RiDeleteBin5Line
-              onClick={handleOpen}
-              style={{ cursor: "pointer" }}
-            />
-          ) : (
-            <span className="automation-batch">1</span>
-          )}
-        </Box>
+  className={`job-card ${isDragging ? "dragging" : ""}`}
+  ref={drag}
+  onMouseEnter={() => setIsHovered(true)}
+  onMouseLeave={() => setIsHovered(false)}
+  onDrop={updateLastUpdatedTime}
+  sx={{
+    backgroundColor: "white",
+    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+    borderRadius: "12px",
+    padding: "16px",
+    transition: "all 0.3s ease-in-out",
+    "&:hover": {
+      boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.2)",
+    },
+  }}
+>
+  {/* Top Section */}
+  <Box
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      marginBottom: "12px",
+    }}
+  >
+    <Typography variant="subtitle2" color="text.primary" fontWeight={600}>
+      {job.Account.join(", ")}
+    </Typography>
+    {isHovered ? (
+      <RiDeleteBin5Line
+        onClick={handleOpen}
+        style={{ cursor: "pointer", fontSize: "18px", color: "red" }}
+      />
+    ) : (
+      <span className="automation-batch">1</span>
+    )}
+  </Box>
 
-        <Typography
-          sx={{ fontWeight: "bold", marginBottom: "8px", cursor: "pointer" }}
-          color={"black"}
-          onClick={() => handleEditJobCard(job.id)}
-        >
-          {truncateName(job.Name)}
-        </Typography>
-        <Typography
-          color={"black"}
-          variant="body2"
-          sx={{ marginBottom: "8px" }}
-        >
-          {job.JobAssignee.join(", ")}
-        </Typography>
-        <Typography
-          color={"black"}
-          variant="body2"
-          sx={{ marginBottom: "8px" }}
-        >
-          {truncateDescription(stripHtmlTags(job.Description))}
-        </Typography>
+  {/* Job Name */}
+  <Typography
+  sx={{ 
+    fontWeight: "bold", 
+    marginBottom: "8px", 
+    cursor: "pointer", 
+    whiteSpace: "normal", // Allows text to wrap
+    wordBreak: "break-word", // Breaks long words if necessary
+    overflowWrap: "break-word" // Ensures wrapping works in all cases
+  }}
+  color="black"
+  onClick={() => handleEditJobCard(job.id)}
+>
+  {job.Name}
+</Typography>
 
-        <span style={getPriorityStyle(job.Priority)}>{job.Priority}</span>
 
-        <br />
+  {/* Job Assignee */}
+  <Typography variant="body2" color="text.secondary" sx={{ marginBottom: "8px" }}>
+    {job.JobAssignee.join(", ")}
+  </Typography>
 
-        <Typography
-          color={"black"}
-          sx={{ marginBottom: "4px", mt: 2 }}
-          variant="body2"
-        >
-          Starts : {startDateFormatted}
-        </Typography>
-        <Typography color={"black"} variant="body2">
-          Due : {dueDateFormatted}
-        </Typography>
-        <Typography
-          color={"black"}
-          variant="body2"
-          sx={{ marginBottom: "5px", mt: 2 }}
-        >
-          {timeAgo()}
-        </Typography>
+  {/* Job Description */}
+  <Typography variant="body2" color="text.secondary" sx={{ marginBottom: "8px" }}>
+    {truncateDescription(stripHtmlTags(job.Description))}
+  </Typography>
+
+  {/* Priority Badge */}
+  <span style={getPriorityStyle(job.Priority)}>{job.Priority}</span>
+
+  {/* Dates */}
+  <Box sx={{ marginTop: 2 }}>
+    <Typography variant="body2" color="text.secondary">
+      <strong>Starts:</strong> {startDateFormatted}
+    </Typography>
+    <Typography variant="body2" color="text.secondary">
+      <strong>Due:</strong> {dueDateFormatted}
+    </Typography>
+  </Box>
+
+  {/* Last Updated */}
+  <Typography
+    variant="caption"
+    color="text.disabled"
+    sx={{ marginTop: "8px", display: "block" }}
+  >
+    {timeAgo()}
+  </Typography>
 
         <Modal open={open} onClose={handleClose}>
           <Box
@@ -1832,7 +1929,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                 ml: 1,
               }}
             >
-              <Typography sx={{ fontWeight: "bold" ,fontSize:'20px'}} >
+              <Typography sx={{ fontWeight: "bold", fontSize: "20px" }}>
                 Edit Job
               </Typography>
               <IconButton onClick={() => setIsDrawerOpen(false)}>
@@ -1840,9 +1937,14 @@ const Pipeline = ({ charLimit = 4000 }) => {
               </IconButton>
             </Box>
             <Divider />
-            <Box padding={2} height="83vh" sx={{ overflowY: "auto" }} className="bulk-job-form">
-              <Box >
-                  <InputLabel sx={{ color: "black",}}>Pipeline</InputLabel>
+            <Box
+              padding={2}
+              height="83vh"
+              sx={{ overflowY: "auto" }}
+              className="bulk-job-form"
+            >
+              <Box>
+                <InputLabel sx={{ color: "black" }}>Pipeline</InputLabel>
 
                 <Autocomplete
                   options={optionpipeline}
@@ -1875,7 +1977,9 @@ const Pipeline = ({ charLimit = 4000 }) => {
                 />
               </Box>
               <Box mt={2}>
-                <InputLabel sx={{ color: "black",mb:1}}>Account Tags</InputLabel>
+                <InputLabel sx={{ color: "black", mb: 1 }}>
+                  Account Tags
+                </InputLabel>
                 {/* <Autocomplete
                   multiple // Enable multi-select
                   size="small"
@@ -1932,99 +2036,116 @@ const Pipeline = ({ charLimit = 4000 }) => {
                   }
                 /> 
                  */}
-                 <FormControl sx={{ width: "100%" }}>
-                <Select
-                  multiple
-                  multiline
-                  size="small"
-                  // sx={{ marginTop: "8px", marginBottom: "8px", width: "100%" }}
-                 input={<OutlinedInput />}
+                <FormControl sx={{ width: "100%" }}>
+                  <Select
+                    multiple
+                    multiline
+                    size="small"
+                    // sx={{ marginTop: "8px", marginBottom: "8px", width: "100%" }}
+                    input={<OutlinedInput />}
                     displayEmpty
-                  value={combinedTagsValues} // Store selected tag objects
-                  onChange={handleTagChange} // Handle selection
-                  // renderValue={(selected) => (
-                  //   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                  //     {selected.map((option) => (
-                  //       <Chip
-                  //         key={option.value}
-                  //         label={option.label}
-                  //         sx={{
-                  //           backgroundColor: option.colour,
-                  //           color: "#fff",
-                  //           borderRadius: "15px",
-                  //           fontSize: "10px",
-                  //           padding: "2px 8px",
-                  //         }}
-                  //       />
-                  //     ))}
-                  //   </Box>
-                  // )}
+                    value={combinedTagsValues} // Store selected tag objects
+                    onChange={handleTagChange} // Handle selection
+                    // renderValue={(selected) => (
+                    //   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                    //     {selected.map((option) => (
+                    //       <Chip
+                    //         key={option.value}
+                    //         label={option.label}
+                    //         sx={{
+                    //           backgroundColor: option.colour,
+                    //           color: "#fff",
+                    //           borderRadius: "15px",
+                    //           fontSize: "10px",
+                    //           padding: "2px 8px",
+                    //         }}
+                    //       />
+                    //     ))}
+                    //   </Box>
+                    // )}
                     renderValue={(selected) => {
-                        if (selected.length === 0) {
-                          return <span style={{ color: "#aaa" }}>Select tags...</span>;
-                        }
+                      if (selected.length === 0) {
                         return (
-                          <Box sx={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "6px" }}>
-                            {selected.map((value) => {
-                              const option = tagoptions.find((opt) => opt.value === value);
-                              return (
-                                <Chip
-                                  key={value}
-                                  label={option?.label}
-                                  sx={{
-                                    backgroundColor: option?.colour,
-                                    color: "#fff",
-                                    fontWeight: 500,
-                                    fontSize: "10px",
-                                    borderRadius: "16px",
-                                    height: "20px",
-                                    cursor: "pointer",
-                                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-                                  }}
-                                />
-                              );
-                            })}
-                          </Box>
+                          <span style={{ color: "#aaa" }}>Select tags...</span>
                         );
-                      }}
-                      MenuProps={{
-                        PaperProps: {
-                          style: { maxHeight: 250 },
-                        },
-                      }}
-                      sx={{
-                        borderRadius: "10px",
-                        "& .MuiOutlinedInput-root": { borderRadius: "10px" },
-                      }}
-                >
-                  {tagoptions.map((option) => {
-                        const dynamicWidth = Math.min(option.label.length * 8 + 16, 150);
-                        return (
-                          <MenuItem
-                            key={option.value}
-                            value={option.value}
-                            sx={{
+                      }
+                      return (
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: "6px",
+                            padding: "6px",
+                          }}
+                        >
+                          {selected.map((value) => {
+                            const option = tagoptions.find(
+                              (opt) => opt.value === value
+                            );
+                            return (
+                              <Chip
+                                key={value}
+                                label={option?.label}
+                                sx={{
+                                  backgroundColor: option?.colour,
+                                  color: "#fff",
+                                  fontWeight: 500,
+                                  fontSize: "10px",
+                                  borderRadius: "16px",
+                                  height: "20px",
+                                  cursor: "pointer",
+                                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                                }}
+                              />
+                            );
+                          })}
+                        </Box>
+                      );
+                    }}
+                    MenuProps={{
+                      PaperProps: {
+                        style: { maxHeight: 250 },
+                      },
+                    }}
+                    sx={{
+                      borderRadius: "10px",
+                      "& .MuiOutlinedInput-root": { borderRadius: "10px" },
+                    }}
+                  >
+                    {tagoptions.map((option) => {
+                      const dynamicWidth = Math.min(
+                        option.label.length * 8 + 16,
+                        150
+                      );
+                      return (
+                        <MenuItem
+                          key={option.value}
+                          value={option.value}
+                          sx={{
+                            backgroundColor: option.colour,
+                            color: "#fff",
+                            fontSize: "10px",
+                            borderRadius: "10px",
+                            margin: "5px",
+                            textAlign: "center",
+                            padding: "4px 9px",
+                            minWidth: `${dynamicWidth}px`,
+                            maxWidth: `${dynamicWidth}px`,
+                            "&:hover": {
                               backgroundColor: option.colour,
                               color: "#fff",
-                              fontSize: "10px",
-                              borderRadius: "10px",
-                              margin: "5px",
-                              textAlign: "center",
-                              padding: "4px 9px",
-                              minWidth: `${dynamicWidth}px`,
-                              maxWidth: `${dynamicWidth}px`,
-                              "&:hover": { backgroundColor: option.colour, color: "#fff" },
-                            }}
-                          >
-                            {option.label}
-                          </MenuItem>
-                        );
-                      })}
-                </Select>
+                            },
+                          }}
+                        >
+                          {option.label}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
                 </FormControl>
               </Box>
               <Box mt={2}>
-                <InputLabel sx={{ color: "black",}}>Task Assignee</InputLabel>
+                <InputLabel sx={{ color: "black" }}>Task Assignee</InputLabel>
                 <Autocomplete
                   multiple
                   sx={{ background: "#fff", mt: 1 }}
@@ -2055,7 +2176,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                 />
               </Box>
               <Box mt={2}>
-                <InputLabel sx={{ color: "black",}}>Stage</InputLabel>
+                <InputLabel sx={{ color: "black" }}>Stage</InputLabel>
                 <Autocomplete
                   options={stages || []}
                   getOptionLabel={(option) => option.label}
@@ -2093,28 +2214,32 @@ const Pipeline = ({ charLimit = 4000 }) => {
                 />
               </Box>
               <Box mt={2}>
-              <InputLabel sx={{ color: "black",}}>Start Date</InputLabel>
-              <DatePicker
-                format="DD/MM/YYYY"
-                sx={{ width: "100%", backgroundColor: "#fff",mt:2 }}
-                // value={startDate}
-                // onChange={handleStartDateChange}
-                value={startDate}
-                onChange={handleStartDateChange}
-                renderInput={(params) => <TextField {...params} size="small" />}
-              />
+                <InputLabel sx={{ color: "black" }}>Start Date</InputLabel>
+                <DatePicker
+                  format="DD/MM/YYYY"
+                  sx={{ width: "100%", backgroundColor: "#fff", mt: 2 }}
+                  // value={startDate}
+                  // onChange={handleStartDateChange}
+                  value={startDate}
+                  onChange={handleStartDateChange}
+                  renderInput={(params) => (
+                    <TextField {...params} size="small" />
+                  )}
+                />
               </Box>
               <Box mt={2}>
-              <InputLabel sx={{ color: "black",}}>Due Date</InputLabel>
-              <DatePicker
-                format="DD/MM/YYYY"
-                sx={{ width: "100%", backgroundColor: "#fff",mt:2 }}
-                // value={dueDate}
-                // onChange={handleDueDateChange}
-                value={dueDate}
-                onChange={handleDueDateChange}
-                renderInput={(params) => <TextField {...params} size="small" />}
-              />
+                <InputLabel sx={{ color: "black" }}>Due Date</InputLabel>
+                <DatePicker
+                  format="DD/MM/YYYY"
+                  sx={{ width: "100%", backgroundColor: "#fff", mt: 2 }}
+                  // value={dueDate}
+                  // onChange={handleDueDateChange}
+                  value={dueDate}
+                  onChange={handleDueDateChange}
+                  renderInput={(params) => (
+                    <TextField {...params} size="small" />
+                  )}
+                />
               </Box>
               <Box mt={2} mb={5}>
                 <Editor
@@ -2159,7 +2284,9 @@ const Pipeline = ({ charLimit = 4000 }) => {
                     <Box>
                       {clientFacingStatus && (
                         <>
-                          <InputLabel sx={{ color: "black",}}>Job name for client</InputLabel>
+                          <InputLabel sx={{ color: "black" }}>
+                            Job name for client
+                          </InputLabel>
                           <TextField
                             fullWidth
                             name="subject"
@@ -2171,10 +2298,12 @@ const Pipeline = ({ charLimit = 4000 }) => {
                           />
 
                           <Box mt={2}>
-                            <InputLabel sx={{ color: "black",}}>Status</InputLabel>
+                            <InputLabel sx={{ color: "black" }}>
+                              Status
+                            </InputLabel>
                             <Autocomplete
                               options={optionstatus}
-                             size="small"
+                              size="small"
                               sx={{ mt: 1 }}
                               value={selectedjob}
                               onChange={handleJobChange}
@@ -2348,9 +2477,21 @@ const Pipeline = ({ charLimit = 4000 }) => {
       stage.name.length > 30 ? `${stage.name.slice(0, 20)}...` : stage.name;
     return (
       <Box ref={drop} className={`stage ${isOver ? "drag-over" : ""}`}>
-        <Typography sx={{ marginBottom: "12px" }} className="stage-name">
+        {/* <Typography sx={{ marginBottom: "12px" }} className="stage-name">
           {truncatedStageName}
-        </Typography>
+        </Typography> */}
+        <Typography 
+  sx={{ 
+    marginBottom: "12px", 
+    whiteSpace: "normal",  // Allows text wrapping
+    wordBreak: "break-word", // Ensures long words wrap properly
+    overflowWrap: "break-word" // Additional fallback for wrapping
+  }} 
+  className="stage-name"
+>
+  {stage.name}
+</Typography>
+
         <Typography variant="body2" sx={{ marginBottom: "12px" }}>
           {stageJobs.length > 0 && <span>({stageJobs.length})</span>}
         </Typography>

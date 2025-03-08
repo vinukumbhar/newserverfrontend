@@ -46,7 +46,7 @@ function ResetPassword() {
           body: raw,
           redirect: "follow",
         };
-        const url = `${LOGIN_API}/passwordupdate/`;
+        const url = `${LOGIN_API}/updatepass/passwordupdate/`;
         fetch(url, requestOptions)
           .then((response) => response.json())
           .then((result) => console.log(result))

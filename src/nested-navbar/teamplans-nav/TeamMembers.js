@@ -341,7 +341,7 @@ const TeamMembers = () => {
             redirect: "follow"
         };
 
-        const url = `${API_KEY}/teammembersavedemail/`;
+        const url = `${API_KEY}/teamemail/teammembersavedemail/`;
         fetch(url, requestOptions)
             .then((response) => response.text())
             .then((result) => {

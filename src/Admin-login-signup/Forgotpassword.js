@@ -51,7 +51,7 @@ function ForgotPassword() {
       // const url = "http://localhost:3000/resetpassword";
       const url = `${WINDOWS_PORT}/resetpassword`;
 
-      const urlnew = `${LOGIN_API}/forgotpassword/`;
+      const urlnew = `${LOGIN_API}/resetpass/forgotpassword/`;
       const data = await fetch(urlnew, {
         method: "POST",
         headers: {

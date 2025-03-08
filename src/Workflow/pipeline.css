@@ -3,7 +3,7 @@
 .stage {
   height: 100vh;
   overflow-y: auto;
-  min-width: 180px;
+  min-width: 220px;
   display: flex;
 
   flex-direction: column;
@@ -33,7 +33,7 @@
 } */
 
 .job-card {
-  width: 150px;
+  width: auto;
   padding: 16px;
   margin-bottom: 12px;
   border: 1px solid #ddd;

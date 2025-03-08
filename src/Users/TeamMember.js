@@ -556,7 +556,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
       redirect: "follow",
     };
 
-    const url = `${LOGIN_API}/teammembersavedemail/`;
+    const url = `${LOGIN_API}/teamemail/teammembersavedemail/`;
 
     fetch(url, requestOptions)
       .then((response) => response.text())

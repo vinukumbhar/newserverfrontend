@@ -165,7 +165,7 @@ const MyForm = () => {
         otp: otp,
       });
 
-      const Url = `${LOGIN_API}/verify-otp/`;
+      const Url = `${LOGIN_API}/otp/verify-otp/`;
       let config = {
         method: "post",
         maxBodyLength: Infinity,
@@ -204,7 +204,7 @@ const MyForm = () => {
     let data = JSON.stringify({
       email: inpval.email,
     });
-    const Url = `${LOGIN_API}/request-otp`;
+    const Url = `${LOGIN_API}/otp/request-otp`;
     let config = {
       method: "post",
       maxBodyLength: Infinity,
@@ -325,7 +325,7 @@ const MyForm = () => {
             let config = {
               method: "post",
               maxBodyLength: Infinity,
-              url: `${LOGIN_API}/request-otp`,
+              url: `${LOGIN_API}/otp/request-otp`,
               headers: {
                 "Content-Type": "application/json",
               },
@@ -669,8 +669,8 @@ const MyForm = () => {
   const userCreatedmail = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    const port = window.location.port;
-    const url = `${LOGIN_API}:${port}/login`;
+    // const port = window.location.port;
+    const url = `${LOGIN_API}/login`;
     const raw = JSON.stringify({
       email: inpval.email,
       url: url,
@@ -682,7 +682,7 @@ const MyForm = () => {
       body: raw,
       redirect: "follow",
     };
-    const Url = `${LOGIN_API}/usersavedemail/`;
+    const Url = `${LOGIN_API}/usersemail/usersavedemail/`;
     fetch(Url, requestOptions)
       .then((response) => response.json())
 
@@ -867,7 +867,7 @@ const MyForm = () => {
     };
     console.log(raw);
 
-    fetch(`${LOGIN_API}/firmsetting/`, requestOptions)
+    fetch(`${LOGIN_API}/adminfirm/firmsetting/`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log("Response data:", result);

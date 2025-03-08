@@ -488,7 +488,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
   //     body: raw,
   //     redirect: "follow",
   //   };
-  //   const urlusersavedmail = `${LOGIN_API}/clientsavedemail/`;
+  //   const urlusersavedmail = `${LOGIN_API}/clientmail/clientsavedemail/`;
   //   fetch(urlusersavedmail, requestOptions)
   //     .then((response) => response.json())
 
@@ -1378,7 +1378,7 @@ const handleOpenModal = (id) => {
       redirect: "follow",
     };
 
-    const urlusersavedmail = `${LOGIN_API}/clientsavedemail/`;
+    const urlusersavedmail = `${LOGIN_API}/clientmail/clientsavedemail/`;
     console.log(urlusersavedmail);
     fetch(urlusersavedmail, requestOptions)
       .then((response) => response.json())

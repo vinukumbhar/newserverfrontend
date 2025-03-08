@@ -599,7 +599,7 @@ const handleCloseLoginDetials=()=>{
       redirect: "follow",
     };
 
-    fetch(`${LOGIN_API}/teammemberpasswordupdate`, requestOptions)
+    fetch(`${LOGIN_API}/teamresetpass/teammemberpasswordupdate`, requestOptions)
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.error(error));

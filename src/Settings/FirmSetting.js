@@ -111,7 +111,7 @@ const FirmSetting = () => {
       redirect: "follow",
     };
 
-    fetch(`${LOGIN_API}/firmsetting/Firmsettingbyuserid/${logindata.user.id}`, requestOptions)
+    fetch(`${LOGIN_API}/adminfirm/firmsetting/Firmsettingbyuserid/${logindata.user.id}`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
@@ -201,7 +201,7 @@ const FirmSetting = () => {
       redirect: "follow",
     };
 
-    fetch(`${LOGIN_API}/firmsetting/${firmSettingId}`, requestOptions)
+    fetch(`${LOGIN_API}/adminfirm/firmsetting/${firmSettingId}`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -244,7 +244,7 @@ const FirmSetting = () => {
       redirect: "follow",
     };
 
-    fetch(`${LOGIN_API}/firmsetting/${firmSettingId}`, requestOptions)
+    fetch(`${LOGIN_API}/adminfirm/firmsetting/${firmSettingId}`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -279,7 +279,7 @@ const FirmSetting = () => {
       redirect: "follow",
     };
 
-    fetch(`${LOGIN_API}/firmsetting/${firmSettingId}`, requestOptions)
+    fetch(`${LOGIN_API}/adminfirm/firmsetting/${firmSettingId}`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -320,7 +320,7 @@ const FirmSetting = () => {
       redirect: "follow",
     };
 
-    fetch(`${LOGIN_API}/firmsetting/${firmSettingId}`, requestOptions)
+    fetch(`${LOGIN_API}/adminfirm/firmsetting/${firmSettingId}`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -360,7 +360,7 @@ const FirmSetting = () => {
       redirect: "follow",
     };
 
-    fetch(`${LOGIN_API}/firmsetting/${firmSettingId}`, requestOptions)
+    fetch(`${LOGIN_API}//adminfirmfirmsetting/${firmSettingId}`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -403,7 +403,7 @@ const FirmSetting = () => {
       redirect: "follow",
     };
 
-    fetch(`${LOGIN_API}/firmsetting/${firmSettingId}`, requestOptions)
+    fetch(`${LOGIN_API}/adminfirm/firmsetting/${firmSettingId}`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -438,7 +438,7 @@ const FirmSetting = () => {
       redirect: "follow",
     };
 
-    fetch(`${LOGIN_API}/firmsetting/${firmSettingId}`, requestOptions)
+    fetch(`${LOGIN_API}/adminfirm/firmsetting/${firmSettingId}`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -483,7 +483,7 @@ const FirmSetting = () => {
       redirect: "follow",
     };
 
-    fetch(`${LOGIN_API}/firmsetting/${firmSettingId}`, requestOptions)
+    fetch(`${LOGIN_API}/adminfirm/firmsetting/${firmSettingId}`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -535,7 +535,7 @@ const FirmSetting = () => {
       redirect: "follow",
     };
 
-    fetch(`${LOGIN_API}/firmsetting/${firmSettingId}`, requestOptions)
+    fetch(`${LOGIN_API}/adminfirm/firmsetting/${firmSettingId}`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -587,7 +587,7 @@ const FirmSetting = () => {
       redirect: "follow",
     };
 
-    fetch(`${LOGIN_API}/firmsetting/${firmSettingId}`, requestOptions)
+    fetch(`${LOGIN_API}/adminfirm/firmsetting/${firmSettingId}`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -657,7 +657,7 @@ const FirmSetting = () => {
       redirect: "follow",
     };
 
-    fetch(`${LOGIN_API}/firmsetting/${firmSettingId}`, requestOptions)
+    fetch(`${LOGIN_API}/adminfirm/firmsetting/${firmSettingId}`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -696,7 +696,7 @@ const FirmSetting = () => {
       redirect: "follow",
     };
 
-    fetch(`${LOGIN_API}/firmsetting/${firmSettingId}`, requestOptions)
+    fetch(`${LOGIN_API}/adminfirm/firmsetting/${firmSettingId}`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -745,7 +745,7 @@ const FirmSetting = () => {
       redirect: "follow",
     };
 
-    fetch(`${LOGIN_API}/firmsetting/${firmSettingId}`, requestOptions)
+    fetch(`${LOGIN_API}/adminfirm/firmsetting/${firmSettingId}`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -821,7 +821,7 @@ const FirmSetting = () => {
       redirect: "follow",
     };
 
-    fetch(`${LOGIN_API}/firmsetting/${firmSettingId}`, requestOptions)
+    fetch(`${LOGIN_API}/adminfirm/firmsetting/${firmSettingId}`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           throw new Error("Network response was not ok");

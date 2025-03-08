@@ -299,8 +299,18 @@ useEffect(() => {
       setConditionButton(updatedSection.sectionsettings.conditional || false);
       // setSectionConditionBadge(updatedSection.sectionsettings.conditional)
       setSectionMode(updatedSection.sectionsettings.sectionMode || "Any");
-      setSectionQuestionAnswers(updatedSection.sectionsettings.conditions || []);
-     
+      // setSectionQuestionAnswers(updatedSection.sectionsettings.conditions || []);
+     // Extract conditions
+    const conditions = updatedSection.sectionsettings.conditions || [];
+    setSectionQuestionAnswers(conditions); // Store full condition objects
+
+    // Extract questions and answers from conditions
+    const questions = conditions.map((cond) => cond.question || null);
+    const answers = conditions.map((cond) => cond.answer || null);
+
+    setSelectedSectionQuestions(questions);
+    setSelectedSectionAnswers(answers);
+      
     }
   };
   
@@ -1111,16 +1121,49 @@ useEffect(() => {
     updatedAnswers[index] = null; // Reset answer for the new selected question
     setSelectedSectionAnswers(updatedAnswers);
   };
+  // useEffect(() => {
+  //   // Initialize the selectedQuestions and selectedAnswers state based on existing sectionQuestionAnswers
+  //   setSelectedSectionQuestions(
+  //     sectionQuestionAnswers.map((q) => q.question || null)
+  //   );
+  //   setSelectedSectionAnswers(
+  //     sectionQuestionAnswers.map((a) => a.answer || null)
+  //   );
+  // }, [sectionQuestionAnswers]);
   useEffect(() => {
-    // Initialize the selectedQuestions and selectedAnswers state based on existing sectionQuestionAnswers
-    setSelectedSectionQuestions(
-      sectionQuestionAnswers.map((q) => q.question || null)
-    );
-    setSelectedSectionAnswers(
-      sectionQuestionAnswers.map((a) => a.answer || null)
-    );
-  }, [sectionQuestionAnswers]);
-
+    if (selectedElement) {
+      const { questionsectionsettings } = selectedElement;
+  
+      setRequiredButton(questionsectionsettings?.required || false);
+      setPrefilledButton(questionsectionsettings?.prefilled || false);
+      setQueConditionButton(questionsectionsettings?.conditional || false);
+      setDescriptionButton(questionsectionsettings?.descriptionEnabled || false);
+      setDescriptionText(questionsectionsettings?.description || "");
+      setMode(questionsectionsettings?.mode || "Any");
+  
+      const conditions = questionsectionsettings?.conditions || [];
+      setQuestionAnswers(conditions);
+  
+      const questions = conditions.map((cond) => cond.question || null);
+      const answers = conditions.map((cond) => cond.answer || null);
+  
+      setSelectedQuestions(questions);
+      setSelectedAnswers(answers);
+    }
+  }, [selectedElement]);
+  
+  // Handle section settings question and answer in a similar way
+  // useEffect(() => {
+  //   if (sectionQuestionAnswers && sectionQuestionAnswers.length > 0) {
+  //     const questions = sectionQuestionAnswers.map((q) => q.question || null);
+  //     const answers = sectionQuestionAnswers.map((a) => a.answer || null);
+  
+  //     setSelectedSectionQuestions(questions);
+  //     setSelectedSectionAnswers(answers);
+  //     setSectionQuestionAnswers(sectionQuestionAnswers); // Ensure the state is updated similarly
+  //   }
+  // }, [sectionQuestionAnswers]);
+  
   return (
     <Box
       sx={{
