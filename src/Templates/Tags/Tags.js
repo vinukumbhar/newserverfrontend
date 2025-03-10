@@ -147,6 +147,7 @@ const Tags = () => {
   };
 
   const [tagNameError, setTagNameError] = useState('');
+  const [tagColourError, setTagColourError] = useState('');
   const validateForm = () => {
     let isValid = true;
     if (!inputValue) {
@@ -156,6 +157,14 @@ const Tags = () => {
     } else {
       setTagNameError('');
     }
+
+     // Validate Tag Colour
+  if (!selectedOption) {
+    setTagColourError("Tag Colour can't be blank");
+    isValid = false;
+  } else {
+    setTagColourError('');
+  }
     return isValid;
   }
   console.log(tagidget);
@@ -711,7 +720,32 @@ const Tags = () => {
                     </MenuItem>
                   ))}
                 </Select>
-
+{/* Validation Error */}
+{tagColourError && (
+        <Alert
+          sx={{
+            width: "96%",
+            p: "0",
+            pl: "4%",
+            height: "23px",
+            borderRadius: "10px",
+            borderTopLeftRadius: "0",
+            borderTopRightRadius: "0",
+            fontSize: "15px",
+            display: "flex",
+            alignItems: "center",
+            // mt: 1,
+            "& .MuiAlert-icon": {
+              fontSize: "16px",
+              mr: "8px",
+            },
+          }}
+          variant="filled"
+          severity="error"
+        >
+          {tagColourError}
+        </Alert>
+      )}
 
 {/* <Select
   value={selectedOption ? selectedOption.tagColour : ""}

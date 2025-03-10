@@ -304,6 +304,7 @@ const EmailTemp = () => {
   //         body: raw,
   //         redirect: "follow"
   //     };
+  //     console.log(raw)
   //     const url = `${EMAIL_API}/workflow/emailtemplate`;
   //     fetch(url, requestOptions)
   //         .then((response) => {
@@ -324,22 +325,123 @@ const EmailTemp = () => {
   //         });
   // }
 
-  const handleSaveExitTemplate = (e) => {
-    e.preventDefault();
-    if (!validateForm()) {
+//   const handleSaveExitTemplate = (e) => {
+//     e.preventDefault();
+//     if (!validateForm()) {
+//       return; // Prevent form submission if validation fails
+//     }
+
+//     const formData = new FormData();
+//     formData.append("templatename", templateName);
+//     formData.append("from", selecteduser.value);
+//     formData.append("emailsubject", inputText);
+//     formData.append("emailbody", emailBody);
+
+//     // Append each selected file to formData
+//     selectedFiles.forEach((file) => {
+//       formData.append("files", file);
+//     });
+
+//     // // Logging FormData contents for debugging
+//     // for (const [key, value] of formData.entries()) {
+//     //   if (value instanceof File) {
+//     //     console.log(`${key}: ${value.name} (size: ${value.size} bytes)`); // Logging file name and size
+//     //   } else {
+//     //     console.log(`${key}: ${value}`);
+//     //   }
+//     // }
+
+//     const requestOptions = {
+//       method: "POST",
+//       body: formData,
+//       redirect: "follow",
+//     };
+// console.log(formData)
+//     const url = `${EMAIL_API}/workflow/emailtemplate`;
+//     fetch(url, requestOptions)
+//       .then((response) => {
+//         if (!response.ok) {
+//           throw new Error("Network response was not ok");
+//         }
+//         return response.json();
+//       })
+//       .then((result) => {
+//         console.log(result);
+//         toast.success("Email Template created successfully");
+//         handleClearTemplate();
+//         setShowForm(false);
+//         fetchEmailTemplates();
+//       })
+//       .catch((error) => {
+//         console.error("Error creating Email Template:", error);
+//         toast.error("Failed to create Email Template");
+//       });
+//   };
+
+
+const handleSaveExitTemplate = (e) => {
+  e.preventDefault();
+  if (!validateForm()) {
       return; // Prevent form submission if validation fails
-    }
+  }
 
-    const formData = new FormData();
-    formData.append("templatename", templateName);
-    formData.append("from", selecteduser.value);
-    formData.append("emailsubject", inputText);
-    formData.append("emailbody", emailBody);
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
 
-    // Append each selected file to formData
-    selectedFiles.forEach((file) => {
-      formData.append("files", file);
-    });
+  const raw = JSON.stringify({
+      templatename: templateName,
+      from: selecteduser.value,
+      emailsubject: inputText,
+      emailbody: emailBody,
+  });
+
+  const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow"
+  };
+console.log(raw)
+  // const url = `${EMAIL_API}/workflow/emailtemplate`;
+
+  fetch(`${EMAIL_API}/workflow/emailtemplate`, requestOptions)
+  .then((response) => response.json())
+
+ .then((result) => {
+        console.log(result)
+        if (result && result.message === "EmailTemplate  already exists") {
+          toast.success('Email Template  already exists');
+          // fetchData();
+        } else {
+          toast.success('Email Template created successfully');
+          setShowForm(false);
+          handleClearTemplate();
+           fetchEmailTemplates();
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error(error.message);
+      })
+
+};
+
+  const handleSaveTemplate = (e) => {
+    // e.preventDefault();
+    // if (!validateForm()) {
+    //   return; // Prevent form submission if validation fails
+    // }
+
+    // const formData = new FormData();
+    // formData.append("templatename", templateName);
+    // formData.append("from", selecteduser.value);
+    // formData.append("emailsubject", inputText);
+    // formData.append("emailbody", emailBody);
+
+    // // Append each selected file to formData
+    // selectedFiles.forEach((file) => {
+    //   formData.append("files", file);
+    // });
 
     // // Logging FormData contents for debugging
     // for (const [key, value] of formData.entries()) {
@@ -350,84 +452,75 @@ const EmailTemp = () => {
     //   }
     // }
 
-    const requestOptions = {
-      method: "POST",
-      body: formData,
-      redirect: "follow",
-    };
-console.log(formData)
-    const url = `${EMAIL_API}/workflow/emailtemplate`;
-    fetch(url, requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((result) => {
-        console.log(result);
-        toast.success("Email Template created successfully");
-        handleClearTemplate();
-        setShowForm(false);
-        fetchEmailTemplates();
-      })
-      .catch((error) => {
-        console.error("Error creating Email Template:", error);
-        toast.error("Failed to create Email Template");
-      });
-  };
+    // const requestOptions = {
+    //   method: "POST",
+    //   body: formData,
+    //   redirect: "follow",
+    // };
 
-  const handleSaveTemplate = (e) => {
+    // const url = `${EMAIL_API}/workflow/emailtemplate`;
+    // fetch(url, requestOptions)
+    //   .then((response) => {
+    //     if (!response.ok) {
+    //       throw new Error("Network response was not ok");
+    //     }
+    //     return response.json();
+    //   })
+    //   .then((result) => {
+    //     console.log(result);
+    //     toast.success("Email Template created successfully");
+    //     handleClearTemplate();
+    //     // setShowForm(false);
+    //     fetchEmailTemplates();
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error creating Email Template:", error);
+    //     toast.error("Failed to create Email Template");
+    //   });
+
     e.preventDefault();
     if (!validateForm()) {
-      return; // Prevent form submission if validation fails
+        return; // Prevent form submission if validation fails
     }
-
-    const formData = new FormData();
-    formData.append("templatename", templateName);
-    formData.append("from", selecteduser.value);
-    formData.append("emailsubject", inputText);
-    formData.append("emailbody", emailBody);
-
-    // Append each selected file to formData
-    selectedFiles.forEach((file) => {
-      formData.append("files", file);
+  
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+  
+    const raw = JSON.stringify({
+        templatename: templateName,
+        from: selecteduser.value,
+        emailsubject: inputText,
+        emailbody: emailBody,
     });
-
-    // Logging FormData contents for debugging
-    for (const [key, value] of formData.entries()) {
-      if (value instanceof File) {
-        console.log(`${key}: ${value.name} (size: ${value.size} bytes)`); // Logging file name and size
-      } else {
-        console.log(`${key}: ${value}`);
-      }
-    }
-
+  
     const requestOptions = {
-      method: "POST",
-      body: formData,
-      redirect: "follow",
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow"
     };
-
-    const url = `${EMAIL_API}/workflow/emailtemplate`;
-    fetch(url, requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((result) => {
-        console.log(result);
-        toast.success("Email Template created successfully");
-        handleClearTemplate();
-        // setShowForm(false);
-        fetchEmailTemplates();
-      })
-      .catch((error) => {
-        console.error("Error creating Email Template:", error);
-        toast.error("Failed to create Email Template");
-      });
+  console.log(raw)
+    // const url = `${EMAIL_API}/workflow/emailtemplate`;
+  
+    fetch(`${EMAIL_API}/workflow/emailtemplate`, requestOptions)
+    .then((response) => response.json())
+  
+   .then((result) => {
+          console.log(result)
+          if (result && result.message === "EmailTemplate  already exists") {
+            toast.success('Email Template  already exists');
+            // fetchData();
+          } else {
+            toast.success('Email Template created successfully');
+            //  handleClearTemplate();
+            //  fetchEmailTemplates();
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          toast.error(error.message);
+        })
+  
   };
   const [emailBody, setEmailBody] = useState("");
 

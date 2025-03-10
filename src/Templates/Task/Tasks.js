@@ -1,8 +1,7 @@
-
-import React, { useState, useEffect, useMemo } from 'react';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import React, { useState, useEffect, useMemo } from "react";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import {
   Box,
   Button,
@@ -23,17 +22,23 @@ import {
   TableHead,
   TableRow,
   Paper,
-  TablePagination,  FormControl,
-  OutlinedInput,MenuItem,
-  Select,  InputLabel,
-} from '@mui/material';
-import { useNavigate, } from "react-router-dom";
-import Editor from '../Texteditor/Editor';
-import Grid from '@mui/material/Unstable_Grid2';
-import Priority from '../Priority/Priority';
-import Status from '../Status/Status';
+  TablePagination,
+  FormControl,
+  OutlinedInput,
+  MenuItem,
+  Select,
+  InputLabel,
+} from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import Editor from "../Texteditor/Editor";
+import Grid from "@mui/material/Unstable_Grid2";
+import Priority from "../Priority/Priority";
+import Status from "../Status/Status";
 import { toast } from "react-toastify";
-import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+} from "material-react-table";
 import { CiMenuKebab } from "react-icons/ci";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiPlusCircle } from "react-icons/fi";
@@ -53,35 +58,34 @@ const Tasks = () => {
   const [startDate, setStartDate] = useState(null);
   const [dueDate, setDueDate] = useState(null);
   const [absoluteDate, setAbsoluteDates] = useState(false);
-  const [priority, setPriority] = useState('');
-  const [status, setStatus] = useState('');
+  const [priority, setPriority] = useState("");
+  const [status, setStatus] = useState("");
   const [startsInDuration, setStartsInDuration] = useState("Days");
   const [dueinduration, setdueinduration] = useState("Days");
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState("");
   const [selectedUser, setSelectedUser] = useState([]);
   const [combinedValues, setCombinedValues] = useState([]);
   const [userData, setUserData] = useState([]);
 
- 
   const [checkedSubtasks, setCheckedSubtasks] = useState([]);
 
   const handleCheckboxChange = (id) => {
-    setCheckedSubtasks((prevChecked) => 
-      prevChecked.includes(id) 
-        ? prevChecked.filter(checkedId => checkedId !== id) 
+    setCheckedSubtasks((prevChecked) =>
+      prevChecked.includes(id)
+        ? prevChecked.filter((checkedId) => checkedId !== id)
         : [...prevChecked, id]
     );
   };
-  
-  const [subtasks, setSubtasks] = useState([{ id: '1', text: '', }]);
+
+  const [subtasks, setSubtasks] = useState([{ id: "1", text: "" }]);
 
   const handleAddSubtask = () => {
     const newId = String(subtasks.length + 1);
     setSubtasks([...subtasks, { id: newId, text: "" }]);
   };
   const handleInputChange = (id, value) => {
-    setSubtasks((prevSubtasks) => 
-      prevSubtasks.map((subtask) => 
+    setSubtasks((prevSubtasks) =>
+      prevSubtasks.map((subtask) =>
         subtask.id === id ? { ...subtask, text: value } : subtask
       )
     );
@@ -133,8 +137,6 @@ const Tasks = () => {
     setShowForm(true);
   };
 
-
-
   const handlePriorityChange = (priority) => {
     setPriority(priority);
   };
@@ -156,7 +158,7 @@ const Tasks = () => {
       const url = `${LOGIN_API}/common/users/roles?roles=TeamMember,Admin`;
       const response = await fetch(url);
       const data = await response.json();
-      console.log("task assigne",data)
+      console.log("task assigne", data);
       setUserData(data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -182,7 +184,6 @@ const Tasks = () => {
 
   const fetchTagData = async () => {
     try {
-
       const url = `${TAGS_API}/tags/`;
       const response = await fetch(url);
       const data = await response.json();
@@ -196,7 +197,7 @@ const Tasks = () => {
     const baseWidth = 10; // base width for each tag
     const charWidth = 8; // approximate width of each character
     const padding = 10; // padding on either side
-    return baseWidth + (charWidth * tagName.length) + padding;
+    return baseWidth + charWidth * tagName.length + padding;
   };
   const tagsoptions = tags.map((tag) => ({
     value: tag._id,
@@ -210,9 +211,10 @@ const Tasks = () => {
       textAlign: "center",
       marginBottom: "5px",
       padding: "2px,8px",
-      fontSize: '10px',
+      fontSize: "10px",
       width: `${calculateWidth(tag.tagName)}px`,
-      margin: '7px', cursor: 'pointer',
+      margin: "7px",
+      cursor: "pointer",
     },
     customTagStyle: {
       backgroundColor: tag.tagColour,
@@ -220,8 +222,8 @@ const Tasks = () => {
       alignItems: "center",
       textAlign: "center",
       padding: "2px,8px",
-      fontSize: '10px',
-      cursor: 'pointer',
+      fontSize: "10px",
+      cursor: "pointer",
     },
   }));
   // const handleTagChange = (event, newValue) => {
@@ -249,13 +251,13 @@ const Tasks = () => {
     // Send selectedValues array to your backend
     console.log("Selected Values:", selectedValues);
     // Assuming setCombinedValues is a function to send the values to your backend
-    setCombinedValues(selectedValues);
+    setCombinedTagsValues(selectedValues);
   };
   const [TaskTemplates, setTaskTemplates] = useState([]);
   useEffect(() => {
     fetchTaskData();
-  }, [])
-    const [loading, setLoading] = useState(true);
+  }, []);
+  const [loading, setLoading] = useState(true);
   const fetchTaskData = async () => {
     setLoading(true); // Start loader
 
@@ -268,12 +270,10 @@ const Tasks = () => {
       }
       const data = await response.json();
       // console.log(data)
-      setTaskTemplates(data.TaskTemplates
-      );
+      setTaskTemplates(data.TaskTemplates);
     } catch (error) {
       console.error("Error fetching task templates:", error);
-    }
-    finally {
+    } finally {
       // Wait for the fetch and the 3-second timer to complete
       await loaderDelay;
       setLoading(false); // Stop loader
@@ -287,10 +287,10 @@ const Tasks = () => {
     const subtaskData = subtasks.map(({ id, text }) => ({
       id,
       text,
-      
-checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks array
+
+      checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks array
     }));
-    
+
     // console.log(subtaskData);
     if (absoluteDate === true) {
       const myHeaders = new Headers();
@@ -307,9 +307,9 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
         startdate: startDate,
         enddate: dueDate,
         subtasks: subtaskData,
-        issubtaskschecked:SubtaskSwitch
+        issubtaskschecked: SubtaskSwitch,
       });
-      console.log(raw)
+      console.log(raw);
       const requestOptions = {
         method: "POST",
         headers: myHeaders,
@@ -329,7 +329,7 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
           toast.success("Task Template created successfully");
           resetFields();
           fetchTaskData();
-          setShowForm(false)
+          setShowForm(false);
         })
         .catch((error) => {
           // Handle errors
@@ -337,7 +337,6 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
           toast.error("Failed to create Task Template");
         });
     } else if (absoluteDate === false) {
-
       if (!validateForm()) {
         return; // Prevent form submission if validation fails
       }
@@ -356,10 +355,9 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
         duein: duein,
         dueinduration: dueinduration,
         subtasks: subtaskData,
-        issubtaskschecked:SubtaskSwitch
-
+        issubtaskschecked: SubtaskSwitch,
       });
-      console.log(raw)
+      console.log(raw);
       const requestOptions = {
         method: "POST",
         headers: myHeaders,
@@ -379,7 +377,7 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
           toast.success("Task Template created successfully");
           resetFields();
           fetchTaskData();
-          setShowForm(false)
+          setShowForm(false);
         })
         .catch((error) => {
           // Handle errors
@@ -397,12 +395,12 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
     const subtaskData = subtasks.map(({ id, text }) => ({
       id,
       text,
-      
-checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks array
+
+      checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks array
     }));
-    
+
     console.log(subtaskData);
-    
+
     if (absoluteDate === true) {
       const myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
@@ -418,9 +416,9 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
         startdate: startDate,
         enddate: dueDate,
         subtasks: subtaskData,
-        issubtaskschecked:SubtaskSwitch
+        issubtaskschecked: SubtaskSwitch,
       });
-      console.log(raw)
+      console.log(raw);
       const requestOptions = {
         method: "POST",
         headers: myHeaders,
@@ -440,7 +438,6 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
           toast.success("Task Template created successfully");
           resetFields();
           fetchTaskData();
-
         })
         .catch((error) => {
           // Handle errors
@@ -448,7 +445,6 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
           toast.error("Failed to create Task Template");
         });
     } else if (absoluteDate === false) {
-
       if (!validateForm()) {
         return; // Prevent form submission if validation fails
       }
@@ -467,9 +463,9 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
         duein: duein,
         dueinduration: dueinduration,
         subtasks: subtaskData,
-        issubtaskschecked:SubtaskSwitch
+        issubtaskschecked: SubtaskSwitch,
       });
-      console.log(raw)
+      console.log(raw);
       const requestOptions = {
         method: "POST",
         headers: myHeaders,
@@ -489,7 +485,6 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
           toast.success("Task Template created successfully");
           resetFields();
           fetchTaskData();
-
         })
         .catch((error) => {
           // Handle errors
@@ -499,18 +494,18 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
     }
   };
   const resetFields = () => {
-    setDescription('');
+    setDescription("");
     setSelectedTags([]);
     setAbsoluteDates(false);
     setStartDate(null);
     setDueDate(null);
-    setstartsin('');
-    setduein('');
+    setstartsin("");
+    setduein("");
     setPriority("");
     setSelectedUser([]);
-    setStartsInDuration('');
+    setStartsInDuration("");
     settemplatename("");
-    setdueinduration('');
+    setdueinduration("");
     setStatus("");
     setSubtaskSwitch(false);
     setSubtasks([]);
@@ -521,31 +516,33 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
   //delete template
   const handleDelete = (_id) => {
     // Show a confirmation prompt
-    const isConfirmed = window.confirm("Are you sure you want to delete this task template?");
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this task template?"
+    );
 
     // Proceed with deletion if confirmed
     if (isConfirmed) {
       const requestOptions = {
         method: "DELETE",
-        redirect: "follow"
+        redirect: "follow",
       };
       const url = `${TASK_API}/workflow/tasks/tasktemplate/`;
       fetch(url + _id, requestOptions)
         .then((response) => {
           if (!response.ok) {
-            throw new Error('Failed to delete item');
+            throw new Error("Failed to delete item");
           }
           return response.text();
         })
         .then((result) => {
           // console.log(result);
-          toast.success('Item deleted successfully');
+          toast.success("Item deleted successfully");
           fetchTaskData();
           // setshowOrganizerTemplateForm(false);
         })
         .catch((error) => {
           console.error(error);
-          toast.error('Failed to delete item');
+          toast.error("Failed to delete item");
         });
     }
   };
@@ -556,39 +553,64 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
     setTempIdGet(_id);
   };
   // console.log(tempIdget)
-  const columns = useMemo(() => [
-    {
-      accessorKey: 'templatename',
-      header: 'Name',
-      Cell: ({ row }) => (
-        <Typography
-          sx={{ color: "#2c59fa", cursor: "pointer", fontWeight: 'bold' }}
-          onClick={() => handleEdit(row.original._id)}
-        >
-          {row.original.templatename}
-        </Typography>
-      ),
-    },
-    {
-      accessorKey: 'Setting', header: 'Setting',
-      Cell: ({ row }) => (
-        <IconButton onClick={() => toggleMenu(row.original._id)} style={{ color: "#2c59fa" }}>
-          <CiMenuKebab style={{ fontSize: "25px" }} />
-          {openMenuId === row.original._id && (
-            <Box sx={{ position: 'absolute', zIndex: 1, backgroundColor: '#fff', boxShadow: 1, borderRadius: 1, p: 1, left: '30px', m: 2 }}>
-              <Typography sx={{ fontSize: '12px', fontWeight: 'bold' }} onClick={() => {
-                handleEdit(row.original._id);
-
-              }} >Edit</Typography>
-              <Typography sx={{ fontSize: '12px', color: 'red', fontWeight: 'bold' }} onClick={() => handleDelete(row.original._id)} >Delete</Typography>
-            </Box>
-          )}
-        </IconButton>
-      ),
-
-    },
-
-  ], [openMenuId]);
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: "templatename",
+        header: "Name",
+        Cell: ({ row }) => (
+          <Typography
+            sx={{ color: "#2c59fa", cursor: "pointer", fontWeight: "bold" }}
+            onClick={() => handleEdit(row.original._id)}
+          >
+            {row.original.templatename}
+          </Typography>
+        ),
+      },
+      {
+        accessorKey: "Setting",
+        header: "Setting",
+        Cell: ({ row }) => (
+          <IconButton
+            onClick={() => toggleMenu(row.original._id)}
+            style={{ color: "#2c59fa" }}
+          >
+            <CiMenuKebab style={{ fontSize: "25px" }} />
+            {openMenuId === row.original._id && (
+              <Box
+                sx={{
+                  position: "absolute",
+                  zIndex: 1,
+                  backgroundColor: "#fff",
+                  boxShadow: 1,
+                  borderRadius: 1,
+                  p: 1,
+                  left: "30px",
+                  m: 2,
+                }}
+              >
+                <Typography
+                  sx={{ fontSize: "12px", fontWeight: "bold" }}
+                  onClick={() => {
+                    handleEdit(row.original._id);
+                  }}
+                >
+                  Edit
+                </Typography>
+                <Typography
+                  sx={{ fontSize: "12px", color: "red", fontWeight: "bold" }}
+                  onClick={() => handleDelete(row.original._id)}
+                >
+                  Delete
+                </Typography>
+              </Box>
+            )}
+          </IconButton>
+        ),
+      },
+    ],
+    [openMenuId]
+  );
   const table = useMaterialReactTable({
     columns,
     data: TaskTemplates,
@@ -599,17 +621,23 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
     enablePagination: true,
     muiTableContainerProps: { sx: { maxHeight: "400px" } },
     initialState: {
-      columnPinning: { left: ["mrt-row-select", "tagName"], right: ['settings'], },
+      columnPinning: {
+        left: ["mrt-row-select", "tagName"],
+        right: ["settings"],
+      },
     },
     muiTableBodyCellProps: {
       sx: (theme) => ({
-        backgroundColor: theme.palette.mode === "dark-theme" ? theme.palette.grey[900] : theme.palette.grey[50],
+        backgroundColor:
+          theme.palette.mode === "dark-theme"
+            ? theme.palette.grey[900]
+            : theme.palette.grey[50],
       }),
     },
   });
 
-  const [templateNameError, setTemplateNameError] = useState('');
- 
+  const [templateNameError, setTemplateNameError] = useState("");
+
   const validateForm = () => {
     let isValid = true;
     if (!templatename) {
@@ -617,16 +645,17 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
       toast.error("Name can't be blank");
       isValid = false;
     } else {
-      setTemplateNameError('');
+      setTemplateNameError("");
     }
-    
+
     return isValid;
   };
 
-
   const handleTaskCancel = () => {
     if (isFormDirty) {
-      const confirmClose = window.confirm('You have unsaved changes. Are you sure you want to cancel?');
+      const confirmClose = window.confirm(
+        "You have unsaved changes. Are you sure you want to cancel?"
+      );
       if (!confirmClose) {
         return;
       }
@@ -642,12 +671,11 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
       setIsFormDirty(false);
     }
   }, [templatename, priority, description, status, absoluteDate]);
-  
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(30);
 
-
-   const handleChangePage = (_, newPage) => {
+  const handleChangePage = (_, newPage) => {
     setPage(newPage);
   };
 
@@ -655,206 +683,247 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-   // Compute paginated tasks
-   const paginatedTasks = TaskTemplates.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-  
-  
+  // Compute paginated tasks
+  const paginatedTasks = TaskTemplates.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box>
         {!showForm ? (
           <Box sx={{ mt: 2 }}>
-            <Button variant="contained" color="primary" onClick={handleCreateTask}   sx={{
-              backgroundColor: 'var(--color-save-btn)',  // Normal background
-             
-              '&:hover': {
-                backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-              },
-              borderRadius:'15px', mb: 3
-            }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleCreateTask}
+              sx={{
+                backgroundColor: "var(--color-save-btn)", // Normal background
+
+                "&:hover": {
+                  backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                },
+                borderRadius: "15px",
+                mb: 3,
+              }}
+            >
               Create Task Template
             </Button>
             {loading ? (
-              <Box sx={{display:'flex',alignItems:'center', justifyContent:'center'}}> <CircularProgress style={{fontSize:'300px', color:'blue'}}/></Box>
-            ):( 
-            // <MaterialReactTable columns={columns} table={table} />
-<Box>
-<TableContainer component={Paper} sx={{ overflow: "visible" }}>
-            <Table sx={{ width: "100%" }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="250"
-                  >
-                    Name
-                  </TableCell>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                {" "}
+                <CircularProgress
+                  style={{ fontSize: "300px", color: "blue" }}
+                />
+              </Box>
+            ) : (
+              // <MaterialReactTable columns={columns} table={table} />
+              <Box>
+                <TableContainer component={Paper} sx={{ overflow: "visible" }}>
+                  <Table sx={{ width: "100%" }}>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell
+                          style={{
+                            fontSize: "12px",
+                            fontWeight: "bold",
+                            padding: "16px",
+                          }}
+                          width="250"
+                        >
+                          Name
+                        </TableCell>
 
-                  <TableCell
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="100"
-                  >
-                    Settings
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {paginatedTasks.map((row) => (
-                  <TableRow key={row._id}>
-                    <TableCell>
-                      <Typography
-                        style={{
-                          fontSize: "12px",
-                          padding: "4px 8px",
-                          lineHeight: "1",
-                          cursor: "pointer",
-                          color: "#3f51b5",
-                        }}
-                        onClick={() => handleEdit(row._id)}
-                      >
-                        {row.templatename}
-                      </Typography>
-                    </TableCell>
-
-                    <TableCell
-                      style={{
-                        fontSize: "12px",
-                        padding: "4px 8px",
-                        lineHeight: "1",
-                        cursor: "pointer",
-                      }}
-                    >
-                      <IconButton
-                        onClick={() => toggleMenu(row._id)}
-                        style={{ color: "#2c59fa" }}
-                      >
-                        <CiMenuKebab />
-                        {openMenuId === row._id && (
-                          <Box
-                            sx={{
-                              position: "absolute",
-                              zIndex: 1,
-                              backgroundColor: "#fff",
-                              boxShadow: 1,
-                              borderRadius: 1,
-                              p: 1,
-                              left: "20px",
-
-                              m: 2,
-                              top: "10px",
-                              textAlign: "start",
-                            }}
-                          >
-                            {/* <Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>Publice to Marketplace</Typography> */}
-
+                        <TableCell
+                          style={{
+                            fontSize: "12px",
+                            fontWeight: "bold",
+                            padding: "16px",
+                          }}
+                          width="100"
+                        >
+                          Settings
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {paginatedTasks.map((row) => (
+                        <TableRow key={row._id}>
+                          <TableCell>
                             <Typography
-                              sx={{ fontSize: "12px", fontWeight: "bold" }}
+                              style={{
+                                fontSize: "12px",
+                                padding: "4px 8px",
+                                lineHeight: "1",
+                                cursor: "pointer",
+                                color: "#3f51b5",
+                              }}
                               onClick={() => handleEdit(row._id)}
                             >
-                              Edit 
+                              {row.templatename}
                             </Typography>
-                            <Typography
-                              sx={{
-                                fontSize: "12px",
-                                color: "red",
-                                fontWeight: "bold",
-                              }}
-                              onClick={() => handleDelete(row._id)}
-                            >
-                              Delete
-                            </Typography>
-                          </Box>
-                        )}
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                          </TableCell>
 
-<TablePagination
-rowsPerPageOptions={[30,40,50,60,100]}
-component="div"
-count={TaskTemplates.length}
-rowsPerPage={rowsPerPage}
-page={page}
-onPageChange={handleChangePage}
-onRowsPerPageChange={handleChangeRowsPerPage}
-/>
-</Box>
-          )
-            }
+                          <TableCell
+                            style={{
+                              fontSize: "12px",
+                              padding: "4px 8px",
+                              lineHeight: "1",
+                              cursor: "pointer",
+                            }}
+                          >
+                            <IconButton
+                              onClick={() => toggleMenu(row._id)}
+                              style={{ color: "#2c59fa" }}
+                            >
+                              <CiMenuKebab />
+                              {openMenuId === row._id && (
+                                <Box
+                                  sx={{
+                                    position: "absolute",
+                                    zIndex: 1,
+                                    backgroundColor: "#fff",
+                                    boxShadow: 1,
+                                    borderRadius: 1,
+                                    p: 1,
+                                    left: "20px",
+
+                                    m: 2,
+                                    top: "10px",
+                                    textAlign: "start",
+                                  }}
+                                >
+                                  {/* <Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>Publice to Marketplace</Typography> */}
+
+                                  <Typography
+                                    sx={{
+                                      fontSize: "12px",
+                                      fontWeight: "bold",
+                                    }}
+                                    onClick={() => handleEdit(row._id)}
+                                  >
+                                    Edit 
+                                  </Typography>
+                                  <Typography
+                                    sx={{
+                                      fontSize: "12px",
+                                      color: "red",
+                                      fontWeight: "bold",
+                                    }}
+                                    onClick={() => handleDelete(row._id)}
+                                  >
+                                    Delete
+                                  </Typography>
+                                </Box>
+                              )}
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+
+                <TablePagination
+                  rowsPerPageOptions={[30, 40, 50, 60, 100]}
+                  component="div"
+                  count={TaskTemplates.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </Box>
+            )}
             {/* <MaterialReactTable columns={columns} table={table} /> */}
           </Box>
         ) : (
           <Box sx={{ mt: 2 }}>
             <Box>
               <form>
-                <Box className='box-b'>
-                  <Typography variant='h5' gutterBottom>Create Task Template</Typography>
-                  <Box mt={2} mb={2}><hr /></Box>
+                <Box className="box-b">
+                  <Typography variant="h5" gutterBottom>
+                    Create Task Template
+                  </Typography>
+                  <Box mt={2} mb={2}>
+                    <hr />
+                  </Box>
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={5.8}>
-                      <Box sx={{ width: '100%' }}>
+                      <Box sx={{ width: "100%" }}>
                         <Grid container spacing={2}>
                           <Grid item xs={12} sm={6}>
                             <Box>
-                              <label className='task-input-label' >Template Name</label>
+                              <label className="task-input-label">
+                                Template Name
+                              </label>
                               <TextField
                                 fullWidth
                                 name="TemplateName"
                                 placeholder="Template Name"
                                 size="small"
-                                margin='normal'
+                                margin="normal"
                                 sx={{
-                                  background: '#fff', 
+                                  background: "#fff",
                                 }}
-                                onChange={(e) => settemplatename(e.target.value)}
+                                onChange={(e) =>
+                                  settemplatename(e.target.value)
+                                }
                                 error={!!templateNameError}
                               />
-                              {(!!templateNameError) && <Alert sx={{
-                                width: '96%',
-                                p: '0', // Adjust padding to control the size
-                                pl: '4%', height: '23px',
-                                borderRadius: '10px',
-                                borderTopLeftRadius: '0',
-                                borderTopRightRadius: '0',
-                                fontSize: '15px',
-                                display: 'flex',
-                                alignItems: 'center', // Center content vertically
-                                '& .MuiAlert-icon': {
-                                  fontSize: '16px', // Adjust the size of the icon
-                                  mr: '8px', // Add margin to the right of the icon
-                                },
-                              }} variant="filled" severity="error" >
-                                Name can't be blank
-                              </Alert>}
+                              {!!templateNameError && (
+                                <Alert
+                                  sx={{
+                                    width: "96%",
+                                    p: "0", // Adjust padding to control the size
+                                    pl: "4%",
+                                    height: "23px",
+                                    borderRadius: "10px",
+                                    borderTopLeftRadius: "0",
+                                    borderTopRightRadius: "0",
+                                    fontSize: "15px",
+                                    display: "flex",
+                                    alignItems: "center", // Center content vertically
+                                    "& .MuiAlert-icon": {
+                                      fontSize: "16px", // Adjust the size of the icon
+                                      mr: "8px", // Add margin to the right of the icon
+                                    },
+                                  }}
+                                  variant="filled"
+                                  severity="error"
+                                >
+                                  Name can't be blank
+                                </Alert>
+                              )}
                             </Box>
                           </Grid>
                           <Grid item xs={12} sm={6}>
                             <Box>
-                              <Status onStatusChange={handleStatusChange} selectedStatus={status} />
+                              <Status
+                                onStatusChange={handleStatusChange}
+                                selectedStatus={status}
+                              />
                             </Box>
                           </Grid>
                         </Grid>
                       </Box>
-                      <Box sx={{ width: '100%' }}>
+                      <Box sx={{ width: "100%" }}>
                         <Grid container spacing={2}>
                           <Grid item xs={12} sm={6}>
                             <Box>
-                              <label className='task-input-label'>Task Assignee</label>
+                              <label className="task-input-label">
+                                Task Assignee
+                              </label>
                               <Autocomplete
                                 multiple
-                                sx={{ background: '#fff', mt: 2, }}
+                                sx={{ background: "#fff", mt: 2 }}
                                 options={options}
                                 size="small"
                                 getOptionLabel={(option) => option.label}
@@ -864,29 +933,44 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                   <Box
                                     component="li"
                                     {...props}
-                                    sx={{ cursor: 'pointer', margin: '5px 10px' }} // Add cursor pointer style
+                                    sx={{
+                                      cursor: "pointer",
+                                      margin: "5px 10px",
+                                    }} // Add cursor pointer style
                                   >
                                     {option.label}
                                   </Box>
                                 )}
                                 renderInput={(params) => (
-                                  <TextField {...params} variant="outlined" placeholder="Assignees" />
+                                  <TextField
+                                    {...params}
+                                    variant="outlined"
+                                    placeholder="Assignees"
+                                  />
                                 )}
-                                isOptionEqualToValue={(option, value) => option.value === value.value}
+                                isOptionEqualToValue={(option, value) =>
+                                  option.value === value.value
+                                }
                               />
                             </Box>
                           </Grid>
                           <Grid item xs={12} sm={6}>
                             <Box>
-                              <Priority onPriorityChange={handlePriorityChange} selectedPriority={priority} />
+                              <Priority
+                                onPriorityChange={handlePriorityChange}
+                                selectedPriority={priority}
+                              />
                             </Box>
                           </Grid>
                         </Grid>
                       </Box>
-                      <Box sx={{ mt: 3, mb: 7}}>
-                        <Editor onChange={handleEditorChange} content={description} />
+                      <Box sx={{ mt: 3, mb: 7 }}>
+                        <Editor
+                          onChange={handleEditorChange}
+                          content={description}
+                        />
                       </Box>
-                     
+
                       {/* <Box mt={2}>
                         <label className='task-input-label'>Tags</label>
                         <Autocomplete
@@ -923,125 +1007,141 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                         />
                       </Box> */}
                       <Box mt={1}>
-         
-         <InputLabel sx={{ color: "black", mb: 1 }}>Tags</InputLabel>
-        
-        <FormControl sx={{ width: "100%" }}>
- <Select
-   multiple
-   size="small"
-   fullWidth
-   value={selectedTags}
-   onChange={handleTagChange}
-   input={<OutlinedInput />}
-   displayEmpty // Enables placeholder when no value is selected
-   renderValue={(selected) => {
-     if (selected.length === 0) {
-       return <span style={{ color: "#aaa" }}>Select tags...</span>; // Placeholder
-     }
-     return (
-       <Box
-         sx={{
-           display: "flex",
-           flexWrap: "wrap",
-           gap: "6px",
-           padding: "6px",
-           borderRadius: "10px",
-         }}
-       >
-         {selected.map((value) => {
-           const option = tagsoptions.find((opt) => opt.value === value);
-           return (
-             <Chip
-               key={value}
-               label={option?.label}
-               sx={{
-                 backgroundColor: option?.colour,
-                 color: "#fff",
-                 fontWeight: 500,
-                 fontSize: "10px",
-                 borderRadius: "16px",
-                 height: "20px",
-                 cursor: "pointer",
-                 boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-                 "& .MuiChip-deleteIcon": {
-                   color: "#fff",
-                   opacity: 0.7,
-                   transition: "opacity 0.2s",
-                   "&:hover": { opacity: 1 },
-                 },
-               }}
-             />
-           );
-         })}
-       </Box>
-     );
-   }}
-   MenuProps={MenuProps}
-   sx={{
-     borderRadius: "10px",
-     "& .MuiOutlinedInput-root": {
-       borderRadius: "10px",
-     },
-   }}
- >
-   {tagsoptions.map((option) => {
-     // const dynamicWidth = Math.min(option.label.length * 10, 150); // Adjust width dynamically
-     // Create a canvas element to measure the actual text width
- const canvas = document.createElement("canvas");
- const context = canvas.getContext("2d");
- context.font = "12px Arial"; // Match the font size/style of MenuItem
+                        <InputLabel sx={{ color: "black", mb: 1 }}>
+                          Tags
+                        </InputLabel>
 
- const textWidth = context.measureText(option.label).width; // Get precise width
- const dynamicWidth = Math.min(textWidth + 16, 150); // Add padding & set max width
-     return (
-       <MenuItem
-         key={option.value}
-         value={option.value}
-         sx={{
-           backgroundColor: option.colour,
-           color: "#fff",
-           fontSize: "10px",
-           borderRadius: "10px",
-           margin: "5px",
-           textAlign: "center",
-           display: "flex",
-           justifyContent: "center",
-           padding: "4px 9px",
-           // alignItems: "center",
-           // paddingLeft: "10px",
-           whiteSpace: "nowrap", // Prevent line breaks
-           // textAlign: "left", // Ensure text is left-aligned
-           // paddingLeft: "10px", // Add left padding for proper alignment
-           minWidth: `${dynamicWidth}px`,
-           maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
-           "&:hover": {
-             backgroundColor: option.colour,
-             color: "#fff",
-           },
-         }}
-       >
-         {option.label}
-       </MenuItem>
-     );
-   })}
- </Select>
-</FormControl>
+                        <FormControl sx={{ width: "100%" }}>
+                          <Select
+                            multiple
+                            size="small"
+                            fullWidth
+                            value={selectedTags}
+                            onChange={handleTagChange}
+                            input={<OutlinedInput />}
+                            displayEmpty // Enables placeholder when no value is selected
+                            renderValue={(selected) => {
+                              if (selected.length === 0) {
+                                return (
+                                  <span style={{ color: "#aaa" }}>
+                                    Select tags...
+                                  </span>
+                                ); // Placeholder
+                              }
+                              return (
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    gap: "6px",
+                                    padding: "6px",
+                                    borderRadius: "10px",
+                                  }}
+                                >
+                                  {selected.map((value) => {
+                                    const option = tagsoptions.find(
+                                      (opt) => opt.value === value
+                                    );
+                                    return (
+                                      <Chip
+                                        key={value}
+                                        label={option?.label}
+                                        sx={{
+                                          backgroundColor: option?.colour,
+                                          color: "#fff",
+                                          fontWeight: 500,
+                                          fontSize: "10px",
+                                          borderRadius: "16px",
+                                          height: "20px",
+                                          cursor: "pointer",
+                                          boxShadow:
+                                            "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                                          "& .MuiChip-deleteIcon": {
+                                            color: "#fff",
+                                            opacity: 0.7,
+                                            transition: "opacity 0.2s",
+                                            "&:hover": { opacity: 1 },
+                                          },
+                                        }}
+                                      />
+                                    );
+                                  })}
+                                </Box>
+                              );
+                            }}
+                            MenuProps={MenuProps}
+                            sx={{
+                              borderRadius: "10px",
+                              "& .MuiOutlinedInput-root": {
+                                borderRadius: "10px",
+                              },
+                            }}
+                          >
+                            {tagsoptions.map((option) => {
+                              // const dynamicWidth = Math.min(option.label.length * 10, 150); // Adjust width dynamically
+                              // Create a canvas element to measure the actual text width
+                              const canvas = document.createElement("canvas");
+                              const context = canvas.getContext("2d");
+                              context.font = "12px Arial"; // Match the font size/style of MenuItem
 
-       </Box>
+                              const textWidth = context.measureText(
+                                option.label
+                              ).width; // Get precise width
+                              const dynamicWidth = Math.min(
+                                textWidth + 16,
+                                150
+                              ); // Add padding & set max width
+                              return (
+                                <MenuItem
+                                  key={option.value}
+                                  value={option.value}
+                                  sx={{
+                                    backgroundColor: option.colour,
+                                    color: "#fff",
+                                    fontSize: "10px",
+                                    borderRadius: "10px",
+                                    margin: "5px",
+                                    textAlign: "center",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    padding: "4px 9px",
+                                    // alignItems: "center",
+                                    // paddingLeft: "10px",
+                                    whiteSpace: "nowrap", // Prevent line breaks
+                                    // textAlign: "left", // Ensure text is left-aligned
+                                    // paddingLeft: "10px", // Add left padding for proper alignment
+                                    minWidth: `${dynamicWidth}px`,
+                                    maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
+                                    "&:hover": {
+                                      backgroundColor: option.colour,
+                                      color: "#fff",
+                                    },
+                                  }}
+                                >
+                                  {option.label}
+                                </MenuItem>
+                              );
+                            })}
+                          </Select>
+                        </FormControl>
+                      </Box>
                       <Box mt={2}>
-                        <Box display={'flex'} alignItems={'center'} justifyContent={'space-between'}>
-                          <Typography variant='h6' className='task-input-label'>Start and Due Date</Typography>
-                          <Box className='absolutes-dates'>
+                        <Box
+                          display={"flex"}
+                          alignItems={"center"}
+                          justifyContent={"space-between"}
+                        >
+                          <Typography variant="h6" className="task-input-label">
+                            Start and Due Date
+                          </Typography>
+                          <Box className="absolutes-dates">
                             <FormControlLabel
                               control={
-
-
-
-
                                 <Switch
                                   checked={absoluteDate}
-                                  onChange={(event) => handleAbsolutesDates(event.target.checked)}
+                                  onChange={(event) =>
+                                    handleAbsolutesDates(event.target.checked)
+                                  }
                                   color="primary"
                                 />
                               }
@@ -1052,22 +1152,44 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                       </Box>
                       {absoluteDate && (
                         <>
-                          <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
-                            <Typography className='task-input-label'>Start Date</Typography>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              mt: 2,
+                            }}
+                          >
+                            <Typography className="task-input-label">
+                              Start Date
+                            </Typography>
                             <DatePicker
                               format="DD/MM/YYYY"
-                              sx={{ width: '100%', backgroundColor: '#fff' }}
-                              selected={startDate} onChange={handleStartDateChange}
-                              renderInput={(params) => <TextField {...params} size="small"  />}
+                              sx={{ width: "100%", backgroundColor: "#fff" }}
+                              selected={startDate}
+                              onChange={handleStartDateChange}
+                              renderInput={(params) => (
+                                <TextField {...params} size="small" />
+                              )}
                             />
                           </Box>
-                          <Box sx={{ display: 'flex', alignItems: 'center', mt: 2 }}>
-                            <Typography className='task-input-label'>Due Date</Typography>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              mt: 2,
+                            }}
+                          >
+                            <Typography className="task-input-label">
+                              Due Date
+                            </Typography>
                             <DatePicker
                               format="DD/MM/YYYY"
-                              sx={{ width: '100%', backgroundColor: '#fff' }}
-                              selected={dueDate} onChange={handleDueDateChange}
-                              renderInput={(params) => <TextField {...params} size="small" />}
+                              sx={{ width: "100%", backgroundColor: "#fff" }}
+                              selected={dueDate}
+                              onChange={handleDueDateChange}
+                              renderInput={(params) => (
+                                <TextField {...params} size="small" />
+                              )}
                             />
                           </Box>
                         </>
@@ -1076,24 +1198,24 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                         <>
                           <Grid container spacing={3} alignItems="center">
                             <Grid item xs={12} sm={2}>
-                              <Typography className="task-input-label">Start In</Typography>
+                              <Typography className="task-input-label">
+                                Start In
+                              </Typography>
                             </Grid>
                             <Grid item xs={12} sm={5}>
                               <TextField
-                                 size="small"
-                                placeholder='0'
+                                size="small"
+                                placeholder="0"
                                 defaultValue={0}
                                 value={startsin}
-                                sx={{ background: "#fff", width: '100%' }}
+                                sx={{ background: "#fff", width: "100%" }}
                                 onChange={(e) => setstartsin(e.target.value)}
-                               
                               />
-                              
                             </Grid>
                             <Grid item xs={12} sm={5}>
                               <Autocomplete
                                 options={dayOptions}
-                                 size="small"
+                                size="small"
                                 getOptionLabel={(option) => option.label}
                                 onChange={handleStartInDateChange}
                                 renderInput={(params) => (
@@ -1102,31 +1224,34 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                       {...params}
                                       variant="outlined"
                                       sx={{ backgroundColor: "#fff" }}
-                                      
                                     />
-                                    
                                   </>
                                 )}
-                                value={dayOptions.find((option) => option.value === startsInDuration) || null}
+                                value={
+                                  dayOptions.find(
+                                    (option) =>
+                                      option.value === startsInDuration
+                                  ) || null
+                                }
                                 className="job-template-select-dropdown"
                               />
                             </Grid>
                           </Grid>
                           <Grid container spacing={3} alignItems="center">
                             <Grid item xs={12} sm={2}>
-                              <Typography className="task-input-label">Due In</Typography>
+                              <Typography className="task-input-label">
+                                Due In
+                              </Typography>
                             </Grid>
                             <Grid item xs={12} sm={5}>
                               <TextField
                                 size="small"
-                                placeholder='0'
+                                placeholder="0"
                                 value={duein}
                                 fullWidth
-                                
-                                sx={{ background: '#fff', }}
+                                sx={{ background: "#fff" }}
                                 onChange={(e) => setduein(e.target.value)}
                               />
-                              
                             </Grid>
                             <Grid item xs={12} sm={5}>
                               <Autocomplete
@@ -1136,11 +1261,18 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                 size="small"
                                 renderInput={(params) => (
                                   <>
-                                    <TextField {...params} variant="outlined" sx={{ backgroundColor: '#fff' }}  />
-                                   
+                                    <TextField
+                                      {...params}
+                                      variant="outlined"
+                                      sx={{ backgroundColor: "#fff" }}
+                                    />
                                   </>
                                 )}
-                                value={dayOptions.find((option) => option.value === dueinduration) || null}
+                                value={
+                                  dayOptions.find(
+                                    (option) => option.value === dueinduration
+                                  ) || null
+                                }
                                 className="job-template-select-dropdown"
                               />
                             </Grid>
@@ -1148,62 +1280,110 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                         </>
                       )}
                     </Grid>
-                    <Grid item xs={12} sm={0.4} sx={{ display: { xs: 'none', sm: 'block' } }}>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={0.4}
+                      sx={{ display: { xs: "none", sm: "block" } }}
+                    >
                       <Box
                         sx={{
-                          borderLeft: '1px solid black',
-                          height: '100%',
-                          ml: 1.5
+                          borderLeft: "1px solid black",
+                          height: "100%",
+                          ml: 1.5,
                         }}
-                      >
-
-                      </Box>
+                      ></Box>
                     </Grid>
-                    <Grid item xs={12} sm={5.8} >
+                    <Grid item xs={12} sm={5.8}>
                       <div className="B">
-
                         <DragDropContext onDragEnd={handleDragEnd}>
-
-                          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <Typography variant='h6'>Subtasks</Typography>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Typography variant="h6">Subtasks</Typography>
                             <FormControlLabel
                               control={
-                                <Switch onChange={(event) => handleSubtaskSwitch(event.target.checked)} checked={SubtaskSwitch} color="primary" />
+                                <Switch
+                                  onChange={(event) =>
+                                    handleSubtaskSwitch(event.target.checked)
+                                  }
+                                  checked={SubtaskSwitch}
+                                  color="primary"
+                                />
                               }
-
                             />
                           </Box>
-                         
+
                           {SubtaskSwitch && (
                             <Droppable droppableId="subtaskList">
                               {(provided) => (
-                                <div className="subtask-input" {...provided.droppableProps} ref={provided.innerRef}>
-
-                                  {(subtasks.length > 0 ? subtasks : [{ id: 'default', text: '' }]).map((subtask, index) => (
-                                    <Draggable key={subtask.id} draggableId={subtask.id} index={index}>
+                                <div
+                                  className="subtask-input"
+                                  {...provided.droppableProps}
+                                  ref={provided.innerRef}
+                                >
+                                  {(subtasks.length > 0
+                                    ? subtasks
+                                    : [{ id: "default", text: "" }]
+                                  ).map((subtask, index) => (
+                                    <Draggable
+                                      key={subtask.id}
+                                      draggableId={subtask.id}
+                                      index={index}
+                                    >
                                       {(provided) => (
-                                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-
-                                          <Box display="flex" gap="30px" alignItems="center">
+                                        <div
+                                          ref={provided.innerRef}
+                                          {...provided.draggableProps}
+                                          {...provided.dragHandleProps}
+                                        >
+                                          <Box
+                                            display="flex"
+                                            gap="30px"
+                                            alignItems="center"
+                                          >
                                             <Checkbox
-                                              style={{ cursor: 'pointer' }}
+                                              style={{ cursor: "pointer" }}
                                               // checked={subtask.checked}
-                                              checked={checkedSubtasks.includes(subtask.id)}
-                                              onChange={() => handleCheckboxChange(subtask.id, subtask.checked)}
+                                              checked={checkedSubtasks.includes(
+                                                subtask.id
+                                              )}
+                                              onChange={() =>
+                                                handleCheckboxChange(
+                                                  subtask.id,
+                                                  subtask.checked
+                                                )
+                                              }
                                             />
                                             <TextField
                                               placeholder="Things To do"
                                               value={subtask.text}
                                               size="small"
-                                              margin='normal'
+                                              margin="normal"
                                               fullWidth
-                                              onChange={(e) => handleInputChange(subtask.id, e.target.value)}
+                                              onChange={(e) =>
+                                                handleInputChange(
+                                                  subtask.id,
+                                                  e.target.value
+                                                )
+                                              }
                                               variant="outlined"
                                             />
-                                            <IconButton onClick={() => handleDeleteSubtask(subtask.id)} style={{ cursor: 'pointer' }}>
+                                            <IconButton
+                                              onClick={() =>
+                                                handleDeleteSubtask(subtask.id)
+                                              }
+                                              style={{ cursor: "pointer" }}
+                                            >
                                               <RiDeleteBin6Line />
                                             </IconButton>
-                                            <IconButton style={{ cursor: 'move' }}>
+                                            <IconButton
+                                              style={{ cursor: "move" }}
+                                            >
                                               <PiDotsSixVerticalBold />
                                             </IconButton>
                                           </Box>
@@ -1213,46 +1393,80 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                   ))}
 
                                   {provided.placeholder}
-                                  <Box sx={{ cursor: 'pointer' }} onClick={handleAddSubtask} style={{ margin: "10px", color: "#1976d3" }}>
+                                  <Box
+                                    sx={{ cursor: "pointer" }}
+                                    onClick={handleAddSubtask}
+                                    style={{ margin: "10px", color: "#1976d3" }}
+                                  >
                                     <FiPlusCircle /> Add Subtasks
                                   </Box>
                                 </div>
                               )}
                             </Droppable>
                           )}
-
                         </DragDropContext>
                       </div>
                     </Grid>
                   </Grid>
-                  <Box mt={2} mb={2}><hr /></Box>
-                  <Box sx={{ pt: 2, display: 'flex', alignItems: 'center', gap: 5 }}>
-                    <Button variant="contained" color="primary" onClick={createTaskTemp} sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      },
-                      borderRadius:'15px', 
-                    }} >Save & exit</Button>
-                    <Button variant="contained" color="primary" onClick={createSaveTaskTemp}  sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      },
-                      borderRadius:'15px', width:'80px'
-                    }}>Save</Button>
-                    <Button variant="outlined" onClick={handleTaskCancel} sx={{
-                  borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                 color:'var(--color-save-btn)',
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                    color:'#fff',
-                    border:"none"
-                  },
-                  width:'80px',borderRadius:'15px'
-                }}>Cancel</Button>
+                  <Box mt={2} mb={2}>
+                    <hr />
+                  </Box>
+                  <Box
+                    sx={{
+                      pt: 2,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 5,
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={createTaskTemp}
+                      sx={{
+                        backgroundColor: "var(--color-save-btn)", // Normal background
+
+                        "&:hover": {
+                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        },
+                        borderRadius: "15px",
+                      }}
+                    >
+                      Save & exit
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={createSaveTaskTemp}
+                      sx={{
+                        backgroundColor: "var(--color-save-btn)", // Normal background
+
+                        "&:hover": {
+                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        },
+                        borderRadius: "15px",
+                        width: "80px",
+                      }}
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      onClick={handleTaskCancel}
+                      sx={{
+                        borderColor: "var(--color-border-cancel-btn)", // Normal background
+                        color: "var(--color-save-btn)",
+                        "&:hover": {
+                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          color: "#fff",
+                          border: "none",
+                        },
+                        width: "80px",
+                        borderRadius: "15px",
+                      }}
+                    >
+                      Cancel
+                    </Button>
                   </Box>
                 </Box>
               </form>

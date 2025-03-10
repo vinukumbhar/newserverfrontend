@@ -966,6 +966,7 @@ const Tasks = () => {
                 throw new Error("Failed to fetch data");
             }
             const data = await response.json();
+            console.log("tasktemp", data)
             // Extract and process assigneesData
             if (data.taskTemplate && (data.taskTemplate.taskassignees)) {
                 const innerArray = data.taskTemplate.taskassignees[0]; // Extract the inner array

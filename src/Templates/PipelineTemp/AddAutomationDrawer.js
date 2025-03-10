@@ -11,23 +11,19 @@ const AddAutomationDrawer = ({
   ehitAnchorEl,
   handleEditClose,
   handleMenuItemSelect,
-  isSmallScreen,
-  theme,
+
 }) => {
   return (
     <Drawer
       anchor="right"
       open={isDrawerOpen}
       onClose={handleDrawerClose}
+      BackdropProps={{ invisible: true }}
       PaperProps={{
-        id: "tag-drawer",
         sx: {
-          borderRadius: isSmallScreen ? "0" : "10px 0 0 10px",
-          width: isSmallScreen ? "100%" : 500,
+          borderRadius: "10px 0 0 10px",
+          width: 500,
           maxWidth: "100%",
-          [theme.breakpoints.down("sm")]: {
-            width: "100%",
-          },
         },
       }}
     >
@@ -42,23 +38,7 @@ const AddAutomationDrawer = ({
       {/* Content Section */}
       <Box sx={{ p: 2 }}>{renderActionContent(automationSelect, index)}</Box>
 
-      {/* Footer Actions */}
-      {/* <Box sx={{ display: "flex", alignItems: "center", gap: 3, p: 2 }}>
-        <Button variant="text" onClick={handleEditClick}>
-          Add Automations
-        </Button>
-        <Button
-          variant="contained"
-          onClick={handleEditSaveAutomation}
-          sx={{
-            backgroundColor: "var(--color-save-btn)",
-            "&:hover": { backgroundColor: "var(--color-save-hover-btn)" },
-            borderRadius: "15px",
-          }}
-        >
-          Save Automation
-        </Button>
-      </Box> */}
+      
 
       {/* Menu Section */}
       <Menu anchorEl={ehitAnchorEl} open={Boolean(ehitAnchorEl)} onClose={handleEditClose}>
@@ -67,6 +47,7 @@ const AddAutomationDrawer = ({
         <MenuItem onClick={() => handleMenuItemSelect("Send Proposal/Els")}>Send Proposal/Els</MenuItem>
         <MenuItem onClick={() => handleMenuItemSelect("Create Organizer")}>Create Organizer</MenuItem>
         <MenuItem onClick={() => handleMenuItemSelect("Apply folder template")}>Apply folder template</MenuItem>
+        <MenuItem onClick={() => handleMenuItemSelect("Update account tags ")}>Apply folder template</MenuItem>
       </Menu>
     </Drawer>
   );
