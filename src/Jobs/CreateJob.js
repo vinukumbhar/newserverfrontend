@@ -17,7 +17,7 @@ import {
   FormControlLabel,
   Autocomplete,
   Drawer,
-  Checkbox,
+  Checkbox,Alert, MenuItem, Select,
 } from "@mui/material";
 import React, { useState, useEffect, useContext } from "react";
 import Priority from "../Templates/Priority/Priority";
@@ -744,6 +744,64 @@ const CreateJob = ({ charLimit = 4000 }) => {
 
   // Drawer Component
   const DrawerContent = () => {
+     const ITEM_HEIGHT = 48;
+        const ITEM_PADDING_TOP = 8;
+        const MenuProps = {
+          PaperProps: {
+            style: {
+              maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+              width: "auto",
+            },
+          },
+        };
+        const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
+        const [tags, setTags] = useState([]);
+    
+        useEffect(() => {
+          fetchTags();
+        }, []);
+    
+        const fetchTags = async () => {
+          try {
+            const url = `${TAGS_API}/tags/`;
+            const response = await fetch(url);
+            const data = await response.json();
+            console.log("tags dtata", data.tags);
+            setTags(data.tags);
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          }
+        };
+    
+        const calculateWidth = (label) => Math.min(label.length * 8, 200);
+    
+        const tagsoptions = tags.map((tag) => ({
+          value: tag._id,
+          label: tag.tagName,
+          colour: tag.tagColour,
+          customStyle: {
+            backgroundColor: tag.tagColour,
+            color: "#fff",
+            borderRadius: "8px",
+            alignItems: "center",
+            textAlign: "center",
+            marginBottom: "5px",
+            padding: "2px,8px",
+            fontSize: "10px",
+            width: `${calculateWidth(tag.tagName)}px`,
+            margin: "7px",
+            cursor: "pointer",
+          },
+          customTagStyle: {
+            backgroundColor: tag.tagColour,
+            color: "#fff",
+            alignItems: "center",
+            textAlign: "center",
+            padding: "2px,8px",
+            fontSize: "10px",
+            cursor: "pointer",
+          },
+        }));
     // Get the tags for the selected accounts
     const accountTags = combinedaccountValues
       .map((accountId) => {
@@ -1018,33 +1076,215 @@ const CreateJob = ({ charLimit = 4000 }) => {
         .then((result) => console.log(result))
         .catch((error) => console.error(error));
     };
+    // const selectAutomationApi = async (
+    //   automationType,
+    //   automationTemp,
+    //   automationAccountId
+    // ) => {
+    //   if (!automationType || !automationTemp || !automationAccountId) {
+    //     console.error("Missing required parameters");
+    //     return;
+    //   }
+    //   const accountIds = Array.isArray(automationAccountId)
+    //     ? automationAccountId
+    //     : [automationAccountId];
+    //   switch (automationType) {
+    //     case "Send Invoice":
+    //       console.log(
+    //         `Processing 'Send Invoice' with template: ${automationTemp}, Account ID: ${automationAccountId}`
+    //       );
+    //       try {
+    //         const invoiceData = await fetchinvoicetempbyid(automationTemp); // Await the fetched data
+    //         console.log("Fetched invoice data", invoiceData);
+    //         // assignInvoiceToAccount(invoiceData, automationTemp, automationAccountId);
+    //         // Iterate through each account ID
+    //         // Iterate through each account ID
+    //         for (const accountId of accountIds) {
+    //           console.log(`Assigning invoice to account ID: ${accountId}`);
+    //           assignInvoiceToAccount(invoiceData, automationTemp, accountId);
+    //         }
+    //       } catch (error) {
+    //         console.error("Error processing 'Send Invoice':", error);
+    //       }
+    //       break;
+
+    //     case "Apply folder template":
+    //       console.log(
+    //         `Apply folder template with template: ${automationTemp}, Account ID: ${automationAccountId}`
+    //       );
+    //       try {
+    //         for (const accountId of accountIds) {
+    //           console.log(`Assigning invoice to account ID: ${accountId}`);
+    //           assignfoldertemp(accountId, automationTemp);
+    //         }
+    //         // await assignfoldertemp(automationAccountId, automationTemp);
+    //         console.log("Folder template assigned successfully");
+    //       } catch (error) {
+    //         console.error("Error applying folder template:", error);
+    //       }
+    //       break;
+
+    //     case "Create Organizer":
+    //       console.log(
+    //         `Processing 'Create Organizer' with template: ${automationTemp}, Account ID: ${automationAccountId}`
+    //       );
+    //       try {
+    //         const organizerData = await fetchorganizertempbyid(automationTemp); // Await the fetched data
+    //         console.log("Fetched organizer data", organizerData);
+    //         // assignOrganizerToAccount(
+    //         //   organizerData,
+    //         //   automationTemp,
+    //         //   automationAccountId
+    //         // );
+    //         for (const accountId of accountIds) {
+    //           console.log(`Assigning invoice to account ID: ${accountId}`);
+    //           assignOrganizerToAccount(
+    //             organizerData,
+    //             automationTemp,
+    //             accountId
+    //           );
+    //         }
+    //       } catch (error) {
+    //         console.error("Error processing 'Send Invoice':", error);
+    //       }
+    //       break;
+
+    //     case "Send Proposal/Els":
+    //       console.log(
+    //         `Creating Proposals with template: ${automationTemp}, Account ID: ${automationAccountId}`
+    //       );
+    //       try {
+    //         const proposalesandelsData =
+    //           await fetchproposalbyid(automationTemp); // Await the fetched data
+    //         console.log("Fetched Proposals data", proposalesandelsData);
+    //         assignProposalToAccount(
+    //           proposalesandelsData,
+    //           automationTemp,
+    //           automationAccountId
+    //         );
+    //         // for (const accountId of accountIds) {
+    //         //   console.log(`Assigning invoice to account ID: ${accountId}`);
+    //         //   assignProposalToAccount(proposalesandelsData, automationTemp, accountId);
+    //         // }
+    //       } catch (error) {
+    //         console.error("Error processing 'Send Invoice':", error);
+    //       }
+    //       break;
+
+    //     case "Send Email":
+    //       console.log(
+    //         `Sending email with template: ${automationTemp}, Account ID: ${automationAccountId}`
+    //       );
+    //       const myHeaders = new Headers();
+    //       myHeaders.append("Content-Type", "application/json");
+    //       const raw = JSON.stringify({
+    //         automationType,
+    //         templateId: automationTemp,
+    //         accountId: automationAccountId,
+    //       });
+
+    //       const requestOptions = {
+    //         method: "POST",
+    //         headers: myHeaders,
+    //         body: raw,
+    //         redirect: "follow",
+    //       };
+
+    //       fetch(`${AUTOMATION_API}/automations/`, requestOptions)
+    //         .then((response) => response.json())
+    //         .then((result) => console.log(result))
+    //         .catch((error) => console.error(error));
+    //       break;
+
+    //     default:
+    //       console.warn(`Unhandled automation type: ${automationType}`);
+    //       break;
+    //   }
+    // };
+
+
+
     const selectAutomationApi = async (
       automationType,
       automationTemp,
-      automationAccountId
+      automationAccountId,
+      automation
     ) => {
-      if (!automationType || !automationTemp || !automationAccountId) {
+      console.log("bvhgv",automation)
+      if (!automationType || !automationAccountId) {
         console.error("Missing required parameters");
         return;
       }
-      const accountIds = Array.isArray(automationAccountId)
-        ? automationAccountId
-        : [automationAccountId];
+
       switch (automationType) {
+        case "Update account tags":
+          console.log(
+            `Updating account tags for Account ID: ${automationAccountId}`
+          );
+
+          try {
+            // Fetch the current account data
+            const response = await fetch(
+              `${AUTOMATION_API}/accounts/accountdetails/${automationAccountId}`
+            );
+            if (!response.ok) throw new Error("Failed to fetch account data");
+
+            const account = await response.json();
+            let currentTags = account.tags || [];
+
+            console.log("Current account tags:", currentTags);
+
+            // Extract tags from automation object
+            const addTags = automation?.addTags || [];
+            const removeTags = automation?.removeTags || [];
+            // ✅ 1. Add new tags (if they are not already in the account)
+            addTags.forEach((tag) => {
+              if (!currentTags.some((t) => t._id === tag._id)) {
+                currentTags.push(tag);
+              }
+            });
+
+            // ✅ 2. Remove only the tags listed in `removeTags`, keeping others
+            currentTags = currentTags.filter(
+              (tag) =>
+                !removeTags.some((removeTag) => removeTag._id === tag._id)
+            );
+            console.log("Updated tags list:", currentTags);
+
+            // Send updated tags to the backend
+            const updateResponse = await fetch(
+              `${ACCOUNT_API}/accounts/accountdetails/${automationAccountId}`,
+              {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ tags: currentTags }),
+              }
+            );
+
+            if (!updateResponse.ok)
+              throw new Error("Failed to update account tags");
+
+            console.log("Account tags updated successfully!");
+          } catch (error) {
+            console.error("Error updating account tags:", error);
+          }
+          break;
+
+        // Other automation cases (unchanged)
         case "Send Invoice":
           console.log(
             `Processing 'Send Invoice' with template: ${automationTemp}, Account ID: ${automationAccountId}`
           );
           try {
-            const invoiceData = await fetchinvoicetempbyid(automationTemp); // Await the fetched data
+            const invoiceData = await fetchinvoicetempbyid(automationTemp);
             console.log("Fetched invoice data", invoiceData);
-            // assignInvoiceToAccount(invoiceData, automationTemp, automationAccountId);
-            // Iterate through each account ID
-            // Iterate through each account ID
-            for (const accountId of accountIds) {
-              console.log(`Assigning invoice to account ID: ${accountId}`);
-              assignInvoiceToAccount(invoiceData, automationTemp, accountId);
-            }
+            assignInvoiceToAccount(
+              invoiceData,
+              automationTemp,
+              automationAccountId
+            );
           } catch (error) {
             console.error("Error processing 'Send Invoice':", error);
           }
@@ -1052,14 +1292,10 @@ const CreateJob = ({ charLimit = 4000 }) => {
 
         case "Apply folder template":
           console.log(
-            `Apply folder template with template: ${automationTemp}, Account ID: ${automationAccountId}`
+            `Applying folder template with template: ${automationTemp}, Account ID: ${automationAccountId}`
           );
           try {
-            for (const accountId of accountIds) {
-              console.log(`Assigning invoice to account ID: ${accountId}`);
-              assignfoldertemp(accountId, automationTemp);
-            }
-            // await assignfoldertemp(automationAccountId, automationTemp);
+            await assignfoldertemp(automationAccountId, automationTemp);
             console.log("Folder template assigned successfully");
           } catch (error) {
             console.error("Error applying folder template:", error);
@@ -1071,23 +1307,15 @@ const CreateJob = ({ charLimit = 4000 }) => {
             `Processing 'Create Organizer' with template: ${automationTemp}, Account ID: ${automationAccountId}`
           );
           try {
-            const organizerData = await fetchorganizertempbyid(automationTemp); // Await the fetched data
+            const organizerData = await fetchorganizertempbyid(automationTemp);
             console.log("Fetched organizer data", organizerData);
-            // assignOrganizerToAccount(
-            //   organizerData,
-            //   automationTemp,
-            //   automationAccountId
-            // );
-            for (const accountId of accountIds) {
-              console.log(`Assigning invoice to account ID: ${accountId}`);
-              assignOrganizerToAccount(
-                organizerData,
-                automationTemp,
-                accountId
-              );
-            }
+            assignOrganizerToAccount(
+              organizerData,
+              automationTemp,
+              automationAccountId
+            );
           } catch (error) {
-            console.error("Error processing 'Send Invoice':", error);
+            console.error("Error processing 'Create Organizer':", error);
           }
           break;
 
@@ -1096,20 +1324,15 @@ const CreateJob = ({ charLimit = 4000 }) => {
             `Creating Proposals with template: ${automationTemp}, Account ID: ${automationAccountId}`
           );
           try {
-            const proposalesandelsData =
-              await fetchproposalbyid(automationTemp); // Await the fetched data
-            console.log("Fetched Proposals data", proposalesandelsData);
+            const proposalData = await fetchproposalbyid(automationTemp);
+            console.log("Fetched Proposals data", proposalData);
             assignProposalToAccount(
-              proposalesandelsData,
+              proposalData,
               automationTemp,
               automationAccountId
             );
-            // for (const accountId of accountIds) {
-            //   console.log(`Assigning invoice to account ID: ${accountId}`);
-            //   assignProposalToAccount(proposalesandelsData, automationTemp, accountId);
-            // }
           } catch (error) {
-            console.error("Error processing 'Send Invoice':", error);
+            console.error("Error processing 'Send Proposal/Els':", error);
           }
           break;
 
@@ -1119,6 +1342,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
           );
           const myHeaders = new Headers();
           myHeaders.append("Content-Type", "application/json");
+
           const raw = JSON.stringify({
             automationType,
             templateId: automationTemp,
@@ -1143,7 +1367,6 @@ const CreateJob = ({ charLimit = 4000 }) => {
           break;
       }
     };
-
     // Function to handle "Move" button click
     // const handleMove = async () => {
     // // Loop through selected automations
@@ -1195,99 +1418,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
           : [...prevSelected, index]
       );
     };
-    // const handleMove = async () => {
-    //   // Flag to track whether all automations are successful
-    //   let allAutomationsSuccessful = true;
-
-    //   // Loop through selected automations
-    //   for (const automationIndex of selectedAutomations) {
-    //     const automation = automations[automationIndex];
-
-    //     // Ensure automation has the necessary fields
-    //     if (
-    //       !automation ||
-    //       !automation.type ||
-    //       !automation.template ||
-    //       !automation.template.value ||
-    //       !automation.tags
-         
-    //     ) {
-    //       console.error(
-    //         "Missing required automation data for automation index:",
-    //         automationIndex
-    //       );
-    //       allAutomationsSuccessful = false; // Mark as failed
-    //       break; // Exit the loop if required data is missing
-    //     }
-    //     const automationType = automation.type;
-    //     const automationTemp = automation.template.value; // Assuming the template has a `value` field
-    //     const automationAccountId = combinedaccountValues; // Use the selected account IDs
-
-    //     // Ensure automationAccountId is not empty or invalid
-    //     if (!automationAccountId || automationAccountId.length === 0) {
-    //       console.error(
-    //         "Missing required account IDs for automation index:",
-    //         automationIndex
-    //       );
-    //       allAutomationsSuccessful = false; // Mark as failed
-    //       break; // Exit the loop if account IDs are missing
-    //     }
-    //     // // Check if automation tags match account tags
-    //     const accountTags = accountdata
-    //       .filter((account) => automationAccountId.includes(account._id))
-    //       .flatMap((account) => account.tags);
-
-    //     const tagMatch = automation.tags.some((automationTag) =>
-    //       accountTags.some(
-    //         (accountTag) => accountTag.tagName === automationTag.tagName
-    //       )
-    //     );
-    //     if (!tagMatch) {
-    //       console.warn(
-    //         `Tags do not match for automation index: ${automationIndex}. Skipping this automation.`
-    //       );
-    //       continue; // Skip this automation if tags don't match
-    //     }
-    //    // Check if automation has tags and if they match the account's tags
-    //    const hasMatchingTags = automation.tags?.length
-    //    ? automation.tags.some((automationTag) =>
-    //        accountTags.some((accountTag) => accountTag._id === automationTag._id)
-    //      )
-    //    : true; // No tags mean no restriction
-   
-    //  if (!hasMatchingTags) {
-    //    console.warn(
-    //      `Automation skipped due to non-matching tags for index: ${automationIndex}`
-    //    );
-    //    continue; // Skip this automation
-    //  }
-    //     try {
-    //       // Await the result of the automation API call
-    //       await selectAutomationApi(
-    //         automationType,
-    //         automationTemp,
-    //         automationAccountId
-    //       );
-    //     } catch (error) {
-    //       console.error("Error processing automation:", error);
-    //       allAutomationsSuccessful = false; // Mark as failed
-    //       break; // Exit the loop on error
-    //     }
-    //   }
-
-    //   // If all automations were successful, create the job
-    //   if (allAutomationsSuccessful) {
-    //     try {
-    //       await createJob();
-    //     } catch (error) {
-    //       console.error("Failed to create job:", error);
-    //       toast.error("Failed to create job");
-    //     }
-    //   } else {
-    //     console.error("One or more automations failed, job creation aborted.");
-    //     toast.error("Automations failed, job not created.");
-    //   }
-    // };
+  
 
     // Function to create job
     
@@ -1300,10 +1431,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
         // Validate the required fields in automation
         if (
           !automation ||
-          !automation.type ||
-          !automation.template ||
-          !automation.template.value ||
-          !automation.tags
+          !automation.type 
         ) {
           console.error(
             "Missing required automation data for automation index:",
@@ -1314,7 +1442,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
         }
     
         const automationType = automation.type;
-        const automationTemp = automation.template.value;
+        const automationTemp = automation?.template?.value || null;
         const automationAccountIds = combinedaccountValues;
     
         if (!automationAccountIds || automationAccountIds.length === 0) {
@@ -1370,7 +1498,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
     }
           try {
             // Execute the automation for the matched account
-            await selectAutomationApi(automationType, automationTemp, [accountId]);
+            await selectAutomationApi(automationType, automationTemp, [accountId],automation);
           } catch (error) {
             console.error(
               `Error processing automation for account ID: ${accountId}:`,
@@ -1444,7 +1572,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
           // toast.success("Job created successfully");
           setDrawerOpen(false);
           toast.success("Job created successfully");
-          navigate("/workflow/jobs");
+          navigate("/workflow/jobs/activejob");
         })
         .catch((error) => {
           console.error("Failed to create Job Template:", error);
@@ -1470,12 +1598,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
 
         <Box>
           {automations.map((automation, index) => {
-            // Check if the automation's tags match any of the selected account tags
-            // const hasMatchingTags = automation.tags.some((automationTag) =>
-            //   accountTags.some(
-            //     (accountTag) => accountTag._id === automationTag._id
-            //   )
-            // );
+            
             const hasMatchingTags = automation.tags?.length
             ? automation.tags.some((automationTag) =>
                 accountTags.some((accountTag) => accountTag._id === automationTag._id)
@@ -1504,7 +1627,143 @@ const CreateJob = ({ charLimit = 4000 }) => {
                   </Typography>
                 )}
                 </Box>
-               
+                 {automation.type === "Update account tags" ? (
+                                    <Box>
+                                      <Box sx={{ width: 500 }}>
+                                        <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                                          Add tags to account
+                                        </Typography>
+                                        <Select
+                                          multiple
+                                          value={automation.addTags}
+                                          renderValue={(selected) =>
+                                            selected.map((tag) => (
+                                              <Chip
+                                                key={tag._id}
+                                                label={tag.tagName}
+                                                sx={{
+                                                  backgroundColor: tag.tagColour,
+                                                  color: "#fff",
+                                                  marginRight: 1,
+                                                }}
+                                              />
+                                            ))
+                                          }
+                                          MenuProps={MenuProps}
+                                          sx={{ width: "100%", marginBottom: 2 }}
+                                        >
+                                          {tagsoptions.map((option) => {
+                                            const canvas = document.createElement("canvas");
+                                            const context = canvas.getContext("2d");
+                                            context.font = "12px Arial"; // Match the font size/style of MenuItem
+                                            const textWidth = context.measureText(
+                                              option.label
+                                            ).width; // Get precise width
+                                            const dynamicWidth = Math.min(textWidth + 16, 150); // Add padding & set max width
+                                            return (
+                                              <MenuItem
+                                                key={option.value}
+                                                value={option.value}
+                                                sx={{
+                                                  backgroundColor: option.colour,
+                                                  color: "#fff",
+                                                  fontSize: "10px",
+                                                  borderRadius: "10px",
+                                                  margin: "5px",
+                                                  textAlign: "center",
+                                                  display: "flex",
+                                                  justifyContent: "center",
+                                                  padding: "4px 9px",
+                                                  whiteSpace: "nowrap", // Prevent line breaks
+                                                  minWidth: `${dynamicWidth}px`,
+                                                  maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
+                                                  "&:hover": {
+                                                    backgroundColor: option.colour,
+                                                    color: "#fff",
+                                                  },
+                                                }}
+                                              >
+                                                {option.label}
+                                              </MenuItem>
+                                            );
+                                          })}
+                                        </Select>
+                
+                                        <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                                          Remove tags from account
+                                        </Typography>
+                                        <Select
+                                          multiple
+                                          value={automation.removeTags}
+                                          renderValue={(selected) =>
+                                            selected.map((tag) => (
+                                              <Chip
+                                                key={tag._id}
+                                                label={tag.tagName}
+                                                sx={{
+                                                  backgroundColor: tag.tagColour,
+                                                  color: "#fff",
+                                                  marginRight: 1,
+                                                }}
+                                              />
+                                            ))
+                                          }
+                                          MenuProps={MenuProps}
+                                          sx={{ width: "100%", marginBottom: 2 }}
+                                        >
+                                          {tagsoptions.map((option) => {
+                                            // const dynamicWidth = Math.min(option.label.length * 10, 150); // Adjust width dynamically
+                                            // Create a canvas element to measure the actual text width
+                                            const canvas = document.createElement("canvas");
+                                            const context = canvas.getContext("2d");
+                                            context.font = "12px Arial"; // Match the font size/style of MenuItem
+                
+                                            const textWidth = context.measureText(
+                                              option.label
+                                            ).width; // Get precise width
+                                            const dynamicWidth = Math.min(textWidth + 16, 150); // Add padding & set max width
+                                            return (
+                                              <MenuItem
+                                                key={option.value}
+                                                value={option.value}
+                                                sx={{
+                                                  backgroundColor: option.colour,
+                                                  color: "#fff",
+                                                  fontSize: "10px",
+                                                  borderRadius: "10px",
+                                                  margin: "5px",
+                                                  textAlign: "center",
+                                                  display: "flex",
+                                                  justifyContent: "center",
+                                                  padding: "4px 9px",
+                                                  // alignItems: "center",
+                                                  // paddingLeft: "10px",
+                                                  whiteSpace: "nowrap", // Prevent line breaks
+                                                  // textAlign: "left", // Ensure text is left-aligned
+                                                  // paddingLeft: "10px", // Add left padding for proper alignment
+                                                  minWidth: `${dynamicWidth}px`,
+                                                  maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
+                                                  "&:hover": {
+                                                    backgroundColor: option.colour,
+                                                    color: "#fff",
+                                                  },
+                                                }}
+                                              >
+                                                {option.label}
+                                              </MenuItem>
+                                            );
+                                          })}
+                                        </Select>
+                
+                                        {/* Warning Message */}
+                                        <Alert severity="warning" sx={{ marginBottom: 2 }}>
+                                          This automation can affect conditions for automations
+                                          below
+                                        </Alert>
+                                      </Box>
+                                    </Box>
+                                  ) : (
+               <Box>
                 <Typography variant="body1">
                   <strong>Type:</strong> {automation.type}
                 </Typography>
@@ -1530,7 +1789,10 @@ const CreateJob = ({ charLimit = 4000 }) => {
                     {tag.tagName}
                   </Box>
                 ))}
+                </Box>
+                  )}
               </Box>
+
             );
           })}
         </Box>
@@ -2190,7 +2452,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
             Proceed
           </Button>
         </Box> */}
-        <Box sx={{ width: 500 }}>
+        <Box sx={{ width: 550 }}>
           <DrawerContent selectedAccounts={combinedaccountValues} />
         </Box>
       </Drawer>

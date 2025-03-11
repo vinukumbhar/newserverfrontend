@@ -160,7 +160,7 @@ import {
   TextField,
   Checkbox,
   FormControl,
-  Select,OutlinedInput
+  Select,OutlinedInput,InputLabel
 } from "@mui/material";
 import { RxCross2 } from "react-icons/rx";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -287,19 +287,13 @@ const MenuProps = {
                         sx={{
                           display: "flex",
                           alignItems: "center",
-                          gap: 5,
+                          gap:1,
+                          // border:'2px solid red'
                         }}
                       >
-                        <Box mt={2}>
-                          <label className="task-input-label">Add Tags</label>
-                          <FormControl
-                            sx={{
-                              width: "100%",
-                              marginTop: "8px",
-                              backgroundColor: "#fff",
-                            }}
-                            size="small"
-                          >
+                        <Box width={"50%"}>
+                        <Typography gutterBottom variant="body2">Add Tags</Typography>
+                         
                            <Select
                                                                multiple
                                                                size="small"
@@ -412,20 +406,11 @@ const MenuProps = {
                                                                  );
                                                                })}
                                                              </Select>
-                          </FormControl>
+                         
                         </Box>
-                        <Box mt={2}>
-                          <label className="task-input-label">
-                            Remove Tags
-                          </label>
-                          <FormControl
-                            sx={{
-                              width: "100%",
-                              marginTop: "8px",
-                              backgroundColor: "#fff",
-                            }}
-                            size="small"
-                          >
+                        <Box width={"50%"}>
+                        <Typography gutterBottom variant="body2">Remove Tags</Typography>
+                          
                             <Select
                                                                multiple
                                                                size="small"
@@ -538,7 +523,7 @@ const MenuProps = {
                                                                  );
                                                                })}
                                                              </Select>
-                          </FormControl>
+                          
                         </Box>
                       </Box>
                       {automation.tags && automation.tags.length > 0 && (

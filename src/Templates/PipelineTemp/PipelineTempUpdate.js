@@ -19,7 +19,7 @@ import {
   IconButton,
   useMediaQuery,
   useTheme,
-  InputAdornment,
+  InputAdornment,FormControl,Select,OutlinedInput
 } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -32,6 +32,16 @@ import { useNavigate, useParams } from "react-router-dom";
 import AddAutomationDrawer from "./AddAutomationDrawer";
 import EditAutomationDrawer from "./EditAutomationDrawer";
 const PipelineTempUpdate = () => {
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: "auto",
+      },
+    },
+  };
   const EMAIL_API = process.env.REACT_APP_EMAIL_TEMP_URL;
   const INVOICE_API = process.env.REACT_APP_INVOICE_TEMP_URL;
   const PIPELINE_API = process.env.REACT_APP_PIPELINE_TEMP_URL;
@@ -530,6 +540,16 @@ const PipelineTempUpdate = () => {
           tags: [],
         };
         break;
+          // Update account tags
+      case "Update account tags":
+        // Initialize addTags and removeTags as separate empty arrays
+        newAutomation = {
+          type: "Update account tags",
+          addTags: [], // Independent array for addTags
+          removeTags: [], // Independent array for removeTags
+          tags: [],
+        };
+        break;
       default:
         break;
     }
@@ -730,22 +750,80 @@ const PipelineTempUpdate = () => {
     }
     setIsConditionsEditFormOpen(false);
   };
-  const handleEditSaveAutomation = () => {
-    if (editingStageIndex === null) return; // Ensure the stage index is valid
+  // const handleEditSaveAutomation = () => {
+  //   if (editingStageIndex === null) return; // Ensure the stage index is valid
 
-    console.log("Save automation for stage:", editingStageIndex);
+  //   console.log("Save automation for stage:", editingStageIndex);
 
-    // Update the automations for the selected stage
-    const updatedStages = [...stages];
-    updatedStages[editingStageIndex].automations = selectedAutomationData;
+  //   // Update the automations for the selected stage
+  //   const updatedStages = [...stages];
+  //   updatedStages[editingStageIndex].automations = selectedAutomationData;
 
-    // Update the stages state
-    setStages(updatedStages);
+  //   // Update the stages state
+  //   setStages(updatedStages);
 
-    // Close the drawer and show success message
-    setIsEditDrawerOpen(false);
-    toast.success("Automation edited successfully");
-  };
+  //   // Close the drawer and show success message
+  //   setIsEditDrawerOpen(false);
+  //   toast.success("Automation edited successfully");
+  // };
+  
+  
+   const handleEditSaveAutomation = () => {
+      if (editingStageIndex === null) return; // Ensure the stage index is valid
+  
+      console.log("Save automation for stage:", editingStageIndex);
+  
+      // Process automation data to ensure "Update account tags" includes addTags and removeTags
+      const updatedAutomationData = selectedAutomationData.map((automation) => {
+        if (automation.type === "Update account tags") {
+          return {
+            ...automation,
+            addTags: addTags
+              .map((tagId) => {
+                const tag = tags.find((t) => t._id === tagId);
+                return tag
+                  ? {
+                      _id: tag._id,
+                      tagName: tag.tagName,
+                      tagColour: tag.tagColour,
+                    }
+                  : null;
+              })
+              .filter(Boolean), // Filter out any null values
+            removeTags: removeTags
+              .map((tagId) => {
+                const tag = tags.find((t) => t._id === tagId);
+                return tag
+                  ? {
+                      _id: tag._id,
+                      tagName: tag.tagName,
+                      tagColour: tag.tagColour,
+                    }
+                  : null;
+              })
+              .filter(Boolean),
+          };
+        }
+        return automation;
+      });
+  
+      console.log("Processed automation data:", updatedAutomationData);
+  
+      // Update the automations for the selected stage
+      const updatedStages = [...stages];
+      updatedStages[editingStageIndex].automations = updatedAutomationData;
+  
+      console.log("Updated Stages:", updatedStages);
+  
+      // Update the stages state
+      setStages(updatedStages);
+  
+      // Close the drawer and show success message
+      setIsEditDrawerOpen(false);
+      toast.success("Automation edited successfully");
+    };
+  
+  
   const handleDrawerOpen = (option, index) => {
     setIsDrawerOpen(true);
     SetAutomationSelect(option);
@@ -977,20 +1055,34 @@ const PipelineTempUpdate = () => {
     },
   }));
 
-  const handleAddTagChange = (event, newValue) => {
-    setAddTags(newValue.map((option) => option.value));
-    console.log(
-      "Selected Add Tags:",
-      newValue.map((option) => option.value)
-    );
-  };
+  // const handleAddTagChange = (event, newValue) => {
+  //   setAddTags(newValue.map((option) => option.value));
+  //   console.log(
+  //     "Selected Add Tags:",
+  //     newValue.map((option) => option.value)
+  //   );
+  // };
 
-  const handleRemoveTagChange = (event, newValue) => {
-    setRemoveTags(newValue.map((option) => option.value));
-    console.log(
-      "Selected Remove Tags:",
-      newValue.map((option) => option.value)
-    );
+  // const handleRemoveTagChange = (event, newValue) => {
+  //   setRemoveTags(newValue.map((option) => option.value));
+  //   console.log(
+  //     "Selected Remove Tags:",
+  //     newValue.map((option) => option.value)
+  //   );
+  // };
+  const handleAddTagChange = (event) => {
+    const selectedValues = event.target.value;
+    setAddTags(selectedValues);
+
+    // Send selectedValues array to your backend
+    console.log("Selected Values:", selectedValues);
+  };
+  const handleRemoveTagChange = (event) => {
+    const selectedValues = event.target.value;
+    setRemoveTags(selectedValues);
+
+    // Send selectedValues array to your backend
+    console.log("Selected Values:", selectedValues);
   };
 
   const handleSave = () => {
@@ -2793,238 +2885,396 @@ const PipelineTempUpdate = () => {
             </Drawer>
           </>
         );
-      //  Update account tags
-      // Apply folder template
-      case "Update account tags":
-        return (
-          <>
-            <Box p={2}>
-              {automationSelect}
-              <Grid item>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 5 }}>
-                  <Box mt={2}>
-                    <label className="task-input-label">Add Tags</label>
-                    <Autocomplete
-                      multiple
-                      size="small"
-                      id="tags-add-outlined"
-                      options={filteredAddTagsOptions}
-                      getOptionLabel={(option) => option.label}
-                      value={tagsoptions.filter((option) =>
-                        addTags.includes(option.value)
-                      )}
-                      onChange={handleAddTagChange}
-                      renderTags={(selected, getTagProps) =>
-                        selected.map((option, index) => (
-                          <Chip
-                            key={option.value}
-                            label={option.label}
-                            style={option.customTagStyle}
-                            {...getTagProps({ index })}
-                          />
-                        ))
-                      }
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="outlined"
-                          placeholder="Tags"
-                          sx={{
-                            width: "100%",
-                            marginTop: "8px",
-                            backgroundColor: "#fff",
+        case "Update account tags":
+          return (
+            <>
+              <Box p={2}>
+                {automationSelect}
+  
+                <Grid item>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 5 }}>
+                    {/* Add Tags Section */}
+                    <Box mt={2}>
+                      <Typography gutterBottom variant="body2">Add Tags</Typography>
+                      <FormControl
+                        sx={{
+                          width: "100%",
+                          marginTop: "8px",
+                          backgroundColor: "#fff",
+                        }}
+                        size="small"
+                      >
+                        <Select
+                          multiple
+                          size="small"
+                          fullWidth
+                          multiline
+                          value={addTags}
+                          onChange={handleAddTagChange}
+                          input={<OutlinedInput />}
+                          displayEmpty // Enables placeholder when no value is selected
+                          renderValue={(selected) => {
+                            if (selected.length === 0) {
+                              return (
+                                <span style={{ color: "#aaa" }}>
+                                  Select tags...
+                                </span>
+                              ); // Placeholder
+                            }
+                            return (
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  flexWrap: "wrap",
+                                  gap: "6px",
+                                  padding: "6px",
+                                  borderRadius: "10px",
+                                }}
+                              >
+                                {selected.map((value) => {
+                                  const option = tagsoptions.find(
+                                    (opt) => opt.value === value
+                                  );
+                                  return (
+                                    <Chip
+                                      key={value}
+                                      label={option?.label}
+                                      sx={{
+                                        backgroundColor: option?.colour,
+                                        color: "#fff",
+                                        fontWeight: 500,
+                                        fontSize: "10px",
+                                        borderRadius: "16px",
+                                        height: "20px",
+                                        cursor: "pointer",
+                                        boxShadow:
+                                          "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                                        "& .MuiChip-deleteIcon": {
+                                          color: "#fff",
+                                          opacity: 0.7,
+                                          transition: "opacity 0.2s",
+                                          "&:hover": { opacity: 1 },
+                                        },
+                                      }}
+                                    />
+                                  );
+                                })}
+                              </Box>
+                            );
                           }}
-                        />
-                      )}
-                      renderOption={(props, option) => (
-                        <Box
-                          component="li"
-                          {...props}
-                          style={option.customStyle}
-                        >
-                          {option.label}
-                        </Box>
-                      )}
-                    />
-                  </Box>
-
-                  <Box mt={2}>
-                    <label className="task-input-label">Remove Tags</label>
-                    <Autocomplete
-                      multiple
-                      size="small"
-                      id="tags-remove-outlined"
-                      options={filteredRemoveTagsOptions}
-                      getOptionLabel={(option) => option.label}
-                      value={tagsoptions.filter((option) =>
-                        removeTags.includes(option.value)
-                      )}
-                      onChange={handleRemoveTagChange}
-                      renderTags={(selected, getTagProps) =>
-                        selected.map((option, index) => (
-                          <Chip
-                            key={option.value}
-                            label={option.label}
-                            style={option.customTagStyle}
-                            {...getTagProps({ index })}
-                          />
-                        ))
-                      }
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant="outlined"
-                          placeholder="Tags"
+                          MenuProps={MenuProps}
                           sx={{
-                            width: "100%",
-                            marginTop: "8px",
-                            backgroundColor: "#fff",
+                            borderRadius: "10px",
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "10px",
+                            },
                           }}
-                        />
-                      )}
-                      renderOption={(props, option) => (
-                        <Box
-                          component="li"
-                          {...props}
-                          style={option.customStyle}
                         >
-                          {option.label}
-                        </Box>
-                      )}
-                    />
+                          {filteredAddTagsOptions.map((option) => {
+                            // const dynamicWidth = Math.min(option.label.length * 10, 150); // Adjust width dynamically
+                            // Create a canvas element to measure the actual text width
+                            const canvas = document.createElement("canvas");
+                            const context = canvas.getContext("2d");
+                            context.font = "12px Arial"; // Match the font size/style of MenuItem
+  
+                            const textWidth = context.measureText(
+                              option.label
+                            ).width; // Get precise width
+                            const dynamicWidth = Math.min(textWidth + 16, 150); // Add padding & set max width
+                            return (
+                              <MenuItem
+                                key={option.value}
+                                value={option.value}
+                                sx={{
+                                  backgroundColor: option.colour,
+                                  color: "#fff",
+                                  fontSize: "10px",
+                                  borderRadius: "10px",
+                                  margin: "5px",
+                                  textAlign: "center",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  padding: "4px 9px",
+                                  // alignItems: "center",
+                                  // paddingLeft: "10px",
+                                  whiteSpace: "nowrap", // Prevent line breaks
+                                  // textAlign: "left", // Ensure text is left-aligned
+                                  // paddingLeft: "10px", // Add left padding for proper alignment
+                                  minWidth: `${dynamicWidth}px`,
+                                  maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
+                                  "&:hover": {
+                                    backgroundColor: option.colour,
+                                    color: "#fff",
+                                  },
+                                }}
+                              >
+                                {option.label}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                      </FormControl>
+                    </Box>
+  
+                    {/* Remove Tags Section */}
+                    <Box mt={2}>
+                    <Typography gutterBottom variant="body2">Remove Tags</Typography>
+                      <FormControl
+                        sx={{
+                          width: "100%",
+                          marginTop: "8px",
+                          backgroundColor: "#fff",
+                        }}
+                        size="small"
+                      >
+                        <Select
+                          multiple
+                          size="small"
+                          fullWidth
+                          multiline
+                          value={removeTags}
+                          onChange={handleRemoveTagChange}
+                          input={<OutlinedInput />}
+                          displayEmpty // Enables placeholder when no value is selected
+                          renderValue={(selected) => {
+                            if (selected.length === 0) {
+                              return (
+                                <span style={{ color: "#aaa" }}>
+                                  Select tags...
+                                </span>
+                              ); // Placeholder
+                            }
+                            return (
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  flexWrap: "wrap",
+                                  gap: "6px",
+                                  padding: "6px",
+                                  borderRadius: "10px",
+                                }}
+                              >
+                                {selected.map((value) => {
+                                  const option = tagsoptions.find(
+                                    (opt) => opt.value === value
+                                  );
+                                  return (
+                                    <Chip
+                                      key={value}
+                                      label={option?.label}
+                                      sx={{
+                                        backgroundColor: option?.colour,
+                                        color: "#fff",
+                                        fontWeight: 500,
+                                        fontSize: "10px",
+                                        borderRadius: "16px",
+                                        height: "20px",
+                                        cursor: "pointer",
+                                        boxShadow:
+                                          "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                                        "& .MuiChip-deleteIcon": {
+                                          color: "#fff",
+                                          opacity: 0.7,
+                                          transition: "opacity 0.2s",
+                                          "&:hover": { opacity: 1 },
+                                        },
+                                      }}
+                                    />
+                                  );
+                                })}
+                              </Box>
+                            );
+                          }}
+                          MenuProps={MenuProps}
+                          sx={{
+                            borderRadius: "10px",
+                            "& .MuiOutlinedInput-root": {
+                              borderRadius: "10px",
+                            },
+                          }}
+                        >
+                          {filteredRemoveTagsOptions.map((option) => {
+                            // const dynamicWidth = Math.min(option.label.length * 10, 150); // Adjust width dynamically
+                            // Create a canvas element to measure the actual text width
+                            const canvas = document.createElement("canvas");
+                            const context = canvas.getContext("2d");
+                            context.font = "12px Arial"; // Match the font size/style of MenuItem
+  
+                            const textWidth = context.measureText(
+                              option.label
+                            ).width; // Get precise width
+                            const dynamicWidth = Math.min(textWidth + 16, 150); // Add padding & set max width
+                            return (
+                              <MenuItem
+                                key={option.value}
+                                value={option.value}
+                                sx={{
+                                  backgroundColor: option.colour,
+                                  color: "#fff",
+                                  fontSize: "10px",
+                                  borderRadius: "10px",
+                                  margin: "5px",
+                                  textAlign: "center",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  padding: "4px 9px",
+                                  // alignItems: "center",
+                                  // paddingLeft: "10px",
+                                  whiteSpace: "nowrap", // Prevent line breaks
+                                  // textAlign: "left", // Ensure text is left-aligned
+                                  // paddingLeft: "10px", // Add left padding for proper alignment
+                                  minWidth: `${dynamicWidth}px`,
+                                  maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
+                                  "&:hover": {
+                                    backgroundColor: option.colour,
+                                    color: "#fff",
+                                  },
+                                }}
+                              >
+                                {option.label}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                      </FormControl>
+                    </Box>
                   </Box>
-                </Box>
-
-                {selectedTags.length > 0 && (
-                  <Grid container alignItems="center" gap={1}>
-                    <Typography>Only for:</Typography>
-                    <Grid item>{selectedTagElements}</Grid>
-                  </Grid>
-                )}
-                <Button variant="text" onClick={handleAddConditions}>
-                  Add Conditions
-                </Button>
-              </Grid>
-              <Button
-                variant="contained"
-                onClick={handleSaveTagsAutomation(stageSelected)}
-                sx={{
-                  backgroundColor: "var(--color-save-btn)", // Normal background
-
-                  "&:hover": {
-                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-                  },
-                  borderRadius: "15px",
-                }}
-              >
-                Save Automation
-              </Button>
-            </Box>
-            {/* Condition tags for automation */}
-            <Drawer
-              anchor="right"
-              open={isConditionsFormOpen}
-              onClose={handleGoBack}
-              PaperProps={{ sx: { width: "550px", padding: 2 } }}
-            >
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <IconButton onClick={handleGoBack}>
-                  <IoMdArrowRoundBack fontSize="large" color="blue" />
-                </IconButton>
-                <Typography variant="h6">Add conditions</Typography>
-              </Box>
-
-              <Box sx={{ padding: 2 }}>
-                <Typography variant="body1">
-                  Apply automation only for accounts with these tags
-                </Typography>
-                <TextField
-                  fullWidth
-                  size="small"
-                  variant="outlined"
-                  placeholder="Search..."
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                  InputProps={{
-                    startAdornment: (
-                      <AiOutlineSearch style={{ marginRight: 8 }} />
-                    ),
+  
+                  {selectedTags.length > 0 && (
+                    <Grid container alignItems="center" gap={1}>
+                      <Typography>Only for:</Typography>
+                      <Grid item>{selectedTagElements}</Grid>
+                    </Grid>
+                  )}
+  
+                  <Button variant="text" onClick={handleAddConditions}>
+                    Add Conditions
+                  </Button>
+                </Grid>
+  
+                <Button
+                  variant="contained"
+                  onClick={handleSaveAutomation(stageSelected)}
+                  sx={{
+                    backgroundColor: "var(--color-save-btn)", // Normal background
+  
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                    },
+                    borderRadius: "15px",
                   }}
-                  sx={{ marginTop: 2 }}
-                />
-
-                <Box sx={{ marginTop: 2, height: "68vh", overflowY: "auto" }}>
-                  {filteredTags.map((tag) => (
-                    <Box
-                      key={tag._id}
+                >
+                  Save Automation
+                </Button>
+              </Box>
+              {/* Condition tags for automation */}
+              <Drawer
+                anchor="right"
+                open={isConditionsFormOpen}
+                onClose={handleGoBack}
+                PaperProps={{ sx: { width: "550px", padding: 2 } }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <IconButton onClick={handleGoBack}>
+                    <IoMdArrowRoundBack fontSize="large" color="blue" />
+                  </IconButton>
+                  <Typography variant="h6">Add conditions</Typography>
+                </Box>
+  
+                <Box sx={{ padding: 2 }}>
+                  <Typography variant="body1">
+                    Apply automation only for accounts with these tags
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    size="small"
+                    variant="outlined"
+                    placeholder="Search..."
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    InputProps={{
+                      startAdornment: (
+                        <AiOutlineSearch style={{ marginRight: 8 }} />
+                      ),
+                    }}
+                    sx={{ marginTop: 2 }}
+                  />
+  
+                  <Box sx={{ marginTop: 2, height: "68vh", overflowY: "auto" }}>
+                    {filteredTags.map((tag) => (
+                      <Box
+                        key={tag._id}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 3,
+                          borderBottom: "1px solid grey",
+                          paddingBottom: 1,
+                        }}
+                      >
+                        <Checkbox
+                          checked={tempSelectedTags.includes(tag)}
+                          onChange={() => handleCheckboxChange(tag)}
+                        />
+                        <Chip
+                          label={tag.tagName}
+                          sx={{
+                            backgroundColor: tag.tagColour,
+                            color: "#fff",
+                            fontWeight: "500",
+                            borderRadius: "20px",
+                            marginRight: 1,
+                          }}
+                        />
+                      </Box>
+                    ))}
+                  </Box>
+  
+                  <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      disabled={!isAnyCheckboxChecked}
+                      onClick={handleAddTags}
                       sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 3,
-                        borderBottom: "1px solid grey",
-                        paddingBottom: 1,
+                        backgroundColor: "var(--color-save-btn)", // Normal background
+  
+                        "&:hover": {
+                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        },
+                        borderRadius: "15px",
+                        width: "80px",
                       }}
                     >
-                      <Checkbox
-                        checked={tempSelectedTags.includes(tag)}
-                        onChange={() => handleCheckboxChange(tag)}
-                      />
-                      <Chip
-                        label={tag.tagName}
-                        sx={{
-                          backgroundColor: tag.tagColour,
+                      Add
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      onClick={handleGoBack}
+                      sx={{
+                        borderColor: "var(--color-border-cancel-btn)", // Normal background
+                        color: "var(--color-save-btn)",
+                        "&:hover": {
+                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                           color: "#fff",
-                          fontWeight: "500",
-                          borderRadius: "20px",
-                          marginRight: 1,
-                        }}
-                      />
-                    </Box>
-                  ))}
+                          border: "none",
+                        },
+                        width: "80px",
+                        borderRadius: "15px",
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </Box>
                 </Box>
-
-                <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    disabled={!isAnyCheckboxChecked}
-                    onClick={handleAddTags}
-                    sx={{
-                      backgroundColor: "var(--color-save-btn)", // Normal background
-
-                      "&:hover": {
-                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-                      },
-                      borderRadius: "15px",
-                      width: "80px",
-                    }}
-                  >
-                    Add
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={handleGoBack}
-                    sx={{
-                      borderColor: "var(--color-border-cancel-btn)", // Normal background
-                      color: "var(--color-save-btn)",
-                      "&:hover": {
-                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-                        color: "#fff",
-                        border: "none",
-                      },
-                      width: "80px",
-                      borderRadius: "15px",
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                </Box>
-              </Box>
-            </Drawer>
-          </>
-        );
-      case "Create Organizer":
+              </Drawer>
+            </>
+          );
+      
+      
+      
+        case "Create Organizer":
         return (
           <>
             <Grid item>
@@ -3246,6 +3496,57 @@ const PipelineTempUpdate = () => {
   //   };
   // };
 
+  // const handleSaveAutomation = () => {
+  //   return () => {
+  //     if (stageSelected === null || stageSelected === undefined) {
+  //       console.error("No stage selected for automation.");
+  //       return;
+  //     }
+  //     console.log("stage index for automations:", stageSelected);
+  //     const updatedStages = [...stages];
+
+  //     const selectedAutomation = {
+  //       type: automationSelect, // The type of automation (e.g., "Send Email")
+  //       template: selectedtemp
+  //         ? { label: selectedtemp.label, value: selectedtemp.value }
+  //         : null, // Store label and value of selected template
+  //       tags: selectedTags.map((tag) => ({
+  //         _id: tag._id,
+  //         tagName: tag.tagName,
+  //         tagColour: tag.tagColour,
+  //       })),
+  //     };
+
+  //     // Ensure selected stage exists before pushing automation
+  //     if (!updatedStages[stageSelected].automations) {
+  //       updatedStages[stageSelected].automations = [];
+  //     }
+
+  //     // updatedStages[stageSelected].automations.push(selectedAutomation);
+  //     updatedStages[stageSelected] = {
+  //       ...updatedStages[stageSelected], // Ensure we keep the other properties of the stage intact
+  //       automations: [
+  //         ...updatedStages[stageSelected].automations,
+  //         selectedAutomation,
+  //       ], // Add the new automation to automations
+  //     };
+  //     setStages(updatedStages);
+  //     console.log("updatedstages", updatedStages);
+  //     console.log(
+  //       "Automation saved for stage:",
+  //       stageSelected,
+  //       selectedAutomation
+  //     );
+
+  //     // Reset states after saving
+  //     setselectedTemp(null);
+  //     setSelectedTags([]);
+  //     setIsAnyCheckboxChecked(false);
+  //     handleDrawerClose();
+  //   };
+  // };
+
+
   const handleSaveAutomation = () => {
     return () => {
       if (stageSelected === null || stageSelected === undefined) {
@@ -3255,8 +3556,9 @@ const PipelineTempUpdate = () => {
       console.log("stage index for automations:", stageSelected);
       const updatedStages = [...stages];
 
+      // Define automation object based on type
       const selectedAutomation = {
-        type: automationSelect, // The type of automation (e.g., "Send Email")
+        type: automationSelect, // The type of automation (e.g., "Send Email", "Update account tags")
         template: selectedtemp
           ? { label: selectedtemp.label, value: selectedtemp.value }
           : null, // Store label and value of selected template
@@ -3267,19 +3569,40 @@ const PipelineTempUpdate = () => {
         })),
       };
 
-      // Ensure selected stage exists before pushing automation
-      if (!updatedStages[stageSelected].automations) {
-        updatedStages[stageSelected].automations = [];
+      // If automation type is "Update account tags", include addTags and removeTags fields
+      if (automationSelect === "Update account tags") {
+        selectedAutomation.addTags = addTags.map((tagId) => {
+          const tag = tags.find((t) => t._id === tagId);
+          return tag
+            ? {
+                _id: tag._id,
+                tagName: tag.tagName,
+                tagColour: tag.tagColour,
+              }
+            : null;
+        });
+
+        selectedAutomation.removeTags = removeTags.map((tagId) => {
+          const tag = tags.find((t) => t._id === tagId);
+          return tag
+            ? {
+                _id: tag._id,
+                tagName: tag.tagName,
+                tagColour: tag.tagColour,
+              }
+            : null;
+        });
       }
 
-      // updatedStages[stageSelected].automations.push(selectedAutomation);
+      // Ensure selected stage exists before adding automation
       updatedStages[stageSelected] = {
-        ...updatedStages[stageSelected], // Ensure we keep the other properties of the stage intact
+        ...updatedStages[stageSelected], // Keep other stage properties
         automations: [
           ...updatedStages[stageSelected].automations,
           selectedAutomation,
-        ], // Add the new automation to automations
+        ], // Add the new automation
       };
+
       setStages(updatedStages);
       console.log("updatedstages", updatedStages);
       console.log(
@@ -3292,6 +3615,8 @@ const PipelineTempUpdate = () => {
       setselectedTemp(null);
       setSelectedTags([]);
       setIsAnyCheckboxChecked(false);
+      setAddTags([]); // Reset addTags
+      setRemoveTags([]); // Reset removeTags
       handleDrawerClose();
     };
   };
@@ -3926,348 +4251,463 @@ const PipelineTempUpdate = () => {
                       )}
                     </React.Fragment>
                   ))} */}
-                    {stages.map((stage, index) => (
-                                          <React.Fragment key={index}>
-                                            <Box
-                                              sx={{
-                                                minWidth: "250px",
-                                                maxWidth: "270px",
-                                                padding: "20px",
-                                                borderRadius: "12px",
-                                                backgroundColor: "#F5F5F7",
-                                                boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
-                                                flexShrink: 0,
-                                              }}
-                                            >
-                                              <Box>
-                                                <Box
-                                                  sx={{
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    gap: "10px",
-                                                    marginBottom: "10px",
-                                                  }}
+                     {stages.map((stage, index) => (
+                        <React.Fragment key={index}>
+                          <Box
+                            sx={{
+                              minWidth: "250px",
+                              maxWidth: "270px",
+                              padding: "20px",
+                              borderRadius: "12px",
+                              backgroundColor: "#F5F5F7",
+                              boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
+                              flexShrink: 0,
+                            }}
+                          >
+                            <Box>
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "10px",
+                                  marginBottom: "10px",
+                                }}
+                              >
+                                <RxDragHandleDots2 />
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    flexGrow: 1,
+                                    gap: "5px",
+                                  }}
+                                >
+                                  <TextField
+                                    variant="standard"
+                                    placeholder="Stage Name"
+                                    fullWidth
+                                    size="small"
+                                    value={stage.name}
+                                    onChange={(e) =>
+                                      handleStageNameChange(e, index)
+                                    }
+                                    multiline // Allow multiple lines
+                                    sx={{
+                                      fontSize: "16px", // Adjust the font size
+                                      fontWeight: "500", // Adjust the font weight
+                                    }}
+                                    error={!!stageNameErrors[index]}
+                                    helperText={stageNameErrors[index]}
+                                    InputProps={{
+                                      endAdornment: (
+                                        <InputAdornment position="end">
+                                          <LuPenLine
+                                            style={{ fontSize: "10px" }}
+                                          />
+                                        </InputAdornment>
+                                      ),
+                                    }}
+                                  />
+                                </Box>
+                                <IconButton
+                                  onClick={() => handleDeleteStage(index)}
+                                  sx={{ fontSize: "15px", color: "red" }}
+                                >
+                                  <RiDeleteBin6Line
+                                    sx={{ cursor: "pointer" }}
+                                  />
+                                </IconButton>
+                              </Box>
+                              <Divider />
+                              <Box sx={{ mt: 2 }}>
+                                <Typography
+                                  variant="subtitle2"
+                                  fontWeight="bold"
+                                >
+                                  Stage conditions
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                >
+                                  {index === 0
+                                    ? "First stage can't have conditions"
+                                    : index === stages.length - 1
+                                      ? "Last stage can't have conditions"
+                                      : "Job enters this stage if conditions are met"}
+                                </Typography>
+
+                                <Typography
+                                  variant="subtitle2"
+                                  fontWeight="bold"
+                                  sx={{ mt: 2 }}
+                                >
+                                  Automations
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                >
+                                  Triggered when job enters stage
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  sx={{
+                                    cursor: "pointer",
+                                    color: "blue",
+                                    fontWeight: "bold",
+                                    mt: 1,
+                                  }}
+                                  onClick={(e) => handleClick(e, index, "edit")}
+                                >
+                                  {stage.automations.length > 0
+                                    ? "Edit automation"
+                                    : "Add automation"}
+                                </Typography>
+                                <Menu
+                                  anchorEl={anchorEl}
+                                  open={Boolean(anchorEl)}
+                                  onClose={handleClose}
+                                >
+                                  <MenuItem
+                                    onClick={() =>
+                                      handleAddAutomation(
+                                        stageSelected,
+                                        "Send Email"
+                                      )
+                                    }
+                                  >
+                                    Send Email
+                                  </MenuItem>
+                                  <MenuItem
+                                    onClick={() =>
+                                      handleAddAutomation(
+                                        stageSelected,
+                                        "Send Invoice"
+                                      )
+                                    }
+                                  >
+                                    Send Invoice
+                                  </MenuItem>
+                                  <MenuItem
+                                    onClick={() =>
+                                      handleAddAutomation(
+                                        stageSelected,
+                                        "Send Proposal/Els"
+                                      )
+                                    }
+                                  >
+                                    Send Proposal/Els
+                                  </MenuItem>
+                                  <MenuItem
+                                    onClick={() =>
+                                      handleAddAutomation(
+                                        stageSelected,
+                                        "Create Organizer"
+                                      )
+                                    }
+                                  >
+                                    Create Organizer
+                                  </MenuItem>
+                                  <MenuItem
+                                    onClick={() =>
+                                      handleAddAutomation(
+                                        stageSelected,
+                                        "Apply folder template"
+                                      )
+                                    }
+                                  >
+                                    Apply folder template
+                                  </MenuItem>
+                                  <MenuItem
+                                    onClick={() =>
+                                      handleAddAutomation(
+                                        stageSelected,
+                                        "Update account tags"
+                                      )
+                                    }
+                                  >
+                                    Update account tags
+                                  </MenuItem>
+                                </Menu>
+                                <AddAutomationDrawer
+                                  isDrawerOpen={isDrawerOpen}
+                                  handleDrawerClose={handleDrawerClose}
+                                  renderActionContent={renderActionContent}
+                                  automationSelect={automationSelect}
+                                  index={index}
+                                  handleEditClick={handleEditClick}
+                                  handleEditSaveAutomation={
+                                    handleEditSaveAutomation
+                                  }
+                                  ehitAnchorEl={ehitAnchorEl}
+                                  handleEditClose={handleEditClose}
+                                  handleMenuItemSelect={handleMenuItemSelect}
+                                />
+                                <EditAutomationDrawer
+                                  isEditDrawerOpen={isEditDrawerOpen}
+                                  setIsEditDrawerOpen={setIsEditDrawerOpen}
+                                  selectedAutomationData={
+                                    selectedAutomationData
+                                  }
+                                  handleDeleteAutomation={
+                                    handleDeleteAutomation
+                                  }
+                                  handleEditTemplateChange={
+                                    handleEditTemplateChange
+                                  }
+                                  emailTemplateOptions={emailTemplateOptions}
+                                  invoiceTemplateOptions={
+                                    invoiceTemplateOptions
+                                  }
+                                  organizerOptions={organizerOptions}
+                                  proposalElsOptions={proposalElsOptions}
+                                  optionfolder={optionfolder}
+                                  setSelectedAutomationIndex={
+                                    setSelectedAutomationIndex
+                                  }
+                                  handleEditConditions={handleEditConditions}
+                                  handleEditClick={handleEditClick}
+                                  handleEditSaveAutomation={
+                                    handleEditSaveAutomation
+                                  }
+                                  ehitAnchorEl={ehitAnchorEl}
+                                  handleEditClose={handleEditClose}
+                                  handleMenuItemSelect={handleMenuItemSelect}
+                                  isConditionsEditFormOpen={
+                                    isConditionsEditFormOpen
+                                  }
+                                  setIsConditionsEditFormOpen={
+                                    setIsConditionsEditFormOpen
+                                  }
+                                  selectedAutomationIndex={
+                                    selectedAutomationIndex
+                                  }
+                                  handleEditGoBack={handleEditGoBack}
+                                  handleEditCheckboxChange={
+                                    handleEditCheckboxChange
+                                  }
+                                  handleEditAddTags={handleEditAddTags}
+                                  searchTerm={searchTerm}
+                                  handleSearchChange={handleSearchChange}
+                                  filteredTags={filteredTags}
+                                  stageAutomationTags={stageAutomationTags}
+                                  setTempSelectedTags={setTempSelectedTags}
+                                  filteredAddTagsOptions={
+                                    filteredAddTagsOptions
+                                  }
+                                  tagsoptions={tagsoptions}
+                                  addTags={addTags}
+                                  handleAddTagChange={handleAddTagChange}
+                                  filteredRemoveTagsOptions={
+                                    filteredRemoveTagsOptions
+                                  }
+                                  removeTags={removeTags}
+                                  handleRemoveTagChange={handleRemoveTagChange}
+                                  setAddTags={setAddTags}
+                                  setRemoveTags={setRemoveTags}
+                                />
+
+                                <Box>
+                                  {stage.automations.length > 0 && (
+                                    <Box
+                                      sx={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: 1,
+                                        mt: 2,
+                                      }}
+                                    >
+                                      {stage.automations.map(
+                                        (automation, idx) => (
+                                          <Card
+                                            key={idx}
+                                            sx={{
+                                              width: "100%",
+                                              boxShadow:
+                                                "0px 1px 5px rgba(0,0,0,0.1)",
+                                            }}
+                                          >
+                                            <CardContent>
+                                              <Typography
+                                                variant="body2"
+                                                fontWeight="bold"
+                                              >
+                                                {idx + 1}. {automation.type}
+                                              </Typography>
+                                              {automation.template && (
+                                                <Typography
+                                                  variant="body2"
+                                                  color="text.secondary"
                                                 >
-                                                  <RxDragHandleDots2 />
+                                                  {automation.template.label
+                                                    .length > 25
+                                                    ? `${automation.template.label.slice(0, 25)}...`
+                                                    : automation.template.label}
+                                                </Typography>
+                                              )}
+                                              {automation.addTags &&
+                                                automation.addTags.length >
+                                                  0 && (
+                                                  <Box sx={{ marginTop: 2 }}>
+                                                    <Typography
+                                                      variant="body2"
+                                                      color="text.secondary"
+                                                    >
+                                                      Add Tags:
+                                                    </Typography>
+                                                    <Box
+                                                      sx={{
+                                                        display: "flex",
+                                                        gap: 1,
+                                                        flexWrap: "wrap",
+                                                        marginTop: 1,
+                                                      }}
+                                                    >
+                                                      {automation.addTags.map(
+                                                        (tag) => (
+                                                          <Box
+                                                            key={tag._id}
+                                                            sx={{
+                                                              backgroundColor:
+                                                                tag.tagColour,
+                                                              color: "#fff",
+                                                              fontSize: "12px",
+                                                              fontWeight: "600",
+                                                              textAlign:
+                                                                "center",
+                                                              padding:
+                                                                "3px 8px",
+                                                              borderRadius:
+                                                                "12px",
+                                                              marginBottom:
+                                                                "4px",
+                                                            }}
+                                                          >
+                                                            {tag.tagName}
+                                                          </Box>
+                                                        )
+                                                      )}
+                                                    </Box>
+                                                  </Box>
+                                                )}
+
+                                              {/* Remove Tags Section */}
+                                              {automation.removeTags &&
+                                                automation.removeTags.length >
+                                                  0 && (
+                                                  <Box sx={{ marginTop: 2 }}>
+                                                    <Typography
+                                                      variant="body2"
+                                                      color="text.secondary"
+                                                    >
+                                                      Remove Tags:
+                                                    </Typography>
+                                                    <Box
+                                                      sx={{
+                                                        display: "flex",
+                                                        gap: 1,
+                                                        flexWrap: "wrap",
+                                                        marginTop: 1,
+                                                      }}
+                                                    >
+                                                      {automation.removeTags.map(
+                                                        (tag) => (
+                                                          <Box
+                                                            key={tag._id}
+                                                            sx={{
+                                                              backgroundColor:
+                                                                tag.tagColour,
+                                                              color: "#fff",
+                                                              fontSize: "12px",
+                                                              fontWeight: "600",
+                                                              textAlign:
+                                                                "center",
+                                                              padding:
+                                                                "3px 8px",
+                                                              borderRadius:
+                                                                "12px",
+                                                              marginBottom:
+                                                                "4px",
+                                                            }}
+                                                          >
+                                                            {tag.tagName}
+                                                          </Box>
+                                                        )
+                                                      )}
+                                                    </Box>
+                                                  </Box>
+                                                )}
+
+                                              {automation.tags &&
+                                                automation.tags.length > 0 && (
                                                   <Box
                                                     sx={{
                                                       display: "flex",
-                                                      alignItems: "center",
-                                                      flexGrow: 1,
-                                                      gap: "5px",
+                                                      gap: 1,
+                                                      flexWrap: "wrap",
+                                                      marginTop: 2,
                                                     }}
                                                   >
-                                                    <TextField
-                                                      variant="standard"
-                                                      placeholder="Stage Name"
-                                                      fullWidth
-                                                      size="small"
-                                                      value={stage.name}
-                                                      onChange={(e) =>
-                                                        handleStageNameChange(e, index)
-                                                      }
-                                                      multiline // Allow multiple lines
-                                                      sx={{
-                                                        fontSize: "16px", // Adjust the font size
-                                                        fontWeight: "500", // Adjust the font weight
-                                                      }}
-                                                      error={!!stageNameErrors[index]}
-                                                      helperText={stageNameErrors[index]}
-                                                      InputProps={{
-                                                        endAdornment: (
-                                                          <InputAdornment position="end">
-                                                            <LuPenLine
-                                                              style={{ fontSize: "10px" }}
-                                                            />
-                                                          </InputAdornment>
-                                                        ),
-                                                      }}
-                                                    />
-                                                  </Box>
-                                                  <IconButton
-                                                    onClick={() => handleDeleteStage(index)}
-                                                    sx={{ fontSize: "15px", color: "red" }}
-                                                  >
-                                                    <RiDeleteBin6Line
-                                                      sx={{ cursor: "pointer" }}
-                                                    />
-                                                  </IconButton>
-                                                </Box>
-                                                <Divider />
-                                                <Box sx={{ mt: 2 }}>
-                                                  <Typography
-                                                    variant="subtitle2"
-                                                    fontWeight="bold"
-                                                  >
-                                                    Stage conditions
-                                                  </Typography>
-                                                  <Typography
-                                                    variant="body2"
-                                                    color="text.secondary"
-                                                  >
-                                                    {index === 0
-                                                      ? "First stage can't have conditions"
-                                                      : index === stages.length - 1
-                                                        ? "Last stage can't have conditions"
-                                                        : "Job enters this stage if conditions are met"}
-                                                  </Typography>
-                  
-                                                  <Typography
-                                                    variant="subtitle2"
-                                                    fontWeight="bold"
-                                                    sx={{ mt: 2 }}
-                                                  >
-                                                    Automations
-                                                  </Typography>
-                                                  <Typography
-                                                    variant="body2"
-                                                    color="text.secondary"
-                                                  >
-                                                    Triggered when job enters stage
-                                                  </Typography>
-                                                  <Typography
-                                                    variant="body2"
-                                                    sx={{
-                                                      cursor: "pointer",
-                                                      color: "blue",
-                                                      fontWeight: "bold",
-                                                      mt: 1,
-                                                    }}
-                                                    onClick={(e) => handleClick(e, index, "edit")}
-                                                  >
-                                                    {stage.automations.length > 0
-                                                      ? "Edit automation"
-                                                      : "Add automation"}
-                                                  </Typography>
-                                                  <Menu
-                                                    anchorEl={anchorEl}
-                                                    open={Boolean(anchorEl)}
-                                                    onClose={handleClose}
-                                                  >
-                                                    <MenuItem
-                                                      onClick={() =>
-                                                        handleAddAutomation(
-                                                          stageSelected,
-                                                          "Send Email"
-                                                        )
-                                                      }
-                                                    >
-                                                      Send Email
-                                                    </MenuItem>
-                                                    <MenuItem
-                                                      onClick={() =>
-                                                        handleAddAutomation(
-                                                          stageSelected,
-                                                          "Send Invoice"
-                                                        )
-                                                      }
-                                                    >
-                                                      Send Invoice
-                                                    </MenuItem>
-                                                    <MenuItem
-                                                      onClick={() =>
-                                                        handleAddAutomation(
-                                                          stageSelected,
-                                                          "Send Proposal/Els"
-                                                        )
-                                                      }
-                                                    >
-                                                      Send Proposal/Els
-                                                    </MenuItem>
-                                                    <MenuItem
-                                                      onClick={() =>
-                                                        handleAddAutomation(
-                                                          stageSelected,
-                                                          "Create Organizer"
-                                                        )
-                                                      }
-                                                    >
-                                                      Create Organizer
-                                                    </MenuItem>
-                                                    <MenuItem
-                                                      onClick={() =>
-                                                        handleAddAutomation(
-                                                          stageSelected,
-                                                          "Apply folder template"
-                                                        )
-                                                      }
-                                                    >
-                                                      Apply folder template
-                                                    </MenuItem>
-                                                  </Menu>
-                                                  <AddAutomationDrawer
-                                                    isDrawerOpen={isDrawerOpen}
-                                                    handleDrawerClose={handleDrawerClose}
-                                                    renderActionContent={renderActionContent}
-                                                    automationSelect={automationSelect}
-                                                    index={index}
-                                                    handleEditClick={handleEditClick}
-                                                    handleEditSaveAutomation={
-                                                      handleEditSaveAutomation
-                                                    }
-                                                    ehitAnchorEl={ehitAnchorEl}
-                                                    handleEditClose={handleEditClose}
-                                                    handleMenuItemSelect={handleMenuItemSelect}
-                                                   
-                                                  />
-                                                  <EditAutomationDrawer
-                                                    isEditDrawerOpen={isEditDrawerOpen}
-                                                    setIsEditDrawerOpen={setIsEditDrawerOpen}
-                                                    selectedAutomationData={
-                                                      selectedAutomationData
-                                                    }
-                                                    handleDeleteAutomation={
-                                                      handleDeleteAutomation
-                                                    }
-                                                    handleEditTemplateChange={
-                                                      handleEditTemplateChange
-                                                    }
-                                                    emailTemplateOptions={emailTemplateOptions}
-                                                    invoiceTemplateOptions={
-                                                      invoiceTemplateOptions
-                                                    }
-                                                    organizerOptions={organizerOptions}
-                                                    proposalElsOptions={proposalElsOptions}
-                                                    optionfolder={optionfolder}
-                                                    setSelectedAutomationIndex={
-                                                      setSelectedAutomationIndex
-                                                    }
-                                                    handleEditConditions={handleEditConditions}
-                                                    handleEditClick={handleEditClick}
-                                                    handleEditSaveAutomation={
-                                                      handleEditSaveAutomation
-                                                    }
-                                                    ehitAnchorEl={ehitAnchorEl}
-                                                    handleEditClose={handleEditClose}
-                                                    handleMenuItemSelect={handleMenuItemSelect}
-                                                    isConditionsEditFormOpen={
-                                                      isConditionsEditFormOpen
-                                                    }
-                                                    setIsConditionsEditFormOpen={
-                                                      setIsConditionsEditFormOpen
-                                                    }
-                                                    selectedAutomationIndex={
-                                                      selectedAutomationIndex
-                                                    }
-                                                    handleEditGoBack={handleEditGoBack}
-                                                    handleEditCheckboxChange={
-                                                      handleEditCheckboxChange
-                                                    }
-                                                    handleEditAddTags={handleEditAddTags}
-                                                    searchTerm={searchTerm}
-                                                    handleSearchChange={handleSearchChange}
-                                                    filteredTags={filteredTags}
-                                                    stageAutomationTags={stageAutomationTags}
-                                                    setTempSelectedTags={setTempSelectedTags}
-                                                  />
-                  
-                                                  <Box>
-                                                    {stage.automations.length > 0 && (
-                                                      <Box
-                                                        sx={{
-                                                          display: "flex",
-                                                          flexDirection: "column",
-                                                          gap: 1,
-                                                          mt: 2,
-                                                        }}
-                                                      >
-                                                        {stage.automations.map(
-                                                          (automation, idx) => (
-                                                            <Card
-                                                              key={idx}
-                                                              sx={{
-                                                                width: "100%",
-                                                                boxShadow:
-                                                                  "0px 1px 5px rgba(0,0,0,0.1)",
-                                                              }}
-                                                            >
-                                                              <CardContent>
-                                                                <Typography
-                                                                  variant="body2"
-                                                                  fontWeight="bold"
-                                                                >
-                                                                  {idx + 1}. {automation.type}
-                                                                </Typography>
-                                                                {automation.template && (
-                                                                  <Typography
-                                                                    variant="body2"
-                                                                    color="text.secondary"
-                                                                  >
-                                                                    {automation.template.label
-                                                                      .length > 25
-                                                                      ? `${automation.template.label.slice(0, 25)}...`
-                                                                      : automation.template.label}
-                                                                  </Typography>
-                                                                )}
-                                                                {automation.tags &&
-                                                                  automation.tags.length > 0 && (
-                                                                    <Box
-                                                                      sx={{
-                                                                        display: "flex",
-                                                                        gap: 1,
-                                                                        flexWrap: "wrap",
-                                                                        marginTop: 2,
-                                                                      }}
-                                                                    >
-                                                                      <Typography variant="body2">
-                                                                        Conditions:
-                                                                      </Typography>
-                                                                      {automation.tags.map(
-                                                                        (tag) => (
-                                                                          <Box
-                                                                            key={tag._id}
-                                                                            sx={{
-                                                                              backgroundColor:
-                                                                                tag.tagColour,
-                                                                              color: "#fff",
-                                                                              fontSize: "12px",
-                                                                              fontWeight: "600",
-                                                                              textAlign: "center",
-                                                                              padding: "3px 8px",
-                                                                              borderRadius:
-                                                                                "12px",
-                                                                              marginBottom: "4px",
-                                                                            }}
-                                                                          >
-                                                                            {tag.tagName}
-                                                                          </Box>
-                                                                        )
-                                                                      )}
-                                                                    </Box>
-                                                                  )}
-                                                              </CardContent>
-                                                            </Card>
-                                                          )
-                                                        )}
-                                                      </Box>
+                                                    <Typography variant="body2">
+                                                      Conditions:
+                                                    </Typography>
+                                                    {automation.tags.map(
+                                                      (tag) => (
+                                                        <Box
+                                                          key={tag._id}
+                                                          sx={{
+                                                            backgroundColor:
+                                                              tag.tagColour,
+                                                            color: "#fff",
+                                                            fontSize: "12px",
+                                                            fontWeight: "600",
+                                                            textAlign: "center",
+                                                            padding: "3px 8px",
+                                                            borderRadius:
+                                                              "12px",
+                                                            marginBottom: "4px",
+                                                          }}
+                                                        >
+                                                          {tag.tagName}
+                                                        </Box>
+                                                      )
                                                     )}
                                                   </Box>
-                                                </Box>
-                                              </Box>
-                                            </Box>
-                  
-                                            {/* Plus Icon Between Stages */}
-                                            {index < stages.length - 1 && (
-                                              <IconButton
-                                                onClick={() => handleAddStage(index + 1)}
-                                              >
-                                                <LuPlusCircle
-                                                  style={{
-                                                    color: "var(--color-save-btn",
-                                                    width: "25px",
-                                                    height: "25px",
-                                                  }}
-                                                />
-                                              </IconButton>
-                                            )}
-                                          </React.Fragment>
-                                        ))}
+                                                )}
+                                            </CardContent>
+                                          </Card>
+                                        )
+                                      )}
+                                    </Box>
+                                  )}
+                                </Box>
+                              </Box>
+                            </Box>
+                          </Box>
+
+                          {/* Plus Icon Between Stages */}
+                          {index < stages.length - 1 && (
+                            <IconButton
+                              onClick={() => handleAddStage(index + 1)}
+                            >
+                              <LuPlusCircle
+                                style={{
+                                  color: "var(--color-save-btn",
+                                  width: "25px",
+                                  height: "25px",
+                                }}
+                              />
+                            </IconButton>
+                          )}
+                        </React.Fragment>
+                      ))}
                 </Box>
                 <Box mt={3} sx={{ flexShrink: 0 }}>
                   <Button
                     variant="contained"
                     startIcon={<LuPlusCircle />}
-                    onClick={handleAddStage}
+                    onClick={() => handleAddStage(stages.length)}
                     sx={{
                       backgroundColor: "var(--color-save-btn)", // Normal background
 

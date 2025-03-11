@@ -11,6 +11,7 @@ import {
   FormControlLabel,
   Button,
   Checkbox,
+  Alert, MenuItem, Select,
 } from "@mui/material";
 import React, { useEffect, useState, useContext } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -449,6 +450,65 @@ const AddJobs = ({
 
   // Drawer Component
   const DrawerContent = () => {
+    const ITEM_HEIGHT = 48;
+    const ITEM_PADDING_TOP = 8;
+    const MenuProps = {
+      PaperProps: {
+        style: {
+          maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+          width: "auto",
+        },
+      },
+    };
+    const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
+    const [tags, setTags] = useState([]);
+
+    useEffect(() => {
+      fetchTags();
+    }, []);
+
+    const fetchTags = async () => {
+      try {
+        const url = `${TAGS_API}/tags/`;
+        const response = await fetch(url);
+        const data = await response.json();
+        console.log("tags dtata", data.tags);
+        setTags(data.tags);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    const calculateWidth = (label) => Math.min(label.length * 8, 200);
+
+    const tagsoptions = tags.map((tag) => ({
+      value: tag._id,
+      label: tag.tagName,
+      colour: tag.tagColour,
+      customStyle: {
+        backgroundColor: tag.tagColour,
+        color: "#fff",
+        borderRadius: "8px",
+        alignItems: "center",
+        textAlign: "center",
+        marginBottom: "5px",
+        padding: "2px,8px",
+        fontSize: "10px",
+        width: `${calculateWidth(tag.tagName)}px`,
+        margin: "7px",
+        cursor: "pointer",
+      },
+      customTagStyle: {
+        backgroundColor: tag.tagColour,
+        color: "#fff",
+        alignItems: "center",
+        textAlign: "center",
+        padding: "2px,8px",
+        fontSize: "10px",
+        cursor: "pointer",
+      },
+    }));
+
     // Get the tags for the selected accounts
     const accountTags = combinedaccountValues
       .map((accountId) => {
@@ -575,9 +635,9 @@ const AddJobs = ({
           taxTotal: invoiceData.summary.taxTotal || "",
           total: invoiceData.summary.total || "",
         },
-        paidAmount:"",
-      invoiceStatus:"Pending",
-      balanceDueAmount:"",
+        paidAmount: "",
+        invoiceStatus: "Pending",
+        balanceDueAmount: "",
       });
 
       const requestOptions = {
@@ -725,23 +785,187 @@ const AddJobs = ({
         .catch((error) => console.error(error));
     };
 
+    // const selectAutomationApi = async (
+    //   automationType,
+    //   automationTemp,
+    //   automationAccountId
+    // ) => {
+    //   if (!automationType || !automationTemp || !automationAccountId) {
+    //     console.error("Missing required parameters");
+    //     return;
+    //   }
+
+    //   switch (automationType) {
+    //     case "Send Invoice":
+    //       console.log(
+    //         `Processing 'Send Invoice' with template: ${automationTemp}, Account ID: ${automationAccountId}`
+    //       );
+    //       try {
+    //         const invoiceData = await fetchinvoicetempbyid(automationTemp); // Await the fetched data
+    //         console.log("Fetched invoice data", invoiceData);
+    //         assignInvoiceToAccount(
+    //           invoiceData,
+    //           automationTemp,
+    //           automationAccountId
+    //         );
+    //       } catch (error) {
+    //         console.error("Error processing 'Send Invoice':", error);
+    //       }
+    //       break;
+
+    //     case "Apply folder template":
+    //       console.log(
+    //         `Apply folder template with template: ${automationTemp}, Account ID: ${automationAccountId}`
+    //       );
+    //       try {
+    //         await assignfoldertemp(automationAccountId, automationTemp);
+    //         console.log("Folder template assigned successfully");
+    //       } catch (error) {
+    //         console.error("Error applying folder template:", error);
+    //       }
+    //       break;
+
+    //     case "Create Organizer":
+    //       console.log(
+    //         `Processing 'Create Organizer' with template: ${automationTemp}, Account ID: ${automationAccountId}`
+    //       );
+    //       try {
+    //         const organizerData = await fetchorganizertempbyid(automationTemp); // Await the fetched data
+    //         console.log("Fetched organizer data", organizerData);
+    //         assignOrganizerToAccount(
+    //           organizerData,
+    //           automationTemp,
+    //           automationAccountId
+    //         );
+    //       } catch (error) {
+    //         console.error("Error processing 'Send Invoice':", error);
+    //       }
+    //       break;
+
+    //     case "Send Proposal/Els":
+    //       console.log(
+    //         `Creating Proposals with template: ${automationTemp}, Account ID: ${automationAccountId}`
+    //       );
+    //       try {
+    //         const proposalesandelsData =
+    //           await fetchproposalbyid(automationTemp); // Await the fetched data
+    //         console.log("Fetched Proposals data", proposalesandelsData);
+    //         assignProposalToAccount(
+    //           proposalesandelsData,
+    //           automationTemp,
+    //           automationAccountId
+    //         );
+    //       } catch (error) {
+    //         console.error("Error processing 'Send Invoice':", error);
+    //       }
+    //       break;
+
+    //     case "Send Email":
+    //       console.log(
+    //         `Sending email with template: ${automationTemp}, Account ID: ${automationAccountId}`
+    //       );
+    //       const myHeaders = new Headers();
+    //       myHeaders.append("Content-Type", "application/json");
+    //       const raw = JSON.stringify({
+    //         automationType,
+    //         templateId: automationTemp,
+    //         accountId: automationAccountId,
+    //       });
+
+    //       const requestOptions = {
+    //         method: "POST",
+    //         headers: myHeaders,
+    //         body: raw,
+    //         redirect: "follow",
+    //       };
+
+    //       fetch(`${AUTOMATION_API}/automations/`, requestOptions)
+    //         .then((response) => response.json())
+    //         .then((result) => console.log(result))
+    //         .catch((error) => console.error(error));
+    //       break;
+
+    //     default:
+    //       console.warn(`Unhandled automation type: ${automationType}`);
+    //       break;
+    //   }
+    // };
+
     const selectAutomationApi = async (
       automationType,
       automationTemp,
-      automationAccountId
+      automationAccountId,
+      automation
     ) => {
-      if (!automationType || !automationTemp || !automationAccountId) {
+      console.log("bvhgv",automation)
+      if (!automationType || !automationAccountId) {
         console.error("Missing required parameters");
         return;
       }
 
       switch (automationType) {
+        case "Update account tags":
+          console.log(
+            `Updating account tags for Account ID: ${automationAccountId}`
+          );
+
+          try {
+            // Fetch the current account data
+            const response = await fetch(
+              `${AUTOMATION_API}/accounts/accountdetails/${automationAccountId}`
+            );
+            if (!response.ok) throw new Error("Failed to fetch account data");
+
+            const account = await response.json();
+            let currentTags = account.tags || [];
+
+            console.log("Current account tags:", currentTags);
+
+            // Extract tags from automation object
+            const addTags = automation?.addTags || [];
+            const removeTags = automation?.removeTags || [];
+            // ✅ 1. Add new tags (if they are not already in the account)
+            addTags.forEach((tag) => {
+              if (!currentTags.some((t) => t._id === tag._id)) {
+                currentTags.push(tag);
+              }
+            });
+
+            // ✅ 2. Remove only the tags listed in `removeTags`, keeping others
+            currentTags = currentTags.filter(
+              (tag) =>
+                !removeTags.some((removeTag) => removeTag._id === tag._id)
+            );
+            console.log("Updated tags list:", currentTags);
+
+            // Send updated tags to the backend
+            const updateResponse = await fetch(
+              `${ACCOUNT_API}/accounts/accountdetails/${automationAccountId}`,
+              {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ tags: currentTags }),
+              }
+            );
+
+            if (!updateResponse.ok)
+              throw new Error("Failed to update account tags");
+
+            console.log("Account tags updated successfully!");
+          } catch (error) {
+            console.error("Error updating account tags:", error);
+          }
+          break;
+
+        // Other automation cases (unchanged)
         case "Send Invoice":
           console.log(
             `Processing 'Send Invoice' with template: ${automationTemp}, Account ID: ${automationAccountId}`
           );
           try {
-            const invoiceData = await fetchinvoicetempbyid(automationTemp); // Await the fetched data
+            const invoiceData = await fetchinvoicetempbyid(automationTemp);
             console.log("Fetched invoice data", invoiceData);
             assignInvoiceToAccount(
               invoiceData,
@@ -755,7 +979,7 @@ const AddJobs = ({
 
         case "Apply folder template":
           console.log(
-            `Apply folder template with template: ${automationTemp}, Account ID: ${automationAccountId}`
+            `Applying folder template with template: ${automationTemp}, Account ID: ${automationAccountId}`
           );
           try {
             await assignfoldertemp(automationAccountId, automationTemp);
@@ -770,7 +994,7 @@ const AddJobs = ({
             `Processing 'Create Organizer' with template: ${automationTemp}, Account ID: ${automationAccountId}`
           );
           try {
-            const organizerData = await fetchorganizertempbyid(automationTemp); // Await the fetched data
+            const organizerData = await fetchorganizertempbyid(automationTemp);
             console.log("Fetched organizer data", organizerData);
             assignOrganizerToAccount(
               organizerData,
@@ -778,7 +1002,7 @@ const AddJobs = ({
               automationAccountId
             );
           } catch (error) {
-            console.error("Error processing 'Send Invoice':", error);
+            console.error("Error processing 'Create Organizer':", error);
           }
           break;
 
@@ -787,16 +1011,15 @@ const AddJobs = ({
             `Creating Proposals with template: ${automationTemp}, Account ID: ${automationAccountId}`
           );
           try {
-            const proposalesandelsData =
-              await fetchproposalbyid(automationTemp); // Await the fetched data
-            console.log("Fetched Proposals data", proposalesandelsData);
+            const proposalData = await fetchproposalbyid(automationTemp);
+            console.log("Fetched Proposals data", proposalData);
             assignProposalToAccount(
-              proposalesandelsData,
+              proposalData,
               automationTemp,
               automationAccountId
             );
           } catch (error) {
-            console.error("Error processing 'Send Invoice':", error);
+            console.error("Error processing 'Send Proposal/Els':", error);
           }
           break;
 
@@ -806,6 +1029,7 @@ const AddJobs = ({
           );
           const myHeaders = new Headers();
           myHeaders.append("Content-Type", "application/json");
+
           const raw = JSON.stringify({
             automationType,
             templateId: automationTemp,
@@ -830,7 +1054,6 @@ const AddJobs = ({
           break;
       }
     };
-
     const handleMove = async () => {
       // Flag to track whether all automations are successful
       let allAutomationsSuccessful = true;
@@ -842,10 +1065,9 @@ const AddJobs = ({
         // Ensure automation has the necessary fields
         if (
           !automation ||
-          !automation.type ||
-          !automation.template ||
-          !automation.template.value 
-          
+          !automation.type 
+         
+       
         ) {
           console.error(
             "Missing required automation data for automation index:",
@@ -855,9 +1077,8 @@ const AddJobs = ({
           break; // Exit the loop if required data is missing
         }
 
-
         const automationType = automation.type;
-        const automationTemp = automation.template.value; // Assuming the template has a `value` field
+        const automationTemp = automation?.template?.value || null; // Assuming the template has a `value` field
         const automationAccountIds = combinedaccountValues; // Use the selected account IDs
 
         // Ensure automationAccountId is not empty or invalid
@@ -869,49 +1090,54 @@ const AddJobs = ({
           allAutomationsSuccessful = false; // Mark as failed
           break; // Exit the loop if account IDs are missing
         }
-     // Check if automation has tags
-     const hasTags = automation.tags && automation.tags.length > 0;
+        // Check if automation has tags
+        const hasTags = automation.tags && automation.tags.length > 0;
 
-     // Process each account for the current automation
-     for (const accountId of automationAccountIds) {
-       const account = accountdata.find((acc) => acc._id === accountId);
- 
-       if (!account) {
-         console.warn(`Account with ID ${accountId} not found. Skipping.`);
-         continue;
-       }
- 
-       // If automation has tags, ensure they match the account tags
-       if (hasTags) {
-         const accountTags = account.tags;
- 
-         const tagMatch = automation.tags.some((automationTag) =>
-           accountTags.some(
-             (accountTag) => accountTag.tagName === automationTag.tagName
-           )
-         );
- 
-         if (!tagMatch) {
-           console.warn(
-             `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
-           );
-           continue; // Skip this account if tags don't match
-         }
-       }
- 
-       try {
-        // Execute the automation for the account
-        await selectAutomationApi(automationType, automationTemp, [accountId]);
-      } catch (error) {
-        console.error(
-          `Error processing automation for account ID: ${accountId}:`,
-          error
-        );
-        allAutomationsSuccessful = false;
-        break;
+        // Process each account for the current automation
+        for (const accountId of automationAccountIds) {
+          const account = accountdata.find((acc) => acc._id === accountId);
+
+          if (!account) {
+            console.warn(`Account with ID ${accountId} not found. Skipping.`);
+            continue;
+          }
+
+          // If automation has tags, ensure they match the account tags
+          if (hasTags) {
+            const accountTags = account.tags;
+
+            const tagMatch = automation.tags.some((automationTag) =>
+              accountTags.some(
+                (accountTag) => accountTag.tagName === automationTag.tagName
+              )
+            );
+
+            if (!tagMatch) {
+              console.warn(
+                `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
+              );
+              continue; // Skip this account if tags don't match
+            }
+          }
+
+          try {
+            // Execute the automation for the account
+            await selectAutomationApi(
+              automationType,
+              automationTemp,
+              [accountId],
+              automation
+            );
+          } catch (error) {
+            console.error(
+              `Error processing automation for account ID: ${accountId}:`,
+              error
+            );
+            allAutomationsSuccessful = false;
+            break;
+          }
+        }
       }
-    }
-  }
 
       // If all automations were successful, create the job
       if (allAutomationsSuccessful) {
@@ -996,17 +1222,14 @@ const AddJobs = ({
 
         <Box>
           {stageAutomations.map((automation, index) => {
-            // const hasMatchingTags = automation.tags.some((automationTag) =>
-            //   accountTags.some(
-            //     (accountTag) => accountTag._id === automationTag._id
-            //   )
-            // );
-             // Check if the automation has tags and if there are matching tags
-    const hasMatchingTags = automation.tags?.length
-    ? automation.tags.some((automationTag) =>
-        accountTags.some((accountTag) => accountTag._id === automationTag._id)
-      )
-    : true; // No tags means no restriction
+            
+            const hasMatchingTags = automation.tags?.length
+              ? automation.tags.some((automationTag) =>
+                  accountTags.some(
+                    (accountTag) => accountTag._id === automationTag._id
+                  )
+                )
+              : true; // No tags means no restriction
             return (
               <Box key={index} sx={{ marginBottom: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -1025,60 +1248,211 @@ const AddJobs = ({
                       color="error"
                       sx={{ fontStyle: "italic" }}
                     >
-                     The tags do not match the account
+                      The tags do not match the account
                     </Typography>
                   )}
                 </Box>
-                <Typography variant="body1">
-                  <strong>Type:</strong> {automation.type}
-                </Typography>
+ {/* Render Update Account Tags UI if automation type matches */}
+ {automation.type === "Update account tags" ? (
+                    <Box>
+                      <Box sx={{ width: 500 }}>
+                        <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                          Add tags to account
+                        </Typography>
+                        <Select
+                          multiple
+                          value={automation.addTags}
+                          renderValue={(selected) =>
+                            selected.map((tag) => (
+                              <Chip
+                                key={tag._id}
+                                label={tag.tagName}
+                                sx={{
+                                  backgroundColor: tag.tagColour,
+                                  color: "#fff",
+                                  marginRight: 1,
+                                }}
+                              />
+                            ))
+                          }
+                          MenuProps={MenuProps}
+                          sx={{ width: "100%", marginBottom: 2 }}
+                        >
+                          {tagsoptions.map((option) => {
+                            const canvas = document.createElement("canvas");
+                            const context = canvas.getContext("2d");
+                            context.font = "12px Arial"; // Match the font size/style of MenuItem
+                            const textWidth = context.measureText(
+                              option.label
+                            ).width; // Get precise width
+                            const dynamicWidth = Math.min(textWidth + 16, 150); // Add padding & set max width
+                            return (
+                              <MenuItem
+                                key={option.value}
+                                value={option.value}
+                                sx={{
+                                  backgroundColor: option.colour,
+                                  color: "#fff",
+                                  fontSize: "10px",
+                                  borderRadius: "10px",
+                                  margin: "5px",
+                                  textAlign: "center",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  padding: "4px 9px",
+                                  whiteSpace: "nowrap", // Prevent line breaks
+                                  minWidth: `${dynamicWidth}px`,
+                                  maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
+                                  "&:hover": {
+                                    backgroundColor: option.colour,
+                                    color: "#fff",
+                                  },
+                                }}
+                              >
+                                {option.label}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
 
-                <Typography variant="body1">
-                  <strong>Template:</strong> {automation.template.label}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Tags:</strong>
-                </Typography>
-                {automation.tags.map((tag) => (
-                  <Box
-                    key={tag._id}
-                    sx={{
-                      display: "inline-block",
-                      backgroundColor: tag.tagColour,
-                      color: "white",
-                      borderRadius: "15px",
-                      padding: "3px 8px",
-                      marginRight: "4px",
-                    }}
-                  >
-                    {tag.tagName}
-                  </Box>
-                ))}
+                        <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                          Remove tags from account
+                        </Typography>
+                        <Select
+                          multiple
+                          value={automation.removeTags}
+                          renderValue={(selected) =>
+                            selected.map((tag) => (
+                              <Chip
+                                key={tag._id}
+                                label={tag.tagName}
+                                sx={{
+                                  backgroundColor: tag.tagColour,
+                                  color: "#fff",
+                                  marginRight: 1,
+                                }}
+                              />
+                            ))
+                          }
+                          MenuProps={MenuProps}
+                          sx={{ width: "100%", marginBottom: 2 }}
+                        >
+                          {tagsoptions.map((option) => {
+                            // const dynamicWidth = Math.min(option.label.length * 10, 150); // Adjust width dynamically
+                            // Create a canvas element to measure the actual text width
+                            const canvas = document.createElement("canvas");
+                            const context = canvas.getContext("2d");
+                            context.font = "12px Arial"; // Match the font size/style of MenuItem
+
+                            const textWidth = context.measureText(
+                              option.label
+                            ).width; // Get precise width
+                            const dynamicWidth = Math.min(textWidth + 16, 150); // Add padding & set max width
+                            return (
+                              <MenuItem
+                                key={option.value}
+                                value={option.value}
+                                sx={{
+                                  backgroundColor: option.colour,
+                                  color: "#fff",
+                                  fontSize: "10px",
+                                  borderRadius: "10px",
+                                  margin: "5px",
+                                  textAlign: "center",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  padding: "4px 9px",
+                                  // alignItems: "center",
+                                  // paddingLeft: "10px",
+                                  whiteSpace: "nowrap", // Prevent line breaks
+                                  // textAlign: "left", // Ensure text is left-aligned
+                                  // paddingLeft: "10px", // Add left padding for proper alignment
+                                  minWidth: `${dynamicWidth}px`,
+                                  maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
+                                  "&:hover": {
+                                    backgroundColor: option.colour,
+                                    color: "#fff",
+                                  },
+                                }}
+                              >
+                                {option.label}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+
+                        {/* Warning Message */}
+                        <Alert severity="warning" sx={{ marginBottom: 2 }}>
+                          This automation can affect conditions for automations
+                          below
+                        </Alert>
+                      </Box>
+                    </Box>
+                  ) : (
+                <Box>
+                  <Typography variant="body1">
+                    <strong>Type:</strong> {automation.type}
+                  </Typography>
+
+                  <Typography variant="body1">
+                    <strong>Template:</strong> {automation?.template?.label}
+                  </Typography>
+                  <Typography variant="body1">
+                    <strong>Tags:</strong>
+                  </Typography>
+                  {automation.tags.map((tag) => (
+                    <Box
+                      key={tag._id}
+                      sx={{
+                        display: "inline-block",
+                        backgroundColor: tag.tagColour,
+                        color: "white",
+                        borderRadius: "15px",
+                        padding: "3px 8px",
+                        marginRight: "4px",
+                      }}
+                    >
+                      {tag.tagName}
+                    </Box>
+                  ))}
+                </Box>
+                  )}
               </Box>
             );
           })}
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 5 }}>
-          <Button variant="contained" onClick={handleMove} sx={{
-            backgroundColor: 'var(--color-save-btn)',  // Normal background
-           
-            '&:hover': {
-              backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-            },
-           width:'80px',borderRadius:'15px'
-          }}>
+          <Button
+            variant="contained"
+            onClick={handleMove}
+            sx={{
+              backgroundColor: "var(--color-save-btn)", // Normal background
+
+              "&:hover": {
+                backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+              },
+              width: "80px",
+              borderRadius: "15px",
+            }}
+          >
             Move
           </Button>
-          <Button variant="outlined" onClick={() => setIsDrawerOpen(false)} sx={{
-                    borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                   color:'var(--color-save-btn)',
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      color:'#fff',
-                      border:"none"
-                    },
-                    width:'80px',borderRadius:'15px',ml:2
-                  }}>
+          <Button
+            variant="outlined"
+            onClick={() => setIsDrawerOpen(false)}
+            sx={{
+              borderColor: "var(--color-border-cancel-btn)", // Normal background
+              color: "var(--color-save-btn)",
+              "&:hover": {
+                backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                color: "#fff",
+                border: "none",
+              },
+              width: "80px",
+              borderRadius: "15px",
+              ml: 2,
+            }}
+          >
             Close
           </Button>
         </Box>
@@ -1117,7 +1491,7 @@ const AddJobs = ({
                       key={option.value}
                       label={option.label}
                       {...getTagProps({ index })}
-                      sx={{ maxWidth: "100%",cursor:'pointer' }} // Ensures wrapping within the container
+                      sx={{ maxWidth: "100%", cursor: "pointer" }} // Ensures wrapping within the container
                     />
                   ))}
                 </Box>
@@ -1127,7 +1501,7 @@ const AddJobs = ({
                   {...params}
                   placeholder="Accounts"
                   variant="outlined"
-                 size="small"
+                  size="small"
                   multiline
                   sx={{ backgroundColor: "#fff" }}
                 />
@@ -1139,7 +1513,6 @@ const AddJobs = ({
             <label className="job-input-label">Stage</label>
             <Autocomplete
               size="small"
-             
               options={stagesoptions}
               getOptionLabel={(option) => option.label}
               value={selectedStage}
@@ -1158,7 +1531,7 @@ const AddJobs = ({
           <Box mt={2}>
             <label className="job-input-label">Template</label>
             <Autocomplete
-            size="small"
+              size="small"
               options={optiontemp}
               getOptionLabel={(option) => option.label}
               value={selectedtemp}
@@ -1206,7 +1579,7 @@ const AddJobs = ({
               multiple
               sx={{ marginTop: "8px" }}
               options={assigneesoptions}
-             size="small"
+              size="small"
               getOptionLabel={(option) => option.label}
               value={selectedUser}
               onChange={handleUserChange}
@@ -1224,7 +1597,7 @@ const AddJobs = ({
                   {...params}
                   variant="outlined"
                   placeholder="Job Assignees"
-                  sx={{ backgroundColor: "#fff",mt:'10px' }}
+                  sx={{ backgroundColor: "#fff", mt: "10px" }}
                 />
               )}
               isOptionEqualToValue={(option, value) =>
@@ -1238,7 +1611,7 @@ const AddJobs = ({
               selectedPriority={priority}
             />
           </Box>
-          <Box mt={2} >
+          <Box mt={2}>
             <Editor
               initialContent={description}
               onChange={handleEditorChange}
@@ -1294,7 +1667,7 @@ const AddJobs = ({
                   value={dueDate}
                   onChange={handleDueDateChange}
                   renderInput={(params) => (
-                    <TextField {...params} size="small"/>
+                    <TextField {...params} size="small" />
                   )}
                 />
               </Box>
@@ -1351,7 +1724,7 @@ const AddJobs = ({
               <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                 <Typography>Due In</Typography>
                 <TextField
-                size="small"
+                  size="small"
                   margin="normal"
                   fullWidth
                   defaultValue={0}
@@ -1362,7 +1735,6 @@ const AddJobs = ({
                 />
 
                 <Autocomplete
-                
                   options={dayOptions}
                   getOptionLabel={(option) => option.label}
                   // onChange={handledueindateChange}
@@ -1374,7 +1746,7 @@ const AddJobs = ({
                       : null
                   }
                   onChange={handleDueInDateChange}
-                size="small"
+                  size="small"
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -1446,7 +1818,7 @@ const AddJobs = ({
                           value={inputText + selectedJobShortcut}
                           onChange={handlechatsubject}
                           placeholder="Job name for client"
-                         size="small"
+                          size="small"
                           sx={{ background: "#fff", mt: 2 }}
                         />
 
@@ -1454,7 +1826,7 @@ const AddJobs = ({
                           <Typography>Status</Typography>
                           <Autocomplete
                             options={optionstatus}
-                           size="small"
+                            size="small"
                             sx={{ mt: 1 }}
                             value={selectedJob}
                             onChange={handleJobChange}
@@ -1548,26 +1920,38 @@ const AddJobs = ({
             </Box>
           </Box>
           <Box mt={2} display={"flex"} gap={2} alignItems={"center"} mb={2}>
-            <Button variant="contained" color="primary" onClick={createjob} sx={{
-            backgroundColor: 'var(--color-save-btn)',  // Normal background
-           
-            '&:hover': {
-              backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-            },
-           width:'80px',borderRadius:'15px'
-          }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={createjob}
+              sx={{
+                backgroundColor: "var(--color-save-btn)", // Normal background
+
+                "&:hover": {
+                  backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                },
+                width: "80px",
+                borderRadius: "15px",
+              }}
+            >
               Save
             </Button>
-            <Button variant="outlined" onClick={handleDrawerClose} sx={{
-                    borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                   color:'var(--color-save-btn)',
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      color:'#fff',
-                      border:"none"
-                    },
-                    width:'80px',borderRadius:'15px',ml:2
-                  }}>
+            <Button
+              variant="outlined"
+              onClick={handleDrawerClose}
+              sx={{
+                borderColor: "var(--color-border-cancel-btn)", // Normal background
+                color: "var(--color-save-btn)",
+                "&:hover": {
+                  backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                  color: "#fff",
+                  border: "none",
+                },
+                width: "80px",
+                borderRadius: "15px",
+                ml: 2,
+              }}
+            >
               Cancel
             </Button>
           </Box>
@@ -1579,7 +1963,7 @@ const AddJobs = ({
         open={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
       >
-        <Box sx={{ width: 500 }}>
+        <Box sx={{ width: 550 }}>
           <DrawerContent selectedAccounts={combinedaccountValues} />
         </Box>
       </Drawer>
