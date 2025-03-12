@@ -834,134 +834,136 @@ const Pipeline = ({ charLimit = 4000 }) => {
     //       break;
     //   }
     // };
-   
-    const selectAutomationApi = async (automationType, automationTemp, automationAccountId, automation) => {
+
+    const selectAutomationApi = async (
+      automationType,
+      automationTemp,
+      automationAccountId,
+      automation
+    ) => {
       if (!automationType || !automationAccountId) {
         console.error("Missing required parameters");
         return;
       }
-    
+
       switch (automationType) {
-        // case "Update account tags":
-        //   console.log(`Updating account tags for Account ID: ${automationAccountId}`);
-    
-        //   try {
-        //     // Fetch the current account data
-        //     const response = await fetch(`${AUTOMATION_API}/accounts/accountdetails/${automationAccountId}`);
-        //     if (!response.ok) throw new Error("Failed to fetch account data");
-    
-        //     const account = await response.json();
-        //     let currentTags = account.tags || [];
-    
-        //     console.log("Current account tags:", currentTags);
-    
-        //       // Extract tags from automation object
-        // const addTags = automation?.addTags || [];
-        // const removeTags = automation?.removeTags || [];
-        //    // ✅ 1. Add new tags (if they are not already in the account)
-        // addTags.forEach(tag => {
-        //   if (!currentTags.some(t => t._id === tag._id)) {
-        //     currentTags.push(tag);
-        //   }
-        // });
+    //     case "Update account tags":
+    //       console.log(`Updating account tags for Account ID: ${automationAccountId}`);
 
-        // // ✅ 2. Remove only the tags listed in `removeTags`, keeping others
-        // currentTags = currentTags.filter(tag =>
-        //   !removeTags.some(removeTag => removeTag._id === tag._id)
-        // );
-        //     console.log("Updated tags list:", currentTags);
-    
-        //     // Send updated tags to the backend
-        //     const updateResponse = await fetch(`${ACCOUNT_API}/accounts/accountdetails/${automationAccountId}`, {
-        //       method: "PATCH",
-        //       headers: {
-        //         "Content-Type": "application/json",
-        //       },
-        //       body: JSON.stringify({ tags: currentTags }),
-        //     });
-    
-        //     if (!updateResponse.ok) throw new Error("Failed to update account tags");
-    
-        //     console.log("Account tags updated successfully!");
-    
-        //   } catch (error) {
-        //     console.error("Error updating account tags:", error);
-        //   }
-        //   break;
-    
-        case "Update account tags":
-          console.log(`Updating account tags for Account ID: ${automationAccountId}`);
-    
-          try {
-            // Fetch the current account data
-            const response = await fetch(`${AUTOMATION_API}/accounts/accountdetails/${automationAccountId}`);
-            if (!response.ok) throw new Error("Failed to fetch account data");
-    
-            const account = await response.json();
-            let currentTags = account.tags || []; // Ensure it's an array
-    
-            console.log("Current account tags:", currentTags);
-    
-            // Extract tags from automation object
-            const addTags = automation?.addTags || [];
-            const removeTags = automation?.removeTags || [];
-    
-            // // ✅ 1. Remove only the tags listed in `removeTags`, keeping others
-            // currentTags = currentTags.filter(tag =>
-            //   !removeTags.some(removeTag => removeTag._id === tag._id)
-            // );
-    
-            // // ✅ 2. Add new tags without removing existing ones
-            // addTags.forEach(tag => {
-            //   if (!currentTags.some(t => t._id === tag._id)) {
-            //     currentTags.push(tag);
-            //   }
-            // });
-     // ✅ 1. Remove only the tags that match `removeTags` IDs
-     const removeTagIds = new Set(removeTags.map(tag => tag._id));
-     currentTags = currentTags.filter(tag => !removeTagIds.has(tag._id));
+    //       try {
+    //         // Fetch the current account data
+    //         const response = await fetch(`${AUTOMATION_API}/accounts/accountdetails/${automationAccountId}`);
+    //         if (!response.ok) throw new Error("Failed to fetch account data");
 
-     // ✅ 2. Add new tags if they don't already exist in the account
-     const currentTagIds = new Set(currentTags.map(tag => tag._id));
-     addTags.forEach(tag => {
-       if (!currentTagIds.has(tag._id)) {
-         currentTags.push(tag);
-       }
-     });
-            console.log("Updated tags list after add/remove:", currentTags);
-    
-            // ✅ 3. Send updated tags to the backend
-            const updateResponse = await fetch(`${AUTOMATION_API}/accounts/accountdetails/${automationAccountId}`, {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ tags: currentTags }),
-            });
-    
-            if (!updateResponse.ok) throw new Error("Failed to update account tags");
-    
-            console.log("Account tags updated successfully!");
-    
-          } catch (error) {
-            console.error("Error updating account tags:", error);
-          }
-          break;
+    //         const accountsData = await response.json();
+    //         let currentTags = accountsData.account.tags || [];
 
+           
+
+    //           // Extract tags from automation object
+    //     const addTags = automation?.addTags || [];
+    //     const removeTags = automation?.removeTags || [];
+    //    console.log(addTags)
+    //    console.log(removeTags)
+
+    // // Add tags without duplication
+    // const updatedTags = [...new Set([...currentTags, ...addTags])];
+
+    // // Remove tags that match `removeTags`
+    // const finalTags = updatedTags.filter(tag => !removeTags.includes(tag));
+
+    // console.log("Updated tags list:", finalTags);
+    //         // Send updated tags to the backend
+    //         const updateResponse = await fetch(`${ACCOUNT_API}/accounts/accountdetails/updateaccounttags/${automationAccountId}`, {
+    //           method: "PATCH",
+    //           headers: {
+    //             "Content-Type": "application/json",
+    //           },
+    //           body: JSON.stringify({ tags: finalTags }),
+    //         });
+    //         const updateData = await updateResponse.json();
+
+    //         if (!updateResponse.ok) throw new Error("Failed to update account tags");
+
+    //         console.log("Account tags updated successfully!",updateData);
+
+    //       } catch (error) {
+    //         console.error("Error updating account tags:", error);
+    //       }
+    //       break;
+    case "Update account tags":
+  console.log(`Updating account tags for Account ID: ${automationAccountId}`);
+
+  try {
+    // Fetch the current account data
+    const response = await fetch(`${ACCOUNT_API}/accounts/accountdetails/${automationAccountId}`);
+    if (!response.ok) throw new Error("Failed to fetch account data");
+
+    const accountsData = await response.json();
+    let currentTags = accountsData.account.tags || []; // Existing tag IDs
+
+    // Extract tag IDs from automation object
+    const addTagIds = automation?.addTags?.map(tag => tag._id) || [];
+    const removeTagIds = automation?.removeTags?.map(tag => tag._id) || [];
+
+    console.log("Current Tags:", currentTags);
+    console.log("Tags to Add:", addTagIds);
+    console.log("Tags to Remove:", removeTagIds);
+
+    // Remove tags that match `removeTags`
+    let updatedTags = currentTags.filter(tagId => !removeTagIds.includes(tagId));
+
+    // Add new tags without duplication
+    updatedTags = [...new Set([...updatedTags, ...addTagIds])];
+
+    console.log("Final Updated Tags:", updatedTags);
+
+    // Send updated tags back to the server
+    const updateResponse = await fetch(`${ACCOUNT_API}/accounts/accountdetails/updateaccounttags/${automationAccountId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ tags: updatedTags }),
+    });
+
+    console.log("PATCH Response Status:", updateResponse.status);
+    console.log("PATCH Response OK:", updateResponse.ok);
+
+    const updateResponseData = await updateResponse.json();
+    console.log("PATCH Response Data:", updateResponseData);
+
+    if (!updateResponse.ok) throw new Error("Failed to update account tags");
+
+    console.log("Account tags updated successfully");
+
+    
+  } catch (error) {
+    console.error("Error updating account tags:", error);
+  }
+  break;
         // Other automation cases (unchanged)
         case "Send Invoice":
-          console.log(`Processing 'Send Invoice' with template: ${automationTemp}, Account ID: ${automationAccountId}`);
+          console.log(
+            `Processing 'Send Invoice' with template: ${automationTemp}, Account ID: ${automationAccountId}`
+          );
           try {
             const invoiceData = await fetchinvoicetempbyid(automationTemp);
             console.log("Fetched invoice data", invoiceData);
-            assignInvoiceToAccount(invoiceData, automationTemp, automationAccountId);
+            assignInvoiceToAccount(
+              invoiceData,
+              automationTemp,
+              automationAccountId
+            );
           } catch (error) {
             console.error("Error processing 'Send Invoice':", error);
           }
           break;
-    
+
         case "Apply folder template":
-          console.log(`Applying folder template with template: ${automationTemp}, Account ID: ${automationAccountId}`);
+          console.log(
+            `Applying folder template with template: ${automationTemp}, Account ID: ${automationAccountId}`
+          );
           try {
             await assignfoldertemp(automationAccountId, automationTemp);
             console.log("Folder template assigned successfully");
@@ -969,61 +971,73 @@ const Pipeline = ({ charLimit = 4000 }) => {
             console.error("Error applying folder template:", error);
           }
           break;
-    
+
         case "Create Organizer":
-          console.log(`Processing 'Create Organizer' with template: ${automationTemp}, Account ID: ${automationAccountId}`);
+          console.log(
+            `Processing 'Create Organizer' with template: ${automationTemp}, Account ID: ${automationAccountId}`
+          );
           try {
             const organizerData = await fetchorganizertempbyid(automationTemp);
             console.log("Fetched organizer data", organizerData);
-            assignOrganizerToAccount(organizerData, automationTemp, automationAccountId);
+            assignOrganizerToAccount(
+              organizerData,
+              automationTemp,
+              automationAccountId
+            );
           } catch (error) {
             console.error("Error processing 'Create Organizer':", error);
           }
           break;
-    
+
         case "Send Proposal/Els":
-          console.log(`Creating Proposals with template: ${automationTemp}, Account ID: ${automationAccountId}`);
+          console.log(
+            `Creating Proposals with template: ${automationTemp}, Account ID: ${automationAccountId}`
+          );
           try {
             const proposalData = await fetchproposalbyid(automationTemp);
             console.log("Fetched Proposals data", proposalData);
-            assignProposalToAccount(proposalData, automationTemp, automationAccountId);
+            assignProposalToAccount(
+              proposalData,
+              automationTemp,
+              automationAccountId
+            );
           } catch (error) {
             console.error("Error processing 'Send Proposal/Els':", error);
           }
           break;
-    
+
         case "Send Email":
-          console.log(`Sending email with template: ${automationTemp}, Account ID: ${automationAccountId}`);
+          console.log(
+            `Sending email with template: ${automationTemp}, Account ID: ${automationAccountId}`
+          );
           const myHeaders = new Headers();
           myHeaders.append("Content-Type", "application/json");
-    
+
           const raw = JSON.stringify({
             automationType,
             templateId: automationTemp,
             accountId: automationAccountId,
           });
-    
+
           const requestOptions = {
             method: "POST",
             headers: myHeaders,
             body: raw,
             redirect: "follow",
           };
-    
+
           fetch(`${AUTOMATION_API}/automations/`, requestOptions)
             .then((response) => response.json())
             .then((result) => console.log(result))
             .catch((error) => console.error(error));
           break;
-    
+
         default:
           console.warn(`Unhandled automation type: ${automationType}`);
           break;
       }
     };
-    
-   
-   
+
     return (
       <Drawer anchor="right" open={open} onClose={onClose}>
         <Box sx={{ width: 500, padding: 2 }}>
@@ -1056,7 +1070,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                       </Typography>
                     )}
                   </Box>
-                 
+
                   {/* Render Update Account Tags UI if automation type matches */}
                   {automation.type === "Update account tags" ? (
                     <Box>
@@ -1299,54 +1313,68 @@ const Pipeline = ({ charLimit = 4000 }) => {
             >
               Move
             </Button> */}
-<Button
-  onClick={async () => {
-    const selectedAutomations = selectedAutomationIndices
-      .map((index) => automations[index])
-      .filter((automation) => {
-        if (!automation.tags || automation.tags.length === 0) {
-          return true;
-        }
-        return automation.tags.some((tag) =>
-          accountTags.some((accountTag) => accountTag._id === tag._id)
-        );
-      });
+            <Button
+              onClick={async () => {
+                const selectedAutomations = selectedAutomationIndices
+                  .map((index) => automations[index])
+                  .filter((automation) => {
+                    if (!automation.tags || automation.tags.length === 0) {
+                      return true;
+                    }
+                    return automation.tags.some((tag) =>
+                      accountTags.some(
+                        (accountTag) => accountTag._id === tag._id
+                      )
+                    );
+                  });
 
-    if (selectedAutomations.length > 0) {
-      for (const automation of selectedAutomations) {
-        const { type, template } = automation;
-        const templateValue = template?.value;
+                if (selectedAutomations.length > 0) {
+                  for (const automation of selectedAutomations) {
+                    const { type, template } = automation;
+                    const templateValue = template?.value;
 
-        if (type && automationAccountId) {
-          try {
-            await selectAutomationApi(type, templateValue, automationAccountId, automation);
-          } catch (error) {
-            console.error("Error processing automation:", automation, error);
-          }
-        } else {
-          console.warn("Skipping automation due to missing parameters:", automation);
-        }
-      }
-    }
+                    if (type && automationAccountId) {
+                      try {
+                        await selectAutomationApi(
+                          type,
+                          templateValue,
+                          automationAccountId,
+                          automation
+                        );
+                      } catch (error) {
+                        console.error(
+                          "Error processing automation:",
+                          automation,
+                          error
+                        );
+                      }
+                    } else {
+                      console.warn(
+                        "Skipping automation due to missing parameters:",
+                        automation
+                      );
+                    }
+                  }
+                }
 
-    // Move the job to the target stage
-    onMoveJob(jobId, targetStage);
+                // Move the job to the target stage
+                onMoveJob(jobId, targetStage);
 
-    // Close the drawer
-    onClose();
-  }}
-  variant="contained"
-  color="primary"
-  sx={{
-    backgroundColor: "var(--color-save-btn)",
-    "&:hover": { backgroundColor: "var(--color-save-hover-btn)" },
-    width: "80px",
-    borderRadius: "15px",
-    mt: 2,
-  }}
->
-  Move
-</Button>
+                // Close the drawer
+                onClose();
+              }}
+              variant="contained"
+              color="primary"
+              sx={{
+                backgroundColor: "var(--color-save-btn)",
+                "&:hover": { backgroundColor: "var(--color-save-hover-btn)" },
+                width: "80px",
+                borderRadius: "15px",
+                mt: 2,
+              }}
+            >
+              Move
+            </Button>
 
             <Button
               onClick={onClose}

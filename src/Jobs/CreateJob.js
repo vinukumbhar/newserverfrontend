@@ -1218,55 +1218,52 @@ const CreateJob = ({ charLimit = 4000 }) => {
 
       switch (automationType) {
         case "Update account tags":
-          console.log(
-            `Updating account tags for Account ID: ${automationAccountId}`
-          );
-
+          console.log(`Updating account tags for Account ID: ${automationAccountId}`);
+        
           try {
             // Fetch the current account data
-            const response = await fetch(
-              `${AUTOMATION_API}/accounts/accountdetails/${automationAccountId}`
-            );
+            const response = await fetch(`${ACCOUNT_API}/accounts/accountdetails/${automationAccountId}`);
             if (!response.ok) throw new Error("Failed to fetch account data");
-
-            const account = await response.json();
-            let currentTags = account.tags || [];
-
-            console.log("Current account tags:", currentTags);
-
-            // Extract tags from automation object
-            const addTags = automation?.addTags || [];
-            const removeTags = automation?.removeTags || [];
-            // ✅ 1. Add new tags (if they are not already in the account)
-            addTags.forEach((tag) => {
-              if (!currentTags.some((t) => t._id === tag._id)) {
-                currentTags.push(tag);
-              }
+        
+            const accountsData = await response.json();
+            let currentTags = accountsData.account.tags || []; // Existing tag IDs
+        
+            // Extract tag IDs from automation object
+            const addTagIds = automation?.addTags?.map(tag => tag._id) || [];
+            const removeTagIds = automation?.removeTags?.map(tag => tag._id) || [];
+        
+            console.log("Current Tags:", currentTags);
+            console.log("Tags to Add:", addTagIds);
+            console.log("Tags to Remove:", removeTagIds);
+        
+            // Remove tags that match `removeTags`
+            let updatedTags = currentTags.filter(tagId => !removeTagIds.includes(tagId));
+        
+            // Add new tags without duplication
+            updatedTags = [...new Set([...updatedTags, ...addTagIds])];
+        
+            console.log("Final Updated Tags:", updatedTags);
+        
+            // Send updated tags back to the server
+            const updateResponse = await fetch(`${ACCOUNT_API}/accounts/accountdetails/updateaccounttags/${automationAccountId}`, {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ tags: updatedTags }),
             });
-
-            // ✅ 2. Remove only the tags listed in `removeTags`, keeping others
-            currentTags = currentTags.filter(
-              (tag) =>
-                !removeTags.some((removeTag) => removeTag._id === tag._id)
-            );
-            console.log("Updated tags list:", currentTags);
-
-            // Send updated tags to the backend
-            const updateResponse = await fetch(
-              `${ACCOUNT_API}/accounts/accountdetails/${automationAccountId}`,
-              {
-                method: "PATCH",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ tags: currentTags }),
-              }
-            );
-
-            if (!updateResponse.ok)
-              throw new Error("Failed to update account tags");
-
-            console.log("Account tags updated successfully!");
+        
+            console.log("PATCH Response Status:", updateResponse.status);
+            console.log("PATCH Response OK:", updateResponse.ok);
+        
+            const updateResponseData = await updateResponse.json();
+            console.log("PATCH Response Data:", updateResponseData);
+        
+            if (!updateResponse.ok) throw new Error("Failed to update account tags");
+        
+            console.log("Account tags updated successfully");
+        
+            
           } catch (error) {
             console.error("Error updating account tags:", error);
           }

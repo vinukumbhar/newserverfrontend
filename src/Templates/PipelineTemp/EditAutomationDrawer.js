@@ -146,7 +146,7 @@
 
 // export default EditAutomationDrawer;
 
-import React,{useEffect} from "react";
+import React,{useEffect,useState} from "react";
 import {
   Drawer,
   Box,
@@ -193,28 +193,19 @@ const EditAutomationDrawer = ({
   stageAutomationTags,
   handleEditCheckboxChange,
   handleEditAddTags,
-  filteredAddTagsOptions,
   tagsoptions,
-  addTags,
   handleAddTagChange,
-  filteredRemoveTagsOptions,
+  handleRemoveTagChange,  
+  addTags, 
   removeTags,
-  handleRemoveTagChange,
-  setAddTags,
-  setRemoveTags
+  handleEditAddTagsChange,
+  setAddTags, 
+  setRemoveTags,
+  filteredAddTagsOptions,filteredRemoveTagsOptions
+
 }) => {
 
-  // useEffect(() => {
-  //   if (selectedAutomationData) {
-     
-    
-  //       setAddTags(addTags || []);
-       
-  //       setRemoveTags(removeTags || []);
-    
-  //   }
-  // }, [selectedAutomationData]);
-console.log(selectedAutomationData)
+console.log("automation list",selectedAutomationData)
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -225,6 +216,126 @@ const MenuProps = {
     },
   },
 };
+
+  // const [addTags, setAddTags] = useState([]); // Separate state for Add Tags
+  // const [removeTags, setRemoveTags] = useState([]); // Separate state for Remove Tags
+ 
+  useEffect(() => {
+    if (selectedAutomationData) {
+        console.log(selectedAutomationData);
+
+        // Extract addTags and removeTags
+        const addTagsList = selectedAutomationData
+            .filter(item => item.addTags && Array.isArray(item.addTags))
+            .flatMap(item => item.addTags)
+            .map(tag => ({
+                value: tag._id,
+                label: tag.tagName,
+                color: tag.tagColour,
+                customTagStyle: {
+                    backgroundColor: tag.tagColour,
+                    color: "#fff",
+                    borderRadius: "30px",
+                    alignItems: "center",
+                    textAlign: "center",
+                    marginBottom: "5px",
+                    padding: "2px 8px",
+                    fontSize: "10px",
+                    margin: "7px",
+                    cursor: "pointer",
+                },
+            }));
+
+        const removeTagsList = selectedAutomationData
+            .filter(item => item.removeTags && Array.isArray(item.removeTags))
+            .flatMap(item => item.removeTags)
+            .map(tag => ({
+                value: tag._id,
+                label: tag.tagName,
+                color: tag.tagColour,
+                customTagStyle: {
+                    backgroundColor: tag.tagColour,
+                    color: "#fff",
+                    borderRadius: "30px",
+                    alignItems: "center",
+                    textAlign: "center",
+                    marginBottom: "5px",
+                    padding: "2px 8px",
+                    fontSize: "10px",
+                    margin: "7px",
+                    cursor: "pointer",
+                },
+            }));
+
+        setAddTags(addTagsList);
+        setRemoveTags(removeTagsList);
+
+        const addTagsValues = addTagsList.map((option) => option.value);
+        const removeTagsValues = removeTagsList.map((option) => option.value);
+setAddTags(addTagsValues)
+setRemoveTags(removeTagsValues)
+        console.log("Add Tags:", addTagsValues);
+        console.log("Remove Tags:", removeTagsList);
+    }
+}, [selectedAutomationData]);
+
+// useEffect(() => {
+//   if (selectedAutomationData && selectedAutomationIndex !== undefined) {
+//       console.log(selectedAutomationData);
+
+//       const selectedAutomation = selectedAutomationData[selectedAutomationIndex]; // Get specific automation
+//       console.log(selectedAutomationIndex)
+//       if (!selectedAutomation) return;
+
+//       // Extract addTags and removeTags for the selected automation only
+//       const addTagsList = (selectedAutomation.addTags || []).map(tag => ({
+//           value: tag._id,
+//           label: tag.tagName,
+//           color: tag.tagColour,
+//           customTagStyle: {
+//               backgroundColor: tag.tagColour,
+//               color: "#fff",
+//               borderRadius: "30px",
+//               alignItems: "center",
+//               textAlign: "center",
+//               marginBottom: "5px",
+//               padding: "2px 8px",
+//               fontSize: "10px",
+//               margin: "7px",
+//               cursor: "pointer",
+//           },
+//       }));
+
+//       const removeTagsList = (selectedAutomation.removeTags || []).map(tag => ({
+//           value: tag._id,
+//           label: tag.tagName,
+//           color: tag.tagColour,
+//           customTagStyle: {
+//               backgroundColor: tag.tagColour,
+//               color: "#fff",
+//               borderRadius: "30px",
+//               alignItems: "center",
+//               textAlign: "center",
+//               marginBottom: "5px",
+//               padding: "2px 8px",
+//               fontSize: "10px",
+//               margin: "7px",
+//               cursor: "pointer",
+//           },
+//       }));
+
+//       // setAddTags(addTagsList);
+//       // setRemoveTags(removeTagsList);
+
+//       console.log("Add Tags:", addTagsList);
+//       console.log("Remove Tags:", removeTagsList);
+//       const addTagsValues = addTagsList.map((option) => option.value);
+//       const removeTagsValues = removeTagsList.map((option) => option.value);
+// setAddTags(addTagsValues)
+// setRemoveTags(removeTagsValues)
+//   }
+// }, [selectedAutomationData, selectedAutomationIndex]);
+
   return (
     <>
       {/* Main Edit Automation Drawer */}
@@ -300,7 +411,8 @@ const MenuProps = {
                                                                fullWidth
                                                                multiline
                                                                value={addTags}
-                                                               onChange={handleAddTagChange}
+                                                              
+                                                               onChange={handleAddTagChange} 
                                                                input={<OutlinedInput />}
                                                                displayEmpty // Enables placeholder when no value is selected
                                                                renderValue={(selected) => {
@@ -322,7 +434,7 @@ const MenuProps = {
                                                                      }}
                                                                    >
                                                                      {selected.map((value) => {
-                                                                       const option = tagsoptions.find(
+                                                                       const option = filteredAddTagsOptions.find(
                                                                          (opt) => opt.value === value
                                                                        );
                                                                        return (
@@ -360,7 +472,7 @@ const MenuProps = {
                                                                  },
                                                                }}
                                                              >
-                                                               {tagsoptions.map((option) => {
+                                                               {filteredAddTagsOptions.map((option) => {
                                                                  // const dynamicWidth = Math.min(option.label.length * 10, 150); // Adjust width dynamically
                                                                  // Create a canvas element to measure the actual text width
                                                                  const canvas = document.createElement("canvas");
@@ -439,7 +551,7 @@ const MenuProps = {
                                                                      }}
                                                                    >
                                                                      {selected.map((value) => {
-                                                                       const option = tagsoptions.find(
+                                                                       const option = filteredRemoveTagsOptions.find(
                                                                          (opt) => opt.value === value
                                                                        );
                                                                        return (
@@ -477,7 +589,7 @@ const MenuProps = {
                                                                  },
                                                                }}
                                                              >
-                                                               {tagsoptions.map((option) => {
+                                                               {filteredRemoveTagsOptions.map((option) => {
                                                                  // const dynamicWidth = Math.min(option.label.length * 10, 150); // Adjust width dynamically
                                                                  // Create a canvas element to measure the actual text width
                                                                  const canvas = document.createElement("canvas");

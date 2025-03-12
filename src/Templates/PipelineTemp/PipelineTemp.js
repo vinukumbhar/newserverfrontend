@@ -294,6 +294,7 @@ const PipelineTemp = () => {
         setIsEditDrawerOpen(true); // Open the edit automation drawer
         setAnchorEl(null);
         setEditingStageIndex(index);
+
       } else {
         console.log("No automations available to edit for this stage.");
       }
@@ -606,6 +607,8 @@ const PipelineTemp = () => {
   //     newValue.map((option) => option.value)
   //   );
   // };
+
+  
   const handleAddTagChange = (event) => {
     const selectedValues = event.target.value;
     setAddTags(selectedValues);
@@ -613,6 +616,36 @@ const PipelineTemp = () => {
     // Send selectedValues array to your backend
     console.log("Selected Values:", selectedValues);
   };
+
+  // handleEditAddTagsChange
+  const handleEditAddTagsChange = (event) => {
+    const {value} = event.target;
+    
+    // Update the selected tags state
+    // 
+// console.log(selectedValues)
+    // Clone the existing selectedAutomationData array
+    // const updatedData = [...selectedAutomationData];
+
+    
+
+    // Extract selected tag values
+    const selectedTagsValues = value.map((val) => {
+      const option = filteredAddTagsOptions.find((opt) => opt.value === val);
+      return option?.value;
+    });
+
+    // Update addTags in the automation data
+    // updatedData[index].addTags = selectedTagsValues;
+
+    // Update the state with the new data
+    // setSelectedAutomationData(updatedData);
+
+    // Debugging output
+    console.log("Selected Tags:", selectedTagsValues);
+    setAddTags(selectedTagsValues);
+};
+
   const handleRemoveTagChange = (event) => {
     const selectedValues = event.target.value;
     setRemoveTags(selectedValues);
@@ -1374,13 +1407,20 @@ const PipelineTemp = () => {
       case "Update account tags":
         return (
           <>
-            <Box p={2}>
-              {automationSelect}
-
               <Grid item>
+                <Box sx={{
+                  border: "2px solid #ddd",
+                  borderRadius: "8px",
+                  padding: 2,
+                  // marginBottom: 2,
+                }}>
+                <Typography gutterBottom>
+                  1. {automationSelect || "No Type"}
+                </Typography>
+               
                 <Box sx={{ display: "flex", alignItems: "center", gap: 5 }}>
                   {/* Add Tags Section */}
-                  <Box mt={2}>
+                  <Box mt={2} width={"50%"}>
                     <Typography gutterBottom variant="body2">Add Tags</Typography>
                     <FormControl
                       sx={{
@@ -1503,7 +1543,7 @@ const PipelineTemp = () => {
                   </Box>
 
                   {/* Remove Tags Section */}
-                  <Box mt={2}>
+                  <Box mt={2} width={"50%"}>
                   <Typography gutterBottom variant="body2">Remove Tags</Typography>
                     <FormControl
                       sx={{
@@ -1636,9 +1676,9 @@ const PipelineTemp = () => {
                 <Button variant="text" onClick={handleAddConditions}>
                   Add Conditions
                 </Button>
-              </Grid>
-
-              <Button
+                </Box>
+                <Box mt={2}>
+<Button 
                 variant="contained"
                 onClick={handleSaveAutomation(stageSelected)}
                 sx={{
@@ -1652,7 +1692,11 @@ const PipelineTemp = () => {
               >
                 Save Automation
               </Button>
-            </Box>
+</Box>
+              </Grid>
+
+             
+            
             {/* Condition tags for automation */}
             <Drawer
               anchor="right"
@@ -1943,36 +1987,6 @@ const PipelineTemp = () => {
       default:
         return null;
     }
-  };
-
-  const [automationSelectEditType, setAutomationEditType] = useState();
-  console.log("vinayak", automationSelectEditType);
-  const [automationSelectEdit, setAutomationSelectEdit] = useState();
-  const [defaultValueEmail, setDefaultValueEmail] = useState("");
-  const [defaultValueInvoice, setDefaultValueInvoice] = useState("");
-
-  useEffect(() => {
-    if (
-      automationSelectEdit &&
-      invoiceTemplateOptions.length > 0 &&
-      emailTemplateOptions.length > 0
-    ) {
-      const matchedInvoiceOption = invoiceTemplateOptions.find(
-        (option) => option.label === automationSelectEdit
-      );
-      const matchedEmailOption = emailTemplateOptions.find(
-        (option) => option.label === automationSelectEdit
-      );
-      setDefaultValueInvoice(matchedInvoiceOption || null);
-      setDefaultValueEmail(matchedEmailOption || null);
-    }
-  }, [automationSelectEdit, invoiceTemplateOptions, emailTemplateOptions]);
-
-  const handleEdittemp = (newValue, index) => {
-    setDefaultValueInvoice(newValue);
-    setAutomationSelectEdit(0);
-
-    console.log("janvai", newValue);
   };
 
   // const handleSaveAutomation = (index) => {
@@ -3596,6 +3610,7 @@ const PipelineTemp = () => {
                                   searchTerm={searchTerm}
                                   handleSearchChange={handleSearchChange}
                                   filteredTags={filteredTags}
+
                                   stageAutomationTags={stageAutomationTags}
                                   setTempSelectedTags={setTempSelectedTags}
                                   filteredAddTagsOptions={
@@ -3608,9 +3623,11 @@ const PipelineTemp = () => {
                                     filteredRemoveTagsOptions
                                   }
                                   removeTags={removeTags}
-                                  handleRemoveTagChange={handleRemoveTagChange}
                                   setAddTags={setAddTags}
                                   setRemoveTags={setRemoveTags}
+                                  handleRemoveTagChange={handleRemoveTagChange}
+                                  handleEditAddTagsChange={handleEditAddTagsChange}
+                                
                                 />
 
                                 <Box>

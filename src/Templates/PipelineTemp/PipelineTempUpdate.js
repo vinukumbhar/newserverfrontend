@@ -1084,7 +1084,33 @@ const PipelineTempUpdate = () => {
     // Send selectedValues array to your backend
     console.log("Selected Values:", selectedValues);
   };
+  const handleEditAddTagsChange = (index,event) => {
+    const {value} = event.target;
+    
+    // Update the selected tags state
+    // 
+// console.log(selectedValues)
+    // Clone the existing selectedAutomationData array
+    // const updatedData = [...selectedAutomationData];
 
+    
+
+    // Extract selected tag values
+    const selectedTagsValues = value.map((val) => {
+      const option = filteredAddTagsOptions.find((opt) => opt.value === val);
+      return option?.value;
+    });
+
+    // Update addTags in the automation data
+    // updatedData[index].addTags = selectedTagsValues;
+
+    // Update the state with the new data
+    // setSelectedAutomationData(updatedData);
+
+    // Debugging output
+    console.log("Selected Tags:", selectedTagsValues);
+    setAddTags(selectedTagsValues);
+};
   const handleSave = () => {
     console.log("Saved Data:");
     console.log("Add Tags:", addTags);
@@ -4503,9 +4529,11 @@ const PipelineTempUpdate = () => {
                                     filteredRemoveTagsOptions
                                   }
                                   removeTags={removeTags}
-                                  handleRemoveTagChange={handleRemoveTagChange}
                                   setAddTags={setAddTags}
                                   setRemoveTags={setRemoveTags}
+                                  handleRemoveTagChange={handleRemoveTagChange}
+                                  handleEditAddTagsChange={handleEditAddTagsChange}
+
                                 />
 
                                 <Box>
