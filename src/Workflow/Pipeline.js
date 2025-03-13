@@ -1078,7 +1078,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                         <Typography variant="body2" sx={{ marginBottom: 1 }}>
                           Add tags to account
                         </Typography>
-                        <Select
+                        {/* <Select
                           multiple
                           value={automation.addTags}
                           renderValue={(selected) =>
@@ -1132,12 +1132,100 @@ const Pipeline = ({ charLimit = 4000 }) => {
                               </MenuItem>
                             );
                           })}
-                        </Select>
+                        </Select> */}
+ <Select
+  multiple
+  displayEmpty
+  multiline
+  size="small"
+  value={automation.addTags.map((tag) => tag._id)}
+  onChange={(event) => handleTagChange(index, "addTags", event)}
+  renderValue={(selected) =>
+    selected.length === 0 ? (
+      <Typography color="gray">Select tags to add</Typography>
+    ) : (
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+        {automation.addTags.map((tag) => (
+          <Chip
+            key={tag._id}
+            label={tag.tagName}
+            sx={{
+              backgroundColor: tag.tagColour,
+              color: "#fff",
+              fontWeight: "500",
+              borderRadius: "20px",
+            }}
+          />
+        ))}
+      </Box>
+    )
+  }
+  fullWidth
+  MenuProps={MenuProps}
+>
+  {/* {tagsoptions
+    .filter((option) => !automation.removeTags.some((tag) => tag._id === option.value)) // Hide selected removeTags
+    .map((option) => (
+      <MenuItem key={option.value} value={option.value} sx={{ backgroundColor: option.colour, color: "#fff" , fontSize: "10px",
+        borderRadius: "10px",
+        margin: "5px",
+        textAlign: "center",
+        display: "flex",
+        justifyContent: "center",
+        padding: "4px 9px",
+     
+        whiteSpace: "nowrap", // Prevent line breaks
+       
+        "&:hover": {
+                                  backgroundColor: option.colour,
+                                  color: "#fff",
+                                },}}>
+        {option.label}
+      </MenuItem>
+    ))} */}
+     {tagsoptions
+    .filter((option) => !automation.removeTags.some((tag) => tag._id === option.value)) // Hide selected removeTags
+    .map((option) => {
+      // Create a hidden canvas to measure text width
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      context.font = "14px Arial"; // Match the MenuItem font style
 
+      const textWidth = context.measureText(option.label).width; // Get exact width
+      const dynamicWidth = Math.min(textWidth + 20, 200); // Add padding & set max width
+
+      return (
+        <MenuItem
+          key={option.value}
+          value={option.value}
+          sx={{
+            backgroundColor: option.colour,
+            color: "#fff",
+            fontSize: "10px",
+            borderRadius: "10px",
+            margin: "5px",
+            textAlign: "center",
+            display: "flex",
+            justifyContent: "center",
+            padding: "4px 9px",
+            whiteSpace: "nowrap", // Prevent text wrapping
+            minWidth: `${dynamicWidth}px`,
+            maxWidth: `${dynamicWidth}px`, // Set dynamic max width
+            "&:hover": {
+              backgroundColor: option.colour,
+              color: "#fff",
+            },
+          }}
+        >
+          {option.label}
+        </MenuItem>
+      );
+    })}
+</Select>
                         <Typography variant="body2" sx={{ marginBottom: 1 }}>
                           Remove tags from account
                         </Typography>
-                        <Select
+                        {/* <Select
                           multiple
                           value={automation.removeTags}
                           renderValue={(selected) =>
@@ -1198,8 +1286,98 @@ const Pipeline = ({ charLimit = 4000 }) => {
                               </MenuItem>
                             );
                           })}
-                        </Select>
+                        </Select> */}
+ <Select
+  multiple
+  size="small"
+  multiline
+  displayEmpty
+  value={automation.removeTags.map((tag) => tag._id)}
+  onChange={(event) => handleTagChange(index, "removeTags", event)}
+  renderValue={(selected) =>
+    selected.length === 0 ? (
+      <Typography color="gray">Select tags to remove</Typography>
+    ) : (
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+        {automation.removeTags.map((tag) => (
+          <Chip
+            key={tag._id}
+            label={tag.tagName}
+            sx={{
+              backgroundColor: tag.tagColour,
+              color: "#fff",
+              fontWeight: "500",
+              borderRadius: "20px",
+            }}
+          />
+        ))}
+      </Box>
+    )
+  }
+  fullWidth
+  MenuProps={MenuProps}
+>
+  {/* {tagsoptions
+    .filter((option) => !automation.addTags.some((tag) => tag._id === option.value)) // Hide selected addTags
+    .map((option) => (
+      <MenuItem key={option.value} value={option.value} sx={{ backgroundColor: option.colour, color: "#fff", fontSize: "10px",
+        borderRadius: "10px",
+        margin: "5px",
+        textAlign: "center",
+        display: "flex",
+        justifyContent: "center",
+        padding: "4px 9px",
+        // alignItems: "center",
+        // paddingLeft: "10px",
+        whiteSpace: "nowrap", // Prevent line breaks
+        // textAlign: "left", // Ensure text is left-aligned
+        // paddingLeft: "10px", // Add left padding for proper alignment,
+         "&:hover": {
+                                  backgroundColor: option.colour,
+                                  color: "#fff",
+                                }, }}>
+        {option.label}
+      </MenuItem>
+    ))} */}
+     {tagsoptions
+    .filter((option) => !automation.addTags.some((tag) => tag._id === option.value)) // Hide selected removeTags
+    .map((option) => {
+      // Create a hidden canvas to measure text width
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      context.font = "14px Arial"; // Match the MenuItem font style
 
+      const textWidth = context.measureText(option.label).width; // Get exact width
+      const dynamicWidth = Math.min(textWidth + 20, 200); // Add padding & set max width
+
+      return (
+        <MenuItem
+          key={option.value}
+          value={option.value}
+          sx={{
+            backgroundColor: option.colour,
+            color: "#fff",
+            fontSize: "10px",
+            borderRadius: "10px",
+            margin: "5px",
+            textAlign: "center",
+            display: "flex",
+            justifyContent: "center",
+            padding: "4px 9px",
+            whiteSpace: "nowrap", // Prevent text wrapping
+            minWidth: `${dynamicWidth}px`,
+            maxWidth: `${dynamicWidth}px`, // Set dynamic max width
+            "&:hover": {
+              backgroundColor: option.colour,
+              color: "#fff",
+            },
+          }}
+        >
+          {option.label}
+        </MenuItem>
+      );
+    })}
+</Select>
                         {/* Warning Message */}
                         <Alert severity="warning" sx={{ marginBottom: 2 }}>
                           This automation can affect conditions for automations
@@ -2979,6 +3157,92 @@ const Pipeline = ({ charLimit = 4000 }) => {
     value: pipeline._id,
     label: pipeline.pipelineName,
   }));
+
+   const [tags, setTags] = useState([]);
+   const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
+    useEffect(() => {
+      fetchTags();
+    }, []);
+  
+    const fetchTags = async () => {
+      try {
+        const url = `${TAGS_API}/tags/`;
+        const response = await fetch(url);
+        const data = await response.json();
+        console.log("tags dtata", data.tags);
+        setTags(data.tags);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+  
+    const calculateWidth = (label) => Math.min(label.length * 8, 200);
+  const tagsoptions = tags.map((tag) => ({
+    value: tag._id,
+    label: tag.tagName,
+    colour: tag.tagColour,
+    customStyle: {
+      backgroundColor: tag.tagColour,
+      color: "#fff",
+      borderRadius: "8px",
+      alignItems: "center",
+      textAlign: "center",
+      marginBottom: "5px",
+      padding: "2px,8px",
+      fontSize: "10px",
+      width: `${calculateWidth(tag.tagName)}px`,
+      margin: "7px",
+      cursor: "pointer",
+    },
+    customTagStyle: {
+      backgroundColor: tag.tagColour,
+      color: "#fff",
+      alignItems: "center",
+      textAlign: "center",
+      padding: "2px,8px",
+      fontSize: "10px",
+      cursor: "pointer",
+    },
+  }));
+  const handleTagChange = (index, type, event) => {
+    const { value } = event.target; // Array of selected tag IDs
+  
+    setAutomationData((prev) => {
+      const updatedAutomations = [...prev];
+  
+      // Get the correct tag options list
+      const tagOptions = tagsoptions;
+  
+      // Map selected tag IDs to tag objects with _id, tagName, and tagColour
+      const selectedTags = value.map((tagId) => {
+        const tag = tagOptions.find((t) => t.value === tagId);
+        return tag ? { _id: tag.value, tagName: tag.label, tagColour: tag.colour } : null;
+      }).filter(Boolean); // Remove null values
+  
+      // Prevent duplicate selections
+      const uniqueTags = selectedTags.filter(
+        (tag, idx, self) => self.findIndex((t) => t._id === tag._id) === idx
+      );
+  
+      // Ensure the tag is removed from the opposite category
+      if (type === "addTags") {
+        updatedAutomations[index].removeTags = updatedAutomations[index].removeTags.filter(
+          (tag) => !uniqueTags.some((t) => t._id === tag._id)
+        );
+      } else if (type === "removeTags") {
+        updatedAutomations[index].addTags = updatedAutomations[index].addTags.filter(
+          (tag) => !uniqueTags.some((t) => t._id === tag._id)
+        );
+      }
+  
+      updatedAutomations[index] = {
+        ...updatedAutomations[index],
+        [type]: uniqueTags,
+      };
+  
+      return updatedAutomations;
+    });
+  };
   return (
     <DndProvider backend={HTML5Backend}>
       <Box p={3}>

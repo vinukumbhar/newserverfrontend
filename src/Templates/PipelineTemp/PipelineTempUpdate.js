@@ -517,6 +517,46 @@ const PipelineTempUpdate = () => {
   const handleEditGoBack = () => {
     setIsConditionsEditFormOpen(false);
   };
+
+  const handleTagChange = (index, type, event) => {
+    const { value } = event.target; // Array of selected tag IDs
+  
+    setSelectedAutomationData((prev) => {
+      const updatedAutomations = [...prev];
+  
+      // Get the correct tag options list
+      const tagOptions = tagsoptions;
+  
+      // Map selected tag IDs to tag objects with _id, tagName, and tagColour
+      const selectedTags = value.map((tagId) => {
+        const tag = tagOptions.find((t) => t.value === tagId);
+        return tag ? { _id: tag.value, tagName: tag.label, tagColour: tag.colour } : null;
+      }).filter(Boolean); // Remove null values
+  
+      // Prevent duplicate selections
+      const uniqueTags = selectedTags.filter(
+        (tag, idx, self) => self.findIndex((t) => t._id === tag._id) === idx
+      );
+  
+      // Ensure the tag is removed from the opposite category
+      if (type === "addTags") {
+        updatedAutomations[index].removeTags = updatedAutomations[index].removeTags.filter(
+          (tag) => !uniqueTags.some((t) => t._id === tag._id)
+        );
+      } else if (type === "removeTags") {
+        updatedAutomations[index].addTags = updatedAutomations[index].addTags.filter(
+          (tag) => !uniqueTags.some((t) => t._id === tag._id)
+        );
+      }
+  
+      updatedAutomations[index] = {
+        ...updatedAutomations[index],
+        [type]: uniqueTags,
+      };
+  
+      return updatedAutomations;
+    });
+  };
   const handleMenuItemSelect = (type) => {
     let newAutomation = {};
 
@@ -768,44 +808,89 @@ const PipelineTempUpdate = () => {
   // };
   
   
-   const handleEditSaveAutomation = () => {
+  //  const handleEditSaveAutomation = () => {
+  //     if (editingStageIndex === null) return; // Ensure the stage index is valid
+  
+  //     console.log("Save automation for stage:", editingStageIndex);
+  
+  //     // Process automation data to ensure "Update account tags" includes addTags and removeTags
+  //     const updatedAutomationData = selectedAutomationData.map((automation) => {
+  //       if (automation.type === "Update account tags") {
+  //         return {
+  //           ...automation,
+  //           addTags: addTags
+  //             .map((tagId) => {
+  //               const tag = tags.find((t) => t._id === tagId);
+  //               return tag
+  //                 ? {
+  //                     _id: tag._id,
+  //                     tagName: tag.tagName,
+  //                     tagColour: tag.tagColour,
+  //                   }
+  //                 : null;
+  //             })
+  //             .filter(Boolean), // Filter out any null values
+  //           removeTags: removeTags
+  //             .map((tagId) => {
+  //               const tag = tags.find((t) => t._id === tagId);
+  //               return tag
+  //                 ? {
+  //                     _id: tag._id,
+  //                     tagName: tag.tagName,
+  //                     tagColour: tag.tagColour,
+  //                   }
+  //                 : null;
+  //             })
+  //             .filter(Boolean),
+  //         };
+  //       }
+  //       return automation;
+  //     });
+  
+  //     console.log("Processed automation data:", updatedAutomationData);
+  
+  //     // Update the automations for the selected stage
+  //     const updatedStages = [...stages];
+  //     updatedStages[editingStageIndex].automations = updatedAutomationData;
+  
+  //     console.log("Updated Stages:", updatedStages);
+  
+  //     // Update the stages state
+  //     setStages(updatedStages);
+  
+  //     // Close the drawer and show success message
+  //     setIsEditDrawerOpen(false);
+  //     toast.success("Automation edited successfully");
+  //   };
+  const handleEditSaveAutomation = () => {
       if (editingStageIndex === null) return; // Ensure the stage index is valid
   
       console.log("Save automation for stage:", editingStageIndex);
   
-      // Process automation data to ensure "Update account tags" includes addTags and removeTags
-      const updatedAutomationData = selectedAutomationData.map((automation) => {
-        if (automation.type === "Update account tags") {
-          return {
-            ...automation,
-            addTags: addTags
-              .map((tagId) => {
-                const tag = tags.find((t) => t._id === tagId);
-                return tag
-                  ? {
-                      _id: tag._id,
-                      tagName: tag.tagName,
-                      tagColour: tag.tagColour,
-                    }
-                  : null;
-              })
-              .filter(Boolean), // Filter out any null values
-            removeTags: removeTags
-              .map((tagId) => {
-                const tag = tags.find((t) => t._id === tagId);
-                return tag
-                  ? {
-                      _id: tag._id,
-                      tagName: tag.tagName,
-                      tagColour: tag.tagColour,
-                    }
-                  : null;
-              })
-              .filter(Boolean),
-          };
-        }
-        return automation;
-      });
+     // Process automation data to ensure "Update account tags" includes correct addTags and removeTags
+     const updatedAutomationData = selectedAutomationData.map((automation) => {
+      if (automation.type === "Update account tags") {
+        return {
+          ...automation,
+          addTags: automation.addTags.map((tag) => {
+            if (typeof tag === "string") {
+              const foundTag = tags.find((t) => t._id === tag);
+              return foundTag ? { _id: foundTag._id, tagName: foundTag.tagName, tagColour: foundTag.tagColour } : null;
+            }
+            return tag; // Keep existing tag objects
+          }).filter(Boolean), // Remove any null values
+  
+          removeTags: automation.removeTags.map((tag) => {
+            if (typeof tag === "string") {
+              const foundTag = tags.find((t) => t._id === tag);
+              return foundTag ? { _id: foundTag._id, tagName: foundTag.tagName, tagColour: foundTag.tagColour } : null;
+            }
+            return tag; // Keep existing tag objects
+          }).filter(Boolean),
+        };
+      }
+      return automation;
+    });
   
       console.log("Processed automation data:", updatedAutomationData);
   
@@ -822,7 +907,6 @@ const PipelineTempUpdate = () => {
       setIsEditDrawerOpen(false);
       toast.success("Automation edited successfully");
     };
-  
   
   const handleDrawerOpen = (option, index) => {
     setIsDrawerOpen(true);
@@ -4523,16 +4607,7 @@ const PipelineTempUpdate = () => {
                                     filteredAddTagsOptions
                                   }
                                   tagsoptions={tagsoptions}
-                                  addTags={addTags}
-                                  handleAddTagChange={handleAddTagChange}
-                                  filteredRemoveTagsOptions={
-                                    filteredRemoveTagsOptions
-                                  }
-                                  removeTags={removeTags}
-                                  setAddTags={setAddTags}
-                                  setRemoveTags={setRemoveTags}
-                                  handleRemoveTagChange={handleRemoveTagChange}
-                                  handleEditAddTagsChange={handleEditAddTagsChange}
+                                  handleTagChange={handleTagChange}
 
                                 />
 
