@@ -196,13 +196,8 @@ const EditAutomationDrawer = ({
   handleEditCheckboxChange,
   handleEditAddTags,
   tagsoptions,
-  handleAddTagChange,
-  handleRemoveTagChange,
-  addTags,
-  removeTags,
-  handleEditAddTagsChange,
-  handleEditRemoveTagsChange,
-  setAddTags,
+  taskTemplateOptions,
+  chatTemplateOptions,
   handleTagChange,
   // filteredAddTagsOptions,
   // filteredRemoveTagsOptions
@@ -285,14 +280,14 @@ const EditAutomationDrawer = ({
     if (selectedAutomationData.length > 0) {
       setAutomations((prev) =>
         selectedAutomationData.map((automation) => ({
-          ...prev.find((a) => a.id === automation.id) || automation,
+          ...(prev.find((a) => a.id === automation.id) || automation),
           addTags: automation.addTags || [],
           removeTags: automation.removeTags || [],
         }))
       );
     }
   }, [selectedAutomationData]);
-  
+
   // useEffect(() => {
   //   setAutomations((prev) =>
   //     prev.map((automation) => ({
@@ -312,11 +307,10 @@ const EditAutomationDrawer = ({
   //     };
   //     console.log( "test",updatedAutomations)
   //     return updatedAutomations;
-     
+
   //   });
   // };
- 
-  
+
   return (
     <>
       {/* Main Edit Automation Drawer */}
@@ -333,16 +327,16 @@ const EditAutomationDrawer = ({
           },
         }}
       >
-        <Box sx={{ padding: "20px" }}>
+        <Box >
           <Box
             sx={{
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              mb: 2,
+            padding:2
             }}
           >
-            <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+            <Typography variant="h6" sx={{ fontWeight: "bold",  }}>
               Edit Automations
             </Typography>
             <RxCross2
@@ -350,155 +344,165 @@ const EditAutomationDrawer = ({
               style={{ fontSize: "30px", cursor: "pointer" }}
             />
           </Box>
+          <Box sx={{height:'91vh',overflowY:'auto'}}>
+            <Box sx={{padding:'15px'}}>
+            <Box>
+              {selectedAutomationData.length > 0 ? (
+                // selectedAutomationData.map((automation, index) => (
+                //   <Box
+                //     key={index}
+                //     sx={{
+                //       border: "2px solid #ddd",
+                //       borderRadius: "8px",
+                //       padding: 2,
+                //       marginBottom: 2,
+                //     }}
+                //   >
+                //     <Box
+                //       sx={{ display: "flex", justifyContent: "space-between" }}
+                //     >
+                //       <Typography>
+                //         {index + 1}. {automation.type || "No Type"}
+                //       </Typography>
+                //       <IconButton onClick={() => handleDeleteAutomation(index)}>
+                //         <DeleteIcon color="error" />
+                //       </IconButton>
+                //     </Box>
 
-          <Box>
-            {selectedAutomationData.length > 0 ? (
-              // selectedAutomationData.map((automation, index) => (
-              //   <Box
-              //     key={index}
-              //     sx={{
-              //       border: "2px solid #ddd",
-              //       borderRadius: "8px",
-              //       padding: 2,
-              //       marginBottom: 2,
-              //     }}
-              //   >
-              //     <Box
-              //       sx={{ display: "flex", justifyContent: "space-between" }}
-              //     >
-              //       <Typography>
-              //         {index + 1}. {automation.type || "No Type"}
-              //       </Typography>
-              //       <IconButton onClick={() => handleDeleteAutomation(index)}>
-              //         <DeleteIcon color="error" />
-              //       </IconButton>
-              //     </Box>
+                //       <>
+                //         <Typography gutterBottom variant="body2">
+                //           Select Template
+                //         </Typography>
+                //         <Autocomplete
+                //           options={
+                //             automation.type === "Send Email"
+                //               ? emailTemplateOptions
+                //               : automation.type === "Send Invoice"
+                //                 ? invoiceTemplateOptions
+                //                 : automation.type === "Create Organizer"
+                //                   ? organizerOptions
+                //                   : automation.type === "Send Proposal/Els"
+                //                     ? proposalElsOptions
+                //                     : automation.type === "Apply folder template"
+                //                       ? optionfolder
+                //                       : []
+                //           }
+                //           getOptionLabel={(option) => option.label}
+                //           value={automation.template || null}
+                //           onChange={(event, newValue) =>
+                //             handleEditTemplateChange(index, newValue)
+                //           }
+                //           renderInput={(params) => (
+                //             <TextField
+                //               {...params}
+                //               variant="outlined"
+                //               size="small"
+                //               placeholder="Select Template"
+                //             />
+                //           )}
+                //         />
 
-              //       <>
-              //         <Typography gutterBottom variant="body2">
-              //           Select Template
-              //         </Typography>
-              //         <Autocomplete
-              //           options={
-              //             automation.type === "Send Email"
-              //               ? emailTemplateOptions
-              //               : automation.type === "Send Invoice"
-              //                 ? invoiceTemplateOptions
-              //                 : automation.type === "Create Organizer"
-              //                   ? organizerOptions
-              //                   : automation.type === "Send Proposal/Els"
-              //                     ? proposalElsOptions
-              //                     : automation.type === "Apply folder template"
-              //                       ? optionfolder
-              //                       : []
-              //           }
-              //           getOptionLabel={(option) => option.label}
-              //           value={automation.template || null}
-              //           onChange={(event, newValue) =>
-              //             handleEditTemplateChange(index, newValue)
-              //           }
-              //           renderInput={(params) => (
-              //             <TextField
-              //               {...params}
-              //               variant="outlined"
-              //               size="small"
-              //               placeholder="Select Template"
-              //             />
-              //           )}
-              //         />
+                //         {automation.tags && automation.tags.length > 0 && (
+                //           <Box sx={{ marginTop: "10px" }}>
+                //             <Typography variant="body2">Only For:</Typography>
+                //             <Box
+                //               sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}
+                //             >
+                //               {automation.tags.map((tag) => (
+                //                 <Chip
+                //                   key={tag._id}
+                //                   label={tag.tagName}
+                //                   sx={{
+                //                     backgroundColor: tag.tagColour,
+                //                     color: "#fff",
+                //                     fontWeight: "500",
+                //                     borderRadius: "20px",
+                //                     marginRight: 1,
+                //                   }}
+                //                 />
+                //               ))}
+                //             </Box>
+                //           </Box>
+                //         )}
 
-              //         {automation.tags && automation.tags.length > 0 && (
-              //           <Box sx={{ marginTop: "10px" }}>
-              //             <Typography variant="body2">Only For:</Typography>
-              //             <Box
-              //               sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}
-              //             >
-              //               {automation.tags.map((tag) => (
-              //                 <Chip
-              //                   key={tag._id}
-              //                   label={tag.tagName}
-              //                   sx={{
-              //                     backgroundColor: tag.tagColour,
-              //                     color: "#fff",
-              //                     fontWeight: "500",
-              //                     borderRadius: "20px",
-              //                     marginRight: 1,
-              //                   }}
-              //                 />
-              //               ))}
-              //             </Box>
-              //           </Box>
-              //         )}
+                //         <Button
+                //           variant="text"
+                //           sx={{ marginTop: 2 }}
+                //           onClick={() => handleEditConditions(index)}
+                //         >
+                //           Add Conditions
+                //         </Button>
+                //       </>
 
-              //         <Button
-              //           variant="text"
-              //           sx={{ marginTop: 2 }}
-              //           onClick={() => handleEditConditions(index)}
-              //         >
-              //           Add Conditions
-              //         </Button>
-              //       </>
+                //   </Box>
+                // ))
+                selectedAutomationData.map((automation, index) => (
+                  <Box
+                    key={index}
+                    sx={{
+                      border: "2px solid #ddd",
+                      borderRadius: "8px",
+                      padding: 2,
+                      marginBottom: 2,
+                    }}
+                  >
+                    <Box
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
+                      <Typography>
+                        {index + 1}. {automation.type || "No Type"}
+                      </Typography>
+                      <IconButton onClick={() => handleDeleteAutomation(index)}>
+                        <DeleteIcon color="error" />
+                      </IconButton>
+                    </Box>
 
-              //   </Box>
-              // ))
-              selectedAutomationData.map((automation, index) => (
-                <Box
-                  key={index}
-                  sx={{
-                    border: "2px solid #ddd",
-                    borderRadius: "8px",
-                    padding: 2,
-                    marginBottom: 2,
-                  }}
-                >
-                  <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                    <Typography>
-                      {index + 1}. {automation.type || "No Type"}
-                    </Typography>
-                    <IconButton onClick={() => handleDeleteAutomation(index)}>
-                      <DeleteIcon color="error" />
-                    </IconButton>
-                  </Box>
-              
-                  {automation.type === "Update account tags" ? (
-                    <>
-                     
-              
-                      {/* Select for Added Tags */}
-                      <Typography variant="body2">Added Tags:</Typography>
-                      
-         
-         <Select
-  multiple
-  displayEmpty
-  multiline
-  size="small"
-  value={automation.addTags.map((tag) => tag._id)}
-  onChange={(event) => handleTagChange(index, "addTags", event)}
-  renderValue={(selected) =>
-    selected.length === 0 ? (
-      <Typography color="gray">Select tags to add</Typography>
-    ) : (
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-        {automation.addTags.map((tag) => (
-          <Chip
-            key={tag._id}
-            label={tag.tagName}
-            sx={{
-              backgroundColor: tag.tagColour,
-              color: "#fff",
-              fontWeight: "500",
-              borderRadius: "20px",
-            }}
-          />
-        ))}
-      </Box>
-    )
-  }
-  fullWidth
-  MenuProps={MenuProps}
->
-  {/* {tagsoptions
+                    {automation.type === "Update account tags" ? (
+                      <>
+                        {/* Select for Added Tags */}
+                        <Typography variant="body2">Added Tags:</Typography>
+
+                        <Select
+                          multiple
+                          displayEmpty
+                          multiline
+                          size="small"
+                          value={automation.addTags.map((tag) => tag._id)}
+                          onChange={(event) =>
+                            handleTagChange(index, "addTags", event)
+                          }
+                          renderValue={(selected) =>
+                            selected.length === 0 ? (
+                              <Typography color="gray">
+                                Select tags to add
+                              </Typography>
+                            ) : (
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  flexWrap: "wrap",
+                                  gap: 1,
+                                }}
+                              >
+                                {automation.addTags.map((tag) => (
+                                  <Chip
+                                    key={tag._id}
+                                    label={tag.tagName}
+                                    sx={{
+                                      backgroundColor: tag.tagColour,
+                                      color: "#fff",
+                                      fontWeight: "500",
+                                      borderRadius: "20px",
+                                    }}
+                                  />
+                                ))}
+                              </Box>
+                            )
+                          }
+                          fullWidth
+                          MenuProps={MenuProps}
+                        >
+                          {/* {tagsoptions
     .filter((option) => !automation.removeTags.some((tag) => tag._id === option.value)) // Hide selected removeTags
     .map((option) => (
       <MenuItem key={option.value} value={option.value} sx={{ backgroundColor: option.colour, color: "#fff" , fontSize: "10px",
@@ -518,79 +522,101 @@ const EditAutomationDrawer = ({
         {option.label}
       </MenuItem>
     ))} */}
-     {tagsoptions
-    .filter((option) => !automation.removeTags.some((tag) => tag._id === option.value)) // Hide selected removeTags
-    .map((option) => {
-      // Create a hidden canvas to measure text width
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-      context.font = "14px Arial"; // Match the MenuItem font style
+                          {tagsoptions
+                            .filter(
+                              (option) =>
+                                !automation.removeTags.some(
+                                  (tag) => tag._id === option.value
+                                )
+                            ) // Hide selected removeTags
+                            .map((option) => {
+                              // Create a hidden canvas to measure text width
+                              const canvas = document.createElement("canvas");
+                              const context = canvas.getContext("2d");
+                              context.font = "14px Arial"; // Match the MenuItem font style
 
-      const textWidth = context.measureText(option.label).width; // Get exact width
-      const dynamicWidth = Math.min(textWidth + 20, 200); // Add padding & set max width
+                              const textWidth = context.measureText(
+                                option.label
+                              ).width; // Get exact width
+                              const dynamicWidth = Math.min(
+                                textWidth + 20,
+                                200
+                              ); // Add padding & set max width
 
-      return (
-        <MenuItem
-          key={option.value}
-          value={option.value}
-          sx={{
-            backgroundColor: option.colour,
-            color: "#fff",
-            fontSize: "10px",
-            borderRadius: "10px",
-            margin: "5px",
-            textAlign: "center",
-            display: "flex",
-            justifyContent: "center",
-            padding: "4px 9px",
-            whiteSpace: "nowrap", // Prevent text wrapping
-            minWidth: `${dynamicWidth}px`,
-            maxWidth: `${dynamicWidth}px`, // Set dynamic max width
-            "&:hover": {
-              backgroundColor: option.colour,
-              color: "#fff",
-            },
-          }}
-        >
-          {option.label}
-        </MenuItem>
-      );
-    })}
-</Select>
-                      {/* Select for Removed Tags */}
-                      <Typography variant="body2" sx={{ marginTop: 2 }}>Removed Tags:</Typography>
-                      
-   <Select
-  multiple
-  size="small"
-  multiline
-  displayEmpty
-  value={automation.removeTags.map((tag) => tag._id)}
-  onChange={(event) => handleTagChange(index, "removeTags", event)}
-  renderValue={(selected) =>
-    selected.length === 0 ? (
-      <Typography color="gray">Select tags to remove</Typography>
-    ) : (
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-        {automation.removeTags.map((tag) => (
-          <Chip
-            key={tag._id}
-            label={tag.tagName}
-            sx={{
-              backgroundColor: tag.tagColour,
-              color: "#fff",
-              fontWeight: "500",
-              borderRadius: "20px",
-            }}
-          />
-        ))}
-      </Box>
-    )
-  }
-  fullWidth
-  MenuProps={MenuProps}
->
-  {/* {tagsoptions
+                              return (
+                                <MenuItem
+                                  key={option.value}
+                                  value={option.value}
+                                  sx={{
+                                    backgroundColor: option.colour,
+                                    color: "#fff",
+                                    fontSize: "10px",
+                                    borderRadius: "10px",
+                                    margin: "5px",
+                                    textAlign: "center",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    padding: "4px 9px",
+                                    whiteSpace: "nowrap", // Prevent text wrapping
+                                    minWidth: `${dynamicWidth}px`,
+                                    maxWidth: `${dynamicWidth}px`, // Set dynamic max width
+                                    "&:hover": {
+                                      backgroundColor: option.colour,
+                                      color: "#fff",
+                                    },
+                                  }}
+                                >
+                                  {option.label}
+                                </MenuItem>
+                              );
+                            })}
+                        </Select>
+                        {/* Select for Removed Tags */}
+                        <Typography variant="body2" sx={{ marginTop: 2 }}>
+                          Removed Tags:
+                        </Typography>
+
+                        <Select
+                          multiple
+                          size="small"
+                          multiline
+                          displayEmpty
+                          value={automation.removeTags.map((tag) => tag._id)}
+                          onChange={(event) =>
+                            handleTagChange(index, "removeTags", event)
+                          }
+                          renderValue={(selected) =>
+                            selected.length === 0 ? (
+                              <Typography color="gray">
+                                Select tags to remove
+                              </Typography>
+                            ) : (
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  flexWrap: "wrap",
+                                  gap: 1,
+                                }}
+                              >
+                                {automation.removeTags.map((tag) => (
+                                  <Chip
+                                    key={tag._id}
+                                    label={tag.tagName}
+                                    sx={{
+                                      backgroundColor: tag.tagColour,
+                                      color: "#fff",
+                                      fontWeight: "500",
+                                      borderRadius: "20px",
+                                    }}
+                                  />
+                                ))}
+                              </Box>
+                            )
+                          }
+                          fullWidth
+                          MenuProps={MenuProps}
+                        >
+                          {/* {tagsoptions
     .filter((option) => !automation.addTags.some((tag) => tag._id === option.value)) // Hide selected addTags
     .map((option) => (
       <MenuItem key={option.value} value={option.value} sx={{ backgroundColor: option.colour, color: "#fff", fontSize: "10px",
@@ -612,84 +638,103 @@ const EditAutomationDrawer = ({
         {option.label}
       </MenuItem>
     ))} */}
-     {tagsoptions
-    .filter((option) => !automation.addTags.some((tag) => tag._id === option.value)) // Hide selected removeTags
-    .map((option) => {
-      // Create a hidden canvas to measure text width
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-      context.font = "14px Arial"; // Match the MenuItem font style
+                          {tagsoptions
+                            .filter(
+                              (option) =>
+                                !automation.addTags.some(
+                                  (tag) => tag._id === option.value
+                                )
+                            ) // Hide selected removeTags
+                            .map((option) => {
+                              // Create a hidden canvas to measure text width
+                              const canvas = document.createElement("canvas");
+                              const context = canvas.getContext("2d");
+                              context.font = "14px Arial"; // Match the MenuItem font style
 
-      const textWidth = context.measureText(option.label).width; // Get exact width
-      const dynamicWidth = Math.min(textWidth + 20, 200); // Add padding & set max width
+                              const textWidth = context.measureText(
+                                option.label
+                              ).width; // Get exact width
+                              const dynamicWidth = Math.min(
+                                textWidth + 20,
+                                200
+                              ); // Add padding & set max width
 
-      return (
-        <MenuItem
-          key={option.value}
-          value={option.value}
-          sx={{
-            backgroundColor: option.colour,
-            color: "#fff",
-            fontSize: "10px",
-            borderRadius: "10px",
-            margin: "5px",
-            textAlign: "center",
-            display: "flex",
-            justifyContent: "center",
-            padding: "4px 9px",
-            whiteSpace: "nowrap", // Prevent text wrapping
-            minWidth: `${dynamicWidth}px`,
-            maxWidth: `${dynamicWidth}px`, // Set dynamic max width
-            "&:hover": {
-              backgroundColor: option.colour,
-              color: "#fff",
-            },
-          }}
-        >
-          {option.label}
-        </MenuItem>
-      );
-    })}
-</Select>
+                              return (
+                                <MenuItem
+                                  key={option.value}
+                                  value={option.value}
+                                  sx={{
+                                    backgroundColor: option.colour,
+                                    color: "#fff",
+                                    fontSize: "10px",
+                                    borderRadius: "10px",
+                                    margin: "5px",
+                                    textAlign: "center",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    padding: "4px 9px",
+                                    whiteSpace: "nowrap", // Prevent text wrapping
+                                    minWidth: `${dynamicWidth}px`,
+                                    maxWidth: `${dynamicWidth}px`, // Set dynamic max width
+                                    "&:hover": {
+                                      backgroundColor: option.colour,
+                                      color: "#fff",
+                                    },
+                                  }}
+                                >
+                                  {option.label}
+                                </MenuItem>
+                              );
+                            })}
+                        </Select>
+                      </>
+                    ) : (
+                      <>
+                        {/* Other Automation Types */}
+                        <Typography gutterBottom variant="body2">
+                          Select Template
+                        </Typography>
+                        <Autocomplete
+                          options={
+                            automation.type === "Send Email"
+                              ? emailTemplateOptions
+                              : automation.type === "Send Invoice"
+                                ? invoiceTemplateOptions
+                                : automation.type === "Create Organizer"
+                                  ? organizerOptions
+                                  : automation.type === "Send Proposal/Els"
+                                    ? proposalElsOptions
+                                    : automation.type ===
+                                        "Apply folder template"
+                                      ? optionfolder
+                                      : automation.type ===
+                                      "Create Task"
+                                    ? taskTemplateOptions
+                                    : automation.type ===
+                                    "Send message"
+                                  ? chatTemplateOptions
+                                      : []
+                          }
+                          getOptionLabel={(option) => option.label}
+                          value={automation.template || null}
+                          onChange={(event, newValue) =>
+                            handleEditTemplateChange(index, newValue)
+                          }
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant="outlined"
+                              size="small"
+                              placeholder="Select Template"
+                            />
+                          )}
+                        />
+                      </>
+                    )}
 
-                    </>
-                  ) : (
-                    <>
-                      {/* Other Automation Types */}
-                      <Typography gutterBottom variant="body2">Select Template</Typography>
-                      <Autocomplete
-                        options={
-                          automation.type === "Send Email"
-                            ? emailTemplateOptions
-                            : automation.type === "Send Invoice"
-                            ? invoiceTemplateOptions
-                            : automation.type === "Create Organizer"
-                            ? organizerOptions
-                            : automation.type === "Send Proposal/Els"
-                            ? proposalElsOptions
-                            : automation.type === "Apply folder template"
-                            ? optionfolder
-                            : []
-                        }
-                        getOptionLabel={(option) => option.label}
-                        value={automation.template || null}
-                        onChange={(event, newValue) =>
-                          handleEditTemplateChange(index, newValue)
-                        }
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            variant="outlined"
-                            size="small"
-                            placeholder="Select Template"
-                          />
-                        )}
-                      />
-                    </>
-                  )}
-              
-
-              <Box> {automation.tags && automation.tags.length > 0 && (
+                    <Box>
+                      {" "}
+                      {automation.tags && automation.tags.length > 0 && (
                         <Box
                           sx={{
                             marginTop: "10px",
@@ -718,68 +763,92 @@ const EditAutomationDrawer = ({
                             ))}
                           </Box>
                         </Box>
-                      )}</Box>
-                  <Button variant="text" sx={{ marginTop: 2 }} onClick={() => handleEditConditions(index)}>
-                    Add Conditions
-                  </Button>
-                </Box>
-              ))
-            ) : (
-              <Typography variant="body2" sx={{ marginTop: 2 }}>
-                No automations selected.
-              </Typography>
-            )}
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
-            <Button
-              variant="text"
-              sx={{ marginTop: 2 }}
-              onClick={(e) => handleEditClick(e)}
-            >
-              Add Automations
-            </Button>
-            <Button
-              variant="contained"
-              onClick={() => handleEditSaveAutomation()}
-              sx={{
-                backgroundColor: "var(--color-save-btn)",
-                "&:hover": { backgroundColor: "var(--color-save-hover-btn)" },
-                borderRadius: "15px",
-                marginTop: 2,
+                      )}
+                    </Box>
+                    <Button
+                      variant="text"
+                      sx={{ marginTop: 2 }}
+                      onClick={() => handleEditConditions(index)}
+                    >
+                      Add Conditions
+                    </Button>
+                  </Box>
+                ))
+              ) : (
+                <Typography variant="body2" sx={{ marginTop: 2 }}>
+                  No automations selected.
+                </Typography>
+              )}
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
+              <Button
+                variant="text"
+                sx={{ marginTop: 2 }}
+                onClick={(e) => handleEditClick(e)}
+              >
+                Add Automations
+              </Button>
+              <Button
+                variant="contained"
+                onClick={() => handleEditSaveAutomation()}
+                sx={{
+                  backgroundColor: "var(--color-save-btn)",
+                  "&:hover": { backgroundColor: "var(--color-save-hover-btn)" },
+                  borderRadius: "15px",
+                  marginTop: 2,
+                }}
+              >
+                Save Automation
+              </Button>
+            </Box>
+
+            <Menu
+              anchorEl={ehitAnchorEl}
+              open={Boolean(ehitAnchorEl)}
+              onClose={handleEditClose}
+              PaperProps={{
+                style: {
+                  maxHeight: 200, // Adjust the height as needed
+                  overflowY: "auto",
+                },
               }}
             >
-              Save Automation
-            </Button>
+              <MenuItem onClick={() => handleMenuItemSelect("Send Email")}>
+                Send Email
+              </MenuItem>
+              <MenuItem onClick={() => handleMenuItemSelect("Send Invoice")}>
+                Send Invoice
+              </MenuItem>
+              <MenuItem
+                onClick={() => handleMenuItemSelect("Send Proposal/Els")}
+              >
+                Send Proposal/Els
+              </MenuItem>
+              <MenuItem
+                onClick={() => handleMenuItemSelect("Create Organizer")}
+              >
+                Create Organizer
+              </MenuItem>
+              <MenuItem
+                onClick={() => handleMenuItemSelect("Apply folder template")}
+              >
+                Apply folder template
+              </MenuItem>
+              <MenuItem
+                onClick={() => handleMenuItemSelect("Update account tags")}
+              >
+                Update account tags
+              </MenuItem>
+              <MenuItem onClick={() => handleMenuItemSelect("Create Task")}>
+                Create Task
+              </MenuItem>
+              {/* Send message */}
+              <MenuItem onClick={() => handleMenuItemSelect("Send message")}>
+                Send message
+              </MenuItem>
+            </Menu>
+            </Box>
           </Box>
-
-          <Menu
-            anchorEl={ehitAnchorEl}
-            open={Boolean(ehitAnchorEl)}
-            onClose={handleEditClose}
-          >
-            <MenuItem onClick={() => handleMenuItemSelect("Send Email")}>
-              Send Email
-            </MenuItem>
-            <MenuItem onClick={() => handleMenuItemSelect("Send Invoice")}>
-              Send Invoice
-            </MenuItem>
-            <MenuItem onClick={() => handleMenuItemSelect("Send Proposal/Els")}>
-              Send Proposal/Els
-            </MenuItem>
-            <MenuItem onClick={() => handleMenuItemSelect("Create Organizer")}>
-              Create Organizer
-            </MenuItem>
-            <MenuItem
-              onClick={() => handleMenuItemSelect("Apply folder template")}
-            >
-              Apply folder template
-            </MenuItem>
-            <MenuItem
-              onClick={() => handleMenuItemSelect("Update account tags")}
-            >
-              Update account tags
-            </MenuItem>
-          </Menu>
         </Box>
       </Drawer>
 

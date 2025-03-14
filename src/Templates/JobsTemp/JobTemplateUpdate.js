@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import { Chip, InputAdornment, Box, Button, Typography, Container, Grid, IconButton, Autocomplete, TextField, InputLabel, Switch, FormControlLabel, List, ListItem, ListItemText, Popover } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -133,11 +133,28 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
     setAnchorEl(event.currentTarget);
     setShowDropdown(!showDropdown);
   };
+  const [cursorPosition, setCursorPosition] = useState(0);
+const textFieldRef = useRef(null);
+const handleAddShortcut = (shortcut) => {
+  setjobname((prevText) => {
+      const newText =
+          prevText.slice(0, cursorPosition) + `[${shortcut}]` + prevText.slice(cursorPosition);
+      return newText;
+  });
 
-  const handleAddShortcut = (shortcut) => {
-    setjobname((prevText) => prevText + `[${shortcut}]`);
-    setShowDropdown(false);
-  };
+  setTimeout(() => {
+      if (textFieldRef.current) {
+          textFieldRef.current.focus();
+          textFieldRef.current.setSelectionRange(cursorPosition + shortcut.length + 2, cursorPosition + shortcut.length + 2);
+      }
+  }, 0);
+
+  setShowDropdown(false);
+};
+  // const handleAddShortcut = (shortcut) => {
+  //   setjobname((prevText) => prevText + `[${shortcut}]`);
+  //   setShowDropdown(false);
+  // };
   const dayOptions = [
     { label: "Days", value: "Days" },
     { label: "Months", value: "Months" },
@@ -156,8 +173,9 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
     setPriorityNew(priority);
   };
   const handlejobName = (e) => {
-    const { value } = e.target;
+    const { value,selectionStart  } = e.target;
     setjobname(value);
+    setCursorPosition(selectionStart);
   };
 
   const [combinedValues, setCombinedValues] = useState([]);
@@ -330,18 +348,36 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
       }
     }
   };
-  const handleDescriptionAddShortcut = (shortcut) => {
-    const updatedTextValue = clientDescription + `[${shortcut}]`;
-    if (updatedTextValue.length <= charLimit) {
-      setClientDescription(updatedTextValue);
-      console.log(updatedTextValue);
-      setCharCount(updatedTextValue.length);
-    }
-    setShowDropdownDescription(false);
+    const descriptionFieldRef = useRef(null);
+    const handleDescriptionAddShortcut = (shortcut) => {
+      setClientDescription((prevText) => {
+          const newText =
+              prevText.slice(0, cursorPosition) + `[${shortcut}]` + prevText.slice(cursorPosition);
+          return newText.length <= charLimit ? newText : prevText;
+      });
+  
+      setTimeout(() => {
+          if (descriptionFieldRef.current) {
+              descriptionFieldRef.current.focus();
+              descriptionFieldRef.current.setSelectionRange(cursorPosition + shortcut.length + 2, cursorPosition + shortcut.length + 2);
+          }
+      }, 0);
+  
+      setShowDropdownDescription(false);
   };
+  // const handleDescriptionAddShortcut = (shortcut) => {
+  //   const updatedTextValue = clientDescription + `[${shortcut}]`;
+  //   if (updatedTextValue.length <= charLimit) {
+  //     setClientDescription(updatedTextValue);
+  //     console.log(updatedTextValue);
+  //     setCharCount(updatedTextValue.length);
+  //   }
+  //   setShowDropdownDescription(false);
+  // };
   const handlechatsubject = (e) => {
-    const { value } = e.target;
+    const { value,selectionStart  } = e.target;
     setInputText(value);
+    setCursorPosition(selectionStart);
   };
   const handleChange = (event) => {
     const value = event.target.value;
@@ -354,11 +390,26 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
     setClientFacingStatus(checked);
   };
 
+  // const handleJobAddShortcut = (shortcut) => {
+  //   setInputText((prevText) => prevText + `[${shortcut}]`);
+  //   setShowDropdownClientJob(false);
+  // };
   const handleJobAddShortcut = (shortcut) => {
-    setInputText((prevText) => prevText + `[${shortcut}]`);
+    // setInputText((prevText) => prevText + `[${shortcut}]`);
+    setInputText((prevText) => {
+      const newText =
+          prevText.slice(0, cursorPosition) + `[${shortcut}]` + prevText.slice(cursorPosition);
+      return newText;
+  });
+
+  setTimeout(() => {
+      if (textFieldRef.current) {
+          textFieldRef.current.focus();
+          textFieldRef.current.setSelectionRange(cursorPosition + shortcut.length + 2, cursorPosition + shortcut.length + 2);
+      }
+  }, 0);
     setShowDropdownClientJob(false);
   };
-
   const toggleShortcodeDropdown = (event) => {
     setAnchorElClientJob(event.currentTarget);
     setShowDropdownClientJob(!showDropdownClientJob);
@@ -560,7 +611,7 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
               </Box>
               <Box mt={1}>
                 <InputLabel sx={{ color: "black" }}>Job Name</InputLabel>
-                <TextField value={jobname + selectedShortcut} onChange={handlejobName} size="small" margin="normal" fullWidth placeholder="Job Name" />
+                <TextField value={jobname}   onClick={(e) => setCursorPosition(e.target.selectionStart)} onChange={handlejobName} size="small" margin="normal" fullWidth placeholder="Job Name" />
               </Box>
               <Box>
                 <Button variant="contained" color="primary" onClick={toggleDropdown} sx={{
@@ -712,7 +763,10 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
                     {clientFacingStatus && (
                       <>
                         <Typography>Job name for client</Typography>
-                        <TextField fullWidth name="subject" value={inputText + selectedJobShortcut} onChange={handlechatsubject} placeholder="Job name for client" size="small" sx={{ background: "#fff", mt: 2 }} />
+                        <TextField fullWidth name="subject"  inputRef={textFieldRef}
+                         value={inputText}
+                           onChange={handlechatsubject} 
+                           onClick={(e) => setCursorPosition(e.target.selectionStart)} placeholder="Job name for client" size="small" sx={{ background: "#fff", mt: 2 }} />
 
                         <Box>
                           <Button variant="contained" color="primary" onClick={toggleShortcodeDropdown} sx={{
@@ -815,7 +869,9 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
                             type="text"
                             multiline
                             value={clientDescription}
-                            onChange={handleChange}
+                              inputRef={descriptionFieldRef}
+                              onClick={(e) => setCursorPosition(e.target.selectionStart)}
+                              onChange={handleChange}
                             placeholder="Description"
                             InputProps={{
                               endAdornment: (

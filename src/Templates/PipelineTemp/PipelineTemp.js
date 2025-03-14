@@ -71,7 +71,8 @@ const PipelineTemp = () => {
   const SORTJOBS_API = process.env.REACT_APP_SORTJOBS_URL;
   const PROPOSAL_API = process.env.REACT_APP_PROPOSAL_TEMP_URL;
   const ORGANIZER_TEMP_API = process.env.REACT_APP_ORGANIZER_TEMP_URL;
-
+  const TASK_API = process.env.REACT_APP_TASK_TEMP_URL;
+  const CHAT_API = process.env.REACT_APP_CHAT_TEMP_URL;
   const theme = useTheme();
   const navigate = useNavigate();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -215,19 +216,18 @@ const PipelineTemp = () => {
   const handleEditGoBack = () => {
     setIsConditionsEditFormOpen(false);
   };
- 
-  
+
   // const handleTagSelectionChange = (index, type, selectedValues) => {
   //   setSelectedAutomationData((prevData) =>
   //     prevData.map((automation, i) => {
   //       if (i !== index) return automation; // Keep other automations unchanged
-  
+
   //       // Determine the correct options source
   //       const options = type === "addTags" ? tagsoptions : tagsoptions;
-  
+
   //       // Convert selected values into full tag objects
   //       const selectedTags = options.filter((tag) => selectedValues.includes(tag.value));
-  
+
   //       // Ensure previously selected tags remain while adding new ones
   //       const updatedTags = [...automation[type], ...selectedTags].reduce((acc, tag) => {
   //         if (!acc.find((t) => t._id === tag._id)) {
@@ -235,19 +235,21 @@ const PipelineTemp = () => {
   //         }
   //         return acc;
   //       }, []);
-  
+
   //       return { ...automation, [type]: updatedTags };
   //     })
   //   );
   // };
-  
+
   const handleTagSelectionChange = (index, field, selectedValues) => {
     setSelectedAutomationData((prevData) =>
       prevData.map((automation, i) =>
         i === index
           ? {
               ...automation,
-              [field]: tagsoptions.filter((tag) => selectedValues.includes(tag.value)),
+              [field]: tagsoptions.filter((tag) =>
+                selectedValues.includes(tag.value)
+              ),
             }
           : automation
       )
@@ -255,13 +257,13 @@ const PipelineTemp = () => {
   };
   //  const handleTagChange = (index, type, event) => {
   //     const { value } = event.target; // Array of selected tag IDs
-    
+
   //     setSelectedAutomationData((prev) => {
   //       const updatedAutomations = [...prev];
-    
+
   //       // Get the correct tag options list
   //       const tagOptions = type === "addTags" ? filteredAddTagsOptions : filteredRemoveTagsOptions;
-    
+
   //       // Map selected tag IDs to tag objects with _id, tagName, and tagColour
   //       const updatedTags = value.map((tagId) => {
   //         const tag = tagOptions.find((t) => t.value === tagId);
@@ -269,60 +271,72 @@ const PipelineTemp = () => {
   //           ? { _id: tag.value, tagName: tag.label, tagColour: tag.colour }
   //           : tagId; // Preserve unknown tag IDs
   //       });
-    
+
   //       updatedAutomations[index] = {
   //         ...updatedAutomations[index],
   //         [type]: updatedTags,
   //       };
-    
+
   //       console.log("Updated Automations:", updatedAutomations);
   //       return updatedAutomations;
   //     });
   //   };
   const handleTagChange = (index, type, event) => {
     const { value } = event.target; // Array of selected tag IDs
-  
+
     setSelectedAutomationData((prev) => {
       const updatedAutomations = [...prev];
-  
+
       // Get the correct tag options list
       const tagOptions = tagsoptions;
-  
+
       // Map selected tag IDs to tag objects with _id, tagName, and tagColour
-      const selectedTags = value.map((tagId) => {
-        const tag = tagOptions.find((t) => t.value === tagId);
-        return tag ? { _id: tag.value, tagName: tag.label, tagColour: tag.colour } : null;
-      }).filter(Boolean); // Remove null values
-  
+      const selectedTags = value
+        .map((tagId) => {
+          const tag = tagOptions.find((t) => t.value === tagId);
+          return tag
+            ? { _id: tag.value, tagName: tag.label, tagColour: tag.colour }
+            : null;
+        })
+        .filter(Boolean); // Remove null values
+
       // Prevent duplicate selections
       const uniqueTags = selectedTags.filter(
         (tag, idx, self) => self.findIndex((t) => t._id === tag._id) === idx
       );
-  
+
       // Ensure the tag is removed from the opposite category
       if (type === "addTags") {
-        updatedAutomations[index].removeTags = updatedAutomations[index].removeTags.filter(
+        updatedAutomations[index].removeTags = updatedAutomations[
+          index
+        ].removeTags.filter(
           (tag) => !uniqueTags.some((t) => t._id === tag._id)
         );
       } else if (type === "removeTags") {
-        updatedAutomations[index].addTags = updatedAutomations[index].addTags.filter(
-          (tag) => !uniqueTags.some((t) => t._id === tag._id)
-        );
+        updatedAutomations[index].addTags = updatedAutomations[
+          index
+        ].addTags.filter((tag) => !uniqueTags.some((t) => t._id === tag._id));
       }
-  
+
       updatedAutomations[index] = {
         ...updatedAutomations[index],
         [type]: uniqueTags,
       };
-  
+
       return updatedAutomations;
     });
   };
-  
+
   const handleMenuItemSelect = (type) => {
     let newAutomation = {};
 
     switch (type) {
+      case "Create Task":
+        newAutomation = { type: "Create Task", template: null, tags: [] };
+        break;
+      case "Send message":
+        newAutomation = { type: "Send message", template: null, tags: [] };
+        break;
       case "Send Email":
         newAutomation = { type: "Send Email", template: null, tags: [] };
         break;
@@ -359,7 +373,7 @@ const PipelineTemp = () => {
     setSelectedAutomationData([...selectedAutomationData, newAutomation]);
 
     setEditAnchorEl(null); // Close the menu
- 
+
     setIsEditDrawerOpen(true); // Open the edit drawer
   };
   const handleEditClose = () => {
@@ -400,7 +414,6 @@ const PipelineTemp = () => {
         setIsEditDrawerOpen(true); // Open the edit automation drawer
         setAnchorEl(null);
         setEditingStageIndex(index);
-
       } else {
         console.log("No automations available to edit for this stage.");
       }
@@ -489,12 +502,44 @@ const PipelineTemp = () => {
     []
   );
   const [addOrganizerTemplates, setAddOrganizerTemplates] = useState([]);
+  const [addTaskTemplates, setAddTaskTemplates] = useState([]);
+  const [addChatTemplates, setAddChatTemplates] = useState([]);
   useEffect(() => {
     fetchEmailTemplates();
     fectInvoiceTemplates();
     fectProposalandElsTemp();
     fetchOrganizerTemplates();
+    fetchTaskTemplates();
+    fetchChatTemplates();
   }, []);
+  const fetchChatTemplates = async () => {
+    try {
+      const url = `${CHAT_API}/Workflow/chats/chattemplate`;
+      const response = await fetch(url);
+      const data = await response.json();
+      setAddChatTemplates(data.chatTemplate);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const chatTemplateOptions = addChatTemplates.map((temp) => ({
+    value: temp._id,
+    label: temp.templatename,
+  }));
+  const fetchTaskTemplates = async () => {
+    try {
+      const url = `${TASK_API}/workflow/tasks/tasktemplate/`;
+      const response = await fetch(url);
+      const data = await response.json();
+      setAddTaskTemplates(data.TaskTemplates);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const taskTemplateOptions = addTaskTemplates.map((temp) => ({
+    value: temp._id,
+    label: temp.templatename,
+  }));
   const fetchEmailTemplates = async () => {
     try {
       const url = `${EMAIL_API}/workflow/emailtemplate`;
@@ -578,9 +623,38 @@ const PipelineTemp = () => {
     label: folderTemplates.templatename,
   }));
   const [selectedtemp, setselectedTemp] = useState();
-  const handletemp = (selectedOptions) => {
+  const handletemp = (selectedOptions,automationSelect) => {
     setselectedTemp(selectedOptions);
+    console.log(selectedOptions)
+    if (automationSelect === "Send message") {
+      fetchTaskTempbyid(selectedOptions.value);
+  }
+
   };
+    
+   
+  
+      //get id wise template Record
+      const fetchTaskTempbyid = async (_id) => {
+          try {
+              const url = `${CHAT_API}/Workflow/chats/chattemplate/chattemplateList/${_id}`;
+              const response = await fetch(url);
+              if (!response.ok) {
+                  throw new Error("Failed to fetch data");
+              }
+              const data = await response.json();
+              console.log("chattemp", data)
+             
+  
+              // setTempValues(data.taskTemplate);
+              setReminderChecked(data.chatTemplate.sendreminderstoclient || false);
+              setNoOfReminder(data.chatTemplate.numberofreminders || "1")
+             setDaysuntilNextReminder(data.chatTemplate.daysuntilnextreminder || "3")
+  
+          } catch (error) {
+              console.error("Error fetching data:", error);
+          }
+      };
 
   // condition tags
   const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
@@ -714,7 +788,6 @@ const PipelineTemp = () => {
   //   );
   // };
 
-  
   const handleAddTagChange = (event) => {
     const selectedValues = event.target.value;
     setAddTags(selectedValues);
@@ -726,38 +799,42 @@ const PipelineTemp = () => {
   // handleEditAddTagsChange
   const handleEditAddTagsChange = (index, event) => {
     const selectedIds = event.target.value || [];
-  
+
     setSelectedAutomationData((prevData) =>
       prevData.map((automation, i) =>
         i === index
           ? {
               ...automation,
-              addTags: tagsoptions.filter((tag) => selectedIds.includes(tag.value)), // Store full objects
+              addTags: tagsoptions.filter((tag) =>
+                selectedIds.includes(tag.value)
+              ), // Store full objects
             }
           : automation
       )
     );
-  
+
     console.log("Updated Add Tags:", selectedIds);
   };
   // handleEditRemoveTagsChange
   const handleEditRemoveTagsChange = (index, event) => {
     const selectedIds = event.target.value || [];
-  
+
     setSelectedAutomationData((prevData) =>
       prevData.map((automation, i) =>
         i === index
           ? {
               ...automation,
-              removeTags: tagsoptions.filter((tag) => selectedIds.includes(tag.value)), // Store full objects
+              removeTags: tagsoptions.filter((tag) =>
+                selectedIds.includes(tag.value)
+              ), // Store full objects
             }
           : automation
       )
     );
-  
+
     console.log("Updated Remove Tags:", selectedIds);
   };
-  
+
   const handleRemoveTagChange = (event) => {
     const selectedValues = event.target.value;
     setRemoveTags(selectedValues);
@@ -781,8 +858,446 @@ const PipelineTemp = () => {
     (tag) => !addTags.includes(tag.value)
   );
   const [selectedAddTags, setSelectedAddTags] = useState([]);
+  const [reminderChecked, setReminderChecked] = useState(false);
+    const [daysuntilNextReminder, setDaysuntilNextReminder] = useState('3');
+    const [noOfReminder, setNoOfReminder] = useState(1);
+    const handleReminderChange = (checked) => {
+      setReminderChecked(checked);
+    };
   const renderActionContent = (automationSelect, index) => {
     switch (automationSelect) {
+      // Create Task
+      case "Create Task":
+        return (
+          <>
+            <Grid item>
+              {/* {automationSelect} */}
+              <Box
+                sx={{
+                  border: "2px solid #ddd",
+                  borderRadius: "8px",
+                  padding: 2,
+                  // marginBottom: 2,
+                }}
+              >
+                <Typography gutterBottom>
+                  1. {automationSelect || "No Type"}
+                </Typography>
+
+                <Typography mb={1}>Select templates</Typography>
+                <Autocomplete
+                  options={taskTemplateOptions}
+                  getOptionLabel={(option) => option.label}
+                  value={selectedtemp}
+                 onChange={(event, newValue) => handletemp(newValue, automationSelect)}
+                  isOptionEqualToValue={(option, value) =>
+                    option.value === value.value
+                  }
+                  renderOption={(props, option) => (
+                    <Box
+                      component="li"
+                      {...props}
+                      sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
+                    >
+                      {option.label}
+                    </Box>
+                  )}
+                  renderInput={(params) => (
+                    <>
+                      <TextField
+                        {...params}
+                        // helperText={templateError}
+                        sx={{ backgroundColor: "#fff" }}
+                        placeholder="Select Template"
+                        variant="outlined"
+                        size="small"
+                      />
+                    </>
+                  )}
+                  sx={{ width: "100%", marginTop: "8px" }}
+                  clearOnEscape // Enable clearable functionality
+                />
+                <Box mt={2}>
+                  {" "}
+                  {selectedTags.length > 0 && (
+                    <Grid container alignItems="center" gap={1}>
+                      <Typography>Only for:</Typography>
+                      <Grid item>{selectedTagElements}</Grid>
+                    </Grid>
+                  )}
+                </Box>
+
+                <Button variant="text" onClick={handleAddConditions}>
+                  Add Conditions
+                </Button>
+              </Box>
+              <Box mt={2}>
+                <Button
+                  variant="contained"
+                  onClick={handleSaveAutomation(stageSelected)}
+                  sx={{
+                    backgroundColor: "var(--color-save-btn)", // Normal background
+
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                    },
+                    borderRadius: "15px",
+                  }}
+                >
+                  Save Automation
+                </Button>
+              </Box>
+            </Grid>
+            <Drawer
+              anchor="right"
+              open={isConditionsFormOpen}
+              onClose={handleGoBack}
+              PaperProps={{ sx: { width: "550px", padding: 2 } }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <IconButton onClick={handleGoBack}>
+                  <IoMdArrowRoundBack fontSize="large" color="blue" />
+                </IconButton>
+                <Typography variant="h6">Add conditions</Typography>
+              </Box>
+
+              <Box sx={{ padding: 2 }}>
+                <Typography variant="body1">
+                  Apply automation only for accounts with these tags
+                </Typography>
+                <TextField
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  placeholder="Search..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  InputProps={{
+                    startAdornment: (
+                      <AiOutlineSearch style={{ marginRight: 8 }} />
+                    ),
+                  }}
+                  sx={{ marginTop: 2 }}
+                />
+
+                <Box sx={{ marginTop: 2, height: "68vh", overflowY: "auto" }}>
+                  {filteredTags.map((tag) => (
+                    <Box
+                      key={tag._id}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 3,
+                        borderBottom: "1px solid grey",
+                        paddingBottom: 1,
+                      }}
+                    >
+                      <Checkbox
+                        checked={tempSelectedTags.includes(tag)}
+                        onChange={() => handleCheckboxChange(tag)}
+                      />
+                      <Chip
+                        label={tag.tagName}
+                        sx={{
+                          backgroundColor: tag.tagColour,
+                          color: "#fff",
+                          fontWeight: "500",
+                          borderRadius: "20px",
+                          marginRight: 1,
+                        }}
+                      />
+                    </Box>
+                  ))}
+                </Box>
+
+                <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={!isAnyCheckboxChecked}
+                    onClick={handleAddTags}
+                    sx={{
+                      backgroundColor: "var(--color-save-btn)", // Normal background
+
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                      },
+                      borderRadius: "15px",
+                      width: "80px",
+                    }}
+                  >
+                    Add
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={handleGoBack}
+                    sx={{
+                      borderColor: "var(--color-border-cancel-btn)", // Normal background
+                      color: "var(--color-save-btn)",
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        color: "#fff",
+                        border: "none",
+                      },
+                      width: "80px",
+                      borderRadius: "15px",
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </Box>
+              </Box>
+            </Drawer>
+          </>
+        );
+      // Send message
+      case "Send message":
+        return (
+          <>
+            <Grid item>
+              {/* {automationSelect} */}
+              <Box
+                sx={{
+                  border: "2px solid #ddd",
+                  borderRadius: "8px",
+                  padding: 2,
+                  // marginBottom: 2,
+                }}
+              >
+                <Typography gutterBottom>
+                  1. {automationSelect || "No Type"}
+                </Typography>
+
+                <Typography mb={1}>Select templates</Typography>
+                <Autocomplete
+                  options={chatTemplateOptions}
+                  getOptionLabel={(option) => option.label}
+                  value={selectedtemp}
+                 onChange={(event, newValue) => handletemp(newValue, automationSelect)}
+                  isOptionEqualToValue={(option, value) =>
+                    option.value === value.value
+                  }
+                  renderOption={(props, option) => (
+                    <Box
+                      component="li"
+                      {...props}
+                      sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
+                    >
+                      {option.label}
+                    </Box>
+                  )}
+                  renderInput={(params) => (
+                    <>
+                      <TextField
+                        {...params}
+                        // helperText={templateError}
+                        sx={{ backgroundColor: "#fff" }}
+                        placeholder="Select Template"
+                        variant="outlined"
+                        size="small"
+                      />
+                    </>
+                  )}
+                  sx={{ width: "100%", marginTop: "8px" }}
+                  clearOnEscape // Enable clearable functionality
+                />
+                <Box mt={2}>
+                  {" "}
+                  {selectedTags.length > 0 && (
+                    <Grid container alignItems="center" gap={1}>
+                      <Typography>Only for:</Typography>
+                      <Grid item>{selectedTagElements}</Grid>
+                    </Grid>
+                  )}
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Button variant="text" onClick={handleAddConditions}>
+                    Add Conditions
+                  </Button>
+                  <Box display={"flex"} alignItems={"center"}>
+                    <Box>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={reminderChecked}
+                            onChange={(event) =>
+                              handleReminderChange(event.target.checked)
+                            }
+                            // checked={sendreminderstoclient}
+                            // onChange={(event)=>handleDateSwitchChange(event.target.checked)}
+                            color="primary"
+                          />
+                        }
+                      />
+                    </Box>
+                    <Typography variant="h6">Reminders </Typography>
+                  </Box>
+                </Box>
+
+                 {reminderChecked && (
+                                          <Box mb={3}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mt: 2 }}>
+                
+                                              <Box>
+                                                <InputLabel sx={{ color: 'black' }}>Days until next reminder</InputLabel>
+                                                <TextField
+                                                  // margin="normal"
+                                                  fullWidth
+                                                  name="Daysuntilnextreminder"
+                                                  value={daysuntilNextReminder}
+                                                  onChange={(e) => setDaysuntilNextReminder(e.target.value)}
+                                                  placeholder="Days until next reminder"
+                                                  size="small"
+                                                  sx={{ mt: 2 }}
+                                                />
+                                              </Box>
+                
+                                              <Box>
+                                                <InputLabel sx={{ color: 'black' }}>No Of reminders</InputLabel>
+                                                <TextField
+                
+                                                  fullWidth
+                                                  name="No Of reminders"
+                                                  value={noOfReminder}
+                                                  onChange={(e) => setNoOfReminder(e.target.value)}
+                
+                                                  placeholder="NoOfreminders"
+                                                  size="small"
+                                                  sx={{ mt: 2 }}
+                                                />
+                                              </Box>
+                
+                                            </Box>
+                                          </Box>
+                                        )}
+              </Box>
+              <Box mt={2}>
+                <Button
+                  variant="contained"
+                  onClick={handleSaveAutomation(stageSelected)}
+                  sx={{
+                    backgroundColor: "var(--color-save-btn)", // Normal background
+
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                    },
+                    borderRadius: "15px",
+                  }}
+                >
+                  Save Automation
+                </Button>
+              </Box>
+            </Grid>
+            <Drawer
+              anchor="right"
+              open={isConditionsFormOpen}
+              onClose={handleGoBack}
+              PaperProps={{ sx: { width: "550px", padding: 2 } }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <IconButton onClick={handleGoBack}>
+                  <IoMdArrowRoundBack fontSize="large" color="blue" />
+                </IconButton>
+                <Typography variant="h6">Add conditions</Typography>
+              </Box>
+
+              <Box sx={{ padding: 2 }}>
+                <Typography variant="body1">
+                  Apply automation only for accounts with these tags
+                </Typography>
+                <TextField
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  placeholder="Search..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  InputProps={{
+                    startAdornment: (
+                      <AiOutlineSearch style={{ marginRight: 8 }} />
+                    ),
+                  }}
+                  sx={{ marginTop: 2 }}
+                />
+
+                <Box sx={{ marginTop: 2, height: "68vh", overflowY: "auto" }}>
+                  {filteredTags.map((tag) => (
+                    <Box
+                      key={tag._id}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 3,
+                        borderBottom: "1px solid grey",
+                        paddingBottom: 1,
+                      }}
+                    >
+                      <Checkbox
+                        checked={tempSelectedTags.includes(tag)}
+                        onChange={() => handleCheckboxChange(tag)}
+                      />
+                      <Chip
+                        label={tag.tagName}
+                        sx={{
+                          backgroundColor: tag.tagColour,
+                          color: "#fff",
+                          fontWeight: "500",
+                          borderRadius: "20px",
+                          marginRight: 1,
+                        }}
+                      />
+                    </Box>
+                  ))}
+                </Box>
+
+                <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={!isAnyCheckboxChecked}
+                    onClick={handleAddTags}
+                    sx={{
+                      backgroundColor: "var(--color-save-btn)", // Normal background
+
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                      },
+                      borderRadius: "15px",
+                      width: "80px",
+                    }}
+                  >
+                    Add
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={handleGoBack}
+                    sx={{
+                      borderColor: "var(--color-border-cancel-btn)", // Normal background
+                      color: "var(--color-save-btn)",
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        color: "#fff",
+                        border: "none",
+                      },
+                      width: "80px",
+                      borderRadius: "15px",
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </Box>
+              </Box>
+            </Drawer>
+          </>
+        );
       case "Send Invoice":
         return (
           <>
@@ -805,7 +1320,7 @@ const PipelineTemp = () => {
                   options={invoiceTemplateOptions}
                   getOptionLabel={(option) => option.label}
                   value={selectedtemp}
-                  onChange={(event, newValue) => handletemp(newValue)}
+                 onChange={(event, newValue) => handletemp(newValue, automationSelect)}
                   isOptionEqualToValue={(option, value) =>
                     option.value === value.value
                   }
@@ -987,7 +1502,7 @@ const PipelineTemp = () => {
                   options={proposalElsOptions}
                   getOptionLabel={(option) => option.label}
                   value={selectedtemp}
-                  onChange={(event, newValue) => handletemp(newValue)}
+                 onChange={(event, newValue) => handletemp(newValue, automationSelect)}
                   isOptionEqualToValue={(option, value) =>
                     option.value === value.value
                   }
@@ -1168,7 +1683,7 @@ const PipelineTemp = () => {
                   options={emailTemplateOptions}
                   getOptionLabel={(option) => option.label}
                   value={selectedtemp}
-                  onChange={(event, newValue) => handletemp(newValue)}
+                 onChange={(event, newValue) => handletemp(newValue, automationSelect)}
                   isOptionEqualToValue={(option, value) =>
                     option.value === value.value
                   }
@@ -1352,7 +1867,7 @@ const PipelineTemp = () => {
                   options={optionfolder}
                   getOptionLabel={(option) => option.label}
                   value={selectedtemp}
-                  onChange={(event, newValue) => handletemp(newValue)}
+                 onChange={(event, newValue) => handletemp(newValue, automationSelect)}
                   isOptionEqualToValue={(option, value) =>
                     option.value === value.value
                   }
@@ -1519,21 +2034,25 @@ const PipelineTemp = () => {
       case "Update account tags":
         return (
           <>
-              <Grid item>
-                <Box sx={{
+            <Grid item>
+              <Box
+                sx={{
                   border: "2px solid #ddd",
                   borderRadius: "8px",
                   padding: 2,
                   // marginBottom: 2,
-                }}>
+                }}
+              >
                 <Typography gutterBottom>
                   1. {automationSelect || "No Type"}
                 </Typography>
-               
+
                 <Box sx={{ display: "flex", alignItems: "center", gap: 5 }}>
                   {/* Add Tags Section */}
                   <Box mt={2} width={"50%"}>
-                    <Typography gutterBottom variant="body2">Add Tags</Typography>
+                    <Typography gutterBottom variant="body2">
+                      Add Tags
+                    </Typography>
                     <FormControl
                       sx={{
                         width: "100%",
@@ -1656,7 +2175,9 @@ const PipelineTemp = () => {
 
                   {/* Remove Tags Section */}
                   <Box mt={2} width={"50%"}>
-                  <Typography gutterBottom variant="body2">Remove Tags</Typography>
+                    <Typography gutterBottom variant="body2">
+                      Remove Tags
+                    </Typography>
                     <FormControl
                       sx={{
                         width: "100%",
@@ -1788,27 +2309,25 @@ const PipelineTemp = () => {
                 <Button variant="text" onClick={handleAddConditions}>
                   Add Conditions
                 </Button>
-                </Box>
-                <Box mt={2}>
-<Button 
-                variant="contained"
-                onClick={handleSaveAutomation(stageSelected)}
-                sx={{
-                  backgroundColor: "var(--color-save-btn)", // Normal background
+              </Box>
+              <Box mt={2}>
+                <Button
+                  variant="contained"
+                  onClick={handleSaveAutomation(stageSelected)}
+                  sx={{
+                    backgroundColor: "var(--color-save-btn)", // Normal background
 
-                  "&:hover": {
-                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-                  },
-                  borderRadius: "15px",
-                }}
-              >
-                Save Automation
-              </Button>
-</Box>
-              </Grid>
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                    },
+                    borderRadius: "15px",
+                  }}
+                >
+                  Save Automation
+                </Button>
+              </Box>
+            </Grid>
 
-             
-            
             {/* Condition tags for automation */}
             <Drawer
               anchor="right"
@@ -1932,7 +2451,7 @@ const PipelineTemp = () => {
                   options={organizerOptions}
                   getOptionLabel={(option) => option.label}
                   value={selectedtemp}
-                  onChange={(event, newValue) => handletemp(newValue)}
+                 onChange={(event, newValue) => handletemp(newValue, automationSelect)}
                   isOptionEqualToValue={(option, value) =>
                     option.value === value.value
                   }
@@ -2411,30 +2930,46 @@ const PipelineTemp = () => {
 
     console.log("Save automation for stage:", editingStageIndex);
 
-   // Process automation data to ensure "Update account tags" includes correct addTags and removeTags
-   const updatedAutomationData = selectedAutomationData.map((automation) => {
-    if (automation.type === "Update account tags") {
-      return {
-        ...automation,
-        addTags: automation.addTags.map((tag) => {
-          if (typeof tag === "string") {
-            const foundTag = tags.find((t) => t._id === tag);
-            return foundTag ? { _id: foundTag._id, tagName: foundTag.tagName, tagColour: foundTag.tagColour } : null;
-          }
-          return tag; // Keep existing tag objects
-        }).filter(Boolean), // Remove any null values
+    // Process automation data to ensure "Update account tags" includes correct addTags and removeTags
+    const updatedAutomationData = selectedAutomationData.map((automation) => {
+      if (automation.type === "Update account tags") {
+        return {
+          ...automation,
+          addTags: automation.addTags
+            .map((tag) => {
+              if (typeof tag === "string") {
+                const foundTag = tags.find((t) => t._id === tag);
+                return foundTag
+                  ? {
+                      _id: foundTag._id,
+                      tagName: foundTag.tagName,
+                      tagColour: foundTag.tagColour,
+                    }
+                  : null;
+              }
+              return tag; // Keep existing tag objects
+            })
+            .filter(Boolean), // Remove any null values
 
-        removeTags: automation.removeTags.map((tag) => {
-          if (typeof tag === "string") {
-            const foundTag = tags.find((t) => t._id === tag);
-            return foundTag ? { _id: foundTag._id, tagName: foundTag.tagName, tagColour: foundTag.tagColour } : null;
-          }
-          return tag; // Keep existing tag objects
-        }).filter(Boolean),
-      };
-    }
-    return automation;
-  });
+          removeTags: automation.removeTags
+            .map((tag) => {
+              if (typeof tag === "string") {
+                const foundTag = tags.find((t) => t._id === tag);
+                return foundTag
+                  ? {
+                      _id: foundTag._id,
+                      tagName: foundTag.tagName,
+                      tagColour: foundTag.tagColour,
+                    }
+                  : null;
+              }
+              return tag; // Keep existing tag objects
+            })
+            .filter(Boolean),
+        };
+      }
+      return automation;
+    });
 
     console.log("Processed automation data:", updatedAutomationData);
 
@@ -3590,6 +4125,12 @@ const PipelineTemp = () => {
                                   anchorEl={anchorEl}
                                   open={Boolean(anchorEl)}
                                   onClose={handleClose}
+                                  PaperProps={{
+                                    style: {
+                                      maxHeight: 200, // Adjust the height as needed
+                                      overflowY: "auto",
+                                    },
+                                  }}
                                 >
                                   <MenuItem
                                     onClick={() =>
@@ -3651,6 +4192,27 @@ const PipelineTemp = () => {
                                   >
                                     Update account tags
                                   </MenuItem>
+                                  <MenuItem
+                                    onClick={() =>
+                                      handleAddAutomation(
+                                        stageSelected,
+                                        "Create Task"
+                                      )
+                                    }
+                                  >
+                                    Create Task
+                                  </MenuItem>
+                                  {/* Send message */}
+                                  <MenuItem
+                                    onClick={() =>
+                                      handleAddAutomation(
+                                        stageSelected,
+                                        "Send message"
+                                      )
+                                    }
+                                  >
+                                    Send message
+                                  </MenuItem>
                                 </Menu>
                                 <AddAutomationDrawer
                                   isDrawerOpen={isDrawerOpen}
@@ -3667,8 +4229,8 @@ const PipelineTemp = () => {
                                   handleMenuItemSelect={handleMenuItemSelect}
                                 />
                                 <EditAutomationDrawer
-                                setSelectedAddTags={setSelectedAddTags}
-                                selectedAddTags={selectedAddTags}
+                                  setSelectedAddTags={setSelectedAddTags}
+                                  selectedAddTags={selectedAddTags}
                                   isEditDrawerOpen={isEditDrawerOpen}
                                   setIsEditDrawerOpen={setIsEditDrawerOpen}
                                   selectedAutomationData={
@@ -3715,24 +4277,14 @@ const PipelineTemp = () => {
                                   searchTerm={searchTerm}
                                   handleSearchChange={handleSearchChange}
                                   filteredTags={filteredTags}
-
                                   stageAutomationTags={stageAutomationTags}
                                   setTempSelectedTags={setTempSelectedTags}
                                   filteredAddTagsOptions={
                                     filteredAddTagsOptions
                                   }
                                   tagsoptions={tagsoptions}
-                                  addTags={addTags}
-                                  handleAddTagChange={handleAddTagChange}
-                                  filteredRemoveTagsOptions={
-                                    filteredRemoveTagsOptions
-                                  }
-                                  removeTags={removeTags}
-                                  setAddTags={setAddTags}
-                                  setRemoveTags={setRemoveTags}
-                                  handleRemoveTagChange={handleRemoveTagChange}
-                                  handleEditAddTagsChange={handleEditAddTagsChange}
-                                  handleEditRemoveagsChange={handleEditRemoveTagsChange}
+                                  taskTemplateOptions={taskTemplateOptions}
+                                  chatTemplateOptions={chatTemplateOptions}
                                   handleTagChange={handleTagChange}
                                 />
 

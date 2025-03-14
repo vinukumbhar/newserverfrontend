@@ -32,7 +32,7 @@ import Invoices from "./Billing/Invoices";
 import Services from "./Pages/Service";
 import MyAccount from "./Settings/MyAccount";
 import Pipeline from "./Workflow/Pipeline";
-import WorkflowTask from "./Workflow/Tasks";
+import WorkflowTask from "./Tasks/Tasks.js";
 import TeamMember from "./Users/TeamMember.js";
 import Jobs from "./Pages/Jobs/Jobs.js";
 import PipelineTempUpdate from "./Templates/PipelineTemp/PipelineTempUpdate.js";
@@ -96,6 +96,8 @@ import TagsImport from "./Import/TagsImport.js";
 import SetPassword from "./nested-navbar/NewPages/setPassword.js"
 import ActiveJob from "./Pages/Jobs/ActiveJob.js"
 import ArchivedJob from "./Pages/Jobs/ArchiveJob.js";
+import PendingTasks from "./Tasks/PendingTasks.js";
+import CompletedTasks from "./Tasks/CompletedTasks.js";
 const App = () => {
   return (
     <BrowserRouter>
@@ -125,7 +127,11 @@ const App = () => {
           <Route path="billing/Invoices" element={<Invoices />} />
           <Route path="billing/Invoices/Updateinvoice/:_id" element={<InvoiceUpdate />} />
           <Route path='billing/proposalsandels' element={<ProposalsELS/>}/>
-          <Route path="workflow/tasks" element={<WorkflowTask />} />
+          {/* <Route path="workflow/tasks" element={<WorkflowTask />} /> */}
+          <Route path="workflow/tasks" element={<WorkflowTask />} >
+          <Route path="pending" element={<PendingTasks/>}/>
+          <Route path="completed" element={<CompletedTasks/>}/>
+          </Route>
           <Route path="workflow/jobs" element={<Jobs />} >
           <Route path="activejob" element={<ActiveJob/>}/>
           <Route path="archivedjob" element={<ArchivedJob/>}/>

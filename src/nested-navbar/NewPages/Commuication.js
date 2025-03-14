@@ -29,7 +29,7 @@ import { LoginContext } from '../../Sidebar/Context/Context'
 
 const Communication = () => {
   const { logindata } = useContext(LoginContext);
-  // console.log("login data",logindata.user.id)
+  console.log("login data",logindata)
   const [loginUserId, setLoginUserId] = useState()
 
   useEffect(() => {

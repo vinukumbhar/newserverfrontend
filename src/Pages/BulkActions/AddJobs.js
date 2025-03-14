@@ -721,6 +721,97 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
   };
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+
+
+  
+      const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
+        const [tags, setTags] = useState([]);
+    
+        useEffect(() => {
+          fetchTags();
+        }, []);
+    
+        const fetchTags = async () => {
+          try {
+            const url = `${TAGS_API}/tags/`;
+            const response = await fetch(url);
+            const data = await response.json();
+            console.log("tags dtata", data.tags);
+            setTags(data.tags);
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          }
+        };
+    
+        const calculateWidth = (label) => Math.min(label.length * 8, 200);
+    
+        const tagsoptions = tags.map((tag) => ({
+          value: tag._id,
+          label: tag.tagName,
+          colour: tag.tagColour,
+          customStyle: {
+            backgroundColor: tag.tagColour,
+            color: "#fff",
+            borderRadius: "8px",
+            alignItems: "center",
+            textAlign: "center",
+            marginBottom: "5px",
+            padding: "2px,8px",
+            fontSize: "10px",
+            width: `${calculateWidth(tag.tagName)}px`,
+            margin: "7px",
+            cursor: "pointer",
+          },
+          customTagStyle: {
+            backgroundColor: tag.tagColour,
+            color: "#fff",
+            alignItems: "center",
+            textAlign: "center",
+            padding: "2px,8px",
+            fontSize: "10px",
+            cursor: "pointer",
+          },
+        }));
+    
+      const handleTagChange = (index, type, event) => {
+        const { value } = event.target; // Array of selected tag IDs
+      
+        setAutomations((prev) => {
+          const updatedAutomations = [...prev];
+      
+          // Get the correct tag options list
+          const tagOptions = tagsoptions;
+      
+          // Map selected tag IDs to tag objects with _id, tagName, and tagColour
+          const selectedTags = value.map((tagId) => {
+            const tag = tagOptions.find((t) => t.value === tagId);
+            return tag ? { _id: tag.value, tagName: tag.label, tagColour: tag.colour } : null;
+          }).filter(Boolean); // Remove null values
+      
+          // Prevent duplicate selections
+          const uniqueTags = selectedTags.filter(
+            (tag, idx, self) => self.findIndex((t) => t._id === tag._id) === idx
+          );
+      
+          // Ensure the tag is removed from the opposite category
+          if (type === "addTags") {
+            updatedAutomations[index].removeTags = updatedAutomations[index].removeTags.filter(
+              (tag) => !uniqueTags.some((t) => t._id === tag._id)
+            );
+          } else if (type === "removeTags") {
+            updatedAutomations[index].addTags = updatedAutomations[index].addTags.filter(
+              (tag) => !uniqueTags.some((t) => t._id === tag._id)
+            );
+          }
+      
+          updatedAutomations[index] = {
+            ...updatedAutomations[index],
+            [type]: uniqueTags,
+          };
+      
+          return updatedAutomations;
+        });
+      };
   // Drawer Component
   const DrawerContent = () => {
 
@@ -734,54 +825,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                 },
               },
             };
-            const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
-            const [tags, setTags] = useState([]);
-        
-            useEffect(() => {
-              fetchTags();
-            }, []);
-        
-            const fetchTags = async () => {
-              try {
-                const url = `${TAGS_API}/tags/`;
-                const response = await fetch(url);
-                const data = await response.json();
-                console.log("tags dtata", data.tags);
-                setTags(data.tags);
-              } catch (error) {
-                console.error("Error fetching data:", error);
-              }
-            };
-        
-            const calculateWidth = (label) => Math.min(label.length * 8, 200);
-        
-            const tagsoptions = tags.map((tag) => ({
-              value: tag._id,
-              label: tag.tagName,
-              colour: tag.tagColour,
-              customStyle: {
-                backgroundColor: tag.tagColour,
-                color: "#fff",
-                borderRadius: "8px",
-                alignItems: "center",
-                textAlign: "center",
-                marginBottom: "5px",
-                padding: "2px,8px",
-                fontSize: "10px",
-                width: `${calculateWidth(tag.tagName)}px`,
-                margin: "7px",
-                cursor: "pointer",
-              },
-              customTagStyle: {
-                backgroundColor: tag.tagColour,
-                color: "#fff",
-                alignItems: "center",
-                textAlign: "center",
-                padding: "2px,8px",
-                fontSize: "10px",
-                cursor: "pointer",
-              },
-            }));
+           
     // Get the tags for the selected accounts
     const accountTags = combinedaccountValues
       .map((accountId) => {
@@ -791,6 +835,8 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
         return account ? account.tags || [] : []; // Assuming accounts have tags
       })
       .flat(); // Flattening array to get all tags
+      const CHAT_API = process.env.REACT_APP_CHAT_TEMP_URL;
+      const CHATTOCLIENT_API = process.env.REACT_APP_CHAT_API;
     const INVOICE_API = process.env.REACT_APP_INVOICE_TEMP_URL;
     const INVOICE_NEW = process.env.REACT_APP_INVOICES_URL;
     const PROPOSAL_API = process.env.REACT_APP_PROPOSAL_TEMP_URL;
@@ -809,6 +855,23 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
         const result = await response.json(); // Parse the JSON response
         console.log("Fetched invoice template:", result.invoiceTemplate);
         return result.invoiceTemplate; // Return the data
+      } catch (error) {
+        console.error("Error fetching invoice template:", error);
+        throw error; // Let the calling function handle the error
+      }
+    };
+    // fetch chat temp by id
+    const fetchchattempbyid = async (automationTemp) => {
+      const requestOptions = {
+        method: "GET",
+        redirect: "follow",
+      };
+      const url = `${CHAT_API}/workflow/chats/chattemplate/chattemplateList/${automationTemp}`;
+      try {
+        const response = await fetch(url, requestOptions); // Fetch the data
+        const result = await response.json(); // Parse the JSON response
+        console.log("Fetched chat template:", result.chatTemplate);
+        return result.chatTemplate; // Return the data
       } catch (error) {
         console.error("Error fetching invoice template:", error);
         throw error; // Let the calling function handle the error
@@ -920,6 +983,114 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
         })
         .catch((error) => console.error("Error assigning invoice:", error));
     };
+
+    const [chatId, setChatId] = useState();
+         const [adminusername, setAdminUsername] = useState("");
+         const fetchLoginUserData = async (loginuserid) => {
+    
+           const myHeaders = new Headers();
+       
+           const requestOptions = {
+             method: "GET",
+             headers: myHeaders,
+             redirect: "follow",
+           };
+           const url = `${LOGIN_API}/common/user/${loginuserid}`;
+           fetch(url, requestOptions)
+             .then((response) => response.json())
+             .then((result) => {
+               console.log("jbhguhid", result);
+       
+               // console.log(userData)
+               setAdminUsername(result.username);
+             });
+         };
+      useEffect(() => {
+        console.log("teammenber", loginuserid);
+        fetchLoginUserData(loginuserid);
+      }, []);
+            // sendChatToAccount
+            const sendChatToAccount = (
+              chatData,
+              automationTemp,
+              automationAccountId
+            ) => {
+              console.log(
+                "sending chat",
+                chatData,
+                automationTemp,
+                automationAccountId
+              );
+        
+              const myHeaders = new Headers();
+              myHeaders.append("Content-Type", "application/json");
+              const subtaskData = chatData.clienttasks.map(({ id, text, checked }) => ({
+                id,
+                text,
+                checked: checked !== undefined ? checked : false, // Ensure checked is either true or false
+              }));
+              const messageData = [
+                {
+                  message: chatData.description,
+                  fromwhome: "Admin",
+                },
+              ];
+              // Dynamically prepare the payload from invoiceData
+              const raw = JSON.stringify({
+                accountids: [automationAccountId],
+                chattemplateid: automationTemp, // Fill in if required
+                chatsubject: chatData.chatsubject, // Today's date
+                description: messageData || "",
+                sendreminderstoclient: chatData.sendreminderstoclient,
+                daysuntilnextreminder: chatData.daysuntilnextreminder,
+                numberofreminders: chatData.numberofreminders,
+                clienttasks: subtaskData,
+              });
+              console.log("chats", raw);
+              const requestOptions = {
+                method: "POST",
+                headers: myHeaders,
+                body: raw,
+                redirect: "follow",
+              };
+              fetch(`${CHATTOCLIENT_API}/chats/chatsaccountwise`, requestOptions)
+                .then((response) => response.json())
+                .then((result) => {
+                  console.log("send chat to account successfully:", result);
+                  console.log("chat id", result.newChats._id);
+                  setChatId(result.newChats._id);
+                  // toast.success("New Chat created successfully");
+                  sendSaveChatMail(result.newChats._id,automationAccountId,automationTemp,adminusername);
+                })
+                .catch((error) => console.error("Error assigning invoice:", error));
+            };
+            // mail for drawer btn
+            const sendSaveChatMail = (chatId,automationAccountId,automationTemp,adminusername) => {
+              const myHeaders = new Headers();
+              myHeaders.append("Content-Type", "application/json");
+        
+              const raw = JSON.stringify({
+                accountid: automationAccountId,
+                chattemplateid: automationTemp,
+                username: adminusername,
+                chatId: chatId,
+                viewchatlink: "/login",
+              });
+        
+              const requestOptions = {
+                method: "POST",
+                headers: myHeaders,
+                body: raw,
+                redirect: "follow",
+              };
+              console.log(raw);
+              fetch(`${CHATTOCLIENT_API}/chatsend/securechatsend`, requestOptions)
+                .then((response) => response.json())
+                .then((result) => console.log(result))
+                .catch((error) => console.error(error));
+            };
+        
+
     const assignProposalToAccount = (
       proposalesandelsData,
       automationTemp,
@@ -1292,7 +1463,18 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
             console.error("Error processing 'Send Invoice':", error);
           }
           break;
-
+          case "Send message":
+            console.log(
+              `Processing 'Send message' with template: ${automationTemp}, Account ID: ${automationAccountId}`
+            );
+            try {
+              const chatData = await fetchchattempbyid(automationTemp);
+              console.log("Fetched chat data", chatData);
+              sendChatToAccount(chatData, automationTemp, automationAccountId);
+            } catch (error) {
+              console.error("Error processing 'Send Invoice':", error);
+            }
+            break;
         case "Apply folder template":
           console.log(
             `Applying folder template with template: ${automationTemp}, Account ID: ${automationAccountId}`
@@ -1721,127 +1903,149 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                                         <Typography variant="body2" sx={{ marginBottom: 1 }}>
                                           Add tags to account
                                         </Typography>
-                                        <Select
-                                          multiple
-                                          value={automation.addTags}
-                                          renderValue={(selected) =>
-                                            selected.map((tag) => (
-                                              <Chip
-                                                key={tag._id}
-                                                label={tag.tagName}
-                                                sx={{
-                                                  backgroundColor: tag.tagColour,
-                                                  color: "#fff",
-                                                  marginRight: 1,
-                                                }}
-                                              />
-                                            ))
-                                          }
-                                          MenuProps={MenuProps}
-                                          sx={{ width: "100%", marginBottom: 2 }}
-                                        >
-                                          {tagsoptions.map((option) => {
-                                            const canvas = document.createElement("canvas");
-                                            const context = canvas.getContext("2d");
-                                            context.font = "12px Arial"; // Match the font size/style of MenuItem
-                                            const textWidth = context.measureText(
-                                              option.label
-                                            ).width; // Get precise width
-                                            const dynamicWidth = Math.min(textWidth + 16, 150); // Add padding & set max width
-                                            return (
-                                              <MenuItem
-                                                key={option.value}
-                                                value={option.value}
-                                                sx={{
-                                                  backgroundColor: option.colour,
-                                                  color: "#fff",
-                                                  fontSize: "10px",
-                                                  borderRadius: "10px",
-                                                  margin: "5px",
-                                                  textAlign: "center",
-                                                  display: "flex",
-                                                  justifyContent: "center",
-                                                  padding: "4px 9px",
-                                                  whiteSpace: "nowrap", // Prevent line breaks
-                                                  minWidth: `${dynamicWidth}px`,
-                                                  maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
-                                                  "&:hover": {
-                                                    backgroundColor: option.colour,
-                                                    color: "#fff",
-                                                  },
-                                                }}
-                                              >
-                                                {option.label}
-                                              </MenuItem>
-                                            );
-                                          })}
-                                        </Select>
+                                         <Select
+                                                                                  multiple
+                                                                                  displayEmpty
+                                                                                  multiline
+                                                                                  size="small"
+                                                                                  value={automation.addTags.map((tag) => tag._id)}
+                                                                                  onChange={(event) => handleTagChange(index, "addTags", event)}
+                                                                                 renderValue={(selected) =>
+                                                                                    selected.length === 0 ? (
+                                                                                      <Typography color="gray">Select tags to add</Typography>
+                                                                                    ) : (
+                                                                                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                                                                                        {automation.addTags.map((tag) => (
+                                                                                          <Chip
+                                                                                            key={tag._id}
+                                                                                            label={tag.tagName}
+                                                                                            sx={{
+                                                                                              backgroundColor: tag.tagColour,
+                                                                                              color: "#fff",
+                                                                                              fontWeight: "500",
+                                                                                              borderRadius: "20px",
+                                                                                            }}
+                                                                                          />
+                                                                                        ))}
+                                                                                      </Box>
+                                                                                    )
+                                                                                  }
+                                                                                  fullWidth
+                                                                                  MenuProps={MenuProps}
+                                                                                  sx={{ width: "100%", marginBottom: 2 }}
+                                                                                >
+                                                                                 {tagsoptions
+                                                                                     .filter((option) => !automation.removeTags.some((tag) => tag._id === option.value)) // Hide selected removeTags
+                                                                                     .map((option) => {
+                                                                                       // Create a hidden canvas to measure text width
+                                                                                       const canvas = document.createElement("canvas");
+                                                                                       const context = canvas.getContext("2d");
+                                                                                       context.font = "14px Arial"; // Match the MenuItem font style
+                                                                                 
+                                                                                       const textWidth = context.measureText(option.label).width; // Get exact width
+                                                                                       const dynamicWidth = Math.min(textWidth + 20, 200); // Add padding & set max width
+                                                                                 
+                                                                                       return (
+                                                                                         <MenuItem
+                                                                                           key={option.value}
+                                                                                           value={option.value}
+                                                                                           sx={{
+                                                                                             backgroundColor: option.colour,
+                                                                                             color: "#fff",
+                                                                                             fontSize: "10px",
+                                                                                             borderRadius: "10px",
+                                                                                             margin: "5px",
+                                                                                             textAlign: "center",
+                                                                                             display: "flex",
+                                                                                             justifyContent: "center",
+                                                                                             padding: "4px 9px",
+                                                                                             whiteSpace: "nowrap", // Prevent text wrapping
+                                                                                             minWidth: `${dynamicWidth}px`,
+                                                                                             maxWidth: `${dynamicWidth}px`, // Set dynamic max width
+                                                                                             "&:hover": {
+                                                                                               backgroundColor: option.colour,
+                                                                                               color: "#fff",
+                                                                                             },
+                                                                                           }}
+                                                                                         >
+                                                                                           {option.label}
+                                                                                         </MenuItem>
+                                                                                       );
+                                                                                     })}
+                                                                                </Select>
                 
                                         <Typography variant="body2" sx={{ marginBottom: 1 }}>
                                           Remove tags from account
                                         </Typography>
-                                        <Select
-                                          multiple
-                                          value={automation.removeTags}
-                                          renderValue={(selected) =>
-                                            selected.map((tag) => (
-                                              <Chip
-                                                key={tag._id}
-                                                label={tag.tagName}
-                                                sx={{
-                                                  backgroundColor: tag.tagColour,
-                                                  color: "#fff",
-                                                  marginRight: 1,
-                                                }}
-                                              />
-                                            ))
-                                          }
-                                          MenuProps={MenuProps}
-                                          sx={{ width: "100%", marginBottom: 2 }}
-                                        >
-                                          {tagsoptions.map((option) => {
-                                            // const dynamicWidth = Math.min(option.label.length * 10, 150); // Adjust width dynamically
-                                            // Create a canvas element to measure the actual text width
-                                            const canvas = document.createElement("canvas");
-                                            const context = canvas.getContext("2d");
-                                            context.font = "12px Arial"; // Match the font size/style of MenuItem
-                
-                                            const textWidth = context.measureText(
-                                              option.label
-                                            ).width; // Get precise width
-                                            const dynamicWidth = Math.min(textWidth + 16, 150); // Add padding & set max width
-                                            return (
-                                              <MenuItem
-                                                key={option.value}
-                                                value={option.value}
-                                                sx={{
-                                                  backgroundColor: option.colour,
-                                                  color: "#fff",
-                                                  fontSize: "10px",
-                                                  borderRadius: "10px",
-                                                  margin: "5px",
-                                                  textAlign: "center",
-                                                  display: "flex",
-                                                  justifyContent: "center",
-                                                  padding: "4px 9px",
-                                                  // alignItems: "center",
-                                                  // paddingLeft: "10px",
-                                                  whiteSpace: "nowrap", // Prevent line breaks
-                                                  // textAlign: "left", // Ensure text is left-aligned
-                                                  // paddingLeft: "10px", // Add left padding for proper alignment
-                                                  minWidth: `${dynamicWidth}px`,
-                                                  maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
-                                                  "&:hover": {
-                                                    backgroundColor: option.colour,
-                                                    color: "#fff",
-                                                  },
-                                                }}
-                                              >
-                                                {option.label}
-                                              </MenuItem>
-                                            );
-                                          })}
-                                        </Select>
+                                         <Select
+                                                                                  multiple
+                                                                                  size="small"
+                                                                                  multiline
+                                                                                  displayEmpty
+                                                                                  value={automation.removeTags.map((tag) => tag._id)}
+                                                                                  onChange={(event) => handleTagChange(index, "removeTags", event)}
+                                                                                  renderValue={(selected) =>
+                                                                                     selected.length === 0 ? (
+                                                                                       <Typography color="gray">Select tags to remove</Typography>
+                                                                                     ) : (
+                                                                                       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                                                                                         {automation.removeTags.map((tag) => (
+                                                                                           <Chip
+                                                                                             key={tag._id}
+                                                                                             label={tag.tagName}
+                                                                                             sx={{
+                                                                                               backgroundColor: tag.tagColour,
+                                                                                               color: "#fff",
+                                                                                               fontWeight: "500",
+                                                                                               borderRadius: "20px",
+                                                                                             }}
+                                                                                           />
+                                                                                         ))}
+                                                                                       </Box>
+                                                                                     )
+                                                                                   }
+                                                                                 MenuProps={MenuProps}
+                                                                                 sx={{ width: "100%", marginBottom: 2 }}
+                                                                               >
+                                                                                {tagsoptions
+                                                                                   .filter((option) => !automation.addTags.some((tag) => tag._id === option.value)) // Hide selected removeTags
+                                                                                   .map((option) => {
+                                                                                     // Create a hidden canvas to measure text width
+                                                                                     const canvas = document.createElement("canvas");
+                                                                                     const context = canvas.getContext("2d");
+                                                                                     context.font = "14px Arial"; // Match the MenuItem font style
+                                                                               
+                                                                                     const textWidth = context.measureText(option.label).width; // Get exact width
+                                                                                     const dynamicWidth = Math.min(textWidth + 20, 200); // Add padding & set max width
+                                                                               
+                                                                                     return (
+                                                                                       <MenuItem
+                                                                                         key={option.value}
+                                                                                         value={option.value}
+                                                                                         sx={{
+                                                                                           backgroundColor: option.colour,
+                                                                                           color: "#fff",
+                                                                                           fontSize: "10px",
+                                                                                           borderRadius: "10px",
+                                                                                           margin: "5px",
+                                                                                           textAlign: "center",
+                                                                                           display: "flex",
+                                                                                           justifyContent: "center",
+                                                                                           padding: "4px 9px",
+                                                                                           whiteSpace: "nowrap", // Prevent text wrapping
+                                                                                           minWidth: `${dynamicWidth}px`,
+                                                                                           maxWidth: `${dynamicWidth}px`, // Set dynamic max width
+                                                                                           "&:hover": {
+                                                                                             backgroundColor: option.colour,
+                                                                                             color: "#fff",
+                                                                                           },
+                                                                                         }}
+                                                                                       >
+                                                                                         {option.label}
+                                                                                       </MenuItem>
+                                                                                     );
+                                                                                   })}
+                                                                               </Select>
                 
                                         {/* Warning Message */}
                                         <Alert severity="warning" sx={{ marginBottom: 2 }}>

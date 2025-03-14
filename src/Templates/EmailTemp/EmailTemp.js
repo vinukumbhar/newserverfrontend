@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo,useRef } from "react";
 import { toast } from "react-toastify";
 import {
   Box,
@@ -77,11 +77,33 @@ const EmailTemp = () => {
     setAnchorEl(event.currentTarget);
     setShowDropdown(!showDropdown);
   };
-
+const [cursorPosition, setCursorPosition] = useState(0);
+const handlesubject = (e) => {
+  const { value,selectionStart  } = e.target;
+  setInputText(value);
+  setCursorPosition(selectionStart);
+};
+  const textFieldRef = useRef(null);
   const handleAddShortcut = (shortcut) => {
-    setInputText((prevText) => prevText + `[${shortcut}]`);
+    setInputText((prevText) => {
+        const newText =
+            prevText.slice(0, cursorPosition) + `[${shortcut}]` + prevText.slice(cursorPosition);
+        return newText;
+    });
+
+    setTimeout(() => {
+        if (textFieldRef.current) {
+            textFieldRef.current.focus();
+            textFieldRef.current.setSelectionRange(cursorPosition + shortcut.length + 2, cursorPosition + shortcut.length + 2);
+        }
+    }, 0);
+
     setShowDropdown(false);
-  };
+};
+  // const handleAddShortcut = (shortcut) => {
+  //   setInputText((prevText) => prevText + `[${shortcut}]`);
+  //   setShowDropdown(false);
+  // };
 
   useEffect(() => {
     // Simulate filtered shortcuts based on some logic (e.g., search)
@@ -1086,8 +1108,12 @@ console.log(raw)
                     <TextField
                       fullWidth
                       name="subject"
-                      value={inputText + selectedShortcut}
-                      onChange={handlechatsubject}
+                      // value={inputText + selectedShortcut}
+                      // onChange={handlechatsubject}
+                      onChange={handlesubject}
+                      inputRef={textFieldRef}
+                          value={inputText}
+                      onClick={(e) => setCursorPosition(e.target.selectionStart)}
                       placeholder="Subject"
                       size="small"
                       error={!!inputTextError}

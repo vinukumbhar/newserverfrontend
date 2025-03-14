@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
@@ -49,10 +49,33 @@ const EmailTempUpdate = () => {
         setAnchorEl(event.currentTarget);
         setShowDropdown(!showDropdown);
     };
-    const handleAddShortcut = (shortcut) => {
-        setInputText((prevText) => prevText + `[${shortcut}]`);
+    const [cursorPosition, setCursorPosition] = useState(0);
+    const handlesubject = (e) => {
+      const { value,selectionStart  } = e.target;
+      setInputText(value);
+      setCursorPosition(selectionStart);
+    };
+      const textFieldRef = useRef(null);
+      const handleAddShortcut = (shortcut) => {
+        setInputText((prevText) => {
+            const newText =
+                prevText.slice(0, cursorPosition) + `[${shortcut}]` + prevText.slice(cursorPosition);
+            return newText;
+        });
+    
+        setTimeout(() => {
+            if (textFieldRef.current) {
+                textFieldRef.current.focus();
+                textFieldRef.current.setSelectionRange(cursorPosition + shortcut.length + 2, cursorPosition + shortcut.length + 2);
+            }
+        }, 0);
+    
         setShowDropdown(false);
     };
+    // const handleAddShortcut = (shortcut) => {
+    //     setInputText((prevText) => prevText + `[${shortcut}]`);
+    //     setShowDropdown(false);
+    // };
     useEffect(() => {
         setFilteredShortcuts(shortcuts.filter((shortcut) => shortcut.title.toLowerCase().includes('')));
     }, [shortcuts]);
@@ -700,8 +723,10 @@ const EmailTempUpdate = () => {
                                         margin="normal"
                                         fullWidth
                                         name="subject"
-                                        value={inputText + selectedShortcut}
-                                        onChange={handlechatsubject}
+                                        onChange={handlesubject}
+                                        inputRef={textFieldRef}
+                                            value={inputText}
+                                        onClick={(e) => setCursorPosition(e.target.selectionStart)}
                                         placeholder="Subject"
                                         size="small"
                                     />

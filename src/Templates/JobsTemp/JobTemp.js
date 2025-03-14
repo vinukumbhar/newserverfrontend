@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo ,useRef} from "react";
 import { useNavigate } from "react-router-dom";
 import {  TableContainer,
   Table,
@@ -109,17 +109,37 @@ const JobTemp = ({ charLimit = 4000 }) => {
     }
   };
 
+  // const handleDescriptionAddShortcut = (shortcut) => {
+  //   const updatedTextValue = clientDescription + `[${shortcut}]`;
+  //   if (updatedTextValue.length <= charLimit) {
+  //     setClientDescription(updatedTextValue);
+  //     setCharCount(updatedTextValue.length);
+  //   }
+  //   setShowDropdownDescription(false);
+  // };
+//  const [cursorPosition, setCursorPosition] = useState(0);
+  const descriptionFieldRef = useRef(null);
   const handleDescriptionAddShortcut = (shortcut) => {
-    const updatedTextValue = clientDescription + `[${shortcut}]`;
-    if (updatedTextValue.length <= charLimit) {
-      setClientDescription(updatedTextValue);
-      setCharCount(updatedTextValue.length);
-    }
+    setClientDescription((prevText) => {
+        const newText =
+            prevText.slice(0, cursorPosition) + `[${shortcut}]` + prevText.slice(cursorPosition);
+        return newText.length <= charLimit ? newText : prevText;
+    });
+
+    setTimeout(() => {
+        if (descriptionFieldRef.current) {
+            descriptionFieldRef.current.focus();
+            descriptionFieldRef.current.setSelectionRange(cursorPosition + shortcut.length + 2, cursorPosition + shortcut.length + 2);
+        }
+    }, 0);
+
     setShowDropdownDescription(false);
-  };
+};
+
   const handlechatsubject = (e) => {
-    const { value } = e.target;
+    const { value,selectionStart  } = e.target;
     setInputText(value);
+    setCursorPosition(selectionStart);
   };
   const handleChange = (event) => {
     const value = event.target.value;
@@ -133,7 +153,19 @@ const JobTemp = ({ charLimit = 4000 }) => {
   };
 
   const handleJobAddShortcut = (shortcut) => {
-    setInputText((prevText) => prevText + `[${shortcut}]`);
+    // setInputText((prevText) => prevText + `[${shortcut}]`);
+    setInputText((prevText) => {
+      const newText =
+          prevText.slice(0, cursorPosition) + `[${shortcut}]` + prevText.slice(cursorPosition);
+      return newText;
+  });
+
+  setTimeout(() => {
+      if (textFieldRef.current) {
+          textFieldRef.current.focus();
+          textFieldRef.current.setSelectionRange(cursorPosition + shortcut.length + 2, cursorPosition + shortcut.length + 2);
+      }
+  }, 0);
     setShowDropdownClientJob(false);
   };
 
@@ -156,10 +188,30 @@ const JobTemp = ({ charLimit = 4000 }) => {
   };
   // handleDescriptionAddShortcut
 
+
+  const [cursorPosition, setCursorPosition] = useState(0);
+const textFieldRef = useRef(null);
+
   const handleAddShortcut = (shortcut) => {
-    setJobName((prevText) => prevText + `[${shortcut}]`);
+    setJobName((prevText) => {
+        const newText =
+            prevText.slice(0, cursorPosition) + `[${shortcut}]` + prevText.slice(cursorPosition);
+        return newText;
+    });
+
+    setTimeout(() => {
+        if (textFieldRef.current) {
+            textFieldRef.current.focus();
+            textFieldRef.current.setSelectionRange(cursorPosition + shortcut.length + 2, cursorPosition + shortcut.length + 2);
+        }
+    }, 0);
+
     setShowDropdown(false);
-  };
+};
+  // const handleAddShortcut = (shortcut) => {
+  //   setJobName((prevText) => prevText + `[${shortcut}]`);
+  //   setShowDropdown(false);
+  // };
   const handleCreateJobTemplate = () => {
     setShowForm(true); // Show the form when button is clicked
   };
@@ -312,8 +364,9 @@ const JobTemp = ({ charLimit = 4000 }) => {
     setAnchorEl(null);
   };
   const handlejobName = (e) => {
-    const { value } = e.target;
+    const { value,selectionStart  } = e.target;
     setJobName(value);
+    setCursorPosition(selectionStart);
   };
   const [selectedUser, setSelectedUser] = useState([]);
   const [combinedValues, setCombinedValues] = useState([]);
@@ -944,8 +997,9 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                 <InputLabel sx={{ color: "black", mb: 1 }}>Job Name</InputLabel>
                   <TextField
                     sx={{ backgroundColor: "#fff", mt: 1 }}
-                    value={jobName + selectedShortcut}
+                    value={jobName}
                     onChange={handlejobName}
+                    onClick={(e) => setCursorPosition(e.target.selectionStart)}
                     size="small"
                     fullWidth
                     error={!!errors.jobName}
@@ -1161,7 +1215,12 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                       {clientFacingStatus && (
                         <>
                            <InputLabel sx={{ color: "black", }}>Job name for client</InputLabel>
-                          <TextField fullWidth name="subject" value={inputText + selectedJobShortcut} onChange={handlechatsubject} placeholder="Job name for client" size="small" sx={{ background: "#fff", mt: 2 }} />
+                          <TextField fullWidth name="subject" 
+                          inputRef={textFieldRef}
+                         value={inputText}
+                           onChange={handlechatsubject} 
+                           onClick={(e) => setCursorPosition(e.target.selectionStart)}
+                           placeholder="Job name for client" size="small" sx={{ background: "#fff", mt: 2 }} />
 
                           <Box>
                             <Button variant="contained" color="primary" onClick={toggleShortcodeDropdown} sx={{
@@ -1264,6 +1323,8 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                               type="text"
                               multiline
                               value={clientDescription}
+                              inputRef={descriptionFieldRef}
+                              onClick={(e) => setCursorPosition(e.target.selectionStart)}
                               onChange={handleChange}
                               placeholder="Description"
                               InputProps={{
