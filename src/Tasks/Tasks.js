@@ -1,8 +1,9 @@
 import { Box, Button, Typography } from "@mui/material";
-import React from "react";
+import React ,{useState}from "react";
 import { NavLink, Outlet } from "react-router-dom";
-
+import NewTaskDrawer from "./NewTaskDrawer";
 const Tasks = () => {
+  const [drawerOpen, setDrawerOpen] = useState(false);
   return (
     <Box>
       <Box>
@@ -72,6 +73,7 @@ const Tasks = () => {
               borderRadius: "15px",
               mt: 2,
             }}
+            onClick={() => setDrawerOpen(true)}
           >
             New Task
           </Button>
@@ -81,6 +83,8 @@ const Tasks = () => {
       <Box mt={2}>
         <Outlet />
       </Box>
+
+      <NewTaskDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
     </Box>
   );
 };
