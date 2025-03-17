@@ -955,7 +955,7 @@ console.log(raw)
       </Box>
       <Box
 
-        border={'1px solid #e2e8f0'}
+        // border={'1px solid #e2e8f0'}
       >
         <Box mt={3}
           border={'1px solid #e2e8f0'}
@@ -966,10 +966,10 @@ console.log(raw)
             <Box>
               <Grid container spacing={3} sx={{ height: 'auto', mt: 2, }}>
                 <Grid item xs={4} >
-                  <Container sx={{ height: '90vh', borderRight: '1px solid #697991' }}>
+                  <Box sx={{ml:2, height: '90vh', borderRight: '1px solid #697991',overflowY:'auto' }}>
                     {chatList.length > 0 && (
                       chatList.map((chat, index) => (
-                        <Box key={index} mb={2}>
+                        <Box key={index}   padding={1.5}>
                           <Box display="flex" alignItems="center" mb={1}>
                             <TelegramIcon sx={{ color: 'rgb(113, 53, 247)', mr: 1 }} />
                             <Typography fontSize={13} color="#697991">
@@ -1021,7 +1021,7 @@ console.log(raw)
 
                       ))
                     )}
-                  </Container>
+                  </Box>
                 </Grid>
                 {/* Second Grid: Shown on Expand */}
                 <Grid item xs={6} ml={3}>

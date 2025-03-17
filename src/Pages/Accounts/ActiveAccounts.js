@@ -198,38 +198,73 @@ const FixedColumnTable = () => {
   //   }
   // };
 
+  // const fetchData = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const storedData = JSON.parse(localStorage.getItem("teamMemberData"));
+  //     console.log("Received stored teamMemberData:", storedData);
+  //     const loginuserid = storedData?.teammember?.userid;
+  //     console.log("User role is:", userRole);
+
+  //     let url =
+  //       userRole === "Admin"
+  //         ? `${ACCOUNT_API}/accounts/account/accountdetailslist/${isActiveTrue}`
+  //         : `${ACCOUNT_API}/accounts/getaccounts/${loginuserid}/${isActiveTrue}`;
+
+  //     const response = await axios.get(url);
+  //     console.log("API Response:", response.data.accountlist);
+
+  //     setAccountData(response.data.accountlist || []);
+
+  //     if (userRole === "TeamMember") {
+  //       setViewAllAccounts(storedData?.teammember?.viewallAccounts || false);
+  //       if (!storedData?.teammember?.viewallAccounts) {
+  //         setLoading(false);
+  //         return;
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error.response?.data || error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const fetchData = async () => {
     setLoading(true);
     try {
       const storedData = JSON.parse(localStorage.getItem("teamMemberData"));
       console.log("Received stored teamMemberData:", storedData);
+      
       const loginuserid = storedData?.teammember?.userid;
       console.log("User role is:", userRole);
-
-      let url =
-        userRole === "Admin"
+  
+      let url;
+  
+      if (userRole === "Admin") {
+        url = `${ACCOUNT_API}/accounts/account/accountdetailslist/${isActiveTrue}`;
+      } else if (userRole === "TeamMember") {
+        const viewAll = storedData?.teammember?.viewallAccounts || false;
+        setViewAllAccounts(viewAll);
+  
+        url = viewAll
           ? `${ACCOUNT_API}/accounts/account/accountdetailslist/${isActiveTrue}`
           : `${ACCOUNT_API}/accounts/getaccounts/${loginuserid}/${isActiveTrue}`;
-
+      }
+  
+      // Fetch data
       const response = await axios.get(url);
       console.log("API Response:", response.data.accountlist);
-
+  
       setAccountData(response.data.accountlist || []);
-
-      if (userRole === "TeamMember") {
-        setViewAllAccounts(storedData?.teammember?.viewallAccounts || false);
-        if (!storedData?.teammember?.viewallAccounts) {
-          setLoading(false);
-          return;
-        }
-      }
+  
     } catch (error) {
       console.error("Error fetching data:", error.response?.data || error);
     } finally {
       setLoading(false);
     }
   };
-
+  
   console.log(viewAllAccounts);
 
   useEffect(() => {
@@ -1209,7 +1244,12 @@ const FixedColumnTable = () => {
           {" "}
           <CircularProgress style={{ fontSize: "300px", color: "blue" }} />
         </Box>
-      ) : userRole === "TeamMember" && !viewAllAccounts ? (
+      ) : 
+      
+      
+      // userRole === "TeamMember" && !viewAllAccounts ?
+      userRole === "TeamMember" && !viewAllAccounts && (!accountData || accountData.length === 0) ?
+       (
         <Typography
           sx={{
             textAlign: "center",
@@ -1221,7 +1261,10 @@ const FixedColumnTable = () => {
         >
           You do not have permission to view accounts.
         </Typography>
-      ) : (
+      ) 
+      
+      
+      : (
         accountData.length > 0 && (
           <Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: 3, mt: 1 }}>

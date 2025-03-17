@@ -431,6 +431,8 @@ const Pipeline = ({ charLimit = 4000 }) => {
     const ORGANIZER_TEMP_API = process.env.REACT_APP_ORGANIZER_TEMP_URL;
     const AUTOMATION_API = process.env.REACT_APP_AUTOMATION_API;
     const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
+    // REACT_APP_TASKS_API
+    const ACCOUNT_TASKS_API = process.env.REACT_APP_TASKS_API;
     const API_KEY = process.env.REACT_APP_API_IP;
     const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
     const [automationType, setAutomationType] = useState([]);
@@ -522,6 +524,24 @@ const Pipeline = ({ charLimit = 4000 }) => {
         const result = await response.json(); // Parse the JSON response
         console.log("Fetched chat template:", result.chatTemplate);
         return result.chatTemplate; // Return the data
+      } catch (error) {
+        console.error("Error fetching invoice template:", error);
+        throw error; // Let the calling function handle the error
+      }
+    };
+    // fetch chat temp by id
+    const TASK_API = process.env.REACT_APP_TASK_TEMP_URL;
+    const fetchtasktempbyid = async (automationTemp) => {
+      const requestOptions = {
+        method: "GET",
+        redirect: "follow",
+      };
+      const url = `${TASK_API}/workflow/tasks/tasktemplate/tasktemplatebyid/${automationTemp}`;
+      try {
+        const response = await fetch(url, requestOptions); // Fetch the data
+        const result = await response.json(); // Parse the JSON response
+        console.log("Fetched task template:", result.taskTemplate);
+        return result.taskTemplate; // Return the data
       } catch (error) {
         console.error("Error fetching invoice template:", error);
         throw error; // Let the calling function handle the error
@@ -719,6 +739,58 @@ const Pipeline = ({ charLimit = 4000 }) => {
         .then((result) => console.log(result))
         .catch((error) => console.error(error));
     };
+
+    const assignTaskToAccount =(taskData, automationTemp, automationAccountId)=>{
+      console.log(
+        "Assigning invoice",
+        taskData,
+        automationTemp,
+        automationAccountId
+      );
+
+      
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    
+    // const subtaskData = subtasks.map(({ id, text }) => ({
+    //     id,
+    //     text,
+    
+    //     checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks array
+    //   }));
+    
+    const raw = JSON.stringify({
+      accounts: automationAccountId,
+      job: jobId,
+      templatename: automationTemp,
+      taskname: taskData.templatename,
+      status: taskData.status,
+      taskassignees: taskData.taskassignees,
+      priority: taskData.priority,
+      description: taskData.description ,
+      tasktags: taskData.tasktags ,
+      issubtaskschecked: taskData.issubtaskschecked,
+      startdate: taskData.StartsDate,
+      enddate: taskData.DueDate,
+      subtasks: taskData.subtasks
+    });
+    console.log(raw)
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow"
+    };
+    
+    fetch(`${ACCOUNT_TASKS_API}/accountstasks/newtask`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log("task created",result)
+        // onClose()
+    } )
+      .catch((error) => console.error(error));
+    }
 
     const assignProposalToAccount = (
       proposalesandelsData,
@@ -1103,7 +1175,18 @@ const Pipeline = ({ charLimit = 4000 }) => {
             console.error("Error processing 'Send Invoice':", error);
           }
           break;
-
+          case "Create Task":
+            console.log(
+              `Processing 'Create Task' with template: ${automationTemp}, Account ID: ${automationAccountId}`
+            );
+            try {
+              const taskData = await fetchtasktempbyid(automationTemp);
+              console.log("Fetched chat data", taskData);
+              assignTaskToAccount(taskData, automationTemp, automationAccountId);
+            } catch (error) {
+              console.error("Error processing 'Send Invoice':", error);
+            }
+            break;
         case "Apply folder template":
           console.log(
             `Applying folder template with template: ${automationTemp}, Account ID: ${automationAccountId}`

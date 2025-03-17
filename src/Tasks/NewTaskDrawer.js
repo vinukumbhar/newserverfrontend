@@ -31,8 +31,40 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { PiDotsSixVerticalBold } from "react-icons/pi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiPlusCircle } from "react-icons/fi";
+import { toast } from "react-toastify";
 const NewTaskDrawer = ({ open, onClose }) => {
+
+   const fetchTasksData = () => {
+      const requestOptions = {
+        method: "GET",
+        redirect: "follow",
+      };
+    
+      fetch(`${ACCOUNT_TASKS_API}/accountstasks/tasklist/true`, requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+          const formattedTasks = result.taskList.map((task) => ({
+            ...task,
+            startDate: task.StartDate 
+              ? new Date(task.StartDate).toLocaleDateString("en-GB") 
+              : "",
+            dueDate: task.EndDate 
+              ? new Date(task.EndDate).toLocaleDateString("en-GB") 
+              : "",
+            description: task.Description.replace(/<[^>]+>/g, ""), // Remove HTML tags
+          }));
+    
+          console.log(formattedTasks);
+          // setTasksData(formattedTasks);
+        })
+        .catch((error) => console.error(error));
+    };
+    
+    useEffect(() => {
+      fetchTasksData();
+    }, []);
   const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
+  const ACCOUNT_TASKS_API = process.env.REACT_APP_TASKS_API;
   //****************Accounts */
   const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
   const [accountdata, setaccountdata] = useState([]);
@@ -324,6 +356,8 @@ const NewTaskDrawer = ({ open, onClose }) => {
           `${TASK_API}/workflow/tasks/tasktemplate/tasktemplatebyid/${templateId}`
         );
         const data = await response.json();
+        
+        console.log("tasktemp",data)
         // Extract and process assigneesData
         if (data.taskTemplate && data.taskTemplate.taskassignees) {
           const innerArray = data.taskTemplate.taskassignees[0]; // Extract the inner array
@@ -341,7 +375,7 @@ const NewTaskDrawer = ({ open, onClose }) => {
 
             const selectedValues = assigneesData.map((option) => option.value);
             setCombinedValues(selectedValues);
-            // console.log("Selected Assignees:", selectedValues);
+            console.log("Selected Assignees:", selectedValues);
           } else {
             console.log("taskassignees contains an unexpected structure.");
           }
@@ -424,10 +458,6 @@ const NewTaskDrawer = ({ open, onClose }) => {
   };
 
   const createTask = async ()=>{
-
-
-  
-
     const myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
 
@@ -444,10 +474,10 @@ const raw = JSON.stringify({
   templatename: selectedtemp.value,
   taskname: tempNameNew,
   status: status,
-  taskassignees: setCombinedValues,
+  taskassignees: combinedValues,
   priority: priority,
   description: taskDiscription,
-  tasktags: setCombinedTagsValues,
+  tasktags: combinedTagsValues,
   issubtaskschecked: SubtaskSwitch,
   startdate: StartsDateNew,
   enddate: DueDateNew,
@@ -461,11 +491,30 @@ const requestOptions = {
   redirect: "follow"
 };
 
-fetch("http://127.0.0.1/accountstasks/newtask", requestOptions)
+fetch(`${ACCOUNT_TASKS_API}/accountstasks/newtask`, requestOptions)
   .then((response) => response.json())
   .then((result) => {
     console.log(result)
-    onClose()
+    toast.success("Task Created successfully")
+    
+    onClose();
+    fetchTasksData();
+    // Clear all fields after successful submission
+    setselectedTemp(null);
+    setSelectedJob(null);
+    setSelectedaccount(null);
+    setTempNameNew("");
+    setStatus("");
+    setCombinedValues([]);
+    setAssigneesNew([])
+    setPriority("");
+    setTaskDescription("");
+    setCombinedTagsValues([]);
+    setSubtaskSwitch(false);
+    setStartsDateNew(null);
+    setDueDateNew(null);
+    setSubtasks([]);
+    setCheckedSubtasks([]);
 } )
   .catch((error) => console.error(error));
   }

@@ -84,7 +84,7 @@ const Tasks = () => {
         <Outlet />
       </Box>
 
-      <NewTaskDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <NewTaskDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}   />
     </Box>
   );
 };
