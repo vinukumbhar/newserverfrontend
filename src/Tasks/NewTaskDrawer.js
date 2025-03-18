@@ -32,50 +32,22 @@ import { PiDotsSixVerticalBold } from "react-icons/pi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiPlusCircle } from "react-icons/fi";
 import { toast } from "react-toastify";
-const NewTaskDrawer = ({ open, onClose }) => {
+const NewTaskDrawer = ({ open, onClose, fetchTasksData, isEditMode, taskData }) => {
 
-   const fetchTasksData = () => {
-      const requestOptions = {
-        method: "GET",
-        redirect: "follow",
-      };
-    
-      fetch(`${ACCOUNT_TASKS_API}/accountstasks/tasklist/true`, requestOptions)
-        .then((response) => response.json())
-        .then((result) => {
-          const formattedTasks = result.taskList.map((task) => ({
-            ...task,
-            startDate: task.StartDate 
-              ? new Date(task.StartDate).toLocaleDateString("en-GB") 
-              : "",
-            dueDate: task.EndDate 
-              ? new Date(task.EndDate).toLocaleDateString("en-GB") 
-              : "",
-            description: task.Description.replace(/<[^>]+>/g, ""), // Remove HTML tags
-          }));
-    
-          console.log(formattedTasks);
-          // setTasksData(formattedTasks);
-        })
-        .catch((error) => console.error(error));
-    };
-    
-    useEffect(() => {
-      fetchTasksData();
-    }, []);
+ 
   const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
   const ACCOUNT_TASKS_API = process.env.REACT_APP_TASKS_API;
   //****************Accounts */
   const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
   const [accountdata, setaccountdata] = useState([]);
-  const [selectedaccount, setSelectedaccount] = useState();
+  const [selectedaccount, setSelectedaccount] = useState(null);
 
-  const handleAccountChange = (event, newValue) => {
-    setSelectedaccount(newValue);
-    console.log("aacounts", newValue);
-    if (newValue?.value) {
-      fetchJobList(newValue.value); // Fetch jobs based on selected account ID
-    }
+  const handleAccountChange = (selectedOptions) => {
+    setSelectedaccount(selectedOptions);
+    console.log("aacounts", selectedOptions);
+
+      fetchJobList(selectedOptions.value); // Fetch jobs based on selected account ID
+  
   };
 
   useEffect(() => {
@@ -151,7 +123,7 @@ const NewTaskDrawer = ({ open, onClose }) => {
   useEffect(() => {
     fetchTaskTemplates();
   }, []);
-  const [selectedtemp, setselectedTemp] = useState();
+  const [selectedtemp, setselectedTemp] = useState(null);
   const [tempNameNew, setTempNameNew] = useState("");
   const [tagsNew, setTagsNew] = useState([]);
   const [AssigneesNew, setAssigneesNew] = useState([]);
@@ -457,67 +429,222 @@ const NewTaskDrawer = ({ open, onClose }) => {
     }
   };
 
-  const createTask = async ()=>{
-    const myHeaders = new Headers();
-myHeaders.append("Content-Type", "application/json");
+  useEffect(() => {
+    if (isEditMode && taskData) {
 
-const subtaskData = subtasks.map(({ id, text }) => ({
+      console.log("tasksData",taskData)
+      
+      // Pre-fill form fields with taskData
+      setTempNameNew(taskData.taskList.Name  || "");
+      setStatus(taskData.taskList.Status  || "");
+      setTaskDescription(taskData.taskList.Descriptions || "");
+      setPriority(taskData.taskList.Priority || "");
+      setStartsDateNew(dayjs(taskData.taskList.StartDate) || null);
+      setDueDateNew(dayjs(taskData.taskList.DueDate ) || null);
+      setSubtaskSwitch(taskData.taskList.SubtaskCheck || false);
+
+      // Pre-fill assignees
+      
+      if (taskData.taskList && (taskData.taskList.Assignees)) {
+        const innerArray = taskData.taskList.Assignees[0]; // Extract the inner array
+
+        if ((innerArray)) {
+            // console.log("Task Assignees:", innerArray);
+
+            const assigneesData = innerArray.map((assignee) => ({
+                value: assignee._id,
+                label: assignee.username,
+            }));
+            // console.log("Assignees Data:", assigneesData); // Log the processed assigneesData
+
+            setAssigneesNew(assigneesData);
+
+            const selectedValues = assigneesData.map((option) => option.value);
+            setCombinedValues(selectedValues);
+            // console.log("Selected Assignees:", selectedValues);
+        } else {
+            console.log("taskassignees contains an unexpected structure.");
+        }
+    }
+      // Pre-fill tags
+      if (taskData.taskList && Array.isArray(taskData.taskList.Tags)) {
+        const tagsData = taskData.taskList.Tags.map((tag) => ({
+          value: tag._id,
+          label: tag.tagName,
+          color: tag.tagColour,
+        }));
+        setTagsNew(tagsData);
+        setCombinedTagsValues(tagsData.map((option) => option.value));
+      }
+
+      // Pre-fill subtasks
+      if (taskData.taskList.SubtaskList
+        && Array.isArray(taskData.taskList.SubtaskList
+        )) {
+        setSubtasks(taskData.taskList.SubtaskList);
+      }
+
+      if (taskData.taskList && taskData.taskList.Accounts) {
+        const accountData = {
+          value: taskData.taskList.Accounts._id,
+          label: taskData.taskList.Accounts.accountName  ,
+        };
+       
+        console.log(accountData);
+        setSelectedaccount(accountData)
+      }
+
+      if (taskData.taskList && taskData.taskList.Job) {
+        const jobData = {
+          value: taskData.taskList.Job._id,
+          label: taskData.taskList.Job.Name ,
+        };
+       
+        console.log(jobData);
+        setSelectedJob(jobData)
+      }
+      if (taskData.taskList && taskData.taskList.TaskTemp) {
+        const taskTempData = {
+          value: taskData.taskList.TaskTemp._id,
+          label: taskData.taskList.TaskTemp.Name ,
+        };
+       
+        console.log(taskTempData);
+        setselectedTemp(taskTempData)
+      }
+    }
+  }, [isEditMode, taskData]);
+console.log("accounts",selectedaccount)
+
+//   const createTask = async ()=>{
+//     const myHeaders = new Headers();
+// myHeaders.append("Content-Type", "application/json");
+
+// const subtaskData = subtasks.map(({ id, text }) => ({
+//     id,
+//     text,
+
+//     checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks array
+//   }));
+
+// const raw = JSON.stringify({
+//   accounts: selectedaccount.value,
+//   job: selectedJob.value,
+//   templatename: selectedtemp.value,
+//   taskname: tempNameNew,
+//   status: status,
+//   taskassignees: combinedValues,
+//   priority: priority,
+//   description: taskDiscription,
+//   tasktags: combinedTagsValues,
+//   issubtaskschecked: SubtaskSwitch,
+//   startdate: StartsDateNew,
+//   enddate: DueDateNew,
+//   subtasks: subtaskData
+// });
+// console.log(raw)
+// const requestOptions = {
+//   method: "POST",
+//   headers: myHeaders,
+//   body: raw,
+//   redirect: "follow"
+// };
+
+// fetch(`${ACCOUNT_TASKS_API}/accountstasks/newtask`, requestOptions)
+//   .then((response) => response.json())
+//   .then((result) => {
+//     console.log(result)
+//     toast.success("Task Created successfully")
+    
+//     onClose();
+//     // fetchTasksData();
+//     // Clear all fields after successful submission
+//     setselectedTemp(null);
+//     setSelectedJob(null);
+//     setSelectedaccount(null);
+//     setTempNameNew("");
+//     setStatus("");
+//     setCombinedValues([]);
+//     setAssigneesNew([])
+//     setPriority("");
+//     setTaskDescription("");
+//     setCombinedTagsValues([]);
+//     setSubtaskSwitch(false);
+//     setStartsDateNew(null);
+//     setDueDateNew(null);
+//     setSubtasks([]);
+//     setCheckedSubtasks([]);
+// } )
+//   .catch((error) => console.error(error));
+//   }
+
+
+const createTask = async () => {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  const subtaskData = subtasks.map(({ id, text }) => ({
     id,
     text,
-
-    checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks array
+    checked: checkedSubtasks.includes(id),
   }));
 
-const raw = JSON.stringify({
-  accounts: selectedaccount.value,
-  job: selectedJob.value,
-  templatename: selectedtemp.value,
-  taskname: tempNameNew,
-  status: status,
-  taskassignees: combinedValues,
-  priority: priority,
-  description: taskDiscription,
-  tasktags: combinedTagsValues,
-  issubtaskschecked: SubtaskSwitch,
-  startdate: StartsDateNew,
-  enddate: DueDateNew,
-  subtasks: subtaskData
-});
-console.log(raw)
-const requestOptions = {
-  method: "POST",
-  headers: myHeaders,
-  body: raw,
-  redirect: "follow"
-};
+  const raw = JSON.stringify({
+    accounts: selectedaccount?.value,
+    job: selectedJob?.value,
+    templatename: selectedtemp?.value,
+    taskname: tempNameNew,
+    status: status,
+    taskassignees: combinedValues,
+    priority: priority,
+    description: taskDiscription,
+    tasktags: combinedTagsValues,
+    issubtaskschecked: SubtaskSwitch,
+    startdate: StartsDateNew,
+    enddate: DueDateNew,
+    subtasks: subtaskData,
+  });
 
-fetch(`${ACCOUNT_TASKS_API}/accountstasks/newtask`, requestOptions)
-  .then((response) => response.json())
-  .then((result) => {
-    console.log(result)
-    toast.success("Task Created successfully")
-    
-    onClose();
-    fetchTasksData();
-    // Clear all fields after successful submission
-    setselectedTemp(null);
-    setSelectedJob(null);
-    setSelectedaccount(null);
-    setTempNameNew("");
-    setStatus("");
-    setCombinedValues([]);
-    setAssigneesNew([])
-    setPriority("");
-    setTaskDescription("");
-    setCombinedTagsValues([]);
-    setSubtaskSwitch(false);
-    setStartsDateNew(null);
-    setDueDateNew(null);
-    setSubtasks([]);
-    setCheckedSubtasks([]);
-} )
-  .catch((error) => console.error(error));
-  }
+  const requestOptions = {
+    method: isEditMode ? "PATCH" : "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+  };
+
+  const url = isEditMode
+    ? `${ACCOUNT_TASKS_API}/accountstasks/updatatasks/${taskData.taskList.id}`
+    : `${ACCOUNT_TASKS_API}/accountstasks/newtask`;
+
+  fetch(url, requestOptions)
+    .then((response) => response.json())
+    .then((result) => {
+      console.log(result);
+      toast.success(isEditMode ? "Task Updated successfully" : "Task Created successfully");
+      onClose();
+      
+
+      if (!isEditMode) {
+        // Clear all fields after successful submission
+        setselectedTemp(null);
+        setSelectedJob(null);
+        setSelectedaccount(null);
+        setTempNameNew("");
+        setStatus("");
+        setCombinedValues([]);
+        setAssigneesNew([]);
+        setPriority("");
+        setTaskDescription("");
+        setCombinedTagsValues([]);
+        setSubtaskSwitch(false);
+        setStartsDateNew(null);
+        setDueDateNew(null);
+        setSubtasks([]);
+        setCheckedSubtasks([]);
+      }
+    })
+    .catch((error) => console.error(error));
+};
   return (
     <Drawer anchor="right" open={open} onClose={onClose}>
       <Box sx={{ width: 500 }}>
@@ -527,7 +654,9 @@ fetch(`${ACCOUNT_TASKS_API}/accountstasks/newtask`, requestOptions)
           alignItems="center"
           padding={1.5}
         >
-          <Typography variant="h6">New Task</Typography>
+          <Typography variant="h6">
+          {isEditMode ? "Edit Task" : "New Task"}
+          </Typography>
           <IconButton onClick={onClose}>
             <CloseIcon />
           </IconButton>
@@ -542,8 +671,13 @@ fetch(`${ACCOUNT_TASKS_API}/accountstasks/newtask`, requestOptions)
 
                 <Autocomplete
                   options={accountoptions}
+                  getOptionLabel={(option) => option.label}
                   value={selectedaccount}
-                  onChange={handleAccountChange}
+                  // onChange={handleAccountChange}
+                  onChange={(event, newValue) => handleAccountChange(newValue)}
+                isOptionEqualToValue={(option, value) =>
+                  option.value === value.value
+                }
                   renderOption={(props, option) => (
                     <Box
                       component="li"
@@ -954,7 +1088,7 @@ fetch(`${ACCOUNT_TASKS_API}/accountstasks/newtask`, requestOptions)
             }}
             onClick={createTask}
           >
-            Create Task
+           {isEditMode ? "Update Task" : "Create Task"}
           </Button>
         </Box>
       </Box>

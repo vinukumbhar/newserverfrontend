@@ -3,7 +3,10 @@ import React ,{useState}from "react";
 import { NavLink, Outlet } from "react-router-dom";
 import NewTaskDrawer from "./NewTaskDrawer";
 const Tasks = () => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
+ const [drawerOpen, setDrawerOpen] = useState(false);
+ const onclose =()=>{
+  setDrawerOpen(false)
+ }
   return (
     <Box>
       <Box>
@@ -61,30 +64,30 @@ const Tasks = () => {
             Completed
           </NavLink>
         </Box>
-        <Box>
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: "var(--color-save-btn)", // Normal background
-
-              "&:hover": {
-                backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-              },
-              borderRadius: "15px",
-              mt: 2,
-            }}
-            onClick={() => setDrawerOpen(true)}
-          >
-            New Task
-          </Button>
-        </Box>
+       
       </Box>
-
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+  <Button
+    variant="contained"
+    sx={{
+      backgroundColor: "var(--color-save-btn)", // Normal background
+      "&:hover": {
+        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+      },
+      borderRadius: "15px",
+    }}
+    onClick={() => setDrawerOpen(true)}
+  >
+    New Task
+  </Button>
+</Box>
       <Box mt={2}>
         <Outlet />
       </Box>
 
-      <NewTaskDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}   />
+      <NewTaskDrawer  open={drawerOpen}
+             onClose={onclose}
+              />
     </Box>
   );
 };

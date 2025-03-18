@@ -411,6 +411,7 @@ const Example = ({ charLimit = 4000 }) => {
   };
   const [accountId, setAccountId] = useState();
   const [jobid, setjobid] = useState();
+     const [selectedAccount, setSelectedAccount] = useState(null);
   const handleClick = async (id) => {
     console.log(id);
     setjobid(id);
@@ -423,7 +424,12 @@ const Example = ({ charLimit = 4000 }) => {
       const data = await response.json();
       setSelectedJob(data.jobList);
       console.log(data.jobList);
-
+      if (data.jobList.Account && data.jobList.Account.length > 0) {
+        const { _id, accountName } = data.jobList.Account[0];
+        console.log("Account ID:", _id);
+        console.log("Account Name:", accountName);
+        setSelectedAccount(accountName);
+      } 
       if (data.jobList && data.jobList.Pipeline) {
         const pipelineData = {
           value: data.jobList.Pipeline._id,
@@ -1098,6 +1104,16 @@ const Example = ({ charLimit = 4000 }) => {
           </Box>
           <Divider />
           <Box padding={2} height="83vh" sx={{ overflowY: "auto" }} className="bulk-job-form">
+            <Box>
+                                        <InputLabel sx={{ color: "black" }}>Account</InputLabel>
+                        
+                                        <TextField
+                                          value={selectedAccount}
+                                          size="small"
+                                          fullWidth
+                                          margin="normal"
+                                        />
+                                      </Box>
             <Box>
               <InputLabel sx={{ color: "black" }}>Pipeline</InputLabel>
 

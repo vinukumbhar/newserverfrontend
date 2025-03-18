@@ -237,8 +237,8 @@ const Example = ({ charLimit = 4000 }) => {
           `${ACCOUNT_API}/accounts/getaccounts/${loginuserid}/true`
         );
         const accountsData = accountsResponse.data.accountlist;
-        console.log(accountsData);
-
+        console.log("cfdf", accountsResponse);
+        // `${JOBS_API}/workflow/jobs/joblist/list/${loginuserid}/${isActiveTrue}`
         if (!accountsData || accountsData.length === 0) {
           console.warn("No accounts found for user.");
           setJobData([]); // Set empty job data
@@ -254,7 +254,7 @@ const Example = ({ charLimit = 4000 }) => {
 
       // If no URL is set, exit
       if (!url) return;
-
+      console.log("test url", url);
       // Fetch job data
       const jobListResponse = await axios.get(url);
       const formattedData = jobListResponse.data.jobList.map((job) => ({
@@ -480,6 +480,7 @@ const Example = ({ charLimit = 4000 }) => {
   };
   const [accountId, setAccountId] = useState();
   const [jobid, setjobid] = useState();
+  const [selectedAccount, setSelectedAccount] = useState(null);
   const handleClick = async (id) => {
     console.log(id);
     setjobid(id);
@@ -492,6 +493,12 @@ const Example = ({ charLimit = 4000 }) => {
       const data = await response.json();
       setSelectedJob(data.jobList);
       console.log(data.jobList);
+      if (data.jobList.Account && data.jobList.Account.length > 0) {
+        const { _id, accountName } = data.jobList.Account[0];
+        console.log("Account ID:", _id);
+        console.log("Account Name:", accountName);
+        setSelectedAccount(accountName);
+      }
 
       if (data.jobList && data.jobList.Pipeline) {
         const pipelineData = {
@@ -1182,6 +1189,16 @@ const Example = ({ charLimit = 4000 }) => {
             className="bulk-job-form"
           >
             <Box>
+              <InputLabel sx={{ color: "black" }}>Account</InputLabel>
+
+              <TextField
+                value={selectedAccount}
+                size="small"
+                fullWidth
+                margin="normal"
+              />
+            </Box>
+            <Box>
               <InputLabel sx={{ color: "black" }}>Pipeline</InputLabel>
 
               <Autocomplete
@@ -1332,7 +1349,7 @@ const Example = ({ charLimit = 4000 }) => {
                   }
                 /> 
                  */}
-                  {/* // renderValue={(selected) => (
+              {/* // renderValue={(selected) => (
                   //   <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                   //     {selected.map((option) => (
                   //       <Chip
@@ -1359,7 +1376,6 @@ const Example = ({ charLimit = 4000 }) => {
                   displayEmpty
                   value={combinedTagsValues} // Store selected tag objects
                   onChange={handleTagChange} // Handle selection
-                 
                   renderValue={(selected) => {
                     if (selected.length === 0) {
                       return (
@@ -1515,14 +1531,12 @@ const Example = ({ charLimit = 4000 }) => {
               <InputLabel sx={{ color: "black" }}>Start Date</InputLabel>
               <DatePicker
                 format="DD/MM/YYYY"
-                sx={{ width: "100%", backgroundColor: "#fff",mt:2 }}
+                sx={{ width: "100%", backgroundColor: "#fff", mt: 2 }}
                 // value={startDate}
                 // onChange={handleStartDateChange}
                 value={startDate}
                 onChange={handleStartDateChange}
-                renderInput={(params) => (
-                  <TextField {...params} size="small" />
-                )}
+                renderInput={(params) => <TextField {...params} size="small" />}
               />
             </Box>
 
@@ -1530,14 +1544,12 @@ const Example = ({ charLimit = 4000 }) => {
               <InputLabel sx={{ color: "black" }}>Due Date</InputLabel>
               <DatePicker
                 format="DD/MM/YYYY"
-                sx={{ width: "100%", backgroundColor: "#fff",mt:2 }}
+                sx={{ width: "100%", backgroundColor: "#fff", mt: 2 }}
                 // value={dueDate}
                 // onChange={handleDueDateChange}
                 value={dueDate}
                 onChange={handleDueDateChange}
-                renderInput={(params) => (
-                  <TextField {...params} size="small" />
-                )}
+                renderInput={(params) => <TextField {...params} size="small" />}
               />
             </Box>
             <Box mt={2}>
@@ -1584,7 +1596,9 @@ const Example = ({ charLimit = 4000 }) => {
                   <Box>
                     {clientFacingStatus && (
                       <>
-                        <InputLabel sx={{ color: "black",}}>Job name for client</InputLabel>
+                        <InputLabel sx={{ color: "black" }}>
+                          Job name for client
+                        </InputLabel>
                         <TextField
                           fullWidth
                           name="subject"
@@ -1596,7 +1610,9 @@ const Example = ({ charLimit = 4000 }) => {
                         />
 
                         <Box mt={2}>
-                           <InputLabel sx={{ color: "black",}}>Status</InputLabel>
+                          <InputLabel sx={{ color: "black" }}>
+                            Status
+                          </InputLabel>
                           <Autocomplete
                             options={optionstatus}
                             size="small"
@@ -1655,8 +1671,8 @@ const Example = ({ charLimit = 4000 }) => {
                         </Box>
                         <Box sx={{ position: "relative", mt: 2 }}>
                           <InputLabel sx={{ color: "black" }}>
-                                                        Description
-                                                      </InputLabel>
+                            Description
+                          </InputLabel>
                           <TextField
                             fullWidth
                             size="small"
@@ -2196,7 +2212,7 @@ const Example = ({ charLimit = 4000 }) => {
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[30,40,50,60,100]}
+        rowsPerPageOptions={[30, 40, 50, 60, 100]}
         component="div"
         count={jobData.length}
         rowsPerPage={rowsPerPage}

@@ -740,7 +740,11 @@ const Pipeline = ({ charLimit = 4000 }) => {
         .catch((error) => console.error(error));
     };
 
-    const assignTaskToAccount =(taskData, automationTemp, automationAccountId)=>{
+    const assignTaskToAccount = (
+      taskData,
+      automationTemp,
+      automationAccountId
+    ) => {
       console.log(
         "Assigning invoice",
         taskData,
@@ -748,49 +752,47 @@ const Pipeline = ({ charLimit = 4000 }) => {
         automationAccountId
       );
 
-      
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
 
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-    
-    // const subtaskData = subtasks.map(({ id, text }) => ({
-    //     id,
-    //     text,
-    
-    //     checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks array
-    //   }));
-    
-    const raw = JSON.stringify({
-      accounts: automationAccountId,
-      job: jobId,
-      templatename: automationTemp,
-      taskname: taskData.templatename,
-      status: taskData.status,
-      taskassignees: taskData.taskassignees,
-      priority: taskData.priority,
-      description: taskData.description ,
-      tasktags: taskData.tasktags ,
-      issubtaskschecked: taskData.issubtaskschecked,
-      startdate: taskData.StartsDate,
-      enddate: taskData.DueDate,
-      subtasks: taskData.subtasks
-    });
-    console.log(raw)
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow"
+      // const subtaskData = subtasks.map(({ id, text }) => ({
+      //     id,
+      //     text,
+
+      //     checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks array
+      //   }));
+
+      const raw = JSON.stringify({
+        accounts: automationAccountId,
+        job: jobId,
+        templatename: automationTemp,
+        taskname: taskData.templatename,
+        status: taskData.status,
+        taskassignees: taskData.taskassignees,
+        priority: taskData.priority,
+        description: taskData.description,
+        tasktags: taskData.tasktags,
+        issubtaskschecked: taskData.issubtaskschecked,
+        startdate: taskData.StartsDate,
+        enddate: taskData.DueDate,
+        subtasks: taskData.subtasks,
+      });
+      console.log(raw);
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+
+      fetch(`${ACCOUNT_TASKS_API}/accountstasks/newtask`, requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+          console.log("task created", result);
+          // onClose()
+        })
+        .catch((error) => console.error(error));
     };
-    
-    fetch(`${ACCOUNT_TASKS_API}/accountstasks/newtask`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log("task created",result)
-        // onClose()
-    } )
-      .catch((error) => console.error(error));
-    }
 
     const assignProposalToAccount = (
       proposalesandelsData,
@@ -1175,18 +1177,18 @@ const Pipeline = ({ charLimit = 4000 }) => {
             console.error("Error processing 'Send Invoice':", error);
           }
           break;
-          case "Create Task":
-            console.log(
-              `Processing 'Create Task' with template: ${automationTemp}, Account ID: ${automationAccountId}`
-            );
-            try {
-              const taskData = await fetchtasktempbyid(automationTemp);
-              console.log("Fetched chat data", taskData);
-              assignTaskToAccount(taskData, automationTemp, automationAccountId);
-            } catch (error) {
-              console.error("Error processing 'Send Invoice':", error);
-            }
-            break;
+        case "Create Task":
+          console.log(
+            `Processing 'Create Task' with template: ${automationTemp}, Account ID: ${automationAccountId}`
+          );
+          try {
+            const taskData = await fetchtasktempbyid(automationTemp);
+            console.log("Fetched chat data", taskData);
+            assignTaskToAccount(taskData, automationTemp, automationAccountId);
+          } catch (error) {
+            console.error("Error processing 'Send Invoice':", error);
+          }
+          break;
         case "Apply folder template":
           console.log(
             `Applying folder template with template: ${automationTemp}, Account ID: ${automationAccountId}`
@@ -2282,6 +2284,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
     const handleClientFacing = (checked) => {
       setClientFacingStatus(checked);
     };
+    const [selectedAccount, setSelectedAccount] = useState(null);
     const handleEditJobCard = async (jobid) => {
       console.log(jobid);
       setjobid(jobid);
@@ -2293,8 +2296,21 @@ const Pipeline = ({ charLimit = 4000 }) => {
         }
         const data = await response.json();
         setSelectedJoData(data.jobList);
-        console.log(data);
-
+        console.log("account name", data);
+        // if (data.jobList && data.jobList.Account) {
+        //   const accountsData = {
+        //     value: data.jobList.Account._id,
+        //     label: data.jobList.Account.accountName,
+        //   };
+        //   setSelectedAccount(accountsData)
+        //   console.log("accounts",accountsData)
+        // }
+        if (data.jobList.Account && data.jobList.Account.length > 0) {
+          const { _id, accountName } = data.jobList.Account[0];
+          console.log("Account ID:", _id);
+          console.log("Account Name:", accountName);
+          setSelectedAccount(accountName);
+        } 
         if (data.jobList && data.jobList.Pipeline) {
           const pipelineData = {
             value: data.jobList.Pipeline._id,
@@ -2747,6 +2763,17 @@ const Pipeline = ({ charLimit = 4000 }) => {
               sx={{ overflowY: "auto" }}
               className="bulk-job-form"
             >
+              <Box>
+                <InputLabel sx={{ color: "black" }}>Account</InputLabel>
+
+                <TextField
+                  value={selectedAccount}
+                  size="small"
+                  fullWidth
+                  margin="normal"
+                />
+              </Box>
+              {/* selectedAccount */}
               <Box>
                 <InputLabel sx={{ color: "black" }}>Pipeline</InputLabel>
 

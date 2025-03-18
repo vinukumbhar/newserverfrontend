@@ -11,11 +11,22 @@ import {
   TableRow,
   Checkbox,
   MenuItem,
-  IconButton,Menu,Typography
+  IconButton,
+  Menu,
+  Typography,Button
 } from "@mui/material";
 import { toast } from "react-toastify";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import NewTaskDrawer from "./NewTaskDrawer";
 const PendingTasks = () => {
+   
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const onclose =()=>{
+    setDrawerOpen(false)
+    fetchTasksData()
+   }
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedTaskData, setSelectedTaskData] = useState(null);
   const ACCOUNT_TASKS_API = process.env.REACT_APP_TASKS_API;
   const [taskData, setTasksData] = useState([]);
   const [selectedTask, setSelectedTask] = useState("");
@@ -30,119 +41,148 @@ const PendingTasks = () => {
     // Log all selected row IDs
     // console.log("Selected IDs:", newSelected); // Log all selected IDs
   };
-  // const fetchTasksData = () => {
-  //   const requestOptions = {
-  //     method: "GET",
-  //     redirect: "follow",
-  //   };
-
-  //   fetch(`${ACCOUNT_TASKS_API}/accountstasks/tasklist/true`, requestOptions)
-  //     .then((response) => response.json())
-  //     .then((result) => {
-  //       console.log(result);
-  //       setTasksData(result.taskList);
-  //     })
-  //     .catch((error) => console.error(error));
-  // };
+  
   const fetchTasksData = () => {
     const requestOptions = {
       method: "GET",
       redirect: "follow",
     };
-  
+
     fetch(`${ACCOUNT_TASKS_API}/accountstasks/tasklist/true`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         const formattedTasks = result.taskList.map((task) => ({
           ...task,
-          startDate: task.StartDate 
-            ? new Date(task.StartDate).toLocaleDateString("en-GB") 
+          startDate: task.StartDate
+            ? new Date(task.StartDate).toLocaleDateString("en-GB")
             : "",
-          dueDate: task.EndDate 
-            ? new Date(task.EndDate).toLocaleDateString("en-GB") 
+          dueDate: task.EndDate
+            ? new Date(task.EndDate).toLocaleDateString("en-GB")
             : "",
           description: task.Description.replace(/<[^>]+>/g, ""), // Remove HTML tags
         }));
-  
+
         console.log(formattedTasks);
         setTasksData(formattedTasks);
       })
       .catch((error) => console.error(error));
   };
-  
+
   useEffect(() => {
     fetchTasksData();
   }, []);
   const [anchorEl, setAnchorEl] = useState(null);
-  
-    const handleMenuClick = (event, id) => {
-      setAnchorEl(event.currentTarget);
-      setSelectedTask(id);
-    };
-    const handleClose = () => {
-      setAnchorEl(null);
-      setSelectedTask(null);
-    };
 
-    const handleDelete = () => {
-      handleClose();
-      handleDeleteTask(selectedTask);
-      console.log("Deleted:", selectedTask);
-    };
-      const handleDeleteTask = async () => {
-        const isConfirmed = window.confirm(
-          "Are you sure you want to delete the selected tasks? This action cannot be undone."
+  const handleMenuClick = (event, id) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedTask(id);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSelectedTask(null);
+  };
+
+  const handleDelete = () => {
+    handleClose();
+    handleDeleteTask(selectedTask);
+    console.log("Deleted:", selectedTask);
+  };
+  const handleDeleteTask = async () => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete the selected tasks? This action cannot be undone."
+    );
+    if (isConfirmed) {
+      try {
+        // Make delete requests for each selected job
+        await Promise.all(
+          selected.map((id) =>
+            fetch(`${ACCOUNT_TASKS_API}/accountstasks/taskdelete/` + id, {
+              method: "DELETE",
+              redirect: "follow",
+            })
+          )
         );
-        if (isConfirmed) {
-          try {
-            // Make delete requests for each selected job
-            await Promise.all(
-              selected.map((id) =>
-                fetch(`${ACCOUNT_TASKS_API}/accountstasks/taskbyid/` + id, {
-                  method: "DELETE",
-                  redirect: "follow",
-                })
-              )
-            );
+
+        // Optionally, you can remove the deleted jobs from the UI (if needed)
+        // If you're using jobData in state, for example:
+        // setJobData((prevJobs) => prevJobs.filter((job) => !selected.includes(job.id)));
+
+        toast.success("task deleted successfully!");
+        setSelected([]); // Clear the selected jobs
+        fetchTasksData(); // Refresh the data after deletion
+      } catch (error) {
+        console.error("Delete API Error:", error);
+        toast.error("Failed to delete selected jobs");
+      }
+    }
+  };
+
+  const statusOptions = [
+    { value: "No status", label: "No status", color: "#C4AEAD" },
+    { value: "Planned", label: "Planned", color: "#4169E1" },
+    { value: "In review", label: "In review", color: "#F6BE00" },
+    { value: "In progress", label: "In progress", color: "#F6BE00" },
+    { value: "On hold", label: "On hold", color: "#BCC6CC" },
+    { value: "Extended", label: "Extended", color: "#82CAFF" },
+    {
+      value: "Waiting for Client",
+      label: "Waiting for Client",
+      color: "#566D7E",
+    },
+    {
+      value: "Waiting for Signatures",
+      label: "Waiting for Signatures",
+      color: "#566D7E",
+    },
+    {
+      value: "Waiting for agency",
+      label: "Waiting for agency",
+      color: "#566D7E",
+    },
+    { value: "Completed", label: "Completed", color: "#00FF00" },
+    { value: "Canceled", label: "Canceled", color: "#EB5406" },
+  ];
+
+  const priorityOptions = [
+    { value: "Urgent", label: "Urgent", color: "#0E0402" },
+    { value: "High", label: "High", color: "#fe676e" },
+    { value: "Medium", label: "Medium", color: "#FFC300" },
+    { value: "Low", label: "Low", color: "#56c288" },
+  ];
+
+
+  // const handleClick = (id) => {
+  // console.log(id)
+  // };
+
+  const handleClick = async (id) => {
     
-            // Optionally, you can remove the deleted jobs from the UI (if needed)
-            // If you're using jobData in state, for example:
-            // setJobData((prevJobs) => prevJobs.filter((job) => !selected.includes(job.id)));
-    
-            toast.success("task deleted successfully!");
-            setSelected([]); // Clear the selected jobs
-            fetchTasksData(); // Refresh the data after deletion
-          } catch (error) {
-            console.error("Delete API Error:", error);
-            toast.error("Failed to delete selected jobs");
-          }
-        }
-      };
-
-
-      const statusOptions = [
-        { value: "No status", label: "No status", color: "#C4AEAD" },
-        { value: "Planned", label: "Planned", color: "#4169E1" },
-        { value: "In review", label: "In review", color: "#F6BE00" },
-        { value: "In progress", label: "In progress", color: "#F6BE00" },
-        { value: "On hold", label: "On hold", color: "#BCC6CC" },
-        { value: "Extended", label: "Extended", color: "#82CAFF" },
-        { value: "Waiting for Client", label: "Waiting for Client", color: "#566D7E" },
-        { value: "Waiting for Signatures", label: "Waiting for Signatures", color: "#566D7E" },
-        { value: "Waiting for agency", label: "Waiting for agency", color: "#566D7E" },
-        { value: "Completed", label: "Completed", color: "#00FF00" },
-        { value: "Canceled", label: "Canceled", color: "#EB5406" },
-      ];
-
-      const priorityOptions = [
-        { value: "Urgent", label: "Urgent", color: "#0E0402" },
-        { value: "High", label: "High", color: "#fe676e" },
-        { value: "Medium", label: "Medium", color: "#FFC300" },
-        { value: "Low", label: "Low", color: "#56c288" },
-      ];
+    try {
+      const response = await fetch(`http://127.0.0.1/accountstasks/task/listbyid/${id}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to fetch task data");
+      }
+  
+      const taskToEdit = await response.json(); // Assuming response is JSON
+      setSelectedTaskData(taskToEdit);
+      handleClose()
+      setIsEditMode(true);
+      setDrawerOpen(true);
+    } catch (error) {
+      console.error("Error fetching task:", error);
+    }
+  };
+  
 
   return (
     <Box>
+
+
+      <Box mt={2}>
       <TableContainer component={Paper}>
         <Table style={{ tableLayout: "fixed", width: "100%" }}>
           <TableHead>
@@ -310,12 +350,7 @@ const PendingTasks = () => {
                 Description
               </TableCell>
               <TableCell
-                // style={{
-                //   fontSize: "12px",
-                //   fontWeight: "bold",
-                //   padding: "16px",
-                // }}
-                // width="100"
+                
                 style={{
                   position: "sticky",
                   right: 0, // Stick to the right side
@@ -380,10 +415,10 @@ const PendingTasks = () => {
                     <span
                       style={{ cursor: "pointer", color: "#3f51b5" }}
                       // onClick={() => handleClick(row.id)}
-                      // onClick={(e) => {
-                      //   e.stopPropagation(); // Prevent row click action when clicking on name
-                      //   handleClick(row.id);
-                      // }}
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent row click action when clicking on name
+                        handleClick(row.id);
+                      }}
                     >
                       {row.Name}
                     </span>
@@ -394,9 +429,8 @@ const PendingTasks = () => {
                       padding: "4px 8px",
                       lineHeight: "1",
                     }}
-
                   >
-{row.AccountName}
+                    {row.AccountName}
                   </TableCell>
                   <TableCell
                     style={{
@@ -407,36 +441,33 @@ const PendingTasks = () => {
                   >
                     {row.Assignees}
                   </TableCell>
-                  {/* <TableCell
+                 
+                  <TableCell
                     style={{
                       fontSize: "12px",
                       padding: "4px 8px",
                       lineHeight: "1",
                     }}
-                  >{row.Status}</TableCell> */}
-                  <TableCell
-  style={{
-    fontSize: "12px",
-    padding: "4px 8px",
-    lineHeight: "1",
-  }}
->
-  {row.Status && (
-    <span
-      style={{
-        display: "inline-block",
-        backgroundColor: statusOptions.find((status) => status.value === row.Status)?.color || "#ccc",
-        color: "#fff",
-        padding: "4px 8px",
-        borderRadius: "10px",
-        fontSize: "10px",
-        fontWeight: "bold",
-      }}
-    >
-      {row.Status}
-    </span>
-  )}
-</TableCell>
+                  >
+                    {row.Status && (
+                      <span
+                        style={{
+                          display: "inline-block",
+                          backgroundColor:
+                            statusOptions.find(
+                              (status) => status.value === row.Status
+                            )?.color || "#ccc",
+                          color: "#fff",
+                          padding: "4px 8px",
+                          borderRadius: "10px",
+                          fontSize: "10px",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {row.Status}
+                      </span>
+                    )}
+                  </TableCell>
                   {/* <TableCell
                     style={{
                       fontSize: "12px",
@@ -444,71 +475,86 @@ const PendingTasks = () => {
                       lineHeight: "1",
                     }}
                   >{row.Priority}</TableCell> */}
-<TableCell
-  style={{
-    fontSize: "12px",
-    padding: "4px 8px",
-    lineHeight: "1",
-  }}
->
-  {row.Priority && (
-    <span
-      style={{
-        display: "inline-block",
-        backgroundColor: priorityOptions.find((priority) => priority.value === row.Priority)?.color || "#ccc",
-        color: "#fff",
-        padding: "4px 8px",
-        borderRadius: "10px",
-        fontSize: "10px",
-        fontWeight: "bold",
-      }}
-    >
-      {row.Priority}
-    </span>
-  )}
-</TableCell>
                   <TableCell
                     style={{
                       fontSize: "12px",
                       padding: "4px 8px",
                       lineHeight: "1",
                     }}
-                  >{row.SubtaskCount}</TableCell>
+                  >
+                    {row.Priority && (
+                      <span
+                        style={{
+                          display: "inline-block",
+                          backgroundColor:
+                            priorityOptions.find(
+                              (priority) => priority.value === row.Priority
+                            )?.color || "#ccc",
+                          color: "#fff",
+                          padding: "4px 8px",
+                          borderRadius: "10px",
+                          fontSize: "10px",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {row.Priority}
+                      </span>
+                    )}
+                  </TableCell>
                   <TableCell
                     style={{
                       fontSize: "12px",
                       padding: "4px 8px",
                       lineHeight: "1",
                     }}
-                  >{row.startDate}</TableCell>
+                  >
+                    {row.SubtaskCount}
+                  </TableCell>
                   <TableCell
                     style={{
                       fontSize: "12px",
                       padding: "4px 8px",
                       lineHeight: "1",
                     }}
-                  >{row.dueDate}</TableCell>
+                  >
+                    {row.startDate}
+                  </TableCell>
                   <TableCell
                     style={{
                       fontSize: "12px",
                       padding: "4px 8px",
                       lineHeight: "1",
                     }}
-                  >{row.JobName}</TableCell>
+                  >
+                    {row.dueDate}
+                  </TableCell>
                   <TableCell
                     style={{
                       fontSize: "12px",
                       padding: "4px 8px",
                       lineHeight: "1",
                     }}
-                  >{row.PipelineName}</TableCell>
+                  >
+                    {row.JobName}
+                  </TableCell>
                   <TableCell
                     style={{
                       fontSize: "12px",
                       padding: "4px 8px",
                       lineHeight: "1",
                     }}
-                  >{row.StageNames}</TableCell>
+                  >
+                    {row.PipelineName}
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      fontSize: "12px",
+                      padding: "4px 8px",
+                      lineHeight: "1",
+                    }}
+                  >
+                    {row.StageNames}
+                  </TableCell>
                   {/* <TableCell
                     style={{
                       fontSize: "12px",
@@ -538,7 +584,7 @@ const PendingTasks = () => {
                     <span style={{ color: "#888" }}>No Tags</span>
                   )}
                 </TableCell> */}
-                {/* <TableCell
+                  {/* <TableCell
   style={{
     fontSize: "12px",
     padding: "4px 8px",
@@ -593,87 +639,89 @@ const PendingTasks = () => {
     <span style={{ color: "#888" }}>No Tags</span>
   )}
 </TableCell> */}
-<TableCell
-  style={{
-    fontSize: "12px",
-    padding: "4px 8px",
-    lineHeight: "1",
-  }}
->
-  {row.TaskTags && row.TaskTags.length > 0 ? (
-    <>
-      {/* Display First Tag */}
-      <span
-        key={row.TaskTags[0].id}
-        style={{
-          display: "inline-block",
-          backgroundColor: row.TaskTags[0].tagColour,
-          color: "#fff",
-          padding: "4px 8px",
-          borderRadius: "8px",
-          marginRight: "4px",
-          fontSize: "10px",
-          fontWeight: "bold",
-        }}
-      >
-        {row.TaskTags[0].tagName}
-      </span>
-
-      {/* Tooltip for Remaining Tags */}
-      {row.TaskTags.length > 1 && (
-        <Tooltip
-          arrow
-          placement="top"
-          title={
-            <div>
-              {row.TaskTags.slice(1).map((tag) => (
-                <Typography
-                  key={tag.id}
-                  sx={{
-                    backgroundColor: tag.tagColour,
-                    color: "#fff",
-                    padding: "4px 8px",
-                    borderRadius: "8px",
-                    fontSize: "10px",
-                    fontWeight: "bold",
-                    display: "block",
-                    marginBottom: "4px",
-                  }}
-                >
-                  {tag.tagName}
-                </Typography>
-              ))}
-            </div>
-          }
-        >
-          <span
-            style={{
-              display: "inline-block",
-              backgroundColor: "#ddd",
-              color: "#333",
-              padding: "4px 8px",
-              borderRadius: "8px",
-              fontSize: "10px",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
-          >
-            +{row.TaskTags.length - 1}
-          </span>
-        </Tooltip>
-      )}
-    </>
-  ) : (
-    <span style={{ color: "#888" }}>No Tags</span>
-  )}
-</TableCell>
                   <TableCell
                     style={{
                       fontSize: "12px",
                       padding: "4px 8px",
                       lineHeight: "1",
                     }}
-                  >{row.description}</TableCell>
+                  >
+                    {row.TaskTags && row.TaskTags.length > 0 ? (
+                      <>
+                        {/* Display First Tag */}
+                        <span
+                          key={row.TaskTags[0].id}
+                          style={{
+                            display: "inline-block",
+                            backgroundColor: row.TaskTags[0].tagColour,
+                            color: "#fff",
+                            padding: "4px 8px",
+                            borderRadius: "8px",
+                            marginRight: "4px",
+                            fontSize: "10px",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {row.TaskTags[0].tagName}
+                        </span>
+
+                        {/* Tooltip for Remaining Tags */}
+                        {row.TaskTags.length > 1 && (
+                          <Tooltip
+                            arrow
+                            placement="top"
+                            title={
+                              <div>
+                                {row.TaskTags.slice(1).map((tag) => (
+                                  <Typography
+                                    key={tag.id}
+                                    sx={{
+                                      backgroundColor: tag.tagColour,
+                                      color: "#fff",
+                                      padding: "4px 8px",
+                                      borderRadius: "8px",
+                                      fontSize: "10px",
+                                      fontWeight: "bold",
+                                      display: "block",
+                                      marginBottom: "4px",
+                                    }}
+                                  >
+                                    {tag.tagName}
+                                  </Typography>
+                                ))}
+                              </div>
+                            }
+                          >
+                            <span
+                              style={{
+                                display: "inline-block",
+                                backgroundColor: "#ddd",
+                                color: "#333",
+                                padding: "4px 8px",
+                                borderRadius: "8px",
+                                fontSize: "10px",
+                                fontWeight: "bold",
+                                cursor: "pointer",
+                              }}
+                            >
+                              +{row.TaskTags.length - 1}
+                            </span>
+                          </Tooltip>
+                        )}
+                      </>
+                    ) : (
+                      <span style={{ color: "#888" }}>No Tags</span>
+                    )}
+                  </TableCell>
+                  <TableCell
+                    style={{
+                      fontSize: "12px",
+                      padding: "4px 8px",
+                      lineHeight: "1",
+                    }}
+                  >
+                    {row.description}
+                  </TableCell>
                   <TableCell
                     // style={{
                     //   fontSize: "12px",
@@ -691,7 +739,7 @@ const PendingTasks = () => {
                     }}
                   >
                     <IconButton
-                    onClick={(event) => handleMenuClick(event, row.id)}
+                      onClick={(event) => handleMenuClick(event, row.id)}
                     >
                       <MoreVertIcon />
                     </IconButton>
@@ -700,11 +748,8 @@ const PendingTasks = () => {
                       open={Boolean(anchorEl && selectedTask === row.id)}
                       onClose={handleClose}
                     >
-                     
-                      <MenuItem >
-                       Edit
-                      </MenuItem>
-<MenuItem onClick={handleDelete}>Delete</MenuItem>
+                      <MenuItem onClick={() => handleClick(row.id)}>Edit</MenuItem>
+                      <MenuItem onClick={handleDelete}>Delete</MenuItem>
                     </Menu>
                   </TableCell>
                 </TableRow>
@@ -713,6 +758,14 @@ const PendingTasks = () => {
           </TableBody>
         </Table>
       </TableContainer>
+      </Box>
+      <NewTaskDrawer
+  open={drawerOpen}
+  onClose={onclose}
+  fetchTasksData={fetchTasksData}
+  isEditMode={isEditMode}
+  taskData={selectedTaskData}
+/>
     </Box>
   );
 };
