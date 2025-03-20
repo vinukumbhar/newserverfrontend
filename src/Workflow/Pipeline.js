@@ -36,7 +36,7 @@ import {
   OutlinedInput,
   Select,
   FormControl,
-  Alert,
+  Alert,ListItemText
 } from "@mui/material";
 // import Select from 'react-select';
 import CloseIcon from "@mui/icons-material/Close";
@@ -55,6 +55,16 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { LoginContext } from "../Sidebar/Context/Context";
 const Pipeline = ({ charLimit = 4000 }) => {
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: "auto",
+      },
+    },
+  };
   const { logindata } = useContext(LoginContext);
   const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
   const [loginuserid, setLoginUserId] = useState("");
@@ -2194,10 +2204,30 @@ const Pipeline = ({ charLimit = 4000 }) => {
       value: user._id,
       label: user.username,
     }));
-    const handleUserChange = (event, selectedOptions) => {
-      setSelectedUser(selectedOptions);
-      const selectedValues = selectedOptions.map((option) => option.value);
-      setCombinedValues(selectedValues);
+    // for autocomplete
+    // const handleUserChange = (event, selectedOptions) => {
+    //   setSelectedUser(selectedOptions);
+    //   const selectedValues = selectedOptions.map((option) => option.value);
+    //   setCombinedValues(selectedValues);
+    // };
+
+    const handleUserChange = (event) => {
+      const selectedValues = event.target.value; // This will be an array of selected values
+      console.log("Selected Values:", selectedValues);
+    
+      // Update the state with the selected values
+      setSelectedUser(selectedValues);
+    
+      // If you need to map the selected values to their corresponding IDs or other properties
+      const selectedAccountDetails = userData.filter((user) =>
+        selectedValues.includes(user.username)
+      );
+    
+      const selectedAccountIds = selectedAccountDetails.map((account) => account._id);
+      console.log("Selected Account IDs:", selectedAccountIds);
+    
+      // Update combined account values if needed
+      setCombinedValues(selectedAccountIds);
     };
     const [startDate, setStartDate] = useState(null);
     const [dueDate, setDueDate] = useState(null);
@@ -2297,6 +2327,8 @@ const Pipeline = ({ charLimit = 4000 }) => {
         const data = await response.json();
         setSelectedJoData(data.jobList);
         console.log("account name", data);
+
+        // for autocomplete
         // if (data.jobList && data.jobList.Account) {
         //   const accountsData = {
         //     value: data.jobList.Account._id,
@@ -2305,6 +2337,11 @@ const Pipeline = ({ charLimit = 4000 }) => {
         //   setSelectedAccount(accountsData)
         //   console.log("accounts",accountsData)
         // }
+
+
+        const jobAssignees = data.jobList.JobAssignee.map((assignee) => assignee.username);
+        setSelectedUser(jobAssignees);
+
         if (data.jobList.Account && data.jobList.Account.length > 0) {
           const { _id, accountName } = data.jobList.Account[0];
           console.log("Account ID:", _id);
@@ -2377,16 +2414,16 @@ const Pipeline = ({ charLimit = 4000 }) => {
           setCombinedTagsValues(selectedValues);
         }
 
-        if (data.jobList && data.jobList.JobAssignee) {
-          const assigneesData = data.jobList.JobAssignee.map((assignee) => ({
-            value: assignee._id,
-            label: assignee.username,
-          }));
+        // if (data.jobList && data.jobList.JobAssignee) {
+        //   const assigneesData = data.jobList.JobAssignee.map((assignee) => ({
+        //     value: assignee._id,
+        //     label: assignee.username,
+        //   }));
 
-          setSelectedUser(assigneesData);
-          const selectedValues = assigneesData.map((option) => option.value);
-          setCombinedValues(selectedValues);
-        }
+        //   setSelectedUser(assigneesData);
+        //   const selectedValues = assigneesData.map((option) => option.value);
+        //   setCombinedValues(selectedValues);
+        // }
 
         setIsDrawerOpen(true);
       } catch (error) {
@@ -2648,13 +2685,26 @@ const Pipeline = ({ charLimit = 4000 }) => {
         </Typography>
 
         {/* Job Assignee */}
-        <Typography
+        {/* <Typography
           variant="body2"
           color="text.secondary"
           sx={{ marginBottom: "8px" }}
         >
           {job.JobAssignee.join(", ")}
-        </Typography>
+        </Typography> */}
+        <Typography
+  variant="body2"
+  color="text.secondary"
+  sx={{ 
+    marginBottom: "8px",
+    whiteSpace: "normal",
+    wordBreak: "break-word",
+    overflowWrap: "break-word",
+    lineHeight: "1.5", // Adjust line height for better readability
+  }}
+>
+  {job.JobAssignee.join(", ")}
+</Typography>
 
         {/* Job Description */}
         <Typography
@@ -2977,7 +3027,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
               </Box>
               <Box mt={2}>
                 <InputLabel sx={{ color: "black" }}>Task Assignee</InputLabel>
-                <Autocomplete
+                {/* <Autocomplete
                   multiple
                   sx={{ background: "#fff", mt: 1 }}
                   options={useroptions}
@@ -3004,7 +3054,73 @@ const Pipeline = ({ charLimit = 4000 }) => {
                   isOptionEqualToValue={(option, value) =>
                     option.value === value.value
                   }
-                />
+                /> */}
+                  <FormControl fullWidth variant="outlined" sx={{ marginTop: '15px' }}>
+                 <Select
+                         multiline
+                          multiple
+                          size="small"
+                          value={selecteduser || []} // Fallback to an empty array if undefined
+                          onChange={handleUserChange}
+                          input={<OutlinedInput  />} // Use OutlinedInput here
+                          displayEmpty
+                          renderValue={(selected) => {
+                            if (selected.length === 0) {
+                              return <span style={{ color: "#aaa" }}>Job assignees</span>; // Placeholder
+                            }
+                            return (
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  flexWrap: "wrap",
+                                  gap: "6px",
+                                  padding: "6px",
+                                  borderRadius: "10px",
+                                }}
+                              >
+                                {selected.map((value) => {
+                                  const user = userData.find((acc) => acc.username === value); // Find the selected account
+                                  return (
+                                    <Chip
+                                      key={value}
+                                      label={user?.username} // Display the account name
+                                      sx={{
+                                        // backgroundColor: account?.colour || "#ccc", // Use account colour or fallback
+                                        // color: "#fff",
+                                        fontWeight: 500,
+                                        fontSize: "10px",
+                                        borderRadius: "16px",
+                                        height: "20px",
+                                        cursor: "pointer",
+                                        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                                        "& .MuiChip-deleteIcon": {
+                                          color: "#fff",
+                                          opacity: 0.7,
+                                          transition: "opacity 0.2s",
+                                          "&:hover": { opacity: 1 },
+                                        },
+                                      }}
+                                      onDelete={() => {
+                                        const updatedSelection = selecteduser.filter((acc) => acc !== value);
+                                        setCombinedValues(updatedSelection); // Remove the account from selection
+                                      }}
+                                    />
+                                  );
+                                })}
+                              </Box>
+                            );
+                          }}
+                          MenuProps={MenuProps}
+                         
+                        >
+                          {userData.map((user) => (
+                            <MenuItem key={user._id} value={user.username}>
+                              <Checkbox checked={(selecteduser || []).indexOf(user.username) > -1} /> 
+                              <ListItemText primary={user.username} />
+                            </MenuItem>
+                          ))}
+                        </Select>
+                        </FormControl>
               </Box>
               <Box mt={2}>
                 <InputLabel sx={{ color: "black" }}>Stage</InputLabel>

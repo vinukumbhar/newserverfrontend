@@ -1699,6 +1699,7 @@ const handleOpenModal = (id) => {
          <FormControl sx={{ width: "100%" }}>
   <Select
     multiple
+    multiline
     size="small"
     fullWidth
     value={selectedTags}

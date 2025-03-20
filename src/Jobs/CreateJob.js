@@ -17,7 +17,7 @@ import {
   FormControlLabel,
   Autocomplete,
   Drawer,
-  Checkbox,Alert, MenuItem, Select,
+  Checkbox,Alert, MenuItem, Select,FormControl,OutlinedInput
 } from "@mui/material";
 import React, { useState, useEffect, useContext } from "react";
 import Priority from "../Templates/Priority/Priority";
@@ -36,7 +36,16 @@ import DeleteIcon from "@mui/icons-material/Delete";
 // Initialize the plugin
 dayjs.extend(customParseFormat);
 const CreateJob = ({ charLimit = 4000 }) => {
-
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: "auto",
+      },
+    },
+  };
 // const accountId = Cookies.get('accountId'); // This will get the account ID from the cookie
 // console.log(accountId); // Check the account ID value
 // Cookies.remove('accountId'); // This will remove the account ID cookie
@@ -156,26 +165,39 @@ const CreateJob = ({ charLimit = 4000 }) => {
 
   const [combinedaccountValues, setCombinedaccountValues] = useState([]);
 
-  const handleAccountChange = (event, newValue) => {
-    console.log("test",newValue)
-    setSelectedaccount(newValue.map((option) => option.value));
-    // Map selected options to their values and send as an array
-    console.log(
-      "Selected Values:",
-      newValue.map((option) => option.value)
+
+  // forautocomplete
+  // const handleAccountChange = (event, newValue) => {
+  //   console.log("test",newValue)
+  //   setSelectedaccount(newValue.map((option) => option.value));
+  //   // Map selected options to their values and send as an array
+  //   console.log(
+  //     "Selected Values:",
+  //     newValue.map((option) => option.value)
+  //   );
+  //   setCombinedaccountValues(newValue.map((option) => option.value));
+  // };
+
+  const handleAccountChange = (event) => {
+    const selectedValues = event.target.value; // This will be an array of selected values
+    console.log("Selected Values:", selectedValues);
+  
+    // Update the state with the selected values
+    setSelectedaccount(selectedValues);
+  
+    // If you need to map the selected values to their corresponding IDs or other properties
+    const selectedAccountDetails = accountdata.filter((account) =>
+      selectedValues.includes(account.accountName)
     );
-    setCombinedaccountValues(newValue.map((option) => option.value));
+  
+    const selectedAccountIds = selectedAccountDetails.map((account) => account._id);
+    console.log("Selected Account IDs:", selectedAccountIds);
+  
+    // Update combined account values if needed
+    setCombinedaccountValues(selectedAccountIds);
   };
 
-  // const handleAccountChange = (event) => {
-  //   const selectedValues = event.target.value;
-  //   console.log("test", selectedValues);
-    
-  //   setSelectedaccount(selectedValues);
-  //   setCombinedaccountValues(selectedValues);
   
-  //   console.log("Selected Values:", selectedValues);
-  // };
   
   useEffect(() => {
   fetchAccountData();
@@ -225,11 +247,34 @@ const CreateJob = ({ charLimit = 4000 }) => {
 
   const [selectedUser, setSelectedUser] = useState([]);
   const [combinedAssigneesValues, setCombinedAssigneesValues] = useState([]);
-  const handleUserChange = (event, selectedOptions) => {
-    setSelectedUser(selectedOptions);
-    const selectedValues = selectedOptions.map((option) => option.value);
-    setCombinedAssigneesValues(selectedValues);
+  
+  // for autocomplete
+  // const handleUserChange = (event, selectedOptions) => {
+  //   setSelectedUser(selectedOptions);
+  //   const selectedValues = selectedOptions.map((option) => option.value);
+  //   setCombinedAssigneesValues(selectedValues);
+  // };
+
+  const handleUserChange = (event) => {
+    const selectedValues = event.target.value; // This will be an array of selected values
+    console.log("Selected Values:", selectedValues);
+  
+    // Update the state with the selected values
+    setSelectedUser(selectedValues);
+  
+    // If you need to map the selected values to their corresponding IDs or other properties
+    const selectedAccountDetails = userData.filter((user) =>
+      selectedValues.includes(user.username)
+    );
+  
+    const selectedAccountIds = selectedAccountDetails.map((account) => account._id);
+    console.log("Selected Account IDs:", selectedAccountIds);
+  
+    // Update combined account values if needed
+    setCombinedAssigneesValues(selectedAccountIds);
   };
+
+
   const assigneesoptions = userData.map((user) => ({
     value: user._id,
     label: user.username,
@@ -254,14 +299,16 @@ const CreateJob = ({ charLimit = 4000 }) => {
         // Populate the form fields with template data
         setJobName(template.jobname);
 
-        const jobAssignees = template.jobassignees.map((assignee) => ({
-          value: assignee._id,
-          label: assignee.username,
-        }));
-        setSelectedUser(jobAssignees);
-        const selectedValues = jobAssignees.map((option) => option.value);
-        setCombinedAssigneesValues(selectedValues);
-        // setSelecteAssigneesdUser(template.jobassignees.map(assignee => assignee._id));
+        // const jobAssignees = template.jobassignees.map((assignee) => ({
+        //   value: assignee._id,
+        //   label: assignee.username,
+        // }));
+        // setSelectedUser(jobAssignees);
+        // const selectedValues = jobAssignees.map((option) => option.value);
+        // setCombinedAssigneesValues(selectedValues);
+        const jobAssignees = template.jobassignees.map((assignee) => assignee.username);
+setSelectedUser(jobAssignees);
+
         setPriority(template.priority);
         console.log(template.priority);
         setDescription(template.description);
@@ -2166,14 +2213,15 @@ const CreateJob = ({ charLimit = 4000 }) => {
                 className="left-side-container"
                 mt={2}
               >
-                <Box>
+                {/* <Box>
                   <label className="job-input-label">Accounts</label>
 
                   <Autocomplete
                     multiple
+                   
                     options={accountoptions}
                     value={selectedaccount}
-                  
+                    getOptionLabel={(option) => option.label}
                     onChange={handleAccountChange}
                     renderOption={(props, option) => (
                       <Box
@@ -2184,18 +2232,126 @@ const CreateJob = ({ charLimit = 4000 }) => {
                         {option.label}
                       </Box>
                     )}
+                     renderTags={(selected, getTagProps) =>
+                                              selected.map((option, index) => (
+                                                <Chip
+                                                  key={option.value}
+                                                  label={option.label}
+                                                  sx={{
+                                                  
+                                                    color: "#000",
+                                                    fontWeight: 500,
+                                                    fontSize: "15px",
+                                                    borderRadius: "16px",
+                                                    padding: "4px 10px",
+                                                    height: "28px",
+                                                    margin: "2px",
+                                                    cursor:'pointer',
+                                                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                                                    "& .MuiChip-label": {
+                                                      padding: "0 8px",
+                                                    },
+                                                    "& .MuiChip-deleteIcon": {
+                                                      color: "#fff",
+                                                      opacity: 0.7,
+                                                      transition: "opacity 0.2s",
+                                                      "&:hover": {
+                                                        opacity: 1,
+                                                      },
+                                                    },
+                                                  }}
+                                                  {...getTagProps({ index })}
+                                                />
+                                              ))
+                                            }
                     renderInput={(params) => (
                       <TextField
                         {...params}
                         placeholder="Select Accounts"
                         variant="outlined"
                         size="small"
-                        sx={{ backgroundColor: "#fff" }}
+                        // multiline
+                        sx={{ backgroundColor: "#fff",cursor:'pointer' }}
                       />
                     )}
-                    sx={{ width: "100%", marginTop: "15px" }}
+                    isOptionEqualToValue={(option, value) =>
+                      option.value === value.value
+                    }
+                    sx={{ width: "100%", marginTop: "15px",cursor:'pointer' }}
                   />
-                </Box>
+                </Box> */}
+
+<Box>
+<InputLabel sx={{color:'black'}}>Accounts</InputLabel>
+      <FormControl fullWidth variant="outlined" sx={{ marginTop: '15px' }}>
+      
+        
+         <Select
+         multiline
+          multiple
+          size="small"
+          value={selectedaccount || []} // Fallback to an empty array if undefined
+          onChange={handleAccountChange}
+          input={<OutlinedInput  />} // Use OutlinedInput here
+          displayEmpty
+          renderValue={(selected) => {
+            if (selected.length === 0) {
+              return <span style={{ color: "#aaa" }}>Accounts</span>; // Placeholder
+            }
+            return (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "6px",
+                  padding: "6px",
+                  borderRadius: "10px",
+                }}
+              >
+                {selected.map((value) => {
+                  const account = accountdata.find((acc) => acc.accountName === value); // Find the selected account
+                  return (
+                    <Chip
+                      key={value}
+                      label={account?.accountName} // Display the account name
+                      sx={{
+                        // backgroundColor: account?.colour || "#ccc", // Use account colour or fallback
+                        // color: "#fff",
+                        fontWeight: 500,
+                        fontSize: "10px",
+                        borderRadius: "16px",
+                        height: "20px",
+                        cursor: "pointer",
+                        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                        "& .MuiChip-deleteIcon": {
+                          color: "#fff",
+                          opacity: 0.7,
+                          transition: "opacity 0.2s",
+                          "&:hover": { opacity: 1 },
+                        },
+                      }}
+                      onDelete={() => {
+                        const updatedSelection = selectedaccount.filter((acc) => acc !== value);
+                        setSelectedaccount(updatedSelection); // Remove the account from selection
+                      }}
+                    />
+                  );
+                })}
+              </Box>
+            );
+          }}
+          MenuProps={MenuProps}
+         
+        >
+          {accountdata.map((account) => (
+            <MenuItem key={account._id} value={account.accountName}>
+              <Checkbox checked={(selectedaccount || []).indexOf(account.accountName) > -1} /> 
+              <ListItemText primary={account.accountName} />
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Box>
                 <Box mt={2}>
                   <label className="job-input-label">Pipeline</label>
 
@@ -2277,7 +2433,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
                 </Box>
                 <Box mt={2}>
                   <label className="job-input-label">Job Assignees</label>
-                  <Autocomplete
+                  {/* <Autocomplete
                     multiple
                     sx={{ marginTop: "8px" }}
                     options={assigneesoptions}
@@ -2305,7 +2461,74 @@ const CreateJob = ({ charLimit = 4000 }) => {
                     isOptionEqualToValue={(option, value) =>
                       option.value === value.value
                     }
-                  />
+                  /> */}
+                     <FormControl fullWidth variant="outlined" sx={{ marginTop: '15px' }}>
+ <Select
+         multiline
+          multiple
+          size="small"
+          value={selectedUser || []} // Fallback to an empty array if undefined
+          onChange={handleUserChange}
+          input={<OutlinedInput  />} // Use OutlinedInput here
+          displayEmpty
+          renderValue={(selected) => {
+            if (selected.length === 0) {
+              return <span style={{ color: "#aaa" }}>Job assignees</span>; // Placeholder
+            }
+            return (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "6px",
+                  padding: "6px",
+                  borderRadius: "10px",
+                }}
+              >
+                {selected.map((value) => {
+                  const user = userData.find((acc) => acc.username === value); // Find the selected account
+                  return (
+                    <Chip
+                      key={value}
+                      label={user?.username} // Display the account name
+                      sx={{
+                        // backgroundColor: account?.colour || "#ccc", // Use account colour or fallback
+                        // color: "#fff",
+                        fontWeight: 500,
+                        fontSize: "10px",
+                        borderRadius: "16px",
+                        height: "20px",
+                        cursor: "pointer",
+                        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                        "& .MuiChip-deleteIcon": {
+                          color: "#fff",
+                          opacity: 0.7,
+                          transition: "opacity 0.2s",
+                          "&:hover": { opacity: 1 },
+                        },
+                      }}
+                      onDelete={() => {
+                        const updatedSelection = selectedUser.filter((acc) => acc !== value);
+                        setCombinedAssigneesValues(updatedSelection); // Remove the account from selection
+                      }}
+                    />
+                  );
+                })}
+              </Box>
+            );
+          }}
+          MenuProps={MenuProps}
+         
+        >
+          {userData.map((user) => (
+            <MenuItem key={user._id} value={user.username}>
+              <Checkbox checked={(selectedUser || []).indexOf(user.username) > -1} /> 
+              <ListItemText primary={user.username} />
+            </MenuItem>
+          ))}
+        </Select>
+        </FormControl>
+
                 </Box>
                 <Box mt={2}>
                   <Priority

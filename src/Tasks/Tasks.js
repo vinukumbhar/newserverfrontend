@@ -32,7 +32,7 @@ const Tasks = () => {
           }}
         >
           <NavLink
-            to="/workflow/tasks/pending"
+            to="/tasks/pending"
             style={({ isActive }) => ({
               padding: "8px 16px",
               borderRadius: "10px",
@@ -48,7 +48,7 @@ const Tasks = () => {
             Pending
           </NavLink>
           <NavLink
-            to="/workflow/tasks/completed"
+            to="/tasks/completed"
             style={({ isActive }) => ({
               padding: "8px 16px",
               borderRadius: "10px",

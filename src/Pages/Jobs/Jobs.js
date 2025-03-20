@@ -19,7 +19,7 @@ const Jobs = () => {
                 }}
               >
                 <NavLink
-                  to="/workflow/jobs/activejob"
+                  to="/jobs/activejob"
                   style={({ isActive }) => ({
                     padding: "8px 16px",
                     borderRadius: "10px",
@@ -35,7 +35,7 @@ const Jobs = () => {
                   Active
                 </NavLink>
                 <NavLink
-                  to="/workflow/jobs/archivedjob"
+                  to="/jobs/archivedjob"
                   style={({ isActive }) => ({
                     padding: "8px 16px",
                     borderRadius: "10px",

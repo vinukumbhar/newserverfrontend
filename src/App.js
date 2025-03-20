@@ -128,15 +128,15 @@ const App = () => {
           <Route path="billing/Invoices/Updateinvoice/:_id" element={<InvoiceUpdate />} />
           <Route path='billing/proposalsandels' element={<ProposalsELS/>}/>
           {/* <Route path="workflow/tasks" element={<WorkflowTask />} /> */}
-          <Route path="workflow/tasks" element={<WorkflowTask />} >
+          <Route path="tasks" element={<WorkflowTask />} >
           <Route path="pending" element={<PendingTasks/>}/>
           <Route path="completed" element={<CompletedTasks/>}/>
           </Route>
-          <Route path="workflow/jobs" element={<Jobs />} >
+          <Route path="jobs" element={<Jobs />} >
           <Route path="activejob" element={<ActiveJob/>}/>
           <Route path="archivedjob" element={<ArchivedJob/>}/>
           </Route>
-          <Route path="workflow/pipelines" element={<Pipeline />} />
+          <Route path="pipelines" element={<Pipeline />} />
           <Route path="/organizerpreview" element={<PreviewOrganizer />} />
           <Route path="/import/accounts" element={<AccountImport/>}/>
           <Route path="/import/contacts" element={<ContactImport/>}/>

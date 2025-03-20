@@ -1026,7 +1026,7 @@ const handleCloseLoginDetials=()=>{
                     >
                        <Typography variant="h6">
                         {" "}
-                        Edit team member
+                        Edit team member {firstName} {middleName} {lastName}
                       </Typography>
                       <CloseRoundedIcon
                         onClick={handleNewDrawerClose}

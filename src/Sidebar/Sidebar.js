@@ -234,16 +234,17 @@ function Sidebar() {
             //   item.label === "Account" && !teamMemberData.manageAccounts
             //     ? { ...item, restricted: true }
             //     : item
-            // );
+            // );teammember
+
 
             NewSidebarData = NewSidebarData.map((item) => {
-              if (item.label === "Account" && !teamMemberData.manageAccounts) {
+              if (item.label === "Account" && !teamMemberData.teammember.manageAccounts) {
                 return { ...item, restricted: true };
               }
-              if (item.label === "Contact" && !teamMemberData.manageContacts) {
+              if (item.label === "Contact" && !teamMemberData.teammember.manageContacts) {
                 return { ...item, restricted: true };
               }
-              if (item.label === "Jobs" && !teamMemberData.managePipelines) {
+              if (item.label === "Jobs" && !teamMemberData.teammember.managePipelines) {
                 return { ...item, restricted: true };
               }
               return item;

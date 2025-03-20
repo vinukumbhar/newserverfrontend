@@ -1081,7 +1081,7 @@ const ActiveMember = () => {
               >
                 <Typography  variant="h6">
                   {" "}
-                  update Team Member 22
+                  update Team Member {firstName} {middleName} {lastName}
                 </Typography>
                 <CloseRoundedIcon
                   onClick={handleNewDrawerClose}

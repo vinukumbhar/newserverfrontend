@@ -854,6 +854,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
 <FormControl sx={{ width: "100%" }}>
   <Select
     multiple
+    multiline
     size="small"
     fullWidth
     value={combinedTagsValues}
@@ -1480,6 +1481,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                                  <FormControl sx={{ width: "100%" }}>
                           <Select
                             multiple
+                            multiline
                             size="small"
                             fullWidth
                             value={contact.tags || []}
