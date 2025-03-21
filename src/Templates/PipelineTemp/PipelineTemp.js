@@ -952,6 +952,7 @@ const PipelineTemp = () => {
               anchor="right"
               open={isConditionsFormOpen}
               onClose={handleGoBack}
+              BackdropProps={{ invisible: true }}
               PaperProps={{ sx: { width: "550px", padding: 2 } }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -1199,6 +1200,7 @@ const PipelineTemp = () => {
               anchor="right"
               open={isConditionsFormOpen}
               onClose={handleGoBack}
+              BackdropProps={{ invisible: true }}
               PaperProps={{ sx: { width: "550px", padding: 2 } }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -1383,6 +1385,7 @@ const PipelineTemp = () => {
               anchor="right"
               open={isConditionsFormOpen}
               onClose={handleGoBack}
+              BackdropProps={{ invisible: true }}
               PaperProps={{ sx: { width: "550px", padding: 2 } }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -1565,6 +1568,7 @@ const PipelineTemp = () => {
               anchor="right"
               open={isConditionsFormOpen}
               onClose={handleGoBack}
+              BackdropProps={{ invisible: true }}
               PaperProps={{ sx: { width: "550px", padding: 2 } }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -1747,6 +1751,7 @@ const PipelineTemp = () => {
               anchor="right"
               open={isConditionsFormOpen}
               onClose={handleGoBack}
+              BackdropProps={{ invisible: true }}
               PaperProps={{ sx: { width: "550px", padding: 2 } }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -1931,6 +1936,7 @@ const PipelineTemp = () => {
               anchor="right"
               open={isConditionsFormOpen}
               onClose={handleGoBack}
+              BackdropProps={{ invisible: true }}
               PaperProps={{ sx: { width: "550px", padding: 2 } }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -2333,6 +2339,7 @@ const PipelineTemp = () => {
               anchor="right"
               open={isConditionsFormOpen}
               onClose={handleGoBack}
+              BackdropProps={{ invisible: true }}
               PaperProps={{ sx: { width: "550px", padding: 2 } }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -2515,6 +2522,7 @@ const PipelineTemp = () => {
               anchor="right"
               open={isConditionsFormOpen}
               onClose={handleGoBack}
+              BackdropProps={{ invisible: true }}
               PaperProps={{ sx: { width: "550px", padding: 2 } }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

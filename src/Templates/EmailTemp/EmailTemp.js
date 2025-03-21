@@ -400,52 +400,100 @@ const handlesubject = (e) => {
 //       });
 //   };
 
+// *****without files*****
+// const handleSaveExitTemplate = (e) => {
+//   e.preventDefault();
+//   if (!validateForm()) {
+//       return; // Prevent form submission if validation fails
+//   }
 
-const handleSaveExitTemplate = (e) => {
+//   const myHeaders = new Headers();
+//   myHeaders.append("Content-Type", "application/json");
+
+//   const raw = JSON.stringify({
+//       templatename: templateName,
+//       from: selecteduser.value,
+//       emailsubject: inputText,
+//       emailbody: emailBody,
+//   });
+
+//   const requestOptions = {
+//       method: "POST",
+//       headers: myHeaders,
+//       body: raw,
+//       redirect: "follow"
+//   };
+// console.log(raw)
+//   // const url = `${EMAIL_API}/workflow/emailtemplate`;
+
+//   fetch(`${EMAIL_API}/workflow/emailtemplate`, requestOptions)
+//   .then((response) => response.json())
+
+//  .then((result) => {
+//         console.log(result)
+//         if (result && result.message === "EmailTemplate  already exists") {
+//           toast.success('Email Template  already exists');
+//           // fetchData();
+//         } else {
+//           toast.success('Email Template created successfully');
+//           setShowForm(false);
+//           handleClearTemplate();
+//            fetchEmailTemplates();
+//         }
+//       })
+//       .catch((error) => {
+//         console.error(error);
+//         toast.error(error.message);
+//       })
+
+// };
+
+
+
+const handleSaveExitTemplate = async (e) => {
   e.preventDefault();
+
   if (!validateForm()) {
-      return; // Prevent form submission if validation fails
+    return; // Prevent form submission if validation fails
   }
 
-  const myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
+  // Create a FormData object
+  const formData = new FormData();
 
-  const raw = JSON.stringify({
-      templatename: templateName,
-      from: selecteduser.value,
-      emailsubject: inputText,
-      emailbody: emailBody,
-  });
+  // Append form fields to FormData
+  formData.append("templatename", templateName);
+  formData.append("from", selecteduser.value);
+  formData.append("emailsubject", inputText);
+  formData.append("emailbody", emailBody);
 
-  const requestOptions = {
+  // Append files to FormData
+  if (files && files.length > 0) {
+    files.forEach((file) => {
+      formData.append("attachments", file); // Use "attachments" as the field name
+    });
+  }
+
+  try {
+    const response = await fetch(`${EMAIL_API}/workflow/emailtemplate`, {
       method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow"
-  };
-console.log(raw)
-  // const url = `${EMAIL_API}/workflow/emailtemplate`;
+      body: formData, // Send FormData instead of JSON
+      redirect: "follow",
+    });
+console.log("jaanvi patil",formData)
+    const result = await response.json();
 
-  fetch(`${EMAIL_API}/workflow/emailtemplate`, requestOptions)
-  .then((response) => response.json())
-
- .then((result) => {
-        console.log(result)
-        if (result && result.message === "EmailTemplate  already exists") {
-          toast.success('Email Template  already exists');
-          // fetchData();
-        } else {
-          toast.success('Email Template created successfully');
-          setShowForm(false);
-          handleClearTemplate();
-           fetchEmailTemplates();
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.error(error.message);
-      })
-
+    if (result && result.message === "EmailTemplate already exists") {
+      toast.success("Email Template already exists");
+    } else {
+      toast.success("Email Template created successfully");
+      setShowForm(false);
+      handleClearTemplate();
+      fetchEmailTemplates();
+    }
+  } catch (error) {
+    console.error(error);
+    toast.error(error.message);
+  }
 };
 
   const handleSaveTemplate = (e) => {
@@ -775,9 +823,18 @@ console.log(raw)
     setSelectedFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
   }, []);
 
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-  });
+  // const { getRootProps, getInputProps } = useDropzone({
+  //   onDrop,
+  // });
+  // import { useDropzone } from "react-dropzone";
+
+const { getRootProps, getInputProps } = useDropzone({
+  onDrop: (acceptedFiles) => {
+    handleFileChange(acceptedFiles); // Pass the array of files to handleFileChange
+  },
+  accept: "application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,image/jpeg,image/png",
+  multiple: true,
+});
 
   const handleRemoveFile = (index) => {
     setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
@@ -787,9 +844,22 @@ console.log(raw)
     event.stopPropagation(); // Prevent click event from bubbling up
     document.getElementById("file-input").click(); // Trigger click on the hidden file input
   };
-  const handleFileChange = (event) => {
-    setSelectedFiles([...event.target.files]);
-  };
+
+  const [files, setFiles] = useState([]);
+
+// const handleFileChange = (acceptedFiles) => {
+//   setFiles(acceptedFiles); // Store selected files in state
+// };
+
+const handleFileChange = (acceptedFiles) => {
+  console.log("acceptedFiles:", acceptedFiles); // Debugging: Check what is being passed
+  if (!acceptedFiles || !Array.isArray(acceptedFiles)) {
+    console.error("acceptedFiles is not an array:", acceptedFiles);
+    return;
+  }
+  setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
+};
+ 
 
 //   const handleFileChange = (event) => {
 //     const files = Array.from(event.target.files); // Convert FileList to array
@@ -1289,7 +1359,7 @@ console.log(raw)
                 }}
               >
                 {/* Upload Zone */}
-                <Box
+                {/* <Box
                   {...getRootProps()} // Spread dropzone props here
                   sx={{
                     alignItems: "center",
@@ -1317,8 +1387,7 @@ console.log(raw)
                   <Button
                     variant="contained"
                     color="primary"
-                    // onClick={handleButtonClick}
-                    onClick={() => document.getElementById("file-input").click()}
+                   
                     sx={{
                       backgroundColor: "var(--color-save-btn)", // Normal background
 
@@ -1334,80 +1403,85 @@ console.log(raw)
                     20 MB file size limit. Supported file types: PDF, DOC, DOCX,
                     XLS, XLSX, JPG, PNG.
                   </Typography>
-                </Box>
+                </Box> */}
 
-                {/* Selected Files Display */}
-                {/* {selectedFiles.length > 0 && (
-                  <Box mt={2} width="100%" maxWidth="500px">
-                    <Typography variant="h6">Attached documents</Typography>
-                    <div className="attachments-container">
-                      {selectedFiles.map((file, index) => (
-                        <Box
-                          key={index}
-                          sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            padding: "12px",
-                            borderBottom: "1px solid #e0e0e0",
-                          }}
-                        >
-                          <Box sx={{ display: "flex", alignItems: "center" }}>
-                          
-                            <InsertDriveFileIcon
-                              sx={{
-                                color: "rgb(235, 88, 88)",
-                                marginRight: "8px",
-                              }}
-                            />
+   
+<Box
+  {...getRootProps()} // Spread dropzone props here
+  sx={{
+    alignItems: "center",
+    justifyContent: "center",
+    display: "flex",
+    flexDirection: "column",
+    border: "2px dashed #ccc",
+    padding: "20px",
+    width: "100%",
+    maxWidth: "500px",
+    textAlign: "center",
+    cursor: "pointer",
+    marginBottom: "16px",
+  }}
+>
+  <input
+    id="file-input"
+    {...getInputProps()} // Spread input props here
+    style={{ display: "none" }} // Hide the default file input
+    multiple // Enable multiple file selection
+  />
+  <Typography variant="h6">Drag & drop file here</Typography>
+  <Typography variant="body2">or</Typography>
+  <Button
+    variant="contained"
+    color="primary"
+    sx={{
+      backgroundColor: "var(--color-save-btn)",
+      "&:hover": {
+        backgroundColor: "var(--color-save-hover-btn)",
+      },
+      borderRadius: "15px",
+    }}
+  >
+    Browse Files
+  </Button>
+  <Typography variant="body2" sx={{ marginTop: "8px" }}>
+    20 MB file size limit. Supported file types: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG.
+  </Typography>
+</Box>
 
-                           
-                            <Typography
-                              variant="body1"
-                              sx={{
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                                maxWidth: "200px",
-                              }}
-                            >
-                              {file.name}
-                            </Typography>
-                          </Box>
 
-                          <Box sx={{ display: "flex", alignItems: "center" }}>
-                          
-                            <Typography
-                              variant="body2"
-                              sx={{ marginRight: "16px" }}
-                            >
-                              {Math.round(file.size / 1024)} KB
-                            </Typography>
 
-                            
-                            <IconButton
-                              onClick={() => handleRemoveFile(index)}
-                              sx={{ backgroundColor: "#f5f5f5" }}
-                              size="small"
-                            >
-                              <DeleteIcon sx={{ color: "gray" }} />
-                            </IconButton>
-                          </Box>
-                        </Box>
-                      ))}
-                    </div>
-                  </Box>
-                )} */}
-    {selectedFiles.length > 0 && (
-      <List>
-        {selectedFiles.map((file, index) => (
-          <ListItem key={index}>
-            <Typography>{file.name} ({(file.size / 1024).toFixed(2)} KB)</Typography>
-          </ListItem>
-        ))}
-      </List>
-    )}
-
+{files.length > 0 && (
+        <Box sx={{ width: "100%", marginTop: "16px" }}>
+          <Typography variant="h6" sx={{ marginBottom: "8px" }}>
+            Selected Files:
+          </Typography>
+          {files.map((file, index) => (
+            <Box
+              key={index}
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "8px",
+                borderBottom: "1px solid #eee",
+              }}
+            >
+              <Typography variant="body1">
+                {file.name} ({(file.size / 1024).toFixed(2)} KB)
+              </Typography>
+              <IconButton
+                onClick={() => {
+                  const updatedFiles = files.filter((_, i) => i !== index);
+                  setFiles(updatedFiles); // Remove the file from the list
+                }}
+                sx={{ color: "red" }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Box>
+          ))}
+        </Box>
+      )}
               </Box>
             </Grid>
           </Grid>

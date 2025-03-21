@@ -32,7 +32,8 @@ import { PiDotsSixVerticalBold } from "react-icons/pi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiPlusCircle } from "react-icons/fi";
 import { toast } from "react-toastify";
-const NewTaskDrawer = ({ open, onClose, fetchTasksData, isEditMode, taskData }) => {
+import { useNavigate } from "react-router-dom";
+const NewTaskDrawer = ({ open, onClose, fetchTasksData, isEditMode, taskData,fetchCompletedTasks }) => {
 
  
   const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
@@ -135,37 +136,51 @@ const NewTaskDrawer = ({ open, onClose, fetchTasksData, isEditMode, taskData }) 
 
   const [subtasks, setSubtasks] = useState([]);
   const [checkedSubtasks, setCheckedSubtasks] = useState([]);
+  // const [checkedSubtasks, setCheckedSubtasks] = useState(
+  //   subtasks.filter((subtask) => subtask.checked).map((subtask) => subtask.id)
+  // );
+
+  // const handleCheckboxChange = (subtaskId) => {
+  //   // Update only the checked state of the specific subtask being changed
+  //   setSubtasks((prevSubtasks) =>
+  //     prevSubtasks.map(
+  //       (subtask) =>
+  //         subtask.id === subtaskId
+  //           ? { ...subtask, checked: !subtask.checked } // Toggle checked state for the clicked subtask
+  //           : subtask // Keep other subtasks the same
+  //     )
+  //   );
+
+  //   // Update checkedSubtasks to only reflect the clicked subtask's change
+  //   setCheckedSubtasks((prevCheckedSubtasks) => {
+      
+  //     // If it is not checked, we add it to the checked list
+  //     return [...prevCheckedSubtasks, subtaskId]; // Add if not checked
+  //   });
+  // };
 
   const handleCheckboxChange = (subtaskId) => {
-    // Update only the checked state of the specific subtask being changed
     setSubtasks((prevSubtasks) =>
-      prevSubtasks.map(
-        (subtask) =>
-          subtask.id === subtaskId
-            ? { ...subtask, checked: !subtask.checked } // Toggle checked state for the clicked subtask
-            : subtask // Keep other subtasks the same
+      prevSubtasks.map((subtask) =>
+        subtask.id === subtaskId
+          ? { ...subtask, checked: true } // Always set checked to true
+          : subtask
       )
     );
-
-    // Update checkedSubtasks to only reflect the clicked subtask's change
-    setCheckedSubtasks((prevCheckedSubtasks) => {
-      // const isChecked = prevCheckedSubtasks.includes(subtaskId);
-
-      // If the subtask is already checked, we want to remove it from the list
-      // if (isChecked) {
-      //     return prevCheckedSubtasks.filter(id => id !== subtaskId); // Remove if already checked
-      // }
-
-      // If it is not checked, we add it to the checked list
-      return [...prevCheckedSubtasks, subtaskId]; // Add if not checked
-    });
+  
+    setCheckedSubtasks((prevCheckedSubtasks) =>
+      prevCheckedSubtasks.includes(subtaskId)
+        ? prevCheckedSubtasks // Keep already checked items
+        : [...prevCheckedSubtasks, subtaskId] // Add new checked item
+    );
   };
+  
 
-  // Optional: Use useEffect to log after state updates
-  useEffect(() => {
-    console.log("Updated checkedSubtasks:", checkedSubtasks);
-    console.log("Updated subtasks:", subtasks);
-  }, [checkedSubtasks, subtasks]);
+  // // Optional: Use useEffect to log after state updates
+  // useEffect(() => {
+  //   console.log("Updated checkedSubtasks:", checkedSubtasks);
+  //   console.log("Updated subtasks:", subtasks);
+  // }, [checkedSubtasks, subtasks]);
 
   const handleAddSubtask = () => {
     const newId = String(subtasks.length + 1);
@@ -577,7 +592,7 @@ console.log("accounts",selectedaccount)
 // } )
 //   .catch((error) => console.error(error));
 //   }
-
+  const navigate = useNavigate();
 
 const createTask = async () => {
   const myHeaders = new Headers();
@@ -588,7 +603,7 @@ const createTask = async () => {
     text,
     checked: checkedSubtasks.includes(id),
   }));
-
+console.log(subtaskData)
   const raw = JSON.stringify({
     accounts: selectedaccount?.value,
     job: selectedJob?.value,
@@ -625,6 +640,11 @@ const createTask = async () => {
       
 
       if (!isEditMode) {
+         // Navigate to the workflow page after task creation
+         if (selectedaccount?.value) {
+          navigate(`/clients/accounts/accountsdash/workflow/${selectedaccount.value}/pendingtasks`);
+        }
+
         // Clear all fields after successful submission
         setselectedTemp(null);
         setSelectedJob(null);

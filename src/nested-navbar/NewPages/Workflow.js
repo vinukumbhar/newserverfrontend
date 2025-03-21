@@ -33,7 +33,8 @@ const Workflow = () => {
           <NavLink to={`/clients/accounts/accountsdash/workflow/${data}/pipelines`} activeClassName="active">Pipelines</NavLink>
              <NavLink to={`/clients/accounts/accountsdash/workflow/${data}/activejobs`} activeClassName="active">Active Jobs</NavLink>
         <NavLink to={`/clients/accounts/accountsdash/workflow/${data}/archivedjobs`} activeClassName="active">Archived Jobs</NavLink>
-      
+        <NavLink to={`/clients/accounts/accountsdash/workflow/${data}/pendingtasks`} activeClassName="active">Pending Tasks</NavLink>
+        <NavLink to={`/clients/accounts/accountsdash/workflow/${data}/completetasks`} activeClassName="active">Completed Tasks</NavLink>
       </Box>
 
     </Box>

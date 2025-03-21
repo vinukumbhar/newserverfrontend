@@ -380,7 +380,7 @@
 import React, { useEffect, useState } from "react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { Box ,Dialog, DialogActions, DialogContent, DialogTitle, Button} from "@mui/material";
+import { Typography,Box ,Dialog, DialogActions, DialogContent, DialogTitle, Button} from "@mui/material";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -799,7 +799,21 @@ const Job = ({ job,onCheckboxChange  }) => {
       )}
       <p>{job.Account.join(", ")}</p>
       <p>{truncateName(job.Name)}</p>
-      <p>{job.JobAssignee.join(", ")}</p>
+      {/* <p>{job.JobAssignee.join(", ")}</p>
+       */}
+         <Typography
+  variant="body2"
+  color="text.secondary"
+  sx={{ 
+    marginBottom: "8px",
+    whiteSpace: "normal",
+    wordBreak: "break-word",
+    overflowWrap: "break-word",
+    lineHeight: "1.5", // Adjust line height for better readability
+  }}
+>
+  {job.JobAssignee.join(", ")}
+</Typography>
       <p>{truncateDescription(stripHtmlTags(job.Description))}</p>
       <span style={getPriorityStyle(job.Priority)}>{job.Priority}</span>
       <p>Start Date: {formatDate(job.StartDate)}</p>

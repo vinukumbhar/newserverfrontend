@@ -178,6 +178,15 @@ const CreateJob = ({ charLimit = 4000 }) => {
   //   setCombinedaccountValues(newValue.map((option) => option.value));
   // };
 
+  const [searchTerm, setSearchTerm] = useState("");
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value.toLowerCase());
+  };
+  // Filter accounts based on search term
+  const filteredAccounts = accountdata.filter((account) =>
+    account.accountName.toLowerCase().includes(searchTerm)
+  );
+
   const handleAccountChange = (event) => {
     const selectedValues = event.target.value; // This will be an array of selected values
     console.log("Selected Values:", selectedValues);

@@ -18,14 +18,16 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import NewTaskDrawer from "./NewTaskDrawer";
+import NewTaskDrawer from "../../Tasks/NewTaskDrawer";
+import { useParams } from "react-router-dom";
 const CompletedTasks = () => {
+   const { data } = useParams();
   const ACCOUNT_TASKS_API = process.env.REACT_APP_TASKS_API;
     const [taskData, setTasksData] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
     const onclose =()=>{
       setDrawerOpen(false)
-      fetchCompletedTasks()
+      fetchCompletedTasks(data)
      }
     const [isEditMode, setIsEditMode] = useState(false);
     const [selectedTaskData, setSelectedTaskData] = useState(null);
@@ -42,13 +44,13 @@ const CompletedTasks = () => {
       // console.log("Selected IDs:", newSelected); // Log all selected IDs
     };
   
-    const fetchCompletedTasks =()=>{
+    const fetchCompletedTasks =(data)=>{
     const requestOptions = {
       method: "GET",
       redirect: "follow"
     };
     
-    fetch(`${ACCOUNT_TASKS_API}/accountstasks/tasks/tasklist/completed`, requestOptions)
+    fetch(`${ACCOUNT_TASKS_API}/accountstasks/tasks/tasklist/byaccount/completed/${data}`, requestOptions)
     .then((response) => response.json())
     .then((result) => {
       const formattedTasks = result.taskList.map((task) => ({
@@ -68,8 +70,8 @@ const CompletedTasks = () => {
     .catch((error) => console.error(error));
   }
   useEffect(() => {
-    fetchCompletedTasks();
-  }, []);
+    fetchCompletedTasks(data);
+  }, [data]);
 
   const [anchorEl, setAnchorEl] = useState(null);
   

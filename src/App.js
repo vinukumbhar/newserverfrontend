@@ -45,6 +45,8 @@ import Workflow from "./nested-navbar/NewPages/Workflow";
 import Pipelines from "./nested-navbar/workflow-nav/Pipelines";
 import ActiveJobs from "./nested-navbar/workflow-nav/ActiveJobs";
 import ArchivedJobs from "./nested-navbar/workflow-nav/ArchivedJobs";
+import AccountPendingTasks from "./nested-navbar/workflow-nav/PendingTasks.js"
+import AccountCompletedTasks from "./nested-navbar/workflow-nav/CompletedTasks.js"
 import Info from "./nested-navbar/NewPages/Info";
 import Proposals from "./nested-navbar/NewPages/Proposals";
 import DashDocs from "./nested-navbar/NewPages/Docs";
@@ -217,6 +219,8 @@ const App = () => {
               <Route path="pipelines" element={<Pipelines />} />
               <Route path="activejobs" element={<ActiveJobs />} />
               <Route path="archivedjobs" element={<ArchivedJobs />} />
+              <Route path="pendingtasks" element={<AccountPendingTasks />} />
+              <Route path="completetasks" element={<AccountCompletedTasks />} />
             </Route>
             <Route path="setpassword/:data" element={<SetPassword />} />
           </Route>

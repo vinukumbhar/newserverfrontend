@@ -1,5 +1,4 @@
-
-import React,{useState,useEffect} from 'react'
+import React, { useState, useEffect } from "react";
 import Tooltip from "@mui/material/Tooltip";
 import {
   Box,
@@ -18,168 +17,173 @@ import {
 } from "@mui/material";
 import { toast } from "react-toastify";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import NewTaskDrawer from "./NewTaskDrawer";
-const CompletedTasks = () => {
-  const ACCOUNT_TASKS_API = process.env.REACT_APP_TASKS_API;
-    const [taskData, setTasksData] = useState([]);
+import NewTaskDrawer from "../../Tasks/NewTaskDrawer";
+import { useParams } from "react-router-dom";
+const PendingTasks = () => {
+    const { data } = useParams();
   const [drawerOpen, setDrawerOpen] = useState(false);
-    const onclose =()=>{
-      setDrawerOpen(false)
-      fetchCompletedTasks()
-     }
-    const [isEditMode, setIsEditMode] = useState(false);
-    const [selectedTaskData, setSelectedTaskData] = useState(null);
-   const [selectedTask, setSelectedTask] = useState("");
-    const [selected, setSelected] = useState([]);
-    const handleSelect = (id) => {
-      const currentIndex = selected.indexOf(id);
-      const newSelected =
-        currentIndex === -1
-          ? [...selected, id]
-          : selected.filter((item) => item !== id);
-      setSelected(newSelected);
-      // Log all selected row IDs
-      // console.log("Selected IDs:", newSelected); // Log all selected IDs
-    };
+  const onclose =()=>{
+    setDrawerOpen(false)
+    fetchTasksData(data)
+   }
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedTaskData, setSelectedTaskData] = useState(null);
+  const ACCOUNT_TASKS_API = process.env.REACT_APP_TASKS_API;
+  const [taskData, setTasksData] = useState([]);
+  const [selectedTask, setSelectedTask] = useState("");
+  const [selected, setSelected] = useState([]);
+  const handleSelect = (id) => {
+    const currentIndex = selected.indexOf(id);
+    const newSelected =
+      currentIndex === -1
+        ? [...selected, id]
+        : selected.filter((item) => item !== id);
+    setSelected(newSelected);
+    // Log all selected row IDs
+    // console.log("Selected IDs:", newSelected); // Log all selected IDs
+  };
   
-    const fetchCompletedTasks =()=>{
+  const fetchTasksData = (data) => {
     const requestOptions = {
       method: "GET",
-      redirect: "follow"
+      redirect: "follow",
     };
-    
-    fetch(`${ACCOUNT_TASKS_API}/accountstasks/tasks/tasklist/completed`, requestOptions)
-    .then((response) => response.json())
-    .then((result) => {
-      const formattedTasks = result.taskList.map((task) => ({
-        ...task,
-        startDate: task.StartDate
-          ? new Date(task.StartDate).toLocaleDateString("en-GB")
-          : "",
-        dueDate: task.EndDate
-          ? new Date(task.EndDate).toLocaleDateString("en-GB")
-          : "",
-        description: task.Description.replace(/<[^>]+>/g, ""), // Remove HTML tags
-      }));
 
-      console.log(formattedTasks);
-      setTasksData(formattedTasks);
-    })
-    .catch((error) => console.error(error));
-  }
+    fetch(`${ACCOUNT_TASKS_API}/accountstasks/tasks/taskslist/byaccount/${data}`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        const formattedTasks = result.taskList.map((task) => ({
+          ...task,
+          startDate: task.StartDate
+            ? new Date(task.StartDate).toLocaleDateString("en-GB")
+            : "",
+          dueDate: task.EndDate
+            ? new Date(task.EndDate).toLocaleDateString("en-GB")
+            : "",
+          description: task.Description.replace(/<[^>]+>/g, ""), // Remove HTML tags
+        }));
+
+        console.log(formattedTasks);
+        setTasksData(formattedTasks);
+      })
+      .catch((error) => console.error(error));
+  };
+
   useEffect(() => {
-    fetchCompletedTasks();
-  }, []);
-
+    fetchTasksData(data);
+  }, [data]);
   const [anchorEl, setAnchorEl] = useState(null);
-  
-    const handleMenuClick = (event, id) => {
-      setAnchorEl(event.currentTarget);
-      setSelectedTask(id);
-    };
-    const handleClose = () => {
-      setAnchorEl(null);
-      setSelectedTask(null);
-    };
-  
-    const handleDelete = () => {
-      handleClose();
-      handleDeleteTask(selectedTask);
-      console.log("Deleted:", selectedTask);
-    };
-    const handleDeleteTask = async () => {
-      const isConfirmed = window.confirm(
-        "Are you sure you want to delete the selected tasks? This action cannot be undone."
-      );
-      if (isConfirmed) {
-        try {
-          // Make delete requests for each selected job
-          await Promise.all(
-            selected.map((id) =>
-              fetch(`${ACCOUNT_TASKS_API}/accountstasks/taskdelete/` + id, {
-                method: "DELETE",
-                redirect: "follow",
-              })
-            )
-          );
-  
-          // Optionally, you can remove the deleted jobs from the UI (if needed)
-          // If you're using jobData in state, for example:
-          // setJobData((prevJobs) => prevJobs.filter((job) => !selected.includes(job.id)));
-  
-          toast.success("task deleted successfully!");
-          setSelected([]); // Clear the selected jobs
-          fetchCompletedTasks(); // Refresh the data after deletion
-        } catch (error) {
-          console.error("Delete API Error:", error);
-          toast.error("Failed to delete selected jobs");
-        }
-      }
-    };
-  
-    const statusOptions = [
-      { value: "No status", label: "No status", color: "#C4AEAD" },
-      { value: "Planned", label: "Planned", color: "#4169E1" },
-      { value: "In review", label: "In review", color: "#F6BE00" },
-      { value: "In progress", label: "In progress", color: "#F6BE00" },
-      { value: "On hold", label: "On hold", color: "#BCC6CC" },
-      { value: "Extended", label: "Extended", color: "#82CAFF" },
-      {
-        value: "Waiting for Client",
-        label: "Waiting for Client",
-        color: "#566D7E",
-      },
-      {
-        value: "Waiting for Signatures",
-        label: "Waiting for Signatures",
-        color: "#566D7E",
-      },
-      {
-        value: "Waiting for agency",
-        label: "Waiting for agency",
-        color: "#566D7E",
-      },
-      { value: "Completed", label: "Completed", color: "#00FF00" },
-      { value: "Canceled", label: "Canceled", color: "#EB5406" },
-    ];
-  
-    const priorityOptions = [
-      { value: "Urgent", label: "Urgent", color: "#0E0402" },
-      { value: "High", label: "High", color: "#fe676e" },
-      { value: "Medium", label: "Medium", color: "#FFC300" },
-      { value: "Low", label: "Low", color: "#56c288" },
-    ];
-  
-  
-    // const handleClick = (id) => {
-    // console.log(id)
-    // };
-  
-    const handleClick = async (id) => {
-      
+
+  const handleMenuClick = (event, id) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedTask(id);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSelectedTask(null);
+  };
+
+  const handleDelete = () => {
+    handleClose();
+    handleDeleteTask(selectedTask);
+    console.log("Deleted:", selectedTask);
+  };
+  const handleDeleteTask = async () => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete the selected tasks? This action cannot be undone."
+    );
+    if (isConfirmed) {
       try {
-        const response = await fetch(`http://127.0.0.1/accountstasks/task/listbyid/${id}`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
-    
-        if (!response.ok) {
-          throw new Error("Failed to fetch task data");
-        }
-    
-        const taskToEdit = await response.json(); // Assuming response is JSON
-        setSelectedTaskData(taskToEdit);
-        handleClose()
-        setIsEditMode(true);
-        setDrawerOpen(true);
+        // Make delete requests for each selected job
+        await Promise.all(
+          selected.map((id) =>
+            fetch(`${ACCOUNT_TASKS_API}/accountstasks/taskdelete/` + id, {
+              method: "DELETE",
+              redirect: "follow",
+            })
+          )
+        );
+
+        // Optionally, you can remove the deleted jobs from the UI (if needed)
+        // If you're using jobData in state, for example:
+        // setJobData((prevJobs) => prevJobs.filter((job) => !selected.includes(job.id)));
+
+        toast.success("task deleted successfully!");
+        setSelected([]); // Clear the selected jobs
+        fetchTasksData(data); // Refresh the data after deletion
       } catch (error) {
-        console.error("Error fetching task:", error);
+        console.error("Delete API Error:", error);
+        toast.error("Failed to delete selected jobs");
       }
-    };
+    }
+  };
+
+  const statusOptions = [
+    { value: "No status", label: "No status", color: "#C4AEAD" },
+    { value: "Planned", label: "Planned", color: "#4169E1" },
+    { value: "In review", label: "In review", color: "#F6BE00" },
+    { value: "In progress", label: "In progress", color: "#F6BE00" },
+    { value: "On hold", label: "On hold", color: "#BCC6CC" },
+    { value: "Extended", label: "Extended", color: "#82CAFF" },
+    {
+      value: "Waiting for Client",
+      label: "Waiting for Client",
+      color: "#566D7E",
+    },
+    {
+      value: "Waiting for Signatures",
+      label: "Waiting for Signatures",
+      color: "#566D7E",
+    },
+    {
+      value: "Waiting for agency",
+      label: "Waiting for agency",
+      color: "#566D7E",
+    },
+    { value: "Completed", label: "Completed", color: "#00FF00" },
+    { value: "Canceled", label: "Canceled", color: "#EB5406" },
+  ];
+
+  const priorityOptions = [
+    { value: "Urgent", label: "Urgent", color: "#0E0402" },
+    { value: "High", label: "High", color: "#fe676e" },
+    { value: "Medium", label: "Medium", color: "#FFC300" },
+    { value: "Low", label: "Low", color: "#56c288" },
+  ];
+
+
+  // const handleClick = (id) => {
+  // console.log(id)
+  // };
+
+  const handleClick = async (id) => {
     
+    try {
+      const response = await fetch(`http://127.0.0.1/accountstasks/task/listbyid/${id}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+  
+      if (!response.ok) {
+        throw new Error("Failed to fetch task data");
+      }
+  
+      const taskToEdit = await response.json(); // Assuming response is JSON
+      setSelectedTaskData(taskToEdit);
+      handleClose()
+      setIsEditMode(true);
+      setDrawerOpen(true);
+    } catch (error) {
+      console.error("Error fetching task:", error);
+    }
+  };
+  
+
   return (
-   <Box>
-    <Box mt={2}>
+    <Box>
+
+
+      <Box mt={2}>
       <TableContainer component={Paper}>
         <Table style={{ tableLayout: "fixed", width: "100%" }}>
           <TableHead>
@@ -759,12 +763,12 @@ const CompletedTasks = () => {
       <NewTaskDrawer
   open={drawerOpen}
   onClose={onclose}
-  fetchCompletedTasks={fetchCompletedTasks}
+  fetchTasksData={fetchTasksData}
   isEditMode={isEditMode}
   taskData={selectedTaskData}
 />
-   </Box>
-  )
-}
+    </Box>
+  );
+};
 
-export default CompletedTasks
+export default PendingTasks;

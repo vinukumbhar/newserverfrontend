@@ -857,6 +857,7 @@ const EditAutomationDrawer = ({
         anchor="right"
         open={isConditionsEditFormOpen}
         onClose={handleEditGoBack}
+        BackdropProps={{ invisible: true }}
         PaperProps={{ sx: { width: "550px", padding: 2 } }}
       >
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

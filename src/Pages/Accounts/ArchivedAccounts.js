@@ -1645,7 +1645,7 @@ const loginuserid = storedData?.teammember?.userid;
                       fontWeight: "bold",
                       padding: "16px",
                     }}
-                    width="100"
+                    width="200"
                     height="60"
                   >
                     Team Members
@@ -1803,7 +1803,7 @@ const loginuserid = storedData?.teammember?.userid;
                         }}
                       >
                         <Box sx={{ display: "flex", alignItems: "center" }}>
-                          <AvatarGroup max={2}>
+                          {/* <AvatarGroup max={2}>
                             {row.Team.map((member) => {
                               const size = 25;
                               const initials = member.username
@@ -1839,7 +1839,27 @@ const loginuserid = storedData?.teammember?.userid;
                                 </Tooltip>
                               );
                             })}
-                          </AvatarGroup>
+                          </AvatarGroup> */}
+                                {row.Team.length > 0 && (
+                            <>
+                              <Tooltip title={row.Team[0].username} placement="top">
+                                <span style={{ marginRight: 8 }}>{row.Team[0].username}</span>
+                              </Tooltip>
+                          
+                              {row.Team.length > 1 && (
+                                <Tooltip
+                                  title={row.Team.slice(1).map((member) => member.username).join(", ")}
+                                  placement="top"
+                                >
+                                  <Typography variant="body2" sx={{  marginLeft: "2px",cursor:'pointer',
+                                                          fontSize: "10px",
+                                                          color: "#555", }}>
+                                    +{row.Team.length - 1} 
+                                  </Typography>
+                                </Tooltip>
+                              )}
+                            </>
+                          )}
                         </Box>
                       </TableCell>
                       <TableCell
