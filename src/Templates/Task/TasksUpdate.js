@@ -968,27 +968,46 @@ const Tasks = () => {
             const data = await response.json();
             console.log("tasktemp", data)
             // Extract and process assigneesData
-            if (data.taskTemplate && (data.taskTemplate.taskassignees)) {
-                const innerArray = data.taskTemplate.taskassignees[0]; // Extract the inner array
+            // if (data.taskTemplate && (data.taskTemplate.taskassignees)) {
+            //     const innerArray = data.taskTemplate.taskassignees[0]; // Extract the inner array
 
-                if ((innerArray)) {
-                    // console.log("Task Assignees:", innerArray);
+            //     if ((innerArray)) {
+            //         // console.log("Task Assignees:", innerArray);
 
-                    const assigneesData = innerArray.map((assignee) => ({
+            //         const assigneesData = innerArray.map((assignee) => ({
+            //             value: assignee._id,
+            //             label: assignee.username,
+            //         }));
+            //         // console.log("Assignees Data:", assigneesData); // Log the processed assigneesData
+
+            //         setAssigneesNew(assigneesData);
+
+            //         const selectedValues = assigneesData.map((option) => option.value);
+            //         setCombinedValues(selectedValues);
+            //         // console.log("Selected Assignees:", selectedValues);
+            //     } else {
+            //         console.log("taskassignees contains an unexpected structure.");
+            //     }
+            // }
+            if (data.taskTemplate && Array.isArray(data.taskTemplate.taskassignees)) {
+                // Flatten the array in case of unnecessary nesting
+                const flatAssignees = data.taskTemplate.taskassignees.flat();
+            
+                if (flatAssignees.length > 0) {
+                    const assigneesData = flatAssignees.map(assignee => ({
                         value: assignee._id,
                         label: assignee.username,
                     }));
-                    // console.log("Assignees Data:", assigneesData); // Log the processed assigneesData
-
+            
                     setAssigneesNew(assigneesData);
-
-                    const selectedValues = assigneesData.map((option) => option.value);
+            
+                    const selectedValues = assigneesData.map(option => option.value);
                     setCombinedValues(selectedValues);
-                    // console.log("Selected Assignees:", selectedValues);
                 } else {
                     console.log("taskassignees contains an unexpected structure.");
                 }
             }
+            
             // Process tasktags
             if (data.taskTemplate.tasktags && Array.isArray(data.taskTemplate.tasktags)) {
                 const tagsData = data.taskTemplate.tasktags.map((tag) => ({

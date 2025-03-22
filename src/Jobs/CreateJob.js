@@ -17,7 +17,12 @@ import {
   FormControlLabel,
   Autocomplete,
   Drawer,
-  Checkbox,Alert, MenuItem, Select,FormControl,OutlinedInput
+  Checkbox,
+  Alert,
+  MenuItem,
+  Select,
+  FormControl,
+  OutlinedInput,
 } from "@mui/material";
 import React, { useState, useEffect, useContext } from "react";
 import Priority from "../Templates/Priority/Priority";
@@ -31,7 +36,7 @@ import { toast } from "react-toastify";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import axios from "axios";
 import { LoginContext } from "../Sidebar/Context/Context";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import DeleteIcon from "@mui/icons-material/Delete";
 // Initialize the plugin
 dayjs.extend(customParseFormat);
@@ -46,56 +51,56 @@ const CreateJob = ({ charLimit = 4000 }) => {
       },
     },
   };
-// const accountId = Cookies.get('accountId'); // This will get the account ID from the cookie
-// console.log(accountId); // Check the account ID value
-// Cookies.remove('accountId'); // This will remove the account ID cookie
+  // const accountId = Cookies.get('accountId'); // This will get the account ID from the cookie
+  // console.log(accountId); // Check the account ID value
+  // Cookies.remove('accountId'); // This will remove the account ID cookie
 
-// useEffect(() => {
-//   // Check if the accountId cookie is present
-//   const accountId = Cookies.get('accountId');
+  // useEffect(() => {
+  //   // Check if the accountId cookie is present
+  //   const accountId = Cookies.get('accountId');
 
-//   if (accountId) {
-//     // If the cookie exists, log the accountId
-//     console.log('Account ID from cookie:', accountId);
+  //   if (accountId) {
+  //     // If the cookie exists, log the accountId
+  //     console.log('Account ID from cookie:', accountId);
 
-//     // Remove the cookie after use
-//     Cookies.remove('accountId');
-//   } else {
-//     console.log('No accountId cookie found');
-//   }
-// }, []);
-// const [accName, setAccName] = useState('');
+  //     // Remove the cookie after use
+  //     Cookies.remove('accountId');
+  //   } else {
+  //     console.log('No accountId cookie found');
+  //   }
+  // }, []);
+  // const [accName, setAccName] = useState('');
 
-// useEffect(() => {
-//   // Check if the accountId is stored in cookies
-//   const accountIdFromCookies = Cookies.get('accountId');
+  // useEffect(() => {
+  //   // Check if the accountId is stored in cookies
+  //   const accountIdFromCookies = Cookies.get('accountId');
 
-//   if (accountIdFromCookies) {
-//     // If the cookie exists, use the accountId for the API call
-//     const requestOptions = {
-//       method: "GET",
-//       redirect: "follow",
-//     };
+  //   if (accountIdFromCookies) {
+  //     // If the cookie exists, use the accountId for the API call
+  //     const requestOptions = {
+  //       method: "GET",
+  //       redirect: "follow",
+  //     };
 
-//     const url = `${ACCOUNT_API}/accounts/accountdetails/accountdetailslist/listbyid/`;
+  //     const url = `${ACCOUNT_API}/accounts/accountdetails/accountdetailslist/listbyid/`;
 
-//     // Fetch account details using the accountId from cookies
-//     fetch(url + accountIdFromCookies, requestOptions)
-//       .then((response) => response.json())
-//       .then((result) => {
-//         console.log(result);
+  //     // Fetch account details using the accountId from cookies
+  //     fetch(url + accountIdFromCookies, requestOptions)
+  //       .then((response) => response.json())
+  //       .then((result) => {
+  //         console.log(result);
 
-//         // Assuming the result has the account name in accountlist.Name
-//         // setAccName(result.accountlist.Name);
-        
-//         // Remove the cookie after use
-//         Cookies.remove('accountId');
-//       })
-//       .catch((error) => console.error(error));
-//   } else {
-//     console.log('No accountId cookie found');
-//   }
-// }, []);
+  //         // Assuming the result has the account name in accountlist.Name
+  //         // setAccName(result.accountlist.Name);
+
+  //         // Remove the cookie after use
+  //         Cookies.remove('accountId');
+  //       })
+  //       .catch((error) => console.error(error));
+  //   } else {
+  //     console.log('No accountId cookie found');
+  //   }
+  // }, []);
   const { logindata } = useContext(LoginContext);
   const [loginuserid, setLoginUserId] = useState("");
 
@@ -165,7 +170,6 @@ const CreateJob = ({ charLimit = 4000 }) => {
 
   const [combinedaccountValues, setCombinedaccountValues] = useState([]);
 
-
   // forautocomplete
   // const handleAccountChange = (event, newValue) => {
   //   console.log("test",newValue)
@@ -179,43 +183,42 @@ const CreateJob = ({ charLimit = 4000 }) => {
   // };
 
   const [searchTerm, setSearchTerm] = useState("");
+
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value.toLowerCase());
   };
-  // Filter accounts based on search term
-  const filteredAccounts = accountdata.filter((account) =>
-    account.accountName.toLowerCase().includes(searchTerm)
-  );
+  // // Filter accounts based on search term
+  // const filteredAccounts = accountdata.filter((account) =>
+  //   account.accountName.toLowerCase().includes(searchTerm)
+  // );
 
   const handleAccountChange = (event) => {
     const selectedValues = event.target.value; // This will be an array of selected values
     console.log("Selected Values:", selectedValues);
-  
+
     // Update the state with the selected values
     setSelectedaccount(selectedValues);
-  
+
     // If you need to map the selected values to their corresponding IDs or other properties
     const selectedAccountDetails = accountdata.filter((account) =>
       selectedValues.includes(account.accountName)
     );
-  
-    const selectedAccountIds = selectedAccountDetails.map((account) => account._id);
+
+    const selectedAccountIds = selectedAccountDetails.map(
+      (account) => account._id
+    );
     console.log("Selected Account IDs:", selectedAccountIds);
-  
+
     // Update combined account values if needed
     setCombinedaccountValues(selectedAccountIds);
   };
 
-  
-  
   useEffect(() => {
-  fetchAccountData();
- 
-}, []);
+    fetchAccountData();
+    fetchAccountDatas("data");
+  }, []);
 
-  
-  
-  console.log("jaanvi",selectedaccount)
+  console.log("jaanvi", selectedaccount);
   const fetchAccountData = async () => {
     try {
       const response = await fetch(`${ACCOUNT_API}/accounts/accountdetails`);
@@ -224,6 +227,32 @@ const CreateJob = ({ charLimit = 4000 }) => {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
+  };
+
+  const fetchAccountDatas = async (data) => {
+    console.log("data", data);
+    try {
+      const response = await fetch(
+        `http://127.0.0.1/accounts/accountsdata?test=${data}`
+      );
+      const datas = await response.json();
+      console.log("accounts", datas);
+      setaccountdata(datas.accounts);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+
+    // const requestOptions = {
+    //   method: "GET",
+    //   redirect: "follow"
+    // };
+
+    // fetch(`http://127.0.0.1/accounts/accountsdata?test=${data}`, requestOptions)
+    //   .then((response) => response.json())
+    //   .then((result) => {console.log(result)
+    //     setaccountdata(result.accounts)
+    //   })
+    //   .catch((error) => console.error(error));
   };
 
   // console.log(userdata);
@@ -253,10 +282,18 @@ const CreateJob = ({ charLimit = 4000 }) => {
       console.error("Error fetching data:", error);
     }
   };
+  // Filter users based on the search term
+  //  const filteredUsers = userData.filter(user =>
+  //   user.username.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
+  const foundUser = userData.find((user) =>
+    user.username.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  console.log(foundUser);
   const [selectedUser, setSelectedUser] = useState([]);
   const [combinedAssigneesValues, setCombinedAssigneesValues] = useState([]);
-  
+
   // for autocomplete
   // const handleUserChange = (event, selectedOptions) => {
   //   setSelectedUser(selectedOptions);
@@ -267,22 +304,23 @@ const CreateJob = ({ charLimit = 4000 }) => {
   const handleUserChange = (event) => {
     const selectedValues = event.target.value; // This will be an array of selected values
     console.log("Selected Values:", selectedValues);
-  
+
     // Update the state with the selected values
     setSelectedUser(selectedValues);
-  
+
     // If you need to map the selected values to their corresponding IDs or other properties
     const selectedAccountDetails = userData.filter((user) =>
       selectedValues.includes(user.username)
     );
-  
-    const selectedAccountIds = selectedAccountDetails.map((account) => account._id);
+
+    const selectedAccountIds = selectedAccountDetails.map(
+      (account) => account._id
+    );
     console.log("Selected Account IDs:", selectedAccountIds);
-  
+
     // Update combined account values if needed
     setCombinedAssigneesValues(selectedAccountIds);
   };
-
 
   const assigneesoptions = userData.map((user) => ({
     value: user._id,
@@ -315,8 +353,10 @@ const CreateJob = ({ charLimit = 4000 }) => {
         // setSelectedUser(jobAssignees);
         // const selectedValues = jobAssignees.map((option) => option.value);
         // setCombinedAssigneesValues(selectedValues);
-        const jobAssignees = template.jobassignees.map((assignee) => assignee.username);
-setSelectedUser(jobAssignees);
+        const jobAssignees = template.jobassignees.map(
+          (assignee) => assignee.username
+        );
+        setSelectedUser(jobAssignees);
 
         setPriority(template.priority);
         console.log(template.priority);
@@ -510,7 +550,7 @@ setSelectedUser(jobAssignees);
       .then((response) => {
         console.log("Job created successfully");
         toast.success("Job created successfully");
-        navigate("/workflow/jobs/activejob");
+        navigate("/jobs/activejob");
       })
       .catch((error) => {
         console.error("Failed to create Job Template:", error);
@@ -798,108 +838,113 @@ setSelectedUser(jobAssignees);
     setShowDropdownDescription(!showDropdownDescription);
   };
 
+  const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
+  const [tags, setTags] = useState([]);
 
-    const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
-      const [tags, setTags] = useState([]);
-  
-      useEffect(() => {
-        fetchTags();
-      }, []);
-  
-      const fetchTags = async () => {
-        try {
-          const url = `${TAGS_API}/tags/`;
-          const response = await fetch(url);
-          const data = await response.json();
-          console.log("tags dtata", data.tags);
-          setTags(data.tags);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
-  
-      const calculateWidth = (label) => Math.min(label.length * 8, 200);
-  
-      const tagsoptions = tags.map((tag) => ({
-        value: tag._id,
-        label: tag.tagName,
-        colour: tag.tagColour,
-        customStyle: {
-          backgroundColor: tag.tagColour,
-          color: "#fff",
-          borderRadius: "8px",
-          alignItems: "center",
-          textAlign: "center",
-          marginBottom: "5px",
-          padding: "2px,8px",
-          fontSize: "10px",
-          width: `${calculateWidth(tag.tagName)}px`,
-          margin: "7px",
-          cursor: "pointer",
-        },
-        customTagStyle: {
-          backgroundColor: tag.tagColour,
-          color: "#fff",
-          alignItems: "center",
-          textAlign: "center",
-          padding: "2px,8px",
-          fontSize: "10px",
-          cursor: "pointer",
-        },
-      }));
-  
-    const handleTagChange = (index, type, event) => {
-      const { value } = event.target; // Array of selected tag IDs
-    
-      setAutomations((prev) => {
-        const updatedAutomations = [...prev];
-    
-        // Get the correct tag options list
-        const tagOptions = tagsoptions;
-    
-        // Map selected tag IDs to tag objects with _id, tagName, and tagColour
-        const selectedTags = value.map((tagId) => {
+  useEffect(() => {
+    fetchTags();
+  }, []);
+
+  const fetchTags = async () => {
+    try {
+      const url = `${TAGS_API}/tags/`;
+      const response = await fetch(url);
+      const data = await response.json();
+      console.log("tags dtata", data.tags);
+      setTags(data.tags);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const calculateWidth = (label) => Math.min(label.length * 8, 200);
+
+  const tagsoptions = tags.map((tag) => ({
+    value: tag._id,
+    label: tag.tagName,
+    colour: tag.tagColour,
+    customStyle: {
+      backgroundColor: tag.tagColour,
+      color: "#fff",
+      borderRadius: "8px",
+      alignItems: "center",
+      textAlign: "center",
+      marginBottom: "5px",
+      padding: "2px,8px",
+      fontSize: "10px",
+      width: `${calculateWidth(tag.tagName)}px`,
+      margin: "7px",
+      cursor: "pointer",
+    },
+    customTagStyle: {
+      backgroundColor: tag.tagColour,
+      color: "#fff",
+      alignItems: "center",
+      textAlign: "center",
+      padding: "2px,8px",
+      fontSize: "10px",
+      cursor: "pointer",
+    },
+  }));
+
+  const handleTagChange = (index, type, event) => {
+    const { value } = event.target; // Array of selected tag IDs
+
+    setAutomations((prev) => {
+      const updatedAutomations = [...prev];
+
+      // Get the correct tag options list
+      const tagOptions = tagsoptions;
+
+      // Map selected tag IDs to tag objects with _id, tagName, and tagColour
+      const selectedTags = value
+        .map((tagId) => {
           const tag = tagOptions.find((t) => t.value === tagId);
-          return tag ? { _id: tag.value, tagName: tag.label, tagColour: tag.colour } : null;
-        }).filter(Boolean); // Remove null values
-    
-        // Prevent duplicate selections
-        const uniqueTags = selectedTags.filter(
-          (tag, idx, self) => self.findIndex((t) => t._id === tag._id) === idx
+          return tag
+            ? { _id: tag.value, tagName: tag.label, tagColour: tag.colour }
+            : null;
+        })
+        .filter(Boolean); // Remove null values
+
+      // Prevent duplicate selections
+      const uniqueTags = selectedTags.filter(
+        (tag, idx, self) => self.findIndex((t) => t._id === tag._id) === idx
+      );
+
+      // Ensure the tag is removed from the opposite category
+      if (type === "addTags") {
+        updatedAutomations[index].removeTags = updatedAutomations[
+          index
+        ].removeTags.filter(
+          (tag) => !uniqueTags.some((t) => t._id === tag._id)
         );
-    
-        // Ensure the tag is removed from the opposite category
-        if (type === "addTags") {
-          updatedAutomations[index].removeTags = updatedAutomations[index].removeTags.filter(
-            (tag) => !uniqueTags.some((t) => t._id === tag._id)
-          );
-        } else if (type === "removeTags") {
-          updatedAutomations[index].addTags = updatedAutomations[index].addTags.filter(
-            (tag) => !uniqueTags.some((t) => t._id === tag._id)
-          );
-        }
-    
-        updatedAutomations[index] = {
-          ...updatedAutomations[index],
-          [type]: uniqueTags,
-        };
-    
-        return updatedAutomations;
-      });
-    };
+      } else if (type === "removeTags") {
+        updatedAutomations[index].addTags = updatedAutomations[
+          index
+        ].addTags.filter((tag) => !uniqueTags.some((t) => t._id === tag._id));
+      }
+
+      updatedAutomations[index] = {
+        ...updatedAutomations[index],
+        [type]: uniqueTags,
+      };
+
+      return updatedAutomations;
+    });
+  };
   // Drawer Component
   const DrawerContent = () => {
-     const ITEM_HEIGHT = 48;
-        const ITEM_PADDING_TOP = 8;
-        const MenuProps = {
-          PaperProps: {
-            style: {
-              maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-              width: "auto",
-            },
-          },
-        };
-        
+    const ITEM_HEIGHT = 48;
+    const ITEM_PADDING_TOP = 8;
+    const MenuProps = {
+      PaperProps: {
+        style: {
+          maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+          width: "auto",
+        },
+      },
+    };
+
     // Get the tags for the selected accounts
     const accountTags = combinedaccountValues
       .map((accountId) => {
@@ -909,8 +954,8 @@ setSelectedUser(jobAssignees);
         return account ? account.tags || [] : []; // Assuming accounts have tags
       })
       .flat(); // Flattening array to get all tags
-      const CHAT_API = process.env.REACT_APP_CHAT_TEMP_URL;
-      const CHATTOCLIENT_API = process.env.REACT_APP_CHAT_API;
+    const CHAT_API = process.env.REACT_APP_CHAT_TEMP_URL;
+    const CHATTOCLIENT_API = process.env.REACT_APP_CHAT_API;
     const INVOICE_API = process.env.REACT_APP_INVOICE_TEMP_URL;
     const INVOICE_NEW = process.env.REACT_APP_INVOICES_URL;
     const PROPOSAL_API = process.env.REACT_APP_PROPOSAL_TEMP_URL;
@@ -1043,9 +1088,9 @@ setSelectedUser(jobAssignees);
           taxTotal: invoiceData.summary.taxTotal || "",
           total: invoiceData.summary.total || "",
         },
-        paidAmount:"",
-      invoiceStatus:"Pending",
-      balanceDueAmount:"",
+        paidAmount: "",
+        invoiceStatus: "Pending",
+        balanceDueAmount: "",
       });
       console.log("invoices", raw);
       const requestOptions = {
@@ -1062,111 +1107,120 @@ setSelectedUser(jobAssignees);
         .catch((error) => console.error("Error assigning invoice:", error));
     };
 
-     const [chatId, setChatId] = useState();
-         const [adminusername, setAdminUsername] = useState("");
-         const fetchLoginUserData = async (loginuserid) => {
-    
-           const myHeaders = new Headers();
-       
-           const requestOptions = {
-             method: "GET",
-             headers: myHeaders,
-             redirect: "follow",
-           };
-           const url = `${LOGIN_API}/common/user/${loginuserid}`;
-           fetch(url, requestOptions)
-             .then((response) => response.json())
-             .then((result) => {
-               console.log("jbhguhid", result);
-       
-               // console.log(userData)
-               setAdminUsername(result.username);
-             });
-         };
-      useEffect(() => {
-        console.log("teammenber", loginuserid);
-        fetchLoginUserData(loginuserid);
-      }, []);
-            // sendChatToAccount
-            const sendChatToAccount = (
-              chatData,
-              automationTemp,
-              automationAccountId
-            ) => {
-              console.log(
-                "sending chat",
-                chatData,
-                automationTemp,
-                automationAccountId
-              );
-        
-              const myHeaders = new Headers();
-              myHeaders.append("Content-Type", "application/json");
-              const subtaskData = chatData.clienttasks.map(({ id, text, checked }) => ({
-                id,
-                text,
-                checked: checked !== undefined ? checked : false, // Ensure checked is either true or false
-              }));
-              const messageData = [
-                {
-                  message: chatData.description,
-                  fromwhome: "Admin",
-                },
-              ];
-              // Dynamically prepare the payload from invoiceData
-              const raw = JSON.stringify({
-                accountids: [automationAccountId],
-                chattemplateid: automationTemp, // Fill in if required
-                chatsubject: chatData.chatsubject, // Today's date
-                description: messageData || "",
-                sendreminderstoclient: chatData.sendreminderstoclient,
-                daysuntilnextreminder: chatData.daysuntilnextreminder,
-                numberofreminders: chatData.numberofreminders,
-                clienttasks: subtaskData,
-              });
-              console.log("chats", raw);
-              const requestOptions = {
-                method: "POST",
-                headers: myHeaders,
-                body: raw,
-                redirect: "follow",
-              };
-              fetch(`${CHATTOCLIENT_API}/chats/chatsaccountwise`, requestOptions)
-                .then((response) => response.json())
-                .then((result) => {
-                  console.log("send chat to account successfully:", result);
-                  console.log("chat id", result.newChats._id);
-                  setChatId(result.newChats._id);
-                  // toast.success("New Chat created successfully");
-                  sendSaveChatMail(result.newChats._id,automationAccountId,automationTemp,adminusername);
-                })
-                .catch((error) => console.error("Error assigning invoice:", error));
-            };
-            // mail for drawer btn
-            const sendSaveChatMail = (chatId,automationAccountId,automationTemp,adminusername) => {
-              const myHeaders = new Headers();
-              myHeaders.append("Content-Type", "application/json");
-        
-              const raw = JSON.stringify({
-                accountid: automationAccountId,
-                chattemplateid: automationTemp,
-                username: adminusername,
-                chatId: chatId,
-                viewchatlink: "/login",
-              });
-        
-              const requestOptions = {
-                method: "POST",
-                headers: myHeaders,
-                body: raw,
-                redirect: "follow",
-              };
-              console.log(raw);
-              fetch(`${CHATTOCLIENT_API}/chatsend/securechatsend`, requestOptions)
-                .then((response) => response.json())
-                .then((result) => console.log(result))
-                .catch((error) => console.error(error));
-            };
+    const [chatId, setChatId] = useState();
+    const [adminusername, setAdminUsername] = useState("");
+    const fetchLoginUserData = async (loginuserid) => {
+      const myHeaders = new Headers();
+
+      const requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow",
+      };
+      const url = `${LOGIN_API}/common/user/${loginuserid}`;
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+          console.log("jbhguhid", result);
+
+          // console.log(userData)
+          setAdminUsername(result.username);
+        });
+    };
+    useEffect(() => {
+      console.log("teammenber", loginuserid);
+      fetchLoginUserData(loginuserid);
+    }, []);
+    // sendChatToAccount
+    const sendChatToAccount = (
+      chatData,
+      automationTemp,
+      automationAccountId
+    ) => {
+      console.log(
+        "sending chat",
+        chatData,
+        automationTemp,
+        automationAccountId
+      );
+
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      const subtaskData = chatData.clienttasks.map(({ id, text, checked }) => ({
+        id,
+        text,
+        checked: checked !== undefined ? checked : false, // Ensure checked is either true or false
+      }));
+      const messageData = [
+        {
+          message: chatData.description,
+          fromwhome: "Admin",
+        },
+      ];
+      // Dynamically prepare the payload from invoiceData
+      const raw = JSON.stringify({
+        accountids: [automationAccountId],
+        chattemplateid: automationTemp, // Fill in if required
+        chatsubject: chatData.chatsubject, // Today's date
+        description: messageData || "",
+        sendreminderstoclient: chatData.sendreminderstoclient,
+        daysuntilnextreminder: chatData.daysuntilnextreminder,
+        numberofreminders: chatData.numberofreminders,
+        clienttasks: subtaskData,
+      });
+      console.log("chats", raw);
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+      fetch(`${CHATTOCLIENT_API}/chats/chatsaccountwise`, requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+          console.log("send chat to account successfully:", result);
+          console.log("chat id", result.newChats._id);
+          setChatId(result.newChats._id);
+          // toast.success("New Chat created successfully");
+          sendSaveChatMail(
+            result.newChats._id,
+            automationAccountId,
+            automationTemp,
+            adminusername
+          );
+        })
+        .catch((error) => console.error("Error assigning invoice:", error));
+    };
+    // mail for drawer btn
+    const sendSaveChatMail = (
+      chatId,
+      automationAccountId,
+      automationTemp,
+      adminusername
+    ) => {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      const raw = JSON.stringify({
+        accountid: automationAccountId,
+        chattemplateid: automationTemp,
+        username: adminusername,
+        chatId: chatId,
+        viewchatlink: "/login",
+      });
+
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+      console.log(raw);
+      fetch(`${CHATTOCLIENT_API}/chatsend/securechatsend`, requestOptions)
+        .then((response) => response.json())
+        .then((result) => console.log(result))
+        .catch((error) => console.error(error));
+    };
     const assignProposalToAccount = (
       proposalesandelsData,
       automationTemp,
@@ -1426,15 +1480,13 @@ setSelectedUser(jobAssignees);
     //   }
     // };
 
-
-
     const selectAutomationApi = async (
       automationType,
       automationTemp,
       automationAccountId,
       automation
     ) => {
-      console.log("bvhgv",automation)
+      console.log("bvhgv", automation);
       if (!automationType || !automationAccountId) {
         console.error("Missing required parameters");
         return;
@@ -1442,52 +1494,61 @@ setSelectedUser(jobAssignees);
 
       switch (automationType) {
         case "Update account tags":
-          console.log(`Updating account tags for Account ID: ${automationAccountId}`);
-        
+          console.log(
+            `Updating account tags for Account ID: ${automationAccountId}`
+          );
+
           try {
             // Fetch the current account data
-            const response = await fetch(`${ACCOUNT_API}/accounts/accountdetails/${automationAccountId}`);
+            const response = await fetch(
+              `${ACCOUNT_API}/accounts/accountdetails/${automationAccountId}`
+            );
             if (!response.ok) throw new Error("Failed to fetch account data");
-        
+
             const accountsData = await response.json();
             let currentTags = accountsData.account.tags || []; // Existing tag IDs
-        
+
             // Extract tag IDs from automation object
-            const addTagIds = automation?.addTags?.map(tag => tag._id) || [];
-            const removeTagIds = automation?.removeTags?.map(tag => tag._id) || [];
-        
+            const addTagIds = automation?.addTags?.map((tag) => tag._id) || [];
+            const removeTagIds =
+              automation?.removeTags?.map((tag) => tag._id) || [];
+
             console.log("Current Tags:", currentTags);
             console.log("Tags to Add:", addTagIds);
             console.log("Tags to Remove:", removeTagIds);
-        
+
             // Remove tags that match `removeTags`
-            let updatedTags = currentTags.filter(tagId => !removeTagIds.includes(tagId));
-        
+            let updatedTags = currentTags.filter(
+              (tagId) => !removeTagIds.includes(tagId)
+            );
+
             // Add new tags without duplication
             updatedTags = [...new Set([...updatedTags, ...addTagIds])];
-        
+
             console.log("Final Updated Tags:", updatedTags);
-        
+
             // Send updated tags back to the server
-            const updateResponse = await fetch(`${ACCOUNT_API}/accounts/accountdetails/updateaccounttags/${automationAccountId}`, {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ tags: updatedTags }),
-            });
-        
+            const updateResponse = await fetch(
+              `${ACCOUNT_API}/accounts/accountdetails/updateaccounttags/${automationAccountId}`,
+              {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ tags: updatedTags }),
+              }
+            );
+
             console.log("PATCH Response Status:", updateResponse.status);
             console.log("PATCH Response OK:", updateResponse.ok);
-        
+
             const updateResponseData = await updateResponse.json();
             console.log("PATCH Response Data:", updateResponseData);
-        
-            if (!updateResponse.ok) throw new Error("Failed to update account tags");
-        
+
+            if (!updateResponse.ok)
+              throw new Error("Failed to update account tags");
+
             console.log("Account tags updated successfully");
-        
-            
           } catch (error) {
             console.error("Error updating account tags:", error);
           }
@@ -1510,18 +1571,18 @@ setSelectedUser(jobAssignees);
             console.error("Error processing 'Send Invoice':", error);
           }
           break;
-          case "Send message":
-            console.log(
-              `Processing 'Send message' with template: ${automationTemp}, Account ID: ${automationAccountId}`
-            );
-            try {
-              const chatData = await fetchchattempbyid(automationTemp);
-              console.log("Fetched chat data", chatData);
-              sendChatToAccount(chatData, automationTemp, automationAccountId);
-            } catch (error) {
-              console.error("Error processing 'Send Invoice':", error);
-            }
-            break;
+        case "Send message":
+          console.log(
+            `Processing 'Send message' with template: ${automationTemp}, Account ID: ${automationAccountId}`
+          );
+          try {
+            const chatData = await fetchchattempbyid(automationTemp);
+            console.log("Fetched chat data", chatData);
+            sendChatToAccount(chatData, automationTemp, automationAccountId);
+          } catch (error) {
+            console.error("Error processing 'Send Invoice':", error);
+          }
+          break;
 
         case "Apply folder template":
           console.log(
@@ -1651,21 +1712,17 @@ setSelectedUser(jobAssignees);
           : [...prevSelected, index]
       );
     };
-  
 
     // Function to create job
-    
+
     const handleMove = async () => {
       let allAutomationsSuccessful = true; // Flag to track overall success
-    
+
       for (const automationIndex of selectedAutomations) {
         const automation = automations[automationIndex];
-    
+
         // Validate the required fields in automation
-        if (
-          !automation ||
-          !automation.type 
-        ) {
+        if (!automation || !automation.type) {
           console.error(
             "Missing required automation data for automation index:",
             automationIndex
@@ -1673,11 +1730,11 @@ setSelectedUser(jobAssignees);
           allAutomationsSuccessful = false;
           break;
         }
-    
+
         const automationType = automation.type;
         const automationTemp = automation?.template?.value || null;
         const automationAccountIds = combinedaccountValues;
-    
+
         if (!automationAccountIds || automationAccountIds.length === 0) {
           console.error(
             "Missing required account IDs for automation index:",
@@ -1686,52 +1743,57 @@ setSelectedUser(jobAssignees);
           allAutomationsSuccessful = false;
           break;
         }
-     // Check if automation has tags
-     const hasTags = automation.tags && automation.tags.length > 0;
+        // Check if automation has tags
+        const hasTags = automation.tags && automation.tags.length > 0;
         // Process each account for the current automation
         for (const accountId of automationAccountIds) {
           const account = accountdata.find((acc) => acc._id === accountId);
-    
+
           if (!account) {
             console.warn(`Account with ID ${accountId} not found. Skipping.`);
             continue;
           }
-    
+
           // const accountTags = account.tags;
-    
+
           // // Check if automation tags match the account tags
           // const tagMatch = automation.tags.some((automationTag) =>
           //   accountTags.some(
           //     (accountTag) => accountTag.tagName === automationTag.tagName
           //   )
           // );
-    
+
           // if (!tagMatch) {
           //   console.warn(
           //     `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
           //   );
           //   continue; // Skip this account if tags don't match
           // }
-     // If automation has tags, ensure they match the account tags
-     if (hasTags) {
-      const accountTags = account.tags;
+          // If automation has tags, ensure they match the account tags
+          if (hasTags) {
+            const accountTags = account.tags;
 
-      const tagMatch = automation.tags.some((automationTag) =>
-        accountTags.some(
-          (accountTag) => accountTag.tagName === automationTag.tagName
-        )
-      );
+            const tagMatch = automation.tags.some((automationTag) =>
+              accountTags.some(
+                (accountTag) => accountTag.tagName === automationTag.tagName
+              )
+            );
 
-      if (!tagMatch) {
-        console.warn(
-          `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
-        );
-        continue; // Skip this account if tags don't match
-      }
-    }
+            if (!tagMatch) {
+              console.warn(
+                `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
+              );
+              continue; // Skip this account if tags don't match
+            }
+          }
           try {
             // Execute the automation for the matched account
-            await selectAutomationApi(automationType, automationTemp, [accountId],automation);
+            await selectAutomationApi(
+              automationType,
+              automationTemp,
+              [accountId],
+              automation
+            );
           } catch (error) {
             console.error(
               `Error processing automation for account ID: ${accountId}:`,
@@ -1742,7 +1804,7 @@ setSelectedUser(jobAssignees);
           }
         }
       }
-    
+
       // Create the job if all automations were successful
       if (allAutomationsSuccessful) {
         try {
@@ -1756,11 +1818,7 @@ setSelectedUser(jobAssignees);
         toast.error("Automations failed, job not created.");
       }
     };
-    
-    
-    
-    
-    
+
     const createJob = () => {
       const myHeaders = {
         "Content-Type": "application/json",
@@ -1805,7 +1863,7 @@ setSelectedUser(jobAssignees);
           // toast.success("Job created successfully");
           setDrawerOpen(false);
           toast.success("Job created successfully");
-          navigate("/workflow/jobs/activejob");
+          navigate("/jobs/activejob");
         })
         .catch((error) => {
           console.error("Failed to create Job Template:", error);
@@ -1831,42 +1889,43 @@ setSelectedUser(jobAssignees);
 
         <Box>
           {automations.map((automation, index) => {
-            
             const hasMatchingTags = automation.tags?.length
-            ? automation.tags.some((automationTag) =>
-                accountTags.some((accountTag) => accountTag._id === automationTag._id)
-              )
-            : true; // Allow if no tags are specified
-          
+              ? automation.tags.some((automationTag) =>
+                  accountTags.some(
+                    (accountTag) => accountTag._id === automationTag._id
+                  )
+                )
+              : true; // Allow if no tags are specified
+
             return (
               <Box key={index} sx={{ marginBottom: 2 }}>
-                <Box sx={{display:'flex',alignItems:'center'}}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={selectedAutomations.includes(index)}
-                      onChange={() => handleCheckboxChange(index)}
-                      disabled={!hasMatchingTags} // Disable checkbox if tags don't match
-                    />
-                  }
-                />
-                {!hasMatchingTags && (
-                  <Typography
-                    variant="body2"
-                    color="error"
-                    sx={{  fontStyle: "italic" }}
-                  >
-                  The tags do not match the account
-                  </Typography>
-                )}
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={selectedAutomations.includes(index)}
+                        onChange={() => handleCheckboxChange(index)}
+                        disabled={!hasMatchingTags} // Disable checkbox if tags don't match
+                      />
+                    }
+                  />
+                  {!hasMatchingTags && (
+                    <Typography
+                      variant="body2"
+                      color="error"
+                      sx={{ fontStyle: "italic" }}
+                    >
+                      The tags do not match the account
+                    </Typography>
+                  )}
                 </Box>
-                 {automation.type === "Update account tags" ? (
-                                    <Box>
-                                      <Box sx={{ width: 500 }}>
-                                        <Typography variant="body2" sx={{ marginBottom: 1 }}>
-                                          Add tags to account
-                                        </Typography>
-                                        {/* <Select
+                {automation.type === "Update account tags" ? (
+                  <Box>
+                    <Box sx={{ width: 500 }}>
+                      <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                        Add tags to account
+                      </Typography>
+                      {/* <Select
                                           multiple
                                           value={automation.addTags}
                                           renderValue={(selected) =>
@@ -1921,80 +1980,93 @@ setSelectedUser(jobAssignees);
                                             );
                                           })}
                                         </Select> */}
-                <Select
-                                          multiple
-                                          displayEmpty
-                                          multiline
-                                          size="small"
-                                          value={automation.addTags.map((tag) => tag._id)}
-                                          onChange={(event) => handleTagChange(index, "addTags", event)}
-                                         renderValue={(selected) =>
-                                            selected.length === 0 ? (
-                                              <Typography color="gray">Select tags to add</Typography>
-                                            ) : (
-                                              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                                                {automation.addTags.map((tag) => (
-                                                  <Chip
-                                                    key={tag._id}
-                                                    label={tag.tagName}
-                                                    sx={{
-                                                      backgroundColor: tag.tagColour,
-                                                      color: "#fff",
-                                                      fontWeight: "500",
-                                                      borderRadius: "20px",
-                                                    }}
-                                                  />
-                                                ))}
-                                              </Box>
-                                            )
-                                          }
-                                          fullWidth
-                                          MenuProps={MenuProps}
-                                          sx={{ width: "100%", marginBottom: 2 }}
-                                        >
-                                         {tagsoptions
-                                             .filter((option) => !automation.removeTags.some((tag) => tag._id === option.value)) // Hide selected removeTags
-                                             .map((option) => {
-                                               // Create a hidden canvas to measure text width
-                                               const canvas = document.createElement("canvas");
-                                               const context = canvas.getContext("2d");
-                                               context.font = "14px Arial"; // Match the MenuItem font style
-                                         
-                                               const textWidth = context.measureText(option.label).width; // Get exact width
-                                               const dynamicWidth = Math.min(textWidth + 20, 200); // Add padding & set max width
-                                         
-                                               return (
-                                                 <MenuItem
-                                                   key={option.value}
-                                                   value={option.value}
-                                                   sx={{
-                                                     backgroundColor: option.colour,
-                                                     color: "#fff",
-                                                     fontSize: "10px",
-                                                     borderRadius: "10px",
-                                                     margin: "5px",
-                                                     textAlign: "center",
-                                                     display: "flex",
-                                                     justifyContent: "center",
-                                                     padding: "4px 9px",
-                                                     whiteSpace: "nowrap", // Prevent text wrapping
-                                                     minWidth: `${dynamicWidth}px`,
-                                                     maxWidth: `${dynamicWidth}px`, // Set dynamic max width
-                                                     "&:hover": {
-                                                       backgroundColor: option.colour,
-                                                       color: "#fff",
-                                                     },
-                                                   }}
-                                                 >
-                                                   {option.label}
-                                                 </MenuItem>
-                                               );
-                                             })}
-                                        </Select>
-                                        <Typography variant="body2" sx={{ marginBottom: 1 }}>
-                                          Remove tags from account
-                                        </Typography>
-                                        {/* <Select
+                      <Select
+                        multiple
+                        displayEmpty
+                        multiline
+                        size="small"
+                        value={automation.addTags.map((tag) => tag._id)}
+                        onChange={(event) =>
+                          handleTagChange(index, "addTags", event)
+                        }
+                        renderValue={(selected) =>
+                          selected.length === 0 ? (
+                            <Typography color="gray">
+                              Select tags to add
+                            </Typography>
+                          ) : (
+                            <Box
+                              sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}
+                            >
+                              {automation.addTags.map((tag) => (
+                                <Chip
+                                  key={tag._id}
+                                  label={tag.tagName}
+                                  sx={{
+                                    backgroundColor: tag.tagColour,
+                                    color: "#fff",
+                                    fontWeight: "500",
+                                    borderRadius: "20px",
+                                  }}
+                                />
+                              ))}
+                            </Box>
+                          )
+                        }
+                        fullWidth
+                        MenuProps={MenuProps}
+                        sx={{ width: "100%", marginBottom: 2 }}
+                      >
+                        {tagsoptions
+                          .filter(
+                            (option) =>
+                              !automation.removeTags.some(
+                                (tag) => tag._id === option.value
+                              )
+                          ) // Hide selected removeTags
+                          .map((option) => {
+                            // Create a hidden canvas to measure text width
+                            const canvas = document.createElement("canvas");
+                            const context = canvas.getContext("2d");
+                            context.font = "14px Arial"; // Match the MenuItem font style
+
+                            const textWidth = context.measureText(
+                              option.label
+                            ).width; // Get exact width
+                            const dynamicWidth = Math.min(textWidth + 20, 200); // Add padding & set max width
+
+                            return (
+                              <MenuItem
+                                key={option.value}
+                                value={option.value}
+                                sx={{
+                                  backgroundColor: option.colour,
+                                  color: "#fff",
+                                  fontSize: "10px",
+                                  borderRadius: "10px",
+                                  margin: "5px",
+                                  textAlign: "center",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  padding: "4px 9px",
+                                  whiteSpace: "nowrap", // Prevent text wrapping
+                                  minWidth: `${dynamicWidth}px`,
+                                  maxWidth: `${dynamicWidth}px`, // Set dynamic max width
+                                  "&:hover": {
+                                    backgroundColor: option.colour,
+                                    color: "#fff",
+                                  },
+                                }}
+                              >
+                                {option.label}
+                              </MenuItem>
+                            );
+                          })}
+                      </Select>
+                      <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                        Remove tags from account
+                      </Typography>
+                      {/* <Select
                                           multiple
                                           value={automation.removeTags}
                                           renderValue={(selected) =>
@@ -2056,137 +2128,159 @@ setSelectedUser(jobAssignees);
                                             );
                                           })}
                                         </Select> */}
-                <Select
-                                           multiple
-                                           size="small"
-                                           multiline
-                                           displayEmpty
-                                           value={automation.removeTags.map((tag) => tag._id)}
-                                           onChange={(event) => handleTagChange(index, "removeTags", event)}
-                                           renderValue={(selected) =>
-                                              selected.length === 0 ? (
-                                                <Typography color="gray">Select tags to remove</Typography>
-                                              ) : (
-                                                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                                                  {automation.removeTags.map((tag) => (
-                                                    <Chip
-                                                      key={tag._id}
-                                                      label={tag.tagName}
-                                                      sx={{
-                                                        backgroundColor: tag.tagColour,
-                                                        color: "#fff",
-                                                        fontWeight: "500",
-                                                        borderRadius: "20px",
-                                                      }}
-                                                    />
-                                                  ))}
-                                                </Box>
-                                              )
-                                            }
-                                          MenuProps={MenuProps}
-                                          sx={{ width: "100%", marginBottom: 2 }}
-                                        >
-                                         {tagsoptions
-                                            .filter((option) => !automation.addTags.some((tag) => tag._id === option.value)) // Hide selected removeTags
-                                            .map((option) => {
-                                              // Create a hidden canvas to measure text width
-                                              const canvas = document.createElement("canvas");
-                                              const context = canvas.getContext("2d");
-                                              context.font = "14px Arial"; // Match the MenuItem font style
-                                        
-                                              const textWidth = context.measureText(option.label).width; // Get exact width
-                                              const dynamicWidth = Math.min(textWidth + 20, 200); // Add padding & set max width
-                                        
-                                              return (
-                                                <MenuItem
-                                                  key={option.value}
-                                                  value={option.value}
-                                                  sx={{
-                                                    backgroundColor: option.colour,
-                                                    color: "#fff",
-                                                    fontSize: "10px",
-                                                    borderRadius: "10px",
-                                                    margin: "5px",
-                                                    textAlign: "center",
-                                                    display: "flex",
-                                                    justifyContent: "center",
-                                                    padding: "4px 9px",
-                                                    whiteSpace: "nowrap", // Prevent text wrapping
-                                                    minWidth: `${dynamicWidth}px`,
-                                                    maxWidth: `${dynamicWidth}px`, // Set dynamic max width
-                                                    "&:hover": {
-                                                      backgroundColor: option.colour,
-                                                      color: "#fff",
-                                                    },
-                                                  }}
-                                                >
-                                                  {option.label}
-                                                </MenuItem>
-                                              );
-                                            })}
-                                        </Select>
-                                        {/* Warning Message */}
-                                        <Alert severity="warning" sx={{ marginBottom: 2 }}>
-                                          This automation can affect conditions for automations
-                                          below
-                                        </Alert>
-                                      </Box>
-                                    </Box>
-                                  ) : (
-               <Box>
-                <Typography variant="body1">
-                  <strong>Type:</strong> {automation.type}
-                </Typography>
+                      <Select
+                        multiple
+                        size="small"
+                        multiline
+                        displayEmpty
+                        value={automation.removeTags.map((tag) => tag._id)}
+                        onChange={(event) =>
+                          handleTagChange(index, "removeTags", event)
+                        }
+                        renderValue={(selected) =>
+                          selected.length === 0 ? (
+                            <Typography color="gray">
+                              Select tags to remove
+                            </Typography>
+                          ) : (
+                            <Box
+                              sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}
+                            >
+                              {automation.removeTags.map((tag) => (
+                                <Chip
+                                  key={tag._id}
+                                  label={tag.tagName}
+                                  sx={{
+                                    backgroundColor: tag.tagColour,
+                                    color: "#fff",
+                                    fontWeight: "500",
+                                    borderRadius: "20px",
+                                  }}
+                                />
+                              ))}
+                            </Box>
+                          )
+                        }
+                        MenuProps={MenuProps}
+                        sx={{ width: "100%", marginBottom: 2 }}
+                      >
+                        {tagsoptions
+                          .filter(
+                            (option) =>
+                              !automation.addTags.some(
+                                (tag) => tag._id === option.value
+                              )
+                          ) // Hide selected removeTags
+                          .map((option) => {
+                            // Create a hidden canvas to measure text width
+                            const canvas = document.createElement("canvas");
+                            const context = canvas.getContext("2d");
+                            context.font = "14px Arial"; // Match the MenuItem font style
 
-                <Typography variant="body1">
-                  <strong>Template:</strong> {automation.template.label}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Tags:</strong>
-                </Typography>
-                {automation.tags.map((tag) => (
-                  <Box
-                    key={tag._id}
-                    sx={{
-                      display: "inline-block",
-                      backgroundColor: tag.tagColour,
-                      color: "white",
-                      borderRadius: "15px",
-                      padding: "3px 8px",
-                      marginRight: "4px",
-                    }}
-                  >
-                    {tag.tagName}
+                            const textWidth = context.measureText(
+                              option.label
+                            ).width; // Get exact width
+                            const dynamicWidth = Math.min(textWidth + 20, 200); // Add padding & set max width
+
+                            return (
+                              <MenuItem
+                                key={option.value}
+                                value={option.value}
+                                sx={{
+                                  backgroundColor: option.colour,
+                                  color: "#fff",
+                                  fontSize: "10px",
+                                  borderRadius: "10px",
+                                  margin: "5px",
+                                  textAlign: "center",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  padding: "4px 9px",
+                                  whiteSpace: "nowrap", // Prevent text wrapping
+                                  minWidth: `${dynamicWidth}px`,
+                                  maxWidth: `${dynamicWidth}px`, // Set dynamic max width
+                                  "&:hover": {
+                                    backgroundColor: option.colour,
+                                    color: "#fff",
+                                  },
+                                }}
+                              >
+                                {option.label}
+                              </MenuItem>
+                            );
+                          })}
+                      </Select>
+                      {/* Warning Message */}
+                      <Alert severity="warning" sx={{ marginBottom: 2 }}>
+                        This automation can affect conditions for automations
+                        below
+                      </Alert>
+                    </Box>
                   </Box>
-                ))}
-                </Box>
-                  )}
-              </Box>
+                ) : (
+                  <Box>
+                    <Typography variant="body1">
+                      <strong>Type:</strong> {automation.type}
+                    </Typography>
 
+                    <Typography variant="body1">
+                      <strong>Template:</strong> {automation.template.label}
+                    </Typography>
+                    <Typography variant="body1">
+                      <strong>Tags:</strong>
+                    </Typography>
+                    {automation.tags.map((tag) => (
+                      <Box
+                        key={tag._id}
+                        sx={{
+                          display: "inline-block",
+                          backgroundColor: tag.tagColour,
+                          color: "white",
+                          borderRadius: "15px",
+                          padding: "3px 8px",
+                          marginRight: "4px",
+                        }}
+                      >
+                        {tag.tagName}
+                      </Box>
+                    ))}
+                  </Box>
+                )}
+              </Box>
             );
           })}
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 5 }}>
-          <Button variant="contained" onClick={handleMove} sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      },
-                      borderRadius:'15px', width:'80px'
-                    }}>
+          <Button
+            variant="contained"
+            onClick={handleMove}
+            sx={{
+              backgroundColor: "var(--color-save-btn)", // Normal background
+
+              "&:hover": {
+                backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+              },
+              borderRadius: "15px",
+              width: "80px",
+            }}
+          >
             Move
           </Button>
-          <Button variant="outlined" onClick={() => setDrawerOpen(false)} sx={{
-                  borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                 color:'var(--color-save-btn)',
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                    color:'#fff',
-                    border:"none"
-                  },
-                  width:'80px',borderRadius:'15px'
-                }}>
+          <Button
+            variant="outlined"
+            onClick={() => setDrawerOpen(false)}
+            sx={{
+              borderColor: "var(--color-border-cancel-btn)", // Normal background
+              color: "var(--color-save-btn)",
+              "&:hover": {
+                backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                color: "#fff",
+                border: "none",
+              },
+              width: "80px",
+              borderRadius: "15px",
+            }}
+          >
             Close
           </Button>
         </Box>
@@ -2290,77 +2384,101 @@ setSelectedUser(jobAssignees);
                   />
                 </Box> */}
 
-<Box>
-<InputLabel sx={{color:'black'}}>Accounts</InputLabel>
-      <FormControl fullWidth variant="outlined" sx={{ marginTop: '15px' }}>
-      
-        
-         <Select
-         multiline
-          multiple
-          size="small"
-          value={selectedaccount || []} // Fallback to an empty array if undefined
-          onChange={handleAccountChange}
-          input={<OutlinedInput  />} // Use OutlinedInput here
-          displayEmpty
-          renderValue={(selected) => {
-            if (selected.length === 0) {
-              return <span style={{ color: "#aaa" }}>Accounts</span>; // Placeholder
-            }
-            return (
-              <Box
-                sx={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: "6px",
-                  padding: "6px",
-                  borderRadius: "10px",
-                }}
-              >
-                {selected.map((value) => {
-                  const account = accountdata.find((acc) => acc.accountName === value); // Find the selected account
-                  return (
-                    <Chip
-                      key={value}
-                      label={account?.accountName} // Display the account name
-                      sx={{
-                        // backgroundColor: account?.colour || "#ccc", // Use account colour or fallback
-                        // color: "#fff",
-                        fontWeight: 500,
-                        fontSize: "10px",
-                        borderRadius: "16px",
-                        height: "20px",
-                        cursor: "pointer",
-                        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-                        "& .MuiChip-deleteIcon": {
-                          color: "#fff",
-                          opacity: 0.7,
-                          transition: "opacity 0.2s",
-                          "&:hover": { opacity: 1 },
-                        },
+                <Box>
+                  <InputLabel sx={{ color: "black" }}>Accounts</InputLabel>
+                  <FormControl
+                    fullWidth
+                    variant="outlined"
+                    sx={{ marginTop: "15px" }}
+                  >
+                    <Select
+                      multiline
+                      multiple
+                      size="small"
+                      value={selectedaccount || []} // Fallback to an empty array if undefined
+                      onChange={handleAccountChange}
+                      input={<OutlinedInput />} // Use OutlinedInput here
+                      displayEmpty
+                      renderValue={(selected) => {
+                        if (selected.length === 0) {
+                          return (
+                            <span style={{ color: "#aaa" }}>Accounts</span>
+                          ); // Placeholder
+                        }
+                        return (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                              gap: "6px",
+                              padding: "6px",
+                              borderRadius: "10px",
+                            }}
+                          >
+                            {selected.map((value) => {
+                              const account = accountdata.find(
+                                (acc) => acc.accountName === value
+                              ); // Find the selected account
+                              return (
+                                <Chip
+                                  key={value}
+                                  label={account?.accountName} // Display the account name
+                                  sx={{
+                                    // backgroundColor: account?.colour || "#ccc", // Use account colour or fallback
+                                    // color: "#fff",
+                                    fontWeight: 500,
+                                    fontSize: "10px",
+                                    borderRadius: "16px",
+                                    height: "20px",
+                                    cursor: "pointer",
+                                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                                    "& .MuiChip-deleteIcon": {
+                                      color: "#fff",
+                                      opacity: 0.7,
+                                      transition: "opacity 0.2s",
+                                      "&:hover": { opacity: 1 },
+                                    },
+                                  }}
+                                  onDelete={() => {
+                                    const updatedSelection =
+                                      selectedaccount.filter(
+                                        (acc) => acc !== value
+                                      );
+                                    setSelectedaccount(updatedSelection); // Remove the account from selection
+                                  }}
+                                />
+                              );
+                            })}
+                          </Box>
+                        );
                       }}
-                      onDelete={() => {
-                        const updatedSelection = selectedaccount.filter((acc) => acc !== value);
-                        setSelectedaccount(updatedSelection); // Remove the account from selection
-                      }}
-                    />
-                  );
-                })}
-              </Box>
-            );
-          }}
-          MenuProps={MenuProps}
-         
-        >
-          {accountdata.map((account) => (
-            <MenuItem key={account._id} value={account.accountName}>
-              <Checkbox checked={(selectedaccount || []).indexOf(account.accountName) > -1} /> 
-              <ListItemText primary={account.accountName} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </Box>
+                      MenuProps={MenuProps}
+                    >
+                      <input
+                        fullWidth
+                        placeholder="Search Users"
+                         variant="outlined"
+                        value={searchTerm}
+                        onChange={(e) => {
+                          setSearchTerm(e.target.value);
+                          fetchAccountDatas(e.target.value);
+                        }}
+                      />
+                      {accountdata.map((account) => (
+                        <MenuItem key={account._id} value={account.accountName}>
+                          <Checkbox
+                            checked={
+                              (selectedaccount || []).indexOf(
+                                account.accountName
+                              ) > -1
+                            }
+                          />
+                          <ListItemText primary={account.accountName} />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Box>
                 <Box mt={2}>
                   <label className="job-input-label">Pipeline</label>
 
@@ -2421,7 +2539,7 @@ setSelectedUser(jobAssignees);
                         sx={{ backgroundColor: "#fff" }}
                         placeholder="Job Template"
                         variant="outlined"
-                       size="small"
+                        size="small"
                       />
                     )}
                     sx={{ width: "100%", marginTop: "15px" }}
@@ -2471,73 +2589,99 @@ setSelectedUser(jobAssignees);
                       option.value === value.value
                     }
                   /> */}
-                     <FormControl fullWidth variant="outlined" sx={{ marginTop: '15px' }}>
- <Select
-         multiline
-          multiple
-          size="small"
-          value={selectedUser || []} // Fallback to an empty array if undefined
-          onChange={handleUserChange}
-          input={<OutlinedInput  />} // Use OutlinedInput here
-          displayEmpty
-          renderValue={(selected) => {
-            if (selected.length === 0) {
-              return <span style={{ color: "#aaa" }}>Job assignees</span>; // Placeholder
-            }
-            return (
-              <Box
-                sx={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: "6px",
-                  padding: "6px",
-                  borderRadius: "10px",
-                }}
-              >
-                {selected.map((value) => {
-                  const user = userData.find((acc) => acc.username === value); // Find the selected account
-                  return (
-                    <Chip
-                      key={value}
-                      label={user?.username} // Display the account name
-                      sx={{
-                        // backgroundColor: account?.colour || "#ccc", // Use account colour or fallback
-                        // color: "#fff",
-                        fontWeight: 500,
-                        fontSize: "10px",
-                        borderRadius: "16px",
-                        height: "20px",
-                        cursor: "pointer",
-                        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-                        "& .MuiChip-deleteIcon": {
-                          color: "#fff",
-                          opacity: 0.7,
-                          transition: "opacity 0.2s",
-                          "&:hover": { opacity: 1 },
-                        },
+                  <FormControl
+                    fullWidth
+                    variant="outlined"
+                    sx={{ marginTop: "15px" }}
+                  >
+                    <Select
+                      multiline
+                      multiple
+                      size="small"
+                      value={selectedUser || []} // Fallback to an empty array if undefined
+                      onChange={handleUserChange}
+                      input={<OutlinedInput />} // Use OutlinedInput here
+                      displayEmpty
+                      renderValue={(selected) => {
+                        if (selected.length === 0) {
+                          return (
+                            <span style={{ color: "#aaa" }}>Job assignees</span>
+                          ); // Placeholder
+                        }
+                        return (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                              gap: "6px",
+                              padding: "6px",
+                              borderRadius: "10px",
+                            }}
+                          >
+                            {selected.map((value) => {
+                              const user = userData.find(
+                                (acc) => acc.username === value
+                              ); // Find the selected account
+                              return (
+                                <Chip
+                                  key={value}
+                                  label={user?.username} // Display the account name
+                                  sx={{
+                                    // backgroundColor: account?.colour || "#ccc", // Use account colour or fallback
+                                    // color: "#fff",
+                                    fontWeight: 500,
+                                    fontSize: "10px",
+                                    borderRadius: "16px",
+                                    height: "20px",
+                                    cursor: "pointer",
+                                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                                    "& .MuiChip-deleteIcon": {
+                                      color: "#fff",
+                                      opacity: 0.7,
+                                      transition: "opacity 0.2s",
+                                      "&:hover": { opacity: 1 },
+                                    },
+                                  }}
+                                  onDelete={() => {
+                                    const updatedSelection =
+                                      selectedUser.filter(
+                                        (acc) => acc !== value
+                                      );
+                                    setCombinedAssigneesValues(
+                                      updatedSelection
+                                    ); // Remove the account from selection
+                                  }}
+                                />
+                              );
+                            })}
+                          </Box>
+                        );
                       }}
-                      onDelete={() => {
-                        const updatedSelection = selectedUser.filter((acc) => acc !== value);
-                        setCombinedAssigneesValues(updatedSelection); // Remove the account from selection
-                      }}
-                    />
-                  );
-                })}
-              </Box>
-            );
-          }}
-          MenuProps={MenuProps}
-         
-        >
-          {userData.map((user) => (
+                      MenuProps={MenuProps}
+                    >
+                      {/* {userData.map((user) => (
             <MenuItem key={user._id} value={user.username}>
               <Checkbox checked={(selectedUser || []).indexOf(user.username) > -1} /> 
               <ListItemText primary={user.username} />
             </MenuItem>
-          ))}
-        </Select>
-        </FormControl>
+          ))} */}
+                      <TextField
+                        fullWidth
+                        label="Search Users"
+                        variant="outlined"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
 
+                      {/* Filtered User List */}
+                      {/* {foundUser.map((user) => (
+        <MenuItem key={user._id} value={user.username} >
+          <Checkbox checked={(selectedUser || []).indexOf(user.username) > -1} />
+          <ListItemText primary={user.username} />
+        </MenuItem>
+      ))} */}
+                    </Select>
+                  </FormControl>
                 </Box>
                 <Box mt={2}>
                   <Priority
@@ -2612,7 +2756,7 @@ setSelectedUser(jobAssignees);
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                       <Typography>Start In</Typography>
                       <TextField
-                       size="small"
+                        size="small"
                         margin="normal"
                         fullWidth
                         defaultValue={0}
@@ -2777,7 +2921,7 @@ setSelectedUser(jobAssignees);
                                 value={inputText + selectedJobShortcut}
                                 onChange={handlechatsubject}
                                 placeholder="Job name for client"
-                               size="small"
+                                size="small"
                                 sx={{ background: "#fff", mt: 2 }}
                               />
 
@@ -2846,7 +2990,7 @@ setSelectedUser(jobAssignees);
                                 </InputLabel>
                                 <TextField
                                   fullWidth
-                                 size="small"
+                                  size="small"
                                   margin="normal"
                                   type="text"
                                   multiline
@@ -2922,27 +3066,37 @@ setSelectedUser(jobAssignees);
             </Box>
 
             <Box sx={{ pt: 2, display: "flex", alignItems: "center", gap: 5 }}>
-              <Button variant="contained"  onClick={createjob} sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      },
-                      borderRadius:'15px', 
-                    }}>
+              <Button
+                variant="contained"
+                onClick={createjob}
+                sx={{
+                  backgroundColor: "var(--color-save-btn)", // Normal background
+
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                  },
+                  borderRadius: "15px",
+                }}
+              >
                 Add
               </Button>
               <Link to="/">
-                <Button variant="outlined" sx={{
-                  borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                 color:'var(--color-save-btn)',
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                    color:'#fff',
-                    border:"none"
-                  },
-                  width:'80px',borderRadius:'15px'
-                }}>Cancel</Button>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    borderColor: "var(--color-border-cancel-btn)", // Normal background
+                    color: "var(--color-save-btn)",
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                      color: "#fff",
+                      border: "none",
+                    },
+                    width: "80px",
+                    borderRadius: "15px",
+                  }}
+                >
+                  Cancel
+                </Button>
               </Link>
             </Box>
           </Box>

@@ -539,7 +539,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
         throw error; // Let the calling function handle the error
       }
     };
-    // fetch chat temp by id
+    // fetch task temp by id
     const TASK_API = process.env.REACT_APP_TASK_TEMP_URL;
     const fetchtasktempbyid = async (automationTemp) => {
       const requestOptions = {
@@ -756,7 +756,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
       automationAccountId
     ) => {
       console.log(
-        "Assigning invoice",
+        "Assigning task",
         taskData,
         automationTemp,
         automationAccountId
@@ -783,8 +783,8 @@ const Pipeline = ({ charLimit = 4000 }) => {
         description: taskData.description,
         tasktags: taskData.tasktags,
         issubtaskschecked: taskData.issubtaskschecked,
-        startdate: taskData.StartsDate,
-        enddate: taskData.DueDate,
+        startdate: taskData.startdate,
+        enddate: taskData.enddate,
         subtasks: taskData.subtasks,
       });
       console.log(raw);
@@ -1193,10 +1193,10 @@ const Pipeline = ({ charLimit = 4000 }) => {
           );
           try {
             const taskData = await fetchtasktempbyid(automationTemp);
-            console.log("Fetched chat data", taskData);
+            console.log("Fetched task temp data", taskData);
             assignTaskToAccount(taskData, automationTemp, automationAccountId);
           } catch (error) {
-            console.error("Error processing 'Send Invoice':", error);
+            console.error("Error processing 'Create Task':", error);
           }
           break;
         case "Apply folder template":

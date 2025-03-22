@@ -367,6 +367,8 @@ const NewTaskDrawer = ({ open, onClose, fetchTasksData, isEditMode, taskData,fet
             console.log("taskassignees contains an unexpected structure.");
           }
         }
+
+        
         // Process tasktags
         if (
           data.taskTemplate.tasktags &&
@@ -459,28 +461,39 @@ const NewTaskDrawer = ({ open, onClose, fetchTasksData, isEditMode, taskData,fet
       setSubtaskSwitch(taskData.taskList.SubtaskCheck || false);
 
       // Pre-fill assignees
-      
-      if (taskData.taskList && (taskData.taskList.Assignees)) {
-        const innerArray = taskData.taskList.Assignees[0]; // Extract the inner array
-
-        if ((innerArray)) {
-            // console.log("Task Assignees:", innerArray);
-
-            const assigneesData = innerArray.map((assignee) => ({
-                value: assignee._id,
-                label: assignee.username,
-            }));
-            // console.log("Assignees Data:", assigneesData); // Log the processed assigneesData
-
-            setAssigneesNew(assigneesData);
-
-            const selectedValues = assigneesData.map((option) => option.value);
-            setCombinedValues(selectedValues);
-            // console.log("Selected Assignees:", selectedValues);
-        } else {
-            console.log("taskassignees contains an unexpected structure.");
-        }
+      if (taskData.taskList && taskData.taskList.Assignees) {
+        const assigneesData = taskData.taskList.Assignees.map((assignee) => ({
+            value: assignee._id,
+            label: assignee.username,
+        }));
+    
+        setAssigneesNew(assigneesData);
+    
+        const selectedValues = assigneesData.map((option) => option.value);
+        setCombinedValues(selectedValues);
     }
+    
+    //   if (taskData.taskList && (taskData.taskList.Assignees)) {
+    //     const innerArray = taskData.taskList.Assignees[0]; // Extract the inner array
+
+    //     if ((innerArray)) {
+    //         // console.log("Task Assignees:", innerArray);
+
+    //         const assigneesData = innerArray.map((assignee) => ({
+    //             value: assignee._id,
+    //             label: assignee.username,
+    //         }));
+    //         // console.log("Assignees Data:", assigneesData); // Log the processed assigneesData
+
+    //         setAssigneesNew(assigneesData);
+
+    //         const selectedValues = assigneesData.map((option) => option.value);
+    //         setCombinedValues(selectedValues);
+    //         // console.log("Selected Assignees:", selectedValues);
+    //     } else {
+    //         console.log("taskassignees contains an unexpected structure.");
+    //     }
+    // }
       // Pre-fill tags
       if (taskData.taskList && Array.isArray(taskData.taskList.Tags)) {
         const tagsData = taskData.taskList.Tags.map((tag) => ({
