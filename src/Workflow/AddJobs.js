@@ -25,6 +25,8 @@ import { toast } from "react-toastify";
 import Priority from "../Templates/Priority/Priority";
 import Editor from "../Templates/Texteditor/Editor";
 import { LoginContext } from "../Sidebar/Context/Context";
+import MultiSelectDropdown from "../Templates/MultiSelectDropdown"
+import AccountMultiSelectDropdown from "../Templates/AccountMultiSelectDropdown"
 import customParseFormat from "dayjs/plugin/customParseFormat";
 dayjs.extend(customParseFormat);
 const AddJobs = ({
@@ -71,18 +73,24 @@ const AddJobs = ({
   //****************Accounts */
   const [accountdata, setaccountdata] = useState([]);
   const [selectedaccount, setSelectedaccount] = useState();
-  const [combinedaccountValues, setCombinedaccountValues] = useState([]);
+  const [combinedaccountValues, setCombinedaccountValues] = useState();
 
-  const handleAccountChange = (event, newValue) => {
-    setSelectedaccount(newValue.map((option) => option.value));
-    // Map selected options to their values and send as an array
-    console.log(
-      "Selected Values:",
-      newValue.map((option) => option.value)
-    );
-    setCombinedaccountValues(newValue.map((option) => option.value));
+  // const handleAccountChange = (event, newValue) => {
+  //   setSelectedaccount(newValue.map((option) => option.value));
+  //   // Map selected options to their values and send as an array
+  //   console.log(
+  //     "Selected Values:",
+  //     newValue.map((option) => option.value)
+  //   );
+  //   setCombinedaccountValues(newValue.map((option) => option.value));
+  // };
+  const handleAccountChange = (newSelectedAcc) => {
+    setSelectedaccount(newSelectedAcc);
+    console.log(newSelectedAcc)
+    const selectedValues = newSelectedAcc.map((option) => option.value);
+    setCombinedaccountValues(selectedValues);
+    console.log(selectedValues)
   };
-
   useEffect(() => {
     fetchAccountData();
   }, []);
@@ -133,11 +141,19 @@ const AddJobs = ({
   };
 
   const [selectedUser, setSelectedUser] = useState([]);
+   const [combinedValues, setCombinedValues] = useState();
   const [combinedAssigneesValues, setCombinedAssigneesValues] = useState([]);
-  const handleUserChange = (event, selectedOptions) => {
-    setSelectedUser(selectedOptions);
-    const selectedValues = selectedOptions.map((option) => option.value);
-    setCombinedAssigneesValues(selectedValues);
+  // const handleUserChange = (event, selectedOptions) => {
+  //   setSelectedUser(selectedOptions);
+  //   const selectedValues = selectedOptions.map((option) => option.value);
+  //   setCombinedAssigneesValues(selectedValues);
+  // };
+  const handleUserChange = (newSelectedUsers) => {
+    setSelectedUser(newSelectedUsers);
+    console.log(newSelectedUsers)
+    const selectedValues = newSelectedUsers.map((option) => option.value);
+    setCombinedValues(selectedValues);
+    console.log(selectedValues)
   };
   const assigneesoptions = userData.map((user) => ({
     value: user._id,
@@ -237,7 +253,7 @@ const AddJobs = ({
         }));
         setSelectedUser(jobAssignees);
         const selectedValues = jobAssignees.map((option) => option.value);
-        setCombinedAssigneesValues(selectedValues);
+        setCombinedValues(selectedValues);
         // setSelecteAssigneesdUser(template.jobassignees.map(assignee => assignee._id));
         setPriority(template.priority);
         console.log(template.priority);
@@ -396,7 +412,7 @@ const AddJobs = ({
       pipeline: pipelineId,
       templatename: selectedtemp.value,
       jobname: jobName,
-      jobassignees: combinedAssigneesValues,
+      jobassignees: combinedValues,
       priority: priority,
       description: description,
       absolutedates: absoluteDate,
@@ -1639,7 +1655,7 @@ const AddJobs = ({
           pipeline: pipelineId,
           templatename: selectedtemp.value,
           jobname: jobName,
-          jobassignees: combinedAssigneesValues,
+          jobassignees: combinedValues,
           priority: priority,
           description: description,
           absolutedates: absoluteDate,
@@ -2012,10 +2028,10 @@ const AddJobs = ({
           sx={{ height: "86vh", overflowY: "auto", p: 2 }}
           className="jobs-add-container"
         >
-          <Box>
+          <Box mr={2.5}>
             <label className="job-input-label">Accounts</label>
 
-            <Autocomplete
+            {/* <Autocomplete
               multiple
               options={accountoptions}
               value={selectedaccount}
@@ -2052,7 +2068,12 @@ const AddJobs = ({
                 />
               )}
               sx={{ width: "100%", marginTop: "8px" }}
-            />
+            /> */}
+             <AccountMultiSelectDropdown 
+                                value={selectedaccount}
+                                onChange={handleAccountChange}
+                                placeholder="Assignees"
+                              />
           </Box>
           <Box mt={2}>
             <label className="job-input-label">Stage</label>
@@ -2118,9 +2139,9 @@ const AddJobs = ({
               sx={{ backgroundColor: "#fff" }}
             />
           </Box>
-          <Box mt={2}>
+          <Box mt={2} mr={2.5}>
             <label className="job-input-label">Job Assignees</label>
-            <Autocomplete
+            {/* <Autocomplete
               multiple
               sx={{ marginTop: "8px" }}
               options={assigneesoptions}
@@ -2148,7 +2169,13 @@ const AddJobs = ({
               isOptionEqualToValue={(option, value) =>
                 option.value === value.value
               }
-            />
+            /> */}
+
+<MultiSelectDropdown 
+  value={selectedUser}
+  onChange={handleUserChange}
+  placeholder="Assignees"
+/>
           </Box>
           <Box mt={2}>
             <Priority

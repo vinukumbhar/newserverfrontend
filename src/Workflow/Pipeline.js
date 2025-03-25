@@ -53,6 +53,7 @@ import AddJobs from "./AddJobs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import MultiSelectDropdown from "../Templates/MultiSelectDropdown"
 import { LoginContext } from "../Sidebar/Context/Context";
 const Pipeline = ({ charLimit = 4000 }) => {
   const ITEM_HEIGHT = 48;
@@ -2187,8 +2188,8 @@ const Pipeline = ({ charLimit = 4000 }) => {
       fetchUserData();
     }, []);
     const [userData, setUserData] = useState([]);
-    const [selecteduser, setSelectedUser] = useState();
-    const [combinedValues, setCombinedValues] = useState([]);
+    const [selectedUser, setSelectedUser] = useState();
+    const [combinedValues, setCombinedValues] = useState();
     const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
     const fetchUserData = async () => {
       try {
@@ -2211,23 +2212,12 @@ const Pipeline = ({ charLimit = 4000 }) => {
     //   setCombinedValues(selectedValues);
     // };
 
-    const handleUserChange = (event) => {
-      const selectedValues = event.target.value; // This will be an array of selected values
-      console.log("Selected Values:", selectedValues);
-    
-      // Update the state with the selected values
-      setSelectedUser(selectedValues);
-    
-      // If you need to map the selected values to their corresponding IDs or other properties
-      const selectedAccountDetails = userData.filter((user) =>
-        selectedValues.includes(user.username)
-      );
-    
-      const selectedAccountIds = selectedAccountDetails.map((account) => account._id);
-      console.log("Selected Account IDs:", selectedAccountIds);
-    
-      // Update combined account values if needed
-      setCombinedValues(selectedAccountIds);
+    const handleUserChange = (newSelectedUsers) => {
+      setSelectedUser(newSelectedUsers);
+      console.log(newSelectedUsers)
+      const selectedValues = newSelectedUsers.map((option) => option.value);
+      setCombinedValues(selectedValues);
+      console.log(selectedValues)
     };
     const [startDate, setStartDate] = useState(null);
     const [dueDate, setDueDate] = useState(null);
@@ -2339,8 +2329,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
         // }
 
 
-        const jobAssignees = data.jobList.JobAssignee.map((assignee) => assignee.username);
-        setSelectedUser(jobAssignees);
+    
 
         if (data.jobList.Account && data.jobList.Account.length > 0) {
           const { _id, accountName } = data.jobList.Account[0];
@@ -2414,16 +2403,16 @@ const Pipeline = ({ charLimit = 4000 }) => {
           setCombinedTagsValues(selectedValues);
         }
 
-        // if (data.jobList && data.jobList.JobAssignee) {
-        //   const assigneesData = data.jobList.JobAssignee.map((assignee) => ({
-        //     value: assignee._id,
-        //     label: assignee.username,
-        //   }));
+        if (data.jobList && data.jobList.JobAssignee) {
+          const assigneesData = data.jobList.JobAssignee.map((assignee) => ({
+            value: assignee._id,
+            label: assignee.username,
+          }));
 
-        //   setSelectedUser(assigneesData);
-        //   const selectedValues = assigneesData.map((option) => option.value);
-        //   setCombinedValues(selectedValues);
-        // }
+          setSelectedUser(assigneesData);
+          const selectedValues = assigneesData.map((option) => option.value);
+          setCombinedValues(selectedValues);
+        }
 
         setIsDrawerOpen(true);
       } catch (error) {
@@ -2462,14 +2451,14 @@ const Pipeline = ({ charLimit = 4000 }) => {
         })
         .then((result) => {
           // Handle success
-          toast.success("Job Template updated successfully");
+          toast.success("Job  updated successfully");
           // setIsDrawerOpen(false);
           fetchJobData();
         })
         .catch((error) => {
           // Handle errors
           console.error(error);
-          toast.error("Failed to update Job Template");
+          toast.error("Failed to update Job ");
         });
     };
     const handleSaveExitClick = () => {
@@ -3025,7 +3014,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                   </Select>
                 </FormControl>
               </Box>
-              <Box mt={2}>
+              <Box mt={2} mr={2.5}>
                 <InputLabel sx={{ color: "black" }}>Task Assignee</InputLabel>
                 {/* <Autocomplete
                   multiple
@@ -3055,72 +3044,11 @@ const Pipeline = ({ charLimit = 4000 }) => {
                     option.value === value.value
                   }
                 /> */}
-                  <FormControl fullWidth variant="outlined" sx={{ marginTop: '15px' }}>
-                 <Select
-                         multiline
-                          multiple
-                          size="small"
-                          value={selecteduser || []} // Fallback to an empty array if undefined
-                          onChange={handleUserChange}
-                          input={<OutlinedInput  />} // Use OutlinedInput here
-                          displayEmpty
-                          renderValue={(selected) => {
-                            if (selected.length === 0) {
-                              return <span style={{ color: "#aaa" }}>Job assignees</span>; // Placeholder
-                            }
-                            return (
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  flexWrap: "wrap",
-                                  gap: "6px",
-                                  padding: "6px",
-                                  borderRadius: "10px",
-                                }}
-                              >
-                                {selected.map((value) => {
-                                  const user = userData.find((acc) => acc.username === value); // Find the selected account
-                                  return (
-                                    <Chip
-                                      key={value}
-                                      label={user?.username} // Display the account name
-                                      sx={{
-                                        // backgroundColor: account?.colour || "#ccc", // Use account colour or fallback
-                                        // color: "#fff",
-                                        fontWeight: 500,
-                                        fontSize: "10px",
-                                        borderRadius: "16px",
-                                        height: "20px",
-                                        cursor: "pointer",
-                                        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-                                        "& .MuiChip-deleteIcon": {
-                                          color: "#fff",
-                                          opacity: 0.7,
-                                          transition: "opacity 0.2s",
-                                          "&:hover": { opacity: 1 },
-                                        },
-                                      }}
-                                      onDelete={() => {
-                                        const updatedSelection = selecteduser.filter((acc) => acc !== value);
-                                        setCombinedValues(updatedSelection); // Remove the account from selection
-                                      }}
-                                    />
-                                  );
-                                })}
-                              </Box>
-                            );
-                          }}
-                          MenuProps={MenuProps}
-                         
-                        >
-                          {userData.map((user) => (
-                            <MenuItem key={user._id} value={user.username}>
-                              <Checkbox checked={(selecteduser || []).indexOf(user.username) > -1} /> 
-                              <ListItemText primary={user.username} />
-                            </MenuItem>
-                          ))}
-                        </Select>
-                        </FormControl>
+                 <MultiSelectDropdown 
+                   value={selectedUser}
+                   onChange={handleUserChange}
+                   placeholder="Job Assignees"
+                 />
               </Box>
               <Box mt={2}>
                 <InputLabel sx={{ color: "black" }}>Stage</InputLabel>

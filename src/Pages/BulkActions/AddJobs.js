@@ -36,6 +36,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import axios from "axios";
+import MultiSelectDropdown from "../../Templates/MultiSelectDropdown"
+import AccountMultiSelectDropdown from "../../Templates/AccountMultiSelectDropdown"
 import { LoginContext } from "../../Sidebar/Context/Context";
 // Initialize the plugin
 dayjs.extend(customParseFormat);
@@ -105,20 +107,26 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
   //****************Accounts */
   const [accountdata, setaccountdata] = useState([]);
   const [selectedaccount, setSelectedaccount] = useState([]);
-  const [combinedaccountValues, setCombinedaccountValues] = useState([]);
+  const [combinedaccountValues, setCombinedaccountValues] = useState();
 
-  const handleAccountChange = (event, newValue) => {
-    setSelectedaccount(newValue);
-    console.log("Selected Options:", newValue); // Log full option objects
-    console.log(
-      "Selected Values:",
-      newValue.map((option) => option.value)
-    ); // Log just the values
+  // const handleAccountChange = (event, newValue) => {
+  //   setSelectedaccount(newValue);
+  //   console.log("Selected Options:", newValue); // Log full option objects
+  //   console.log(
+  //     "Selected Values:",
+  //     newValue.map((option) => option.value)
+  //   ); // Log just the values
 
-    // If you need to set combined account values separately
-    setCombinedaccountValues(newValue.map((option) => option.value));
+  //   // If you need to set combined account values separately
+  //   setCombinedaccountValues(newValue.map((option) => option.value));
+  // };
+  const handleAccountChange = (newSelectedAcc) => {
+    setSelectedaccount(newSelectedAcc);
+    console.log(newSelectedAcc)
+    const selectedValues = newSelectedAcc.map((option) => option.value);
+    setCombinedaccountValues(selectedValues);
+    console.log(selectedValues)
   };
-
   useEffect(() => {
     fetchAccountData();
   }, []);
@@ -170,11 +178,18 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
   };
 
   const [selectedUser, setSelectedUser] = useState([]);
-  const [combinedAssigneesValues, setCombinedAssigneesValues] = useState([]);
-  const handleUserChange = (event, selectedOptions) => {
-    setSelectedUser(selectedOptions);
-    const selectedValues = selectedOptions.map((option) => option.value);
+  const [combinedAssigneesValues, setCombinedAssigneesValues] = useState();
+  // const handleUserChange = (event, selectedOptions) => {
+  //   setSelectedUser(selectedOptions);
+  //   const selectedValues = selectedOptions.map((option) => option.value);
+  //   setCombinedAssigneesValues(selectedValues);
+  // };
+  const handleUserChange = (newSelectedUsers) => {
+    setSelectedUser(newSelectedUsers);
+    console.log(newSelectedUsers)
+    const selectedValues = newSelectedUsers.map((option) => option.value);
     setCombinedAssigneesValues(selectedValues);
+    console.log(selectedValues)
   };
   const assigneesoptions = userData.map((user) => ({
     value: user._id,
@@ -712,7 +727,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
       .then((response) => {
         console.log("Job created successfully");
         toast.success("Job created successfully");
-        navigate("/workflow/jobs/activejob");
+        navigate("/jobs/activejob");
       })
       .catch((error) => {
         console.error("Failed to create Job Template:", error);
@@ -860,6 +875,24 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
         throw error; // Let the calling function handle the error
       }
     };
+      // fetch task temp by id
+      const TASK_API = process.env.REACT_APP_TASK_TEMP_URL;
+      const fetchtasktempbyid = async (automationTemp) => {
+        const requestOptions = {
+          method: "GET",
+          redirect: "follow",
+        };
+        const url = `${TASK_API}/workflow/tasks/tasktemplate/tasktemplatebyid/${automationTemp}`;
+        try {
+          const response = await fetch(url, requestOptions); // Fetch the data
+          const result = await response.json(); // Parse the JSON response
+          console.log("Fetched task template:", result.taskTemplate);
+          return result.taskTemplate; // Return the data
+        } catch (error) {
+          console.error("Error fetching invoice template:", error);
+          throw error; // Let the calling function handle the error
+        }
+      };
     // fetch chat temp by id
     const fetchchattempbyid = async (automationTemp) => {
       const requestOptions = {
@@ -1089,8 +1122,56 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                 .then((result) => console.log(result))
                 .catch((error) => console.error(error));
             };
-        
+            const ACCOUNT_TASKS_API = process.env.REACT_APP_TASKS_API;
 
+            const assignTaskToAccount = (
+              taskData,
+              automationTemp,
+              automationAccountId,
+              jobId
+            ) => {
+              console.log(
+                "Assigning task",
+                taskData,
+                automationTemp,
+                automationAccountId,
+                jobId
+              );
+        
+              const myHeaders = new Headers();
+              myHeaders.append("Content-Type", "application/json");
+        
+              const raw = JSON.stringify({
+                accounts: automationAccountId,
+                job: jobId,
+                templatename: automationTemp,
+                taskname: taskData.templatename,
+                status: taskData.status,
+                taskassignees: taskData.taskassignees,
+                priority: taskData.priority,
+                description: taskData.description,
+                tasktags: taskData.tasktags,
+                issubtaskschecked: taskData.issubtaskschecked,
+                startdate: taskData.startdate,
+                enddate: taskData.enddate,
+                subtasks: taskData.subtasks,
+              });
+              console.log("tasks creation", raw);
+              const requestOptions = {
+                method: "POST",
+                headers: myHeaders,
+                body: raw,
+                redirect: "follow",
+              };
+        
+              fetch(`${ACCOUNT_TASKS_API}/accountstasks/newtask`, requestOptions)
+                .then((response) => response.json())
+                .then((result) => {
+                  console.log("task created", result);
+                  // onClose()
+                })
+                .catch((error) => console.error(error));
+            };
     const assignProposalToAccount = (
       proposalesandelsData,
       automationTemp,
@@ -1385,7 +1466,8 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
       automationType,
       automationTemp,
       automationAccountId,
-      automation
+      automation,
+      jobId = null
     ) => {
       console.log("bvhgv",automation)
       if (!automationType || !automationAccountId) {
@@ -1445,7 +1527,27 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
             console.error("Error updating account tags:", error);
           }
           break;
-
+          case "Create Task":
+            try {
+              const taskData = await fetchtasktempbyid(automationTemp);
+  
+              // Add job and account references
+              // const taskPayload = {
+  
+              //   jobId  // Only add job if exists
+              // };
+  
+              console.log("Creating task with:", jobId);
+              return await assignTaskToAccount(
+                taskData,
+                automationTemp,
+                automationAccountId,
+                jobId
+              );
+            } catch (error) {
+              console.error("Task creation failed:", error);
+              throw new Error(`Failed to create task: ${error.message}`);
+            }
         // Other automation cases (unchanged)
         case "Send Invoice":
           console.log(
@@ -1679,162 +1781,314 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
 
     // Function to create job
 
-    const handleMove = async () => {
-      let allAutomationsSuccessful = true; // Flag to track overall success
+    // const handleMove = async () => {
+    //   let allAutomationsSuccessful = true; // Flag to track overall success
 
-      for (const automationIndex of selectedAutomations) {
-        const automation = automations[automationIndex];
+    //   for (const automationIndex of selectedAutomations) {
+    //     const automation = automations[automationIndex];
 
-        // Validate the required fields in automation
-        if (
-          !automation ||
-          !automation.type 
+    //     // Validate the required fields in automation
+    //     if (
+    //       !automation ||
+    //       !automation.type 
          
-        ) {
-          console.error(
-            "Missing required automation data for automation index:",
-            automationIndex
-          );
-          allAutomationsSuccessful = false;
-          break;
-        }
+    //     ) {
+    //       console.error(
+    //         "Missing required automation data for automation index:",
+    //         automationIndex
+    //       );
+    //       allAutomationsSuccessful = false;
+    //       break;
+    //     }
 
-        const automationType = automation.type;
-        const automationTemp = automation?.template?.value || null;
-        const automationAccountIds = combinedaccountValues;
+    //     const automationType = automation.type;
+    //     const automationTemp = automation?.template?.value || null;
+    //     const automationAccountIds = combinedaccountValues;
 
-        if (!automationAccountIds || automationAccountIds.length === 0) {
-          console.error(
-            "Missing required account IDs for automation index:",
-            automationIndex
-          );
-          allAutomationsSuccessful = false;
-          break;
-        }
-        // Check if automation has tags
-        const hasTags = automation.tags && automation.tags.length > 0;
-        // Process each account for the current automation
-        for (const accountId of automationAccountIds) {
-          const account = accountdata.find((acc) => acc._id === accountId);
+    //     if (!automationAccountIds || automationAccountIds.length === 0) {
+    //       console.error(
+    //         "Missing required account IDs for automation index:",
+    //         automationIndex
+    //       );
+    //       allAutomationsSuccessful = false;
+    //       break;
+    //     }
+    //     // Check if automation has tags
+    //     const hasTags = automation.tags && automation.tags.length > 0;
+    //     // Process each account for the current automation
+    //     for (const accountId of automationAccountIds) {
+    //       const account = accountdata.find((acc) => acc._id === accountId);
 
-          if (!account) {
-            console.warn(`Account with ID ${accountId} not found. Skipping.`);
-            continue;
-          }
+    //       if (!account) {
+    //         console.warn(`Account with ID ${accountId} not found. Skipping.`);
+    //         continue;
+    //       }
 
-          // const accountTags = account.tags;
+    //       // const accountTags = account.tags;
 
-          // // Check if automation tags match the account tags
-          // const tagMatch = automation.tags.some((automationTag) =>
-          //   accountTags.some(
-          //     (accountTag) => accountTag.tagName === automationTag.tagName
-          //   )
-          // );
+    //       // // Check if automation tags match the account tags
+    //       // const tagMatch = automation.tags.some((automationTag) =>
+    //       //   accountTags.some(
+    //       //     (accountTag) => accountTag.tagName === automationTag.tagName
+    //       //   )
+    //       // );
 
-          // if (!tagMatch) {
-          //   console.warn(
-          //     `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
-          //   );
-          //   continue; // Skip this account if tags don't match
-          // }
-          // If automation has tags, ensure they match the account tags
-          if (hasTags) {
-            const accountTags = account.tags;
+    //       // if (!tagMatch) {
+    //       //   console.warn(
+    //       //     `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
+    //       //   );
+    //       //   continue; // Skip this account if tags don't match
+    //       // }
+    //       // If automation has tags, ensure they match the account tags
+    //       if (hasTags) {
+    //         const accountTags = account.tags;
 
-            const tagMatch = automation.tags.some((automationTag) =>
-              accountTags.some(
-                (accountTag) => accountTag.tagName === automationTag.tagName
-              )
-            );
+    //         const tagMatch = automation.tags.some((automationTag) =>
+    //           accountTags.some(
+    //             (accountTag) => accountTag.tagName === automationTag.tagName
+    //           )
+    //         );
 
-            if (!tagMatch) {
-              console.warn(
-                `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
-              );
-              continue; // Skip this account if tags don't match
-            }
-          }
+    //         if (!tagMatch) {
+    //           console.warn(
+    //             `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
+    //           );
+    //           continue; // Skip this account if tags don't match
+    //         }
+    //       }
+    //       try {
+    //         // Execute the automation for the matched account
+    //         await selectAutomationApi(automationType, automationTemp, [
+    //           accountId
+    //         ],automation);
+    //       } catch (error) {
+    //         console.error(
+    //           `Error processing automation for account ID: ${accountId}:`,
+    //           error
+    //         );
+    //         allAutomationsSuccessful = false;
+    //         break;
+    //       }
+    //     }
+    //   }
+
+    //   // Create the job if all automations were successful
+    //   if (allAutomationsSuccessful) {
+    //     try {
+    //       await createJob();
+    //     } catch (error) {
+    //       console.error("Failed to create job:", error);
+    //       toast.error("Failed to create job");
+    //     }
+    //   } else {
+    //     console.error("One or more automations failed, job creation aborted.");
+    //     toast.error("Automations failed, job not created.");
+    //   }
+    // };
+
+    // const createJob = () => {
+    //   const myHeaders = {
+    //     "Content-Type": "application/json",
+    //   };
+
+    //   const data = {
+    //     accounts: combinedaccountValues,
+    //     // stageid: selectedStage.value,
+    //     pipeline: selectedPipeline.value,
+    //     templatename: selectedtemp.value,
+    //     jobname: jobName,
+    //     jobassignees: combinedAssigneesValues,
+    //     priority: priority,
+    //     description: description,
+    //     absolutedates: absoluteDate,
+    //     startsin: startsin,
+    //     startsinduration: startsInDuration,
+    //     duein: duein,
+    //     dueinduration: dueinduration,
+    //     showinclientportal: clientFacingStatus,
+    //     jobnameforclient: inputText,
+    //     clientfacingstatus: selectedJob?.value,
+    //     clientfacingDescription: clientDescription,
+    //     startdate: startDate,
+    //     enddate: dueDate,
+    //   };
+
+    //   const config = {
+    //     method: "post",
+    //     maxBodyLength: Infinity,
+    //     url: `${JOBS_API}/workflow/jobs/newjob`,
+    //     headers: myHeaders,
+    //     data: JSON.stringify(data),
+    //   };
+
+    //   console.log(data);
+
+    //   axios
+    //     .request(config)
+    //     .then((response) => {
+    //       console.log("Job created successfully");
+    //       // toast.success("Job created successfully");
+    //       setDrawerOpen(false);
+    //       toast.success("Job created successfully");
+    //       navigate("/workflow/jobs/activejob");
+    //     })
+    //     .catch((error) => {
+    //       console.error("Failed to create Job Template:", error);
+    //       toast.error("Failed to create Job");
+    //     });
+    // };
+    
+     const handleMove = async () => {
           try {
-            // Execute the automation for the matched account
-            await selectAutomationApi(automationType, automationTemp, [
-              accountId
-            ],automation);
-          } catch (error) {
-            console.error(
-              `Error processing automation for account ID: ${accountId}:`,
-              error
+            // 1. Create all jobs first
+            const { accountJobMap } = await createJob();
+            console.log("Job mapping created:", accountJobMap);
+        
+            // 2. Process automations for each account
+            const automationResults = await Promise.allSettled(
+              combinedaccountValues.map(async (accountId) => {
+                const jobId = accountJobMap[accountId];
+                if (!jobId) {
+                  throw new Error(`No job ID found for account ${accountId}`);
+                }
+        
+                // Process each automation for this account
+                await Promise.all(
+                  selectedAutomations.map(async (automationIndex) => {
+                    const automation = automations[automationIndex];
+                    if (!automation || !automation.type) {
+                      throw new Error(`Invalid automation at index ${automationIndex}`);
+                    }
+        
+                    const automationType = automation.type;
+                    const automationTemp = automation?.template?.value || null;
+        
+                    // Check for tag matching if automation has tags
+                    if (automation.tags && automation.tags.length > 0) {
+                      const account = accountdata.find((acc) => acc._id === accountId);
+                      if (!account) {
+                        console.warn(`Account with ID ${accountId} not found. Skipping.`);
+                        return;
+                      }
+        
+                      const accountTags = account.tags || [];
+                      const tagMatch = automation.tags.some((automationTag) =>
+                        accountTags.some(
+                          (accountTag) => accountTag.tagName === automationTag.tagName
+                        )
+                      );
+        
+                      if (!tagMatch) {
+                        console.warn(
+                          `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
+                        );
+                        return;
+                      }
+                    }
+        
+                    await selectAutomationApi(
+                      automationType,
+                      automationTemp,
+                      [accountId],
+                      automation,
+                      automationType === "Create Task" ? jobId : null
+                    );
+                  })
+                );
+              })
             );
-            allAutomationsSuccessful = false;
-            break;
+        
+            // Check for failures
+            const failedResults = automationResults.filter((r) => r.status === "rejected");
+            if (failedResults.length > 0) {
+              console.error("Some automations failed:", failedResults);
+              toast.error(`${failedResults.length} automations failed (job was created)`);
+            } else {
+              toast.success("Job created successfully");
+              navigate("/jobs/activejob")
+            }
+            setDrawerOpen(false)
+            // handleDrawerClose();
+            // fetchJobData();
+          } catch (error) {
+            console.error("Operation failed:", error);
+            toast.error(`Operation failed: ${error.message}`);
           }
-        }
-      }
-
-      // Create the job if all automations were successful
-      if (allAutomationsSuccessful) {
-        try {
-          await createJob();
-        } catch (error) {
-          console.error("Failed to create job:", error);
-          toast.error("Failed to create job");
-        }
-      } else {
-        console.error("One or more automations failed, job creation aborted.");
-        toast.error("Automations failed, job not created.");
-      }
-    };
-
-    const createJob = () => {
-      const myHeaders = {
-        "Content-Type": "application/json",
-      };
-
-      const data = {
-        accounts: combinedaccountValues,
-        // stageid: selectedStage.value,
-        pipeline: selectedPipeline.value,
-        templatename: selectedtemp.value,
-        jobname: jobName,
-        jobassignees: combinedAssigneesValues,
-        priority: priority,
-        description: description,
-        absolutedates: absoluteDate,
-        startsin: startsin,
-        startsinduration: startsInDuration,
-        duein: duein,
-        dueinduration: dueinduration,
-        showinclientportal: clientFacingStatus,
-        jobnameforclient: inputText,
-        clientfacingstatus: selectedJob?.value,
-        clientfacingDescription: clientDescription,
-        startdate: startDate,
-        enddate: dueDate,
-      };
-
-      const config = {
-        method: "post",
-        maxBodyLength: Infinity,
-        url: `${JOBS_API}/workflow/jobs/newjob`,
-        headers: myHeaders,
-        data: JSON.stringify(data),
-      };
-
-      console.log(data);
-
-      axios
-        .request(config)
-        .then((response) => {
-          console.log("Job created successfully");
-          // toast.success("Job created successfully");
-          setDrawerOpen(false);
-          toast.success("Job created successfully");
-          navigate("/workflow/jobs/activejob");
-        })
-        .catch((error) => {
-          console.error("Failed to create Job Template:", error);
-          toast.error("Failed to create Job");
+        };
+        
+    const createJob = async () => {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+    
+      // Create jobs for each account
+      const jobCreationPromises = combinedaccountValues.map(async (accountId) => {
+        const jobData = {
+          accounts: [accountId], // Single account per job
+          // stageid: selectedStage.value,
+          pipeline: selectedPipeline.value,
+          templatename: selectedtemp.value,
+          jobname: jobName,
+          jobassignees: combinedAssigneesValues,
+          priority: priority,
+          description: description,
+          absolutedates: absoluteDate,
+          startsin: startsin,
+          startsinduration: startsInDuration,
+          duein: duein,
+          dueinduration: dueinduration,
+          showinclientportal: clientFacingStatus,
+          jobnameforclient: inputText,
+          clientfacingstatus: selectedJob?.value,
+          clientfacingDescription: clientDescription,
+          startdate: startDate,
+          enddate: dueDate,
+        };
+    
+        const response = await fetch(`${JOBS_API}/workflow/jobs/newjob`, {
+          method: "POST",
+          headers: myHeaders,
+          body: JSON.stringify(jobData),
         });
+    
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(`Failed to create job for account ${accountId}: ${error.message}`);
+        }
+    
+        const result = await response.json();
+        if (!result.createdJobs || result.createdJobs.length === 0) {
+          throw new Error(`No job created for account ${accountId}`);
+        }
+    
+        // Return both account and job information
+        return {
+          accountId,
+          jobId: result.createdJobs[0]._id, // Assuming one job per account
+          jobData: result.createdJobs[0]
+        };
+      });
+    
+      try {
+        const jobResults = await Promise.all(jobCreationPromises);
+        
+        // Create a mapping of accountId to jobId
+        const accountJobMap = {};
+        jobResults.forEach(result => {
+          accountJobMap[result.accountId] = result.jobId;
+        });
+    
+        return {
+          success: true,
+          accountJobMap,
+          jobs: jobResults.map(r => r.jobData)
+        };
+      } catch (error) {
+        console.error("Job creation failed:", error);
+        throw error;
+      }
     };
+    
+    
     return (
       <Box p={2}>
         <Typography variant="h6" sx={{ display: "flex", alignItems: "center" }}>
@@ -2141,7 +2395,11 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                   <InputLabel sx={{ color: "black" }}>
                     Select Accounts
                   </InputLabel>
-
+                  <AccountMultiSelectDropdown 
+                    value={selectedaccount}
+                    onChange={handleAccountChange}
+                    placeholder="Accounts"
+                  />
                   {/* <Autocomplete
                     multiple
                     options={accountoptions}
@@ -2184,7 +2442,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                     )}
                     sx={{ width: "100%", marginTop: "8px" }}
                   /> */}
-                  <FormControl sx={{ width: "100%", marginTop: "8px" }}>
+                  {/* <FormControl sx={{ width: "100%", marginTop: "8px" }}>
                     <Select
                       multiple
                       multiline
@@ -2217,7 +2475,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                         </MenuItem>
                       ))}
                     </Select>
-                  </FormControl>
+                  </FormControl> */}
                 </Box>
 
                 <Box mt={2}>
@@ -2322,7 +2580,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                 </Box>
                 <Box mt={2}>
                   <label className="job-input-label">Job Assignees</label>
-                  <Autocomplete
+                  {/* <Autocomplete
                     multiple
                     sx={{ marginTop: "8px" }}
                     options={assigneesoptions}
@@ -2350,7 +2608,12 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                     isOptionEqualToValue={(option, value) =>
                       option.value === value.value
                     }
-                  />
+                  /> */}
+                   <MultiSelectDropdown 
+                                     value={selectedUser}
+                                     onChange={handleUserChange}
+                                     placeholder="Job Assignees"
+                                   />
                 </Box>
                 <Box mt={2}>
                   <Priority

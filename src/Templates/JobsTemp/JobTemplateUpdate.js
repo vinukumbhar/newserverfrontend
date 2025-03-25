@@ -10,7 +10,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import DeleteIcon from "@mui/icons-material/Delete";
-
+import MultiSelectDropdown from "../MultiSelectDropdown"
 dayjs.extend(customParseFormat);
 
 const JobTemplateUpdate = ({ charLimit = 4000 }) => {
@@ -177,8 +177,8 @@ const handleAddShortcut = (shortcut) => {
     setjobname(value);
     setCursorPosition(selectionStart);
   };
-
-  const [combinedValues, setCombinedValues] = useState([]);
+const [selectedUser, setSelectedUser] = useState([]);
+  const [combinedValues, setCombinedValues] = useState();
   const [userData, setUserData] = useState([]);
 
   useEffect(() => {
@@ -206,12 +206,20 @@ const handleAddShortcut = (shortcut) => {
   //   console.log(selectedValues);
   //   setCombinedValues(selectedValues);
   // };
-  const handleuserChange = (event, newValue) => {
-    setAssigneesNew(newValue);
-    // Map selected options to their values and send as an array
-    const selectedValues = newValue.map((option) => option.value);
-    console.log(selectedValues);
+  // const handleuserChange = (event, newValue) => {
+  //   setAssigneesNew(newValue);
+  //   // Map selected options to their values and send as an array
+  //   const selectedValues = newValue.map((option) => option.value);
+  //   console.log(selectedValues);
+  //   setCombinedValues(selectedValues);
+  // };
+
+  const handleUserChange = (newSelectedUsers) => {
+    setSelectedUser(newSelectedUsers);
+    console.log(newSelectedUsers)
+    const selectedValues = newSelectedUsers.map((option) => option.value);
     setCombinedValues(selectedValues);
+    console.log(selectedValues)
   };
   const handleCloseDropdown = () => {
     setAnchorEl(null);
@@ -248,7 +256,7 @@ const handleAddShortcut = (shortcut) => {
           value: assignee._id,
           label: assignee.username,
         }));
-        setAssigneesNew(assigneesData);
+        setSelectedUser(assigneesData);
 
         const selectedValues = assigneesData.map((option) => option.value);
         setCombinedValues(selectedValues);
@@ -658,7 +666,7 @@ const handleAddShortcut = (shortcut) => {
               </Box>
               <Box mt={2}>
                 <InputLabel sx={{ color: "black" }}>Job Assignees</InputLabel>
-                <Autocomplete
+                {/* <Autocomplete
                   multiple
                   sx={{ mt: 2 }}
                   options={options}
@@ -677,7 +685,12 @@ const handleAddShortcut = (shortcut) => {
                   )}
                   renderInput={(params) => <TextField {...params} variant="outlined" placeholder="Assignees" />}
                   isOptionEqualToValue={(option, value) => option.value === value.value}
-                />
+                /> */}
+                 <MultiSelectDropdown 
+                                    value={selectedUser}
+                                    onChange={handleUserChange}
+                                    placeholder="Job Assignees"
+                                  />
               </Box>
               <Box mt={2}>
                 <Priority onPriorityChange={handlePriorityChange} selectedPriority={PriorityNew} />

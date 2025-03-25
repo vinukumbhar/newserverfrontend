@@ -17,7 +17,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useNavigate } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import ContactUpdateForm from "./contactupdate";
-
+import MultiSelectDropdown from "../../Templates/MultiSelectDropdown"
 const Accountupdate = ({ onClose, selectedAccount }) => {
   const theme = useTheme();
   const USER_API = process.env.REACT_APP_USER_URL;
@@ -279,12 +279,18 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
   const [selectedUser, setSelectedUser] = useState([]);
   const [combinedTeamMemberValues, setCombinedTeamMemberValues] = useState([]);
 
-  const handleUserChange = (event, selectedOptions) => {
-    setSelectedUser(selectedOptions);
-    const selectedValues = selectedOptions.map((option) => option.value);
+  // const handleUserChange = (event, selectedOptions) => {
+  //   setSelectedUser(selectedOptions);
+  //   const selectedValues = selectedOptions.map((option) => option.value);
+  //   setCombinedTeamMemberValues(selectedValues);
+  // };
+  const handleUserChange = (newSelectedUsers) => {
+    setSelectedUser(newSelectedUsers);
+    console.log(newSelectedUsers)
+    const selectedValues = newSelectedUsers.map((option) => option.value);
     setCombinedTeamMemberValues(selectedValues);
+    console.log(selectedValues)
   };
-
   //Account Data Integration
   const [accountName, setaccountName] = useState("");
   const [companyname, setcompanyname] = useState("");
@@ -971,9 +977,9 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
 </FormControl>
 
                   </Box>
-                  <Box mt={2}>
+                  <Box mt={2} mr={2.5}>
                     <InputLabel sx={{ color: "black" }}>Team Member</InputLabel>
-                    <Autocomplete
+                    {/* <Autocomplete
                       multiple
                       sx={{ mt: 2 }}
                       options={options}
@@ -983,7 +989,12 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                       onChange={handleUserChange} // Updated to use `handleUserChange` function
                       renderInput={(params) => <TextField {...params} variant="outlined" placeholder="Assignees" />}
                       isOptionEqualToValue={(option, value) => option.value === value.value}
-                    />
+                    /> */}
+                     <MultiSelectDropdown 
+                                            value={selectedUser}
+                                            onChange={handleUserChange}
+                                            placeholder="Assignees"
+                                          />
                   </Box>
                   <Box mt={2}>
                                         <Typography>Folder Template</Typography>

@@ -18,6 +18,7 @@ import {
   Switch,
   Button,
 } from "@mui/material";
+import MultiSelectDropdown from "../Templates/MultiSelectDropdown"
 import { IoChevronBackOutline } from "react-icons/io5";
 import CloseIcon from "@mui/icons-material/Close";
 import Editor from "../Templates/Texteditor/Editor";
@@ -236,7 +237,7 @@ const NewTaskDrawer = ({ open, onClose, fetchTasksData, isEditMode, taskData,fet
     setTaskDescription(content);
   };
   const [taskDiscription, setTaskDescription] = useState();
-  const [combinedValues, setCombinedValues] = useState([]);
+  const [combinedValues, setCombinedValues] = useState();
   const [userData, setUserData] = useState([]);
   useEffect(() => {
     fetchData();
@@ -256,14 +257,21 @@ const NewTaskDrawer = ({ open, onClose, fetchTasksData, isEditMode, taskData,fet
     value: user._id,
     label: user.username,
   }));
-  const handleuserChange = (event, newValue) => {
-    setAssigneesNew(newValue);
-    // Map selected options to their values and send as an array
-    const selectedValues = newValue.map((option) => option.value);
-    // console.log(selectedValues);
+  // const handleuserChange = (event, newValue) => {
+  //   setAssigneesNew(newValue);
+  //   // Map selected options to their values and send as an array
+  //   const selectedValues = newValue.map((option) => option.value);
+  //   // console.log(selectedValues);
+  //   setCombinedValues(selectedValues);
+  // };
+    const [selectedUser, setSelectedUser] = useState([]);
+  const handleUserChange = (newSelectedUsers) => {
+    setSelectedUser(newSelectedUsers);
+    console.log(newSelectedUsers)
+    const selectedValues = newSelectedUsers.map((option) => option.value);
     setCombinedValues(selectedValues);
+    console.log(selectedValues)
   };
-
   //Tag FetchData ================
   const [tags, setTags] = useState([]);
   const [combinedTagsValues, setCombinedTagsValues] = useState([]);
@@ -346,29 +354,46 @@ const NewTaskDrawer = ({ open, onClose, fetchTasksData, isEditMode, taskData,fet
         
         console.log("tasktemp",data)
         // Extract and process assigneesData
-        if (data.taskTemplate && data.taskTemplate.taskassignees) {
-          const innerArray = data.taskTemplate.taskassignees[0]; // Extract the inner array
+        // if (data.taskTemplate && data.taskTemplate.taskassignees) {
+        //   const innerArray = data.taskTemplate.taskassignees[0]; // Extract the inner array
 
-          if (innerArray) {
-            // console.log("Task Assignees:", innerArray);
+        //   if (innerArray) {
+        //     // console.log("Task Assignees:", innerArray);
 
-            const assigneesData = innerArray.map((assignee) => ({
-              value: assignee._id,
-              label: assignee.username,
-            }));
-            // console.log("Assignees Data:", assigneesData); // Log the processed assigneesData
+        //     const assigneesData = innerArray.map((assignee) => ({
+        //       value: assignee._id,
+        //       label: assignee.username,
+        //     }));
+        //     // console.log("Assignees Data:", assigneesData); // Log the processed assigneesData
 
-            setAssigneesNew(assigneesData);
+        //     setSelectedUser(assigneesData);
 
-            const selectedValues = assigneesData.map((option) => option.value);
-            setCombinedValues(selectedValues);
-            console.log("Selected Assignees:", selectedValues);
+        //     const selectedValues = assigneesData.map((option) => option.value);
+        //     setCombinedValues(selectedValues);
+        //     console.log("Selected Assignees:", selectedValues);
+        //   } else {
+        //     console.log("taskassignees contains an unexpected structure.");
+        //   }
+        // }
+
+        if (data.taskTemplate && Array.isArray(data.taskTemplate.taskassignees)) {
+          // Flatten the array in case of unnecessary nesting
+          const flatAssignees = data.taskTemplate.taskassignees.flat();
+      
+          if (flatAssignees.length > 0) {
+              const assigneesData = flatAssignees.map(assignee => ({
+                  value: assignee._id,
+                  label: assignee.username,
+              }));
+      
+              setSelectedUser(assigneesData);
+      
+              const selectedValues = assigneesData.map(option => option.value);
+              setCombinedValues(selectedValues);
           } else {
-            console.log("taskassignees contains an unexpected structure.");
+              console.log("taskassignees contains an unexpected structure.");
           }
-        }
-
-        
+      }
         // Process tasktags
         if (
           data.taskTemplate.tasktags &&
@@ -467,7 +492,7 @@ const NewTaskDrawer = ({ open, onClose, fetchTasksData, isEditMode, taskData,fet
             label: assignee.username,
         }));
     
-        setAssigneesNew(assigneesData);
+        setSelectedUser(assigneesData);
     
         const selectedValues = assigneesData.map((option) => option.value);
         setCombinedValues(selectedValues);
@@ -665,7 +690,7 @@ console.log(subtaskData)
         setTempNameNew("");
         setStatus("");
         setCombinedValues([]);
-        setAssigneesNew([]);
+        setSelectedUser([]);
         setPriority("");
         setTaskDescription("");
         setCombinedTagsValues([]);
@@ -680,7 +705,7 @@ console.log(subtaskData)
 };
   return (
     <Drawer anchor="right" open={open} onClose={onClose}>
-      <Box sx={{ width: 500 }}>
+      <Box sx={{ width: 600 }}>
         <Box
           display="flex"
           justifyContent="space-between"
@@ -792,12 +817,12 @@ console.log(subtaskData)
 
               <Box sx={{ width: "100%", mt: 2 }}>
                 <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
+                  <Grid item xs={12} sm={6} pr={3}>
                     <Box>
                       <InputLabel sx={{ color: "black" }}>
                         Task Assignee
                       </InputLabel>
-                      <Autocomplete
+                      {/* <Autocomplete
                         multiple
                         sx={{ mt: 2 }}
                         options={options}
@@ -824,6 +849,11 @@ console.log(subtaskData)
                         isOptionEqualToValue={(option, value) =>
                           option.value === value.value
                         }
+                      /> */}
+                      <MultiSelectDropdown 
+                        value={selectedUser}
+                        onChange={handleUserChange}
+                        placeholder="Assignees"
                       />
                     </Box>
                   </Grid>

@@ -588,7 +588,7 @@ const Info = () => {
       <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
         <Grid item xs={12} sm={6}>
           <Card sx={{ boxShadow: 3, borderRadius: 2, mr: 5 }}>
-            <CardContent>
+            {/* <CardContent>
               <Box
                 sx={{
                   display: "flex",
@@ -692,6 +692,7 @@ const Info = () => {
                     alignItems: "center",
                     gap: "20px",
                     mt: 2,
+                   
                   }}
                 >
                   <Typography>Team Members</Typography>
@@ -721,8 +722,196 @@ const Info = () => {
                   </Typography>
                 </Box>
               </Box>
-            </CardContent>
+            </CardContent> */}
+            <CardContent>
+    {/* Header section */}
+    <Box sx={{
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      mb: 2
+    }}>
+      <Typography variant="h5" fontWeight="bold">
+        Account Details
+      </Typography>
+      <Box>
+        <IconButton sx={{ color: 'text.secondary' }}>
+          <BiArchiveOut />
+        </IconButton>
+        <IconButton 
+          sx={{ color: 'text.secondary' }} 
+          onClick={() => setIsNewDrawerOpen(true)}
+        >
+          <MdEdit /> Edit
+        </IconButton>
+      </Box>
+      <Drawer
+                  anchor="right"
+                  open={isNewDrawerOpen}
+                  onClose={() => setIsNewDrawerOpen(false)}
+                  PaperProps={{
+                    sx: {
+                      borderRadius: isSmallScreen ? "0" : "10px 0 0 10px",
+                      width: isSmallScreen ? "100%" : "650px",
+                    },
+                  }}
+                >
+                  <Accountupdate
+                    selectedAccount={accountDatabyid}
+                    // onClose={() => setIsNewDrawerOpen(false)}
+                    onClose={() => {
+                      setIsNewDrawerOpen(false);
+                      fetchAccount(); // Call fetchAccount when the drawer closes
+                    }}
+                  />
+                </Drawer>
+    </Box>
+    
+    <Divider sx={{ mb: 3 }} />
+    
+    {/* Profile section */}
+    <Box sx={{ 
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      mb: 4
+    }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <LuUserCircle2 style={{ 
+          width: "60px", 
+          height: "60px",
+          color: '#757575'
+        }} />
+        <Box>
+          <Typography sx={{ 
+            fontWeight: "bold", 
+            fontSize: "20px",
+            lineHeight: 1.2
+          }}>
+            {accName}
+          </Typography>
+          <Typography sx={{ 
+            fontSize: "15px",
+            color: 'text.secondary'
+          }}>
+            {usertype}
+          </Typography>
+        </Box>
+      </Box>
+      <Button 
+        variant="outlined" 
+        sx={{
+          textTransform: 'none',
+          borderColor: 'divider',
+          color: 'text.primary',
+          '&:hover': {
+            borderColor: 'text.secondary'
+          }
+        }}
+      >
+        Log in as account (read-only)
+      </Button>
+    </Box>
+    
+    {/* Account Info section */}
+    <Box mt={3}>
+      <Typography 
+        fontWeight="bold" 
+        sx={{ mb: 2 }}
+      >
+        Account Info
+      </Typography>
+      
+      {/* Tags section */}
+      <Box sx={{
+        display: "flex",
+        alignItems: "flex-start",
+        gap: "20px",
+        mb: 3
+      }}>
+        <Typography sx={{ 
+          minWidth: '120px',
+          color: 'text.secondary'
+        }}>
+          Tags
+        </Typography>
+        <Box sx={{ 
+          display: "flex", 
+          gap: "10px",
+          flexWrap: 'wrap'
+        }}>
+          {tags.length > 0 ? (
+            tags.map((tag) => (
+              <Typography
+                key={tag._id}
+                sx={{
+                  backgroundColor: tag.tagColour ,
+                  color: "white",
+                  borderRadius: "60px",
+                  padding: "0.2rem 0.8rem",
+                  display: "flex",
+                  alignItems: "center",
+                  fontWeight: "bold",
+                  fontSize: "12px",
+                }}
+              >
+                {tag.tagName}
+              </Typography>
+            ))
+          ) : (
+            <Typography sx={{ color: 'text.secondary' }}>No tags</Typography>
+          )}
+        </Box>
+      </Box>
+      
+      {/* Team Members section */}
+      <Box sx={{
+        display: "flex",
+        alignItems: "flex-start",
+        gap: "20px",
+        mb: 2
+      }}>
+        <Typography sx={{ 
+          minWidth: '120px',
+          color: 'text.secondary'
+        }}>
+          Team Members
+        </Typography>
+        <Box sx={{ 
+          display: "flex", 
+          gap: "10px",
+          flexWrap: 'wrap'
+        }}>
+          {teams && teams.length > 0 ? (
+            teams.map((team, index) => (
+              <Typography
+                key={index}
+                sx={{
+                  backgroundColor: "#e0e0e0",
+                  color: "black",
+                  borderRadius: "60px",
+                  padding: "0.2rem 0.8rem",
+                  display: "flex",
+                  alignItems: "center",
+                  fontSize: "12px",
+                }}
+              >
+                {team.username || "Sample User"}
+              </Typography>
+            ))
+          ) : (
+            <Typography sx={{ color: 'text.secondary' }}>No team members</Typography>
+          )}
+        </Box>
+      </Box>
+      
+    
+     
+    </Box>
+  </CardContent>
+
           </Card>
+         
         </Grid>
 
         <Grid item xs={12} sm={6}>

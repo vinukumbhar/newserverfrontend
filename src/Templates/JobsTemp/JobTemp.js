@@ -22,6 +22,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import { CircularProgress } from "@mui/material";
 import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 import { CiMenuKebab } from "react-icons/ci";
+import MultiSelectDropdown from "../MultiSelectDropdown"
 import EditCalendarRoundedIcon from "@mui/icons-material/EditCalendarRounded";
 dayjs.extend(customParseFormat);
 
@@ -369,7 +370,7 @@ const textFieldRef = useRef(null);
     setCursorPosition(selectionStart);
   };
   const [selectedUser, setSelectedUser] = useState([]);
-  const [combinedValues, setCombinedValues] = useState([]);
+  const [combinedValues, setCombinedValues] = useState();
   const [userData, setUserData] = useState([]);
 
   console.log(combinedValues);
@@ -388,12 +389,18 @@ const textFieldRef = useRef(null);
     }
   };
 
-  const handleUserChange = (event, selectedOptions) => {
-    setSelectedUser(selectedOptions);
-    const selectedValues = selectedOptions.map((option) => option.value);
+  // const handleUserChange = (event, selectedOptions) => {
+  //   setSelectedUser(selectedOptions);
+  //   const selectedValues = selectedOptions.map((option) => option.value);
+  //   setCombinedValues(selectedValues);
+  // };
+  const handleUserChange = (newSelectedUsers) => {
+    setSelectedUser(newSelectedUsers);
+    console.log(newSelectedUsers)
+    const selectedValues = newSelectedUsers.map((option) => option.value);
     setCombinedValues(selectedValues);
+    console.log(selectedValues)
   };
-
   const options = userData.map((user) => ({
     value: user._id,
     label: user.username,
@@ -1076,7 +1083,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                 </Box>
                 <Box mt={2}>
                 <InputLabel sx={{ color: "black", mb: 1 }}>Job Assignees</InputLabel>
-                  <Autocomplete
+                  {/* <Autocomplete
                     multiple
                     sx={{ mt: 2, backgroundColor: "#FFF" }}
                     options={options}
@@ -1099,6 +1106,11 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                       </>
                     )}
                     isOptionEqualToValue={(option, value) => option.value === value.value}
+                  /> */}
+                  <MultiSelectDropdown 
+                    value={selectedUser}
+                    onChange={handleUserChange}
+                    placeholder="Job Assignees"
                   />
                 </Box>
                 <Box mt={2}>

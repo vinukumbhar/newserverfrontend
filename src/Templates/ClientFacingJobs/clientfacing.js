@@ -10,7 +10,7 @@ import {
   TextField,
   FormControl,
   InputLabel,
-  Chip,
+  Chip,IconButton
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -272,54 +272,109 @@ const Clientfacing = () => {
             <CircularProgress style={{ fontSize: "300px", color: "blue" }} />
           </Box>
         ) : (
+          // <Box>
+          //   {clientFacingJobs.map((job) => (
+          //     <Box
+          //       key={job._id}
+          //       style={{
+          //         padding: "10px",
+          //         display: "flex",
+          //         alignItems: "center",
+          //         justifyContent: "space-between",
+          //         marginBottom: "8px",
+          //         border: "1px solid #e2e8f0",
+          //         borderRadius: "10px",
+          //         padding: "15px",
+          //       }}
+          //     >
+          //       <Box style={{ display: "flex", alignItems: "center" }}>
+          //         <GoDotFill
+          //           style={{
+          //             color: job.clientfacingColour,
+          //             marginRight: "8px",
+          //             fontSize: "25px",
+          //           }}
+          //         />
+          //         <div>
+          //           <strong>{job.clientfacingName}</strong>
+          //           <br />
+          //           {job.clientfacingdescription}
+          //         </div>
+          //       </Box>
+          //       <Box
+          //         style={{ display: "flex", alignItems: "center", gap: "10px" }}
+          //       >
+          //         <BorderColorIcon
+          //           onClick={() => handleEdit(job._id)}
+          //           style={{
+          //             marginRight: "8px",
+          //             color: "#1168bf",
+          //             cursor: "pointer",
+          //           }}
+          //         />
+          //         <DeleteIcon
+          //           onClick={() => deleteJobFacing(job._id)}
+          //           sx={{ color: "#f52d2d", cursor: "pointer" }}
+          //         />
+          //       </Box>
+          //     </Box>
+          //   ))}
+          // </Box>
           <Box>
-            {clientFacingJobs.map((job) => (
-              <Box
-                key={job._id}
-                style={{
-                  padding: "10px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  marginBottom: "8px",
-                  border: "1px solid #e2e8f0",
-                  borderRadius: "10px",
-                  padding: "15px",
-                }}
+      {clientFacingJobs.map((job) => (
+        <Box
+          key={job._id}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            p: 2,
+            mb: 2,
+            border: "1px solid #e2e8f0",
+            borderRadius: "12px",
+            backgroundColor: "#ffffff",
+            boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.1)",
+          }}
+        >
+          <Box sx={{ display: "flex", alignItems: "center", flex: 1, minWidth: 0 }}>
+            <GoDotFill
+              style={{
+                color: job.clientfacingColour,
+                fontSize: "28px",
+                flexShrink: 0, // Prevents size reduction
+                marginRight: "12px",
+              }}
+            />
+            <Box sx={{ minWidth: 0 }}>
+              <Typography variant="body1" fontWeight="600" noWrap>
+                {job.clientfacingName}
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                // sx={{
+                //   overflow: "hidden",
+                //   textOverflow: "ellipsis",
+                //   whiteSpace: "nowrap",
+                //   maxWidth: "350px", // Adjust based on layout needs
+                // }}
               >
-                <Box style={{ display: "flex", alignItems: "center" }}>
-                  <GoDotFill
-                    style={{
-                      color: job.clientfacingColour,
-                      marginRight: "8px",
-                      fontSize: "25px",
-                    }}
-                  />
-                  <div>
-                    <strong>{job.clientfacingName}</strong>
-                    <br />
-                    {job.clientfacingdescription}
-                  </div>
-                </Box>
-                <Box
-                  style={{ display: "flex", alignItems: "center", gap: "10px" }}
-                >
-                  <BorderColorIcon
-                    onClick={() => handleEdit(job._id)}
-                    style={{
-                      marginRight: "8px",
-                      color: "#1168bf",
-                      cursor: "pointer",
-                    }}
-                  />
-                  <DeleteIcon
-                    onClick={() => deleteJobFacing(job._id)}
-                    sx={{ color: "#f52d2d", cursor: "pointer" }}
-                  />
-                </Box>
-              </Box>
-            ))}
+                {job.clientfacingdescription}
+              </Typography>
+            </Box>
           </Box>
+
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <IconButton onClick={() => handleEdit(job._id)} sx={{ color: "#1168bf" }}>
+              <BorderColorIcon />
+            </IconButton>
+            <IconButton onClick={() => deleteJobFacing(job._id)} sx={{ color: "#f52d2d" }}>
+              <DeleteIcon />
+            </IconButton>
+          </Box>
+        </Box>
+      ))}
+    </Box>
         )}
         <Drawer
           anchor="right"

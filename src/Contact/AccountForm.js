@@ -41,7 +41,7 @@ import { toast } from "react-toastify";
 import { AiOutlinePlusCircle, AiOutlineDelete } from "react-icons/ai";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-
+import MultiSelectDropdown from "../Templates/MultiSelectDropdown"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
@@ -211,10 +211,17 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
     }
   };
 
-  const handleUserChange = (event, selectedOptions) => {
-    setSelectedUser(selectedOptions);
-    const selectedValues = selectedOptions.map((option) => option.value);
+  // const handleUserChange = (event, selectedOptions) => {
+  //   setSelectedUser(selectedOptions);
+  //   const selectedValues = selectedOptions.map((option) => option.value);
+  //   setCombinedTeamMemberValues(selectedValues);
+  // };
+  const handleUserChange = (newSelectedUsers) => {
+    setSelectedUser(newSelectedUsers);
+    console.log(newSelectedUsers)
+    const selectedValues = newSelectedUsers.map((option) => option.value);
     setCombinedTeamMemberValues(selectedValues);
+    console.log(selectedValues)
   };
   const options = userData.map((user) => ({
     value: user._id,
@@ -1801,11 +1808,11 @@ const handleOpenModal = (id) => {
 
                     </Box>
 
-                    <Box mt={2}>
+                    <Box mt={2} mr={2.5}>
                       <InputLabel sx={{ color: "black" }}>
                         Team Member
                       </InputLabel>
-                      <Autocomplete
+                      {/* <Autocomplete
                         multiple
                         sx={{ mt: 2 }}
                         options={options}
@@ -1855,6 +1862,11 @@ const handleOpenModal = (id) => {
                         isOptionEqualToValue={(option, value) =>
                           option.value === value.value
                         }
+                      /> */}
+                      <MultiSelectDropdown 
+                        value={selectedUser}
+                        onChange={handleUserChange}
+                        placeholder="Assignees"
                       />
                     </Box>
                     <Box mt={2}>
@@ -2238,12 +2250,12 @@ const handleOpenModal = (id) => {
 
                       </Box>
 
-                      <Box mt={2}>
+                      <Box mt={2} mr={2.5}>
                         <InputLabel sx={{ color: "black" }}>
                           Team Member
                         </InputLabel>
 
-                        <Autocomplete
+                        {/* <Autocomplete
                           multiple
                           sx={{ mt: 2 }}
                           options={options}
@@ -2293,7 +2305,12 @@ const handleOpenModal = (id) => {
                           isOptionEqualToValue={(option, value) =>
                             option.value === value.value
                           }
-                        />
+                        /> */}
+                         <MultiSelectDropdown 
+                        value={selectedUser}
+                        onChange={handleUserChange}
+                        placeholder="Assignees"
+                      />
                       </Box>
                     </Box>
                     <Box mt={2}>

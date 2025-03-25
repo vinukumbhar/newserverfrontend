@@ -38,6 +38,8 @@ import axios from "axios";
 import { LoginContext } from "../Sidebar/Context/Context";
 import Cookies from "js-cookie";
 import DeleteIcon from "@mui/icons-material/Delete";
+import MultiSelectDropdown from "../Templates/MultiSelectDropdown"
+import AccountMultiSelectDropdown from "../Templates/AccountMultiSelectDropdown"
 // Initialize the plugin
 dayjs.extend(customParseFormat);
 const CreateJob = ({ charLimit = 4000 }) => {
@@ -168,20 +170,26 @@ const CreateJob = ({ charLimit = 4000 }) => {
   const [accountdata, setaccountdata] = useState([]);
   const [selectedaccount, setSelectedaccount] = useState();
 
-  const [combinedaccountValues, setCombinedaccountValues] = useState([]);
+  const [combinedaccountValues, setCombinedaccountValues] = useState();
 
   // forautocomplete
-  const handleAccountChange = (event, newValue) => {
-    console.log("test",newValue)
-    setSelectedaccount(newValue.map((option) => option.value));
-    // Map selected options to their values and send as an array
-    console.log(
-      "Selected Values:",
-      newValue.map((option) => option.value)
-    );
-    setCombinedaccountValues(newValue.map((option) => option.value));
+  // const handleAccountChange = (event, newValue) => {
+  //   console.log("test",newValue)
+  //   setSelectedaccount(newValue.map((option) => option.value));
+  //   // Map selected options to their values and send as an array
+  //   console.log(
+  //     "Selected Values:",
+  //     newValue.map((option) => option.value)
+  //   );
+  //   setCombinedaccountValues(newValue.map((option) => option.value));
+  // };
+  const handleAccountChange = (newSelectedAcc) => {
+    setSelectedaccount(newSelectedAcc);
+    console.log(newSelectedAcc)
+    const selectedValues = newSelectedAcc.map((option) => option.value);
+    setCombinedaccountValues(selectedValues);
+    console.log(selectedValues)
   };
-
   const [searchTerm, setSearchTerm] = useState("");
 
   const handleSearchChange = (event) => {
@@ -307,26 +315,13 @@ const CreateJob = ({ charLimit = 4000 }) => {
   //   const selectedValues = selectedOptions.map((option) => option.value);
   //   setCombinedAssigneesValues(selectedValues);
   // };
-
-  const handleUserChange = (event) => {
-    const selectedValues = event.target.value; // This will be an array of selected values
-    console.log("Selected Values:", selectedValues);
-
-    // Update the state with the selected values
-    setSelectedUser(selectedValues);
-
-    // If you need to map the selected values to their corresponding IDs or other properties
-    const selectedAccountDetails = userData.filter((user) =>
-      selectedValues.includes(user.username)
-    );
-
-    const selectedAccountIds = selectedAccountDetails.map(
-      (account) => account._id
-    );
-    console.log("Selected Account IDs:", selectedAccountIds);
-
-    // Update combined account values if needed
-    setCombinedAssigneesValues(selectedAccountIds);
+  const [combinedValues, setCombinedValues] = useState();
+  const handleUserChange = (newSelectedUsers) => {
+    setSelectedUser(newSelectedUsers);
+    console.log(newSelectedUsers)
+    const selectedValues = newSelectedUsers.map((option) => option.value);
+    setCombinedValues(selectedValues);
+    console.log(selectedValues)
   };
 
   const assigneesoptions = userData.map((user) => ({
@@ -353,17 +348,17 @@ const CreateJob = ({ charLimit = 4000 }) => {
         // Populate the form fields with template data
         setJobName(template.jobname);
 
-        // const jobAssignees = template.jobassignees.map((assignee) => ({
-        //   value: assignee._id,
-        //   label: assignee.username,
-        // }));
-        // setSelectedUser(jobAssignees);
-        // const selectedValues = jobAssignees.map((option) => option.value);
-        // setCombinedAssigneesValues(selectedValues);
-        const jobAssignees = template.jobassignees.map(
-          (assignee) => assignee.username
-        );
+        const jobAssignees = template.jobassignees.map((assignee) => ({
+          value: assignee._id,
+          label: assignee.username,
+        }));
         setSelectedUser(jobAssignees);
+        const selectedValues = jobAssignees.map((option) => option.value);
+        setCombinedValues(selectedValues);
+        // const jobAssignees = template.jobassignees.map(
+        //   (assignee) => assignee.username
+        // );
+        // setSelectedUser(jobAssignees);
 
         setPriority(template.priority);
         console.log(template.priority);
@@ -528,7 +523,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
       pipeline: selectedPipeline.value,
       templatename: selectedtemp.value,
       jobname: jobName,
-      jobassignees: combinedAssigneesValues,
+      jobassignees: combinedValues,
       priority: priority,
       description: description,
       absolutedates: absoluteDate,
@@ -1983,7 +1978,8 @@ const CreateJob = ({ charLimit = 4000 }) => {
           console.error("Some automations failed:", failedResults);
           toast.error(`${failedResults.length} automations failed (job was created)`);
         } else {
-          toast.success("All jobs and automations processed successfully");
+          toast.success("Job created successfully");
+          navigate("/jobs/activejob")
         }
         setDrawerOpen(false)
         // handleDrawerClose();
@@ -2006,7 +2002,7 @@ const CreateJob = ({ charLimit = 4000 }) => {
           pipeline: selectedPipeline.value,
           templatename: selectedtemp.value,
           jobname: jobName,
-          jobassignees: combinedAssigneesValues,
+          jobassignees: combinedValues,
           priority: priority,
           description: description,
           absolutedates: absoluteDate,
@@ -2565,10 +2561,10 @@ const CreateJob = ({ charLimit = 4000 }) => {
                 className="left-side-container"
                 mt={2}
               >
-                <Box>
+                <Box mr={2.5}>
                   <label className="job-input-label">Accounts</label>
 
-                  <Autocomplete
+                  {/* <Autocomplete
                     multiple
                    
                     options={accountoptions}
@@ -2630,6 +2626,11 @@ const CreateJob = ({ charLimit = 4000 }) => {
                       option.value === value.value
                     }
                     sx={{ width: "100%", marginTop: "15px",cursor:'pointer' }}
+                  /> */}
+                  <AccountMultiSelectDropdown 
+                    value={selectedaccount}
+                    onChange={handleAccountChange}
+                    placeholder="Accounts"
                   />
                 </Box>
 
@@ -2812,9 +2813,9 @@ const CreateJob = ({ charLimit = 4000 }) => {
                     sx={{ backgroundColor: "#fff" }}
                   />
                 </Box>
-                <Box mt={2}>
+                <Box mt={2} mr={2.5}>
                   <label className="job-input-label">Job Assignees</label>
-                  {/* <Autocomplete
+                   {/* <Autocomplete
                     multiple
                     sx={{ marginTop: "8px" }}
                     options={assigneesoptions}
@@ -2842,100 +2843,12 @@ const CreateJob = ({ charLimit = 4000 }) => {
                     isOptionEqualToValue={(option, value) =>
                       option.value === value.value
                     }
-                  /> */}
-                  <FormControl
-                    fullWidth
-                    variant="outlined"
-                    sx={{ marginTop: "15px" }}
-                  >
-                    <Select
-                      multiline
-                      multiple
-                      size="small"
-                      value={selectedUser || []} // Fallback to an empty array if undefined
-                      onChange={handleUserChange}
-                      input={<OutlinedInput />} // Use OutlinedInput here
-                      displayEmpty
-                      renderValue={(selected) => {
-                        if (selected.length === 0) {
-                          return (
-                            <span style={{ color: "#aaa" }}>Job assignees</span>
-                          ); // Placeholder
-                        }
-                        return (
-                          <Box
-                            sx={{
-                              display: "flex",
-                              flexWrap: "wrap",
-                              gap: "6px",
-                              padding: "6px",
-                              borderRadius: "10px",
-                            }}
-                          >
-                            {selected.map((value) => {
-                              const user = userData.find(
-                                (acc) => acc.username === value
-                              ); // Find the selected account
-                              return (
-                                <Chip
-                                  key={value}
-                                  label={user?.username} // Display the account name
-                                  sx={{
-                                    // backgroundColor: account?.colour || "#ccc", // Use account colour or fallback
-                                    // color: "#fff",
-                                    fontWeight: 500,
-                                    fontSize: "10px",
-                                    borderRadius: "16px",
-                                    height: "20px",
-                                    cursor: "pointer",
-                                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-                                    "& .MuiChip-deleteIcon": {
-                                      color: "#fff",
-                                      opacity: 0.7,
-                                      transition: "opacity 0.2s",
-                                      "&:hover": { opacity: 1 },
-                                    },
-                                  }}
-                                  onDelete={() => {
-                                    const updatedSelection =
-                                      selectedUser.filter(
-                                        (acc) => acc !== value
-                                      );
-                                    setCombinedAssigneesValues(
-                                      updatedSelection
-                                    ); // Remove the account from selection
-                                  }}
-                                />
-                              );
-                            })}
-                          </Box>
-                        );
-                      }}
-                      MenuProps={MenuProps}
-                    >
-                      {/* {userData.map((user) => (
-            <MenuItem key={user._id} value={user.username}>
-              <Checkbox checked={(selectedUser || []).indexOf(user.username) > -1} /> 
-              <ListItemText primary={user.username} />
-            </MenuItem>
-          ))} */}
-                      <TextField
-                        fullWidth
-                        label="Search Users"
-                        variant="outlined"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                      />
-
-                      {/* Filtered User List */}
-                      {/* {foundUser.map((user) => (
-        <MenuItem key={user._id} value={user.username} >
-          <Checkbox checked={(selectedUser || []).indexOf(user.username) > -1} />
-          <ListItemText primary={user.username} />
-        </MenuItem>
-      ))} */}
-                    </Select>
-                  </FormControl>
+                  />  */}
+                 <MultiSelectDropdown 
+                   value={selectedUser}
+                   onChange={handleUserChange}
+                   placeholder="Job Assignees"
+                 />
                 </Box>
                 <Box mt={2}>
                   <Priority

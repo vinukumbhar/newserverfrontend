@@ -644,7 +644,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { PiDotsSixVerticalBold } from "react-icons/pi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiPlusCircle } from "react-icons/fi";
-
+import MultiSelectDropdown from "../MultiSelectDropdown"
 const Tasks = () => {
     const TASK_API = process.env.REACT_APP_TASK_TEMP_URL;
     const USER_API = process.env.REACT_APP_USER_URL;
@@ -845,7 +845,8 @@ const Tasks = () => {
         setTaskDescription(content);
     };
     const [taskDiscription, setTaskDescription] = useState();
-    const [combinedValues, setCombinedValues] = useState([]);
+     const [selectedUser, setSelectedUser] = useState([]);
+    const [combinedValues, setCombinedValues] = useState();
     const [userData, setUserData] = useState([]);
     useEffect(() => {
         fetchData();
@@ -865,14 +866,20 @@ const Tasks = () => {
         value: user._id,
         label: user.username,
     }));
-    const handleuserChange = (event, newValue) => {
-        setAssigneesNew(newValue);
-        // Map selected options to their values and send as an array
-        const selectedValues = newValue.map((option) => option.value);
-        // console.log(selectedValues);
+    // const handleuserChange = (event, newValue) => {
+    //     setAssigneesNew(newValue);
+    //     // Map selected options to their values and send as an array
+    //     const selectedValues = newValue.map((option) => option.value);
+    //     // console.log(selectedValues);
+    //     setCombinedValues(selectedValues);
+    // };
+    const handleUserChange = (newSelectedUsers) => {
+        setSelectedUser(newSelectedUsers);
+        console.log(newSelectedUsers)
+        const selectedValues = newSelectedUsers.map((option) => option.value);
         setCombinedValues(selectedValues);
-    };
-
+        console.log(selectedValues)
+      };
     //Tag FetchData ================
     const [tags, setTags] = useState([]);
     const [combinedTagsValues, setCombinedTagsValues] = useState([]);
@@ -999,7 +1006,7 @@ const Tasks = () => {
                         label: assignee.username,
                     }));
             
-                    setAssigneesNew(assigneesData);
+                    setSelectedUser(assigneesData);
             
                     const selectedValues = assigneesData.map(option => option.value);
                     setCombinedValues(selectedValues);
@@ -1252,7 +1259,7 @@ const Tasks = () => {
                                         </Box>
                                         <Box sx={{ width: '100%' }}>
                                             <Grid container spacing={2}>
-                                                <Grid item xs={12} sm={6}>
+                                                {/* <Grid item xs={12} sm={6}>
                                                     <Box>
                                                         <label className='task-input-label'>Task Assignee</label>
                                                         <Autocomplete
@@ -1278,7 +1285,18 @@ const Tasks = () => {
                                                             isOptionEqualToValue={(option, value) => option.value === value.value}
                                                         />
                                                     </Box>
-                                                </Grid>
+                                                </Grid> */}
+                                                                  <Grid item xs={12} sm={6} pr={3}>
+  
+  <InputLabel sx={{color:'black'}}>Task Assignee</InputLabel>
+  {/* // With internal options (fetches data automatically) */}
+<MultiSelectDropdown 
+value={selectedUser}
+onChange={handleUserChange}
+placeholder="Assignees"
+/>
+
+</Grid>
                                                 <Grid item xs={12} sm={6}>
                                                     <Box >
                                                         <Priority onPriorityChange={handlePriorityChange} selectedPriority={priority} />

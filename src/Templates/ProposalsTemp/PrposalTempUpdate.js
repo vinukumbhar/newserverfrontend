@@ -17,6 +17,7 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import { CiMenuKebab } from "react-icons/ci";
 import EditorShortcodes from "../Texteditor/EditorShortcodes";
 import { useTheme } from "@mui/material/styles";
+import MultiSelectDropdown from "../MultiSelectDropdown"
 const MyStepperUpdate = () => {
   const { _id } = useParams();
   console.log(_id);
@@ -96,12 +97,20 @@ const MyStepperUpdate = () => {
     }
   };
 
-  const handleUserChange = (event, selectedOptions) => {
-    setSelectedUser(selectedOptions);
-    const selectedValues = selectedOptions.map((option) => option.value);
-    setCombinedTeamMemberValues(selectedValues);
-  };
+  // const handleUserChange = (event, selectedOptions) => {
+  //   setSelectedUser(selectedOptions);
+  //   const selectedValues = selectedOptions.map((option) => option.value);
+  //   setCombinedTeamMemberValues(selectedValues);
+  // };
 
+   const [combinedValues, setCombinedValues] = useState();
+    const handleUserChange = (newSelectedUsers) => {
+      setSelectedUser(newSelectedUsers);
+      console.log(newSelectedUsers)
+      const selectedValues = newSelectedUsers.map((option) => option.value);
+      setCombinedValues(selectedValues);
+      console.log(selectedValues)
+    };
   const options = userData.map((user) => ({
     value: user._id,
     label: user.username,
@@ -560,7 +569,7 @@ useEffect(() => {
       setSelectedUser(mappedOptions);
 
       const selectedValues = mappedOptions.map((option) => option.value);
-      setCombinedTeamMemberValues(selectedValues);
+      setCombinedValues(selectedValues);
       // Set the visibility of sections
       setStepsVisibility({
         Introduction: proposalesandelsTemplate.introduction,
@@ -675,7 +684,7 @@ useEffect(() => {
         },
         body: JSON.stringify({
           templatename: templatename,
-          teammember: combinedTeamMemberValues,
+          teammember: combinedValues,
           proposalname: proposalName,
           introduction: stepsVisibility.Introduction,
           terms: stepsVisibility.Terms,
@@ -729,7 +738,7 @@ useEffect(() => {
         },
         body: JSON.stringify({
           templatename: templatename,
-          teammember: combinedTeamMemberValues,
+          teammember: combinedValues,
           proposalname: proposalName,
           introduction: stepsVisibility.Introduction,
           terms: stepsVisibility.Terms,
@@ -796,7 +805,7 @@ useEffect(() => {
         },
         body: JSON.stringify({
           templatename: templatename,
-          teammember: combinedTeamMemberValues,
+          teammember: combinedValues,
           proposalname: proposalName,
           introduction: stepsVisibility.Introduction,
           terms: stepsVisibility.Terms,
@@ -1224,7 +1233,12 @@ useEffect(() => {
                 <Grid item xs={12} sm={6}>
                   <Box ml={2}>
                       <InputLabel sx={{ color: "black" }}>Team Member</InputLabel>
-                    <Autocomplete multiple sx={{ mt: 2, backgroundColor: "#fff" }} options={options} size="small" getOptionLabel={(option) => option.label} value={selectedUser} onChange={handleUserChange} renderInput={(params) => <TextField {...params} variant="outlined" placeholder="Assignees" />} isOptionEqualToValue={(option, value) => option.value === value.value} />
+                      <MultiSelectDropdown 
+  value={selectedUser}
+  onChange={handleUserChange}
+  placeholder="TeamMember"
+/>
+                    {/* <Autocomplete multiple sx={{ mt: 2, backgroundColor: "#fff" }} options={options} size="small" getOptionLabel={(option) => option.label} value={selectedUser} onChange={handleUserChange} renderInput={(params) => <TextField {...params} variant="outlined" placeholder="Assignees" />} isOptionEqualToValue={(option, value) => option.value === value.value} /> */}
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={6}>

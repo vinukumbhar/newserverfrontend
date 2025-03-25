@@ -376,7 +376,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
               size="small"
               error={!!firstNameError}
             />
-            1.5
+           
           </Box>
           <Box>
             {/* <InputLabel sx={{ color: "black" }}>Middle Name</InputLabel> */}

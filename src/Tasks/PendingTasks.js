@@ -535,7 +535,7 @@ const PendingTasks = () => {
                       lineHeight: "1",
                     }}
                   >
-                    {row.JobName}
+                    {row.JobName || ""}
                   </TableCell>
                   <TableCell
                     style={{

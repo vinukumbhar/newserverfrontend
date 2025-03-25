@@ -57,6 +57,8 @@ import { useNavigate } from "react-router-dom";
 import { MdOutlineArchive } from "react-icons/md";
 import TablePagination from "@mui/material/TablePagination";
 import { GoDotFill } from "react-icons/go";
+import MultiSelectDropdown from "../../Templates/MultiSelectDropdown"
+import CircularProgress from "@mui/material/CircularProgress"; // MUI Loader
 const Example = ({ charLimit = 4000 }) => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -217,9 +219,12 @@ const Example = ({ charLimit = 4000 }) => {
   //     console.error("Error fetching data:", error);
   //   }
   // };
-
+  const [loading, setLoading] = useState(false); // Loader state
   const fetchData = async () => {
+    setLoading(true); // Start loading
+    const loaderDelay = new Promise((resolve) => setTimeout(resolve, 1000));
     try {
+
       const storedData = JSON.parse(localStorage.getItem("teamMemberData"));
       console.log("Received stored teamMemberData:", storedData);
 
@@ -240,6 +245,9 @@ const Example = ({ charLimit = 4000 }) => {
           // If TeamMember has no access, do not fetch data
           alert("You do not have permission to view accounts.");
           setJobData([]); // Set empty job data
+          // Wait for the fetch and the 3-second timer to complete
+      await loaderDelay;
+      setLoading(false); // Stop loader
           return;
         }
 
@@ -264,7 +272,12 @@ const Example = ({ charLimit = 4000 }) => {
       }
 
       // If no URL is set, exit
-      if (!url) return;
+      if (!url) {
+        // Wait for the fetch and the 3-second timer to complete
+      await loaderDelay;
+      setLoading(false); // Stop loader
+        return;
+      }
       console.log("test url", url);
       // Fetch job data
       const jobListResponse = await axios.get(url);
@@ -292,6 +305,10 @@ const Example = ({ charLimit = 4000 }) => {
       console.log(formattedData);
     } catch (error) {
       console.error("Error fetching data:", error);
+    }finally {
+       // Wait for the fetch and the 3-second timer to complete
+       await loaderDelay;
+       setLoading(false); // Stop loader
     }
   };
 
@@ -459,8 +476,8 @@ const Example = ({ charLimit = 4000 }) => {
     fetchUserData();
   }, []);
   const [userData, setUserData] = useState([]);
-  const [selecteduser, setSelectedUser] = useState();
-  const [combinedValues, setCombinedValues] = useState([]);
+  const [selectedUser, setSelectedUser] = useState();
+  const [combinedValues, setCombinedValues] = useState();
   const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
   const fetchUserData = async () => {
     try {
@@ -483,24 +500,14 @@ const Example = ({ charLimit = 4000 }) => {
   //   setCombinedValues(selectedValues);
   // };
 
-  const handleUserChange = (event) => {
-    const selectedValues = event.target.value; // This will be an array of selected values
-    console.log("Selected Values:", selectedValues);
-  
-    // Update the state with the selected values
-    setSelectedUser(selectedValues);
-  
-    // If you need to map the selected values to their corresponding IDs or other properties
-    const selectedAccountDetails = userData.filter((user) =>
-      selectedValues.includes(user.username)
-    );
-  
-    const selectedAccountIds = selectedAccountDetails.map((account) => account._id);
-    console.log("Selected Account IDs:", selectedAccountIds);
-  
-    // Update combined account values if needed
-    setCombinedValues(selectedAccountIds);
-  };
+  // const [combinedValues, setCombinedValues] = useState();
+    const handleUserChange = (newSelectedUsers) => {
+      setSelectedUser(newSelectedUsers);
+      console.log(newSelectedUsers)
+      const selectedValues = newSelectedUsers.map((option) => option.value);
+      setCombinedValues(selectedValues);
+      console.log(selectedValues)
+    };
   const [startDate, setStartDate] = useState(null);
   const [dueDate, setDueDate] = useState(null);
   const handleStartDateChange = (date) => {
@@ -620,18 +627,17 @@ const Example = ({ charLimit = 4000 }) => {
         // setSelectedTags(tags);
         console.log(tags);
       }
-      // if (data.jobList && data.jobList.JobAssignee) {
-      //   const assigneesData = data.jobList.JobAssignee.map((assignee) => ({
-      //     value: assignee._id,
-      //     label: assignee.username,
-      //   }));
+      if (data.jobList && data.jobList.JobAssignee) {
+        const assigneesData = data.jobList.JobAssignee.map((assignee) => ({
+          value: assignee._id,
+          label: assignee.username,
+        }));
 
-      //   setSelectedUser(assigneesData);
-      //   const selectedValues = assigneesData.map((option) => option.value);
-      //   setCombinedValues(selectedValues);
-      // }
-      const jobAssignees = data.jobList.JobAssignee.map((assignee) => assignee.username);
-      setSelectedUser(jobAssignees);
+        setSelectedUser(assigneesData);
+        const selectedValues = assigneesData.map((option) => option.value);
+        setCombinedValues(selectedValues);
+      }
+    
       setIsDrawerOpen(true);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -1531,7 +1537,7 @@ const Example = ({ charLimit = 4000 }) => {
                 </Select>
               </FormControl>
             </Box>
-            <Box mt={2}>
+            <Box mt={2} mr={2.5}>
               <InputLabel sx={{ color: "black" }}>Task Assignee</InputLabel>
               {/* <Autocomplete
                 multiple
@@ -1562,72 +1568,11 @@ const Example = ({ charLimit = 4000 }) => {
                 }
               /> */}
 
-               <FormControl fullWidth variant="outlined" sx={{ marginTop: '15px' }}>
-               <Select
-                       multiline
-                        multiple
-                        size="small"
-                        value={selecteduser || []} // Fallback to an empty array if undefined
-                        onChange={handleUserChange}
-                        input={<OutlinedInput  />} // Use OutlinedInput here
-                        displayEmpty
-                        renderValue={(selected) => {
-                          if (selected.length === 0) {
-                            return <span style={{ color: "#aaa" }}>Job assignees</span>; // Placeholder
-                          }
-                          return (
-                            <Box
-                              sx={{
-                                display: "flex",
-                                flexWrap: "wrap",
-                                gap: "6px",
-                                padding: "6px",
-                                borderRadius: "10px",
-                              }}
-                            >
-                              {selected.map((value) => {
-                                const user = userData.find((acc) => acc.username === value); // Find the selected account
-                                return (
-                                  <Chip
-                                    key={value}
-                                    label={user?.username} // Display the account name
-                                    sx={{
-                                      // backgroundColor: account?.colour || "#ccc", // Use account colour or fallback
-                                      // color: "#fff",
-                                      fontWeight: 500,
-                                      fontSize: "10px",
-                                      borderRadius: "16px",
-                                      height: "20px",
-                                      cursor: "pointer",
-                                      boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-                                      "& .MuiChip-deleteIcon": {
-                                        color: "#fff",
-                                        opacity: 0.7,
-                                        transition: "opacity 0.2s",
-                                        "&:hover": { opacity: 1 },
-                                      },
-                                    }}
-                                    onDelete={() => {
-                                      const updatedSelection = selecteduser.filter((acc) => acc !== value);
-                                      setCombinedValues(updatedSelection); // Remove the account from selection
-                                    }}
-                                  />
-                                );
-                              })}
-                            </Box>
-                          );
-                        }}
-                        MenuProps={MenuProps}
-                       
-                      >
-                        {userData.map((user) => (
-                          <MenuItem key={user._id} value={user.username}>
-                            <Checkbox checked={(selecteduser || []).indexOf(user.username) > -1} /> 
-                            <ListItemText primary={user.username} />
-                          </MenuItem>
-                        ))}
-                      </Select>
-                      </FormControl>
+<MultiSelectDropdown 
+                   value={selectedUser}
+                   onChange={handleUserChange}
+                   placeholder="Job Assignees"
+                 />
             </Box>
             <Box mt={2}>
               <InputLabel sx={{ color: "black" }}>Stage</InputLabel>
@@ -2034,7 +1979,21 @@ const Example = ({ charLimit = 4000 }) => {
                 )}
               </Box>
 
-
+              {loading ? (
+      <Box
+                     sx={{
+                       display: "flex",
+                       alignItems: "center",
+                       justifyContent: "center",
+                     }}
+                   >
+                     {" "}
+                     <CircularProgress
+                       style={{ fontSize: "300px", color: "blue" }}
+                     />
+                   </Box>
+    ) : (
+      <Box>
       <TableContainer component={Paper}>
         <Table style={{ tableLayout: "fixed", width: "100%" }}>
           <TableHead>
@@ -2369,14 +2328,18 @@ const Example = ({ charLimit = 4000 }) => {
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[30, 40, 50, 60, 100]}
-        component="div"
-        count={jobData.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
+      rowsPerPageOptions={[30, 40, 50, 60, 100]}
+      component="div"
+      count={jobData.length}
+      rowsPerPage={rowsPerPage}
+      page={page}
+      onPageChange={handleChangePage}
+      onRowsPerPageChange={handleChangeRowsPerPage}
+    />
+    </Box>
+  )}
+
+      
     </>
   );
 };

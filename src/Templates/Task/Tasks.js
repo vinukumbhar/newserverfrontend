@@ -44,6 +44,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiPlusCircle } from "react-icons/fi";
 import { PiDotsSixVerticalBold } from "react-icons/pi";
 import { CircularProgress } from "@mui/material";
+import MultiSelectDropdown from "../MultiSelectDropdown"
 const Tasks = () => {
   const TASK_API = process.env.REACT_APP_TASK_TEMP_URL;
   const USER_API = process.env.REACT_APP_USER_URL;
@@ -64,7 +65,7 @@ const Tasks = () => {
   const [dueinduration, setdueinduration] = useState("Days");
   const [description, setDescription] = useState("");
   const [selectedUser, setSelectedUser] = useState([]);
-  const [combinedValues, setCombinedValues] = useState([]);
+  const [combinedValues, setCombinedValues] = useState();
   const [userData, setUserData] = useState([]);
 
   const [checkedSubtasks, setCheckedSubtasks] = useState([]);
@@ -168,12 +169,20 @@ const Tasks = () => {
     value: user._id,
     label: user.username,
   }));
-  const handleUserChange = (event, selectedOptions) => {
-    setSelectedUser(selectedOptions);
-    const selectedValues = selectedOptions.map((option) => option.value);
-    setCombinedValues(selectedValues);
-  };
-
+  // const handleUserChange = (event, selectedOptions) => {
+  //   setSelectedUser(selectedOptions);
+  //   const selectedValues = selectedOptions.map((option) => option.value);
+  //   setCombinedValues(selectedValues);
+  //   console.log("selected",selectedValues)
+  // };
+// Add this handler function
+const handleUserChange = (newSelectedUsers) => {
+  setSelectedUser(newSelectedUsers);
+  console.log(newSelectedUsers)
+  const selectedValues = newSelectedUsers.map((option) => option.value);
+  setCombinedValues(selectedValues);
+  console.log(selectedValues)
+};
   //Tag FetchData ================
   const [tags, setTags] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
@@ -916,7 +925,7 @@ const Tasks = () => {
                       </Box>
                       <Box sx={{ width: "100%" }}>
                         <Grid container spacing={2}>
-                          <Grid item xs={12} sm={6}>
+                          {/* <Grid item xs={12} sm={6}>
                             <Box>
                               <label className="task-input-label">
                                 Task Assignee
@@ -953,7 +962,18 @@ const Tasks = () => {
                                 }
                               />
                             </Box>
-                          </Grid>
+                          </Grid> */}
+                          <Grid item xs={12} sm={6} pr={3}>
+  
+    <InputLabel sx={{color:'black'}}>Task Assignee</InputLabel>
+    {/* // With internal options (fetches data automatically) */}
+<MultiSelectDropdown 
+  value={selectedUser}
+  onChange={handleUserChange}
+  placeholder="Assignees"
+/>
+
+</Grid>
                           <Grid item xs={12} sm={6}>
                             <Box>
                               <Priority
