@@ -575,7 +575,7 @@ const Clientfacing = () => {
                   <InputLabel sx={{ color: "black" }}>
                     Status description for client
                   </InputLabel>
-                  <TextField
+                  {/* <TextField
                     sx={{ marginTop: 2 }}
                     fullWidth
                     size="small"
@@ -584,7 +584,19 @@ const Clientfacing = () => {
                     multiline
                     value={clientFacingDescription}
                     onChange={(e) => setClientFacingDescription(e.target.value)}
-                  />
+                  /> */}
+                  <TextField
+  sx={{ marginTop: 2 }}
+  fullWidth
+  size="small"
+  placeholder="Status description for client"
+  multiline
+  rows={5}
+  value={clientFacingDescription}
+  onChange={(e) => setClientFacingDescription(e.target.value)}
+  inputProps={{ maxLength: 200 }}
+  helperText={`${clientFacingDescription.length}/200`}
+/>
                 </Box>
 
                 <Box
@@ -827,7 +839,7 @@ const Clientfacing = () => {
                 <InputLabel sx={{ color: "black" }}>
                     Status description for client
                   </InputLabel>
-                  <TextField
+                  {/* <TextField
                     sx={{ marginTop: 2 }}
                     fullWidth
                    
@@ -836,7 +848,20 @@ const Clientfacing = () => {
                   size="small"
                     value={clientFacingDescription}
                     onChange={(e) => setClientFacingDescription(e.target.value)}
-                  />
+                  /> */}
+                        <TextField
+  sx={{ marginTop: 2 }}
+  fullWidth
+  size="small"
+  placeholder="Status description for client"
+  multiline
+
+  rows={5}
+  value={clientFacingDescription}
+  onChange={(e) => setClientFacingDescription(e.target.value)}
+  inputProps={{ maxLength: 200 }}
+  helperText={`${clientFacingDescription.length}/200`}
+/>
                 </Box>
 
                 <Box

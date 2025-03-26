@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import ContactUpdateForm from "./contactupdate";
 import MultiSelectDropdown from "../../Templates/MultiSelectDropdown"
+import TagsMultiSelectDropDown from "../../Templates/TagsMultiSelectDropDown"
 const Accountupdate = ({ onClose, selectedAccount }) => {
   const theme = useTheme();
   const USER_API = process.env.REACT_APP_USER_URL;
@@ -294,7 +295,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
   //Account Data Integration
   const [accountName, setaccountName] = useState("");
   const [companyname, setcompanyname] = useState("");
-  const [combinedTagsValues, setCombinedTagsValues] = useState([]);
+  const [combinedTagsValues, setCombinedTagsValues] = useState();
   const [tagsNew, setTagsNew] = useState([]);
   const [selectedCountry, setSelectedCountry] = useState({ name: "", code: "" });
   const [streetAddress, setStreetAddress] = useState("");
@@ -302,7 +303,14 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
   const [state, setState] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [accountcontact, setAccountcontact] = useState([]);
-
+  // handleAccountTagChange
+  const handleAccountTagChange = (newSelectedTags) => {
+    setTagsNew(newSelectedTags);
+    console.log(newSelectedTags)
+    const selectedValues = newSelectedTags.map((option) => option.value);
+    setCombinedTagsValues(selectedValues);
+    console.log(selectedValues)
+  };
   useEffect(() => {
     if (selectedAccount) {
       console.log("edit account",selectedAccount);
@@ -838,7 +846,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                     <InputLabel sx={{ color: "black" }}>Company Name</InputLabel>
                     <TextField size="small" fullWidth placeholder="Company Name" margin="normal" value={companyname} onChange={(e) => setcompanyname(e.target.value)} />
                   </Box>
-                  <Box>
+                  <Box mr={2}>
                     {/* <InputLabel sx={{ color: "black" }}>Tags</InputLabel>
                     <Autocomplete
                       multiple
@@ -856,125 +864,12 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                         </Box>
                       )}
                     /> */}
-                    <InputLabel sx={{ color: "black", mb: 1 }}>Tags</InputLabel>
-<FormControl sx={{ width: "100%" }}>
-  <Select
-    multiple
-    multiline
-    size="small"
-    fullWidth
-    value={combinedTagsValues}
-    onChange={(event) => setCombinedTagsValues(event.target.value)}
-    input={<OutlinedInput />}
-    displayEmpty
-    renderValue={(selected) => {
-      if (selected.length === 0) {
-        return <span style={{ color: "#aaa" }}>Select tags...</span>;
-      }
-      return (
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "6px", borderRadius: "10px" }}>
-          {selected.map((value) => {
-            const option = tagsoptions.find((opt) => opt.value === value);
-            return (
-              <Chip
-                key={value}
-                label={option?.label}
-                sx={{
-                  backgroundColor: option?.customTagStyle?.backgroundColor || "#1976d2",
-                  color: option?.customTagStyle?.color || "#fff",
-                  fontWeight: 500,
-                  fontSize: "10px",
-                  borderRadius: "16px",
-                  height: "20px",
-                  cursor: "pointer",
-                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-                  "& .MuiChip-deleteIcon": {
-                    color: "#fff",
-                    opacity: 0.7,
-                    transition: "opacity 0.2s",
-                    "&:hover": { opacity: 1 },
-                  },
-                }}
-              />
-            );
-          })}
-        </Box>
-      );
-    }}
-    MenuProps={{ PaperProps: { style: { maxHeight: 200 } } }}
-    sx={{
-      borderRadius: "10px",
-      "& .MuiOutlinedInput-root": {
-        borderRadius: "10px",
-      },
-    }}
-  >
-    {/* {tagsoptions.map((option) => (
-      <MenuItem
-        key={option.value}
-        value={option.value}
-        sx={{
-          backgroundColor: option.colour,
-          color: "#fff",
-          fontSize: "10px",
-          borderRadius: "10px",
-          margin: "5px",
-          textAlign: "center",
-          display: "flex",
-          justifyContent: "center",
-          padding: "4px 9px",
-          minWidth: "120px",
-          "&:hover": {
-            backgroundColor: option.colour,
-            color: "#fff",
-          },
-        }}
-      >
-        {option.label}
-      </MenuItem>
-    ))} */}
-    {tagsoptions.map((option) => {
-          // const dynamicWidth = Math.min(option.label.length * 10, 150); // Adjust width dynamically
-          // Create a canvas element to measure the actual text width
-      const canvas = document.createElement("canvas");
-      const context = canvas.getContext("2d");
-      context.font = "12px Arial"; // Match the font size/style of MenuItem
-    
-      const textWidth = context.measureText(option.label).width; // Get precise width
-      const dynamicWidth = Math.min(textWidth + 16, 150); // Add padding & set max width
-          return (
-            <MenuItem
-              key={option.value}
-              value={option.value}
-              sx={{
-                backgroundColor: option.colour,
-                color: "#fff",
-                fontSize: "10px",
-                borderRadius: "10px",
-                margin: "5px",
-                textAlign: "center",
-                display: "flex",
-                justifyContent: "center",
-                padding: "4px 9px",
-                // alignItems: "center",
-                // paddingLeft: "10px",
-                whiteSpace: "nowrap", // Prevent line breaks
-                // textAlign: "left", // Ensure text is left-aligned
-                // paddingLeft: "10px", // Add left padding for proper alignment
-                minWidth: `${dynamicWidth}px`,
-                maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
-                "&:hover": {
-                  backgroundColor: option.colour,
-                  color: "#fff",
-                },
-              }}
-            >
-              {option.label}
-            </MenuItem>
-          );
-        })}
-  </Select>
-</FormControl>
+                    <InputLabel sx={{ color: "black", mb: 1 }}>accounts Tags</InputLabel>
+                    <TagsMultiSelectDropDown 
+  value={tagsNew}
+  onChange={handleAccountTagChange}
+  placeholder="Tags"
+/>
 
                   </Box>
                   <Box mt={2} mr={2.5}>

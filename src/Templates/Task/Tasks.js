@@ -45,6 +45,7 @@ import { FiPlusCircle } from "react-icons/fi";
 import { PiDotsSixVerticalBold } from "react-icons/pi";
 import { CircularProgress } from "@mui/material";
 import MultiSelectDropdown from "../MultiSelectDropdown"
+import TagsMultiSelectDropDown  from "../TagsMultiSelectDropDown"
 const Tasks = () => {
   const TASK_API = process.env.REACT_APP_TASK_TEMP_URL;
   const USER_API = process.env.REACT_APP_USER_URL;
@@ -59,8 +60,8 @@ const Tasks = () => {
   const [startDate, setStartDate] = useState(null);
   const [dueDate, setDueDate] = useState(null);
   const [absoluteDate, setAbsoluteDates] = useState(false);
-  const [priority, setPriority] = useState("");
-  const [status, setStatus] = useState("");
+  const [priority, setPriority] = useState("Medium");
+  const [status, setStatus] = useState("No status");
   const [startsInDuration, setStartsInDuration] = useState("Days");
   const [dueinduration, setdueinduration] = useState("Days");
   const [description, setDescription] = useState("");
@@ -186,7 +187,7 @@ const handleUserChange = (newSelectedUsers) => {
   //Tag FetchData ================
   const [tags, setTags] = useState([]);
   const [selectedTags, setSelectedTags] = useState([]);
-  const [combinedTagsValues, setCombinedTagsValues] = useState([]);
+  const [combinedTagsValues, setCombinedTagsValues] = useState();
   useEffect(() => {
     fetchTagData();
   }, []);
@@ -253,14 +254,21 @@ const handleUserChange = (newSelectedUsers) => {
       },
     },
   };
-  const handleTagChange = (event) => {
-    const selectedValues = event.target.value;
-    setSelectedTags(selectedValues);
+  // const handleTagChange = (event) => {
+  //   const selectedValues = event.target.value;
+  //   setSelectedTags(selectedValues);
 
-    // Send selectedValues array to your backend
-    console.log("Selected Values:", selectedValues);
-    // Assuming setCombinedValues is a function to send the values to your backend
+  //   // Send selectedValues array to your backend
+  //   console.log("Selected Values:", selectedValues);
+  //   // Assuming setCombinedValues is a function to send the values to your backend
+  //   setCombinedTagsValues(selectedValues);
+  // };
+  const handleTagChange = (newSelectedTags) => {
+    setSelectedTags(newSelectedTags);
+    console.log(newSelectedTags)
+    const selectedValues = newSelectedTags.map((option) => option.value);
     setCombinedTagsValues(selectedValues);
+    console.log(selectedValues)
   };
   const [TaskTemplates, setTaskTemplates] = useState([]);
   useEffect(() => {
@@ -1026,12 +1034,12 @@ const handleUserChange = (newSelectedUsers) => {
                           )}
                         />
                       </Box> */}
-                      <Box mt={1}>
+                      <Box mt={1} mr={1}>
                         <InputLabel sx={{ color: "black", mb: 1 }}>
                           Tags
                         </InputLabel>
 
-                        <FormControl sx={{ width: "100%" }}>
+                        {/* <FormControl sx={{ width: "100%" }}>
                           <Select
                             multiple
                             size="small"
@@ -1141,9 +1149,15 @@ const handleUserChange = (newSelectedUsers) => {
                                   {option.label}
                                 </MenuItem>
                               );
+                              
                             })}
                           </Select>
-                        </FormControl>
+                        </FormControl> */}
+                        <TagsMultiSelectDropDown 
+  value={selectedTags}
+  onChange={handleTagChange}
+  placeholder="Tags"
+/>
                       </Box>
                       <Box mt={2}>
                         <Box

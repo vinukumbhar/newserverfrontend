@@ -158,7 +158,7 @@ const CompletedTasks = () => {
     const handleClick = async (id) => {
       
       try {
-        const response = await fetch(`http://127.0.0.1/accountstasks/task/listbyid/${id}`, {
+        const response = await fetch(`${ACCOUNT_TASKS_API}/accountstasks/task/listbyid/${id}`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });

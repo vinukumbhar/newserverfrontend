@@ -57,6 +57,7 @@ import { useNavigate } from "react-router-dom";
 import { MdOutlineArchive } from "react-icons/md";
 import TablePagination from "@mui/material/TablePagination";
 import { GoDotFill } from "react-icons/go";
+import TagsMultiSelectDropDown  from "../../Templates/TagsMultiSelectDropDown"
 import MultiSelectDropdown from "../../Templates/MultiSelectDropdown"
 import CircularProgress from "@mui/material/CircularProgress"; // MUI Loader
 const Example = ({ charLimit = 4000 }) => {
@@ -417,7 +418,7 @@ const Example = ({ charLimit = 4000 }) => {
 
   //Tag FetchData ================
   const [tags, setTags] = useState([]);
-  const [combinedTagsValues, setCombinedTagsValues] = useState([]);
+  const [combinedTagsValues, setCombinedTagsValues] = useState();
   useEffect(() => {
     fetchTagData();
   }, []);
@@ -461,17 +462,23 @@ const Example = ({ charLimit = 4000 }) => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [dataAccountjob, setDataAccountjob] = useState();
 
-  const handleTagChange = (event, newValue) => {
-    setSelectedTags(newValue); // Keep the full tag objects
+  // const handleTagChange = (event, newValue) => {
+  //   setSelectedTags(newValue); // Keep the full tag objects
 
-    // Send only the values to your backend
-    const tagValues = newValue.map((option) => option.value);
-    console.log("Selected Values:", tagValues);
+  //   // Send only the values to your backend
+  //   const tagValues = newValue.map((option) => option.value);
+  //   console.log("Selected Values:", tagValues);
 
-    // Assuming setCombinedTagsValues is a function to send the values to your backend
-    setCombinedTagsValues(tagValues);
+  //   // Assuming setCombinedTagsValues is a function to send the values to your backend
+  //   setCombinedTagsValues(tagValues);
+  // };
+  const handleTagChange = (newSelectedTags) => {
+    setSelectedTags(newSelectedTags);
+    console.log(newSelectedTags)
+    const selectedValues = newSelectedTags.map((option) => option.value);
+    setCombinedTagsValues(selectedValues);
+    console.log(selectedValues)
   };
-
   useEffect(() => {
     fetchUserData();
   }, []);
@@ -1446,96 +1453,11 @@ const Example = ({ charLimit = 4000 }) => {
                   //     ))}
                   //   </Box>
                   // )} */}
-              <FormControl sx={{ width: "100%" }}>
-                <Select
-                  multiple
-                  multiline
-                  size="small"
-                  // sx={{ marginTop: "8px", marginBottom: "8px", width: "100%" }}
-                  input={<OutlinedInput />}
-                  displayEmpty
-                  value={combinedTagsValues} // Store selected tag objects
-                  onChange={handleTagChange} // Handle selection
-                  renderValue={(selected) => {
-                    if (selected.length === 0) {
-                      return (
-                        <span style={{ color: "#aaa" }}>Select tags...</span>
-                      );
-                    }
-                    return (
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          gap: "6px",
-                          padding: "6px",
-                        }}
-                      >
-                        {selected.map((value) => {
-                          const option = tagoptions.find(
-                            (opt) => opt.value === value
-                          );
-                          return (
-                            <Chip
-                              key={value}
-                              label={option?.label}
-                              sx={{
-                                backgroundColor: option?.colour,
-                                color: "#fff",
-                                fontWeight: 500,
-                                fontSize: "10px",
-                                borderRadius: "16px",
-                                height: "20px",
-                                cursor: "pointer",
-                                boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-                              }}
-                            />
-                          );
-                        })}
-                      </Box>
-                    );
-                  }}
-                  MenuProps={{
-                    PaperProps: {
-                      style: { maxHeight: 250 },
-                    },
-                  }}
-                  sx={{
-                    borderRadius: "10px",
-                    "& .MuiOutlinedInput-root": { borderRadius: "10px" },
-                  }}
-                >
-                  {tagoptions.map((option) => {
-                    const dynamicWidth = Math.min(
-                      option.label.length * 8 + 16,
-                      150
-                    );
-                    return (
-                      <MenuItem
-                        key={option.value}
-                        value={option.value}
-                        sx={{
-                          backgroundColor: option.colour,
-                          color: "#fff",
-                          fontSize: "10px",
-                          borderRadius: "10px",
-                          margin: "5px",
-                          textAlign: "center",
-                          padding: "4px 9px",
-                          minWidth: `${dynamicWidth}px`,
-                          maxWidth: `${dynamicWidth}px`,
-                          "&:hover": {
-                            backgroundColor: option.colour,
-                            color: "#fff",
-                          },
-                        }}
-                      >
-                        {option.label}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
+                                 <TagsMultiSelectDropDown 
+  value={selectedTags}
+  onChange={handleTagChange}
+  placeholder="Tags"
+/>
             </Box>
             <Box mt={2} mr={2.5}>
               <InputLabel sx={{ color: "black" }}>Task Assignee</InputLabel>

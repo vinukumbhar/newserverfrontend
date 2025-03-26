@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import CloseIcon from "@mui/icons-material/Close";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Drawer, Checkbox } from "@mui/material";
-
+import TagsMultiSelectDropDown from "../../Templates/TagsMultiSelectDropDown"
 const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isSmallScreen }) => {
   const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
   const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
@@ -33,7 +33,7 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
   const [tagsNew, setTagsNew] = useState([]);
   const [tags, setTags] = useState([]);
   const [contactId, setContactId] = useState(null); // Added state for contact ID
-  const [combinedTagsValues, setCombinedTagsValues] = useState([]);
+  const [combinedTagsValues, setCombinedTagsValues] = useState();
 
   console.log(selectedContact);
   useEffect(() => {
@@ -138,21 +138,27 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
   //   const selectedTagsValues = newValue.map((option) => option.value);
   //   setCombinedTagsValues(selectedTagsValues);
   // };
-  const handleTagChange = (event) => {
-    const { value } = event.target;
+  // const handleTagChange = (event) => {
+  //   const { value } = event.target;
     
-    // Ensure the selected value is stored correctly
-    setTagsNew(value);
+  //   // Ensure the selected value is stored correctly
+  //   setTagsNew(value);
   
-    // Extract selected tag values
-    const selectedTagsValues = value.map((val) => {
-      const option = tagsOptions.find((opt) => opt.value === val);
-      return option?.value;
-    });
+  //   // Extract selected tag values
+  //   const selectedTagsValues = value.map((val) => {
+  //     const option = tagsOptions.find((opt) => opt.value === val);
+  //     return option?.value;
+  //   });
   
-    setCombinedTagsValues(selectedTagsValues);
+  //   setCombinedTagsValues(selectedTagsValues);
+  // };
+  const handleTagChange = (newSelectedTags) => {
+    setTagsNew(newSelectedTags);
+    console.log(newSelectedTags)
+    const selectedValues = newSelectedTags.map((option) => option.value);
+    setCombinedTagsValues(selectedValues);
+    console.log(selectedValues)
   };
-  
 
   useEffect(() => {
     fetchData();
@@ -413,7 +419,7 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
         <InputLabel sx={{ color: "black" }}>Email</InputLabel>
         <TextField fullWidth name="email" value={email} onChange={(e) => setEmail(e.target.value)} margin="normal" placeholder="Email" size="small" />
       </Box>
-      <Box mt={1}>
+      <Box mt={1} mr={2}>
         {/* <InputLabel sx={{ color: "black" }}>Tags</InputLabel>
         <Autocomplete
           multiple
@@ -432,78 +438,11 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
           )}
         /> */}
         <InputLabel sx={{ color: "black", mb: 1 }}>Tags</InputLabel>
-<FormControl sx={{ width: "100%" }}>
-  <Select
-    multiple
-    size="small"
-    id="tags-outlined"
-    value={tagsNew}
-    onChange={handleTagChange}
-    input={<OutlinedInput />}
-    displayEmpty
-    renderValue={(selected) => {
-      if (selected.length === 0) {
-        return <span style={{ color: "#aaa" }}>Select tags...</span>;
-      }
-      return (
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: "6px", padding: "6px" }}>
-          {selected.map((value) => {
-            const option = tagsOptions.find((opt) => opt.value === value);
-            return (
-              <Chip
-                key={value}
-                label={option?.label}
-                sx={{
-                  backgroundColor: option?.colour,
-                  color: "#fff",
-                  fontWeight: 500,
-                  fontSize: "10px",
-                  borderRadius: "16px",
-                  height: "20px",
-                  cursor: "pointer",
-                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-                }}
-              />
-            );
-          })}
-        </Box>
-      );
-    }}
-    MenuProps={{
-      PaperProps: {
-        style: { maxHeight: 250 },
-      },
-    }}
-    sx={{
-      borderRadius: "10px",
-      "& .MuiOutlinedInput-root": { borderRadius: "10px" },
-    }}
-  >
-    {tagsOptions.map((option) => {
-      const dynamicWidth = Math.min(option.label.length * 8 + 16, 150);
-      return (
-        <MenuItem
-          key={option.value}
-          value={option.value}
-          sx={{
-            backgroundColor: option.colour,
-            color: "#fff",
-            fontSize: "10px",
-            borderRadius: "10px",
-            margin: "5px",
-            textAlign: "center",
-            padding: "4px 9px",
-            minWidth: `${dynamicWidth}px`,
-            maxWidth: `${dynamicWidth}px`,
-            "&:hover": { backgroundColor: option.colour, color: "#fff" },
-          }}
-        >
-          {option.label}
-        </MenuItem>
-      );
-    })}
-  </Select>
-</FormControl>
+        <TagsMultiSelectDropDown 
+  value={tagsNew}
+  onChange={handleTagChange}
+  placeholder="Tags"
+/>
 
       </Box>
       <Typography variant="h6" gutterBottom sx={{ ml: 1, fontWeight: "bold", mt: 3 }}>

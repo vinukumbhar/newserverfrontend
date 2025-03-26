@@ -18,6 +18,7 @@ import {
   Switch,
   Button,
 } from "@mui/material";
+import TagsMultiSelectDropDown  from "../Templates/TagsMultiSelectDropDown"
 import MultiSelectDropdown from "../Templates/MultiSelectDropdown"
 import { IoChevronBackOutline } from "react-icons/io5";
 import CloseIcon from "@mui/icons-material/Close";
@@ -130,8 +131,8 @@ const NewTaskDrawer = ({ open, onClose, fetchTasksData, isEditMode, taskData,fet
   const [tagsNew, setTagsNew] = useState([]);
   const [AssigneesNew, setAssigneesNew] = useState([]);
 
-  const [priority, setPriority] = useState("");
-  const [status, setStatus] = useState("");
+  const [priority, setPriority] = useState("Medium");
+  const [status, setStatus] = useState("No status");
   const [StartsDateNew, setStartsDateNew] = useState(null);
   const [DueDateNew, setDueDateNew] = useState(null);
 
@@ -274,7 +275,7 @@ const NewTaskDrawer = ({ open, onClose, fetchTasksData, isEditMode, taskData,fet
   };
   //Tag FetchData ================
   const [tags, setTags] = useState([]);
-  const [combinedTagsValues, setCombinedTagsValues] = useState([]);
+  const [combinedTagsValues, setCombinedTagsValues] = useState();
   useEffect(() => {
     fetchTagData();
   }, []);
@@ -326,20 +327,29 @@ const NewTaskDrawer = ({ open, onClose, fetchTasksData, isEditMode, taskData,fet
       cursor: "pointer",
     },
   }));
-  const handleTagChange = (event) => {
-    const { value } = event.target;
+  // const handleTagChange = (event) => {
+  //   const { value } = event.target;
 
-    // Ensure the selected value is stored correctly
-    setTagsNew(value);
+  //   // Ensure the selected value is stored correctly
+  //   setTagsNew(value);
 
-    // Extract selected tag values
-    const selectedTagsValues = value.map((val) => {
-      const option = tagsoptions.find((opt) => opt.value === val);
-      return option?.value;
-    });
+  //   // Extract selected tag values
+  //   const selectedTagsValues = value.map((val) => {
+  //     const option = tagsoptions.find((opt) => opt.value === val);
+  //     return option?.value;
+  //   });
 
-    setCombinedTagsValues(selectedTagsValues);
+  //   setCombinedTagsValues(selectedTagsValues);
+  // };
+ 
+  const handleTagChange = (newSelectedTags) => {
+    setTagsNew(newSelectedTags);
+    console.log(newSelectedTags)
+    const selectedValues = newSelectedTags.map((option) => option.value);
+    setCombinedTagsValues(selectedValues);
+    console.log(selectedValues)
   };
+ 
   const [tempvalues, setTempValues] = useState();
 
   const handletemp = async (event, newValue) => {
@@ -904,9 +914,9 @@ console.log(subtaskData)
                   onChange={handleEditorChange}
                 />
               </Box>
-              <Box mt={2}>
+              <Box mt={2} mr={1}>
                 <InputLabel sx={{ color: "black", mb: 1 }}>Tags</InputLabel>
-                <FormControl sx={{ width: "100%" }}>
+                {/* <FormControl sx={{ width: "100%" }}>
                   <Select
                     multiple
                     size="small"
@@ -994,7 +1004,12 @@ console.log(subtaskData)
                       );
                     })}
                   </Select>
-                </FormControl>
+                </FormControl> */}
+                                   <TagsMultiSelectDropDown 
+                  value={tagsNew}
+                  onChange={handleTagChange}
+                  placeholder="Tags"
+                />
               </Box>
               <Box mt={2}>
                 <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>

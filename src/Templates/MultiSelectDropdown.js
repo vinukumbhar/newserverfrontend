@@ -222,7 +222,7 @@ import {
   Typography,
   IconButton
 } from "@mui/material";
-import { FaCaretUp, FaCaretDown } from "react-icons/fa";
+import { FaCaretUp, FaCaretDown,FaTimes } from "react-icons/fa";
 
 const MultiSelectDropdown = ({
   value = [],
@@ -347,9 +347,36 @@ const MultiSelectDropdown = ({
             </Typography>
           )}
         </Box>
+        {/* {value.length > 0 && (
+          <Box
+            sx={{
+              padding: "8px 12px",
+              color: "red",
+              cursor: "pointer",
+              "&:hover": { bgcolor: "action.hover" },
+            }}
+            onClick={clearSelection}
+          >
+            X Clear selected
+          </Box>
+        )}
         <IconButton size="small" sx={{ p: 0 }}>
           {anchorEl ? <FaCaretUp /> : <FaCaretDown />}
-        </IconButton>
+        </IconButton> */}
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+        {value.length > 0 && (
+          <IconButton
+                        onClick={clearSelection}
+                        size="small"
+                        sx={{ color: "text.secondary" }}
+                      >
+                        <FaTimes />
+                      </IconButton>
+        )}
+                  <IconButton size="small">
+                    {anchorEl ? <FaCaretUp /> : <FaCaretDown />}
+                  </IconButton>
+                </Box>
       </Box>
 
       <Menu
@@ -402,7 +429,7 @@ const MultiSelectDropdown = ({
           <Typography sx={{ p: 2, color: "gray" }}>No results found</Typography>
         )}
 
-        {value.length > 0 && (
+        {/* {value.length > 0 && (
           <Box
             sx={{
               padding: "8px 12px",
@@ -414,7 +441,7 @@ const MultiSelectDropdown = ({
           >
             X Clear selected
           </Box>
-        )}
+        )} */}
       </Menu>
     </Box>
   );
