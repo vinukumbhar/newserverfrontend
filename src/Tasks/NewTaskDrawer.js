@@ -44,7 +44,7 @@ const NewTaskDrawer = ({ open, onClose, fetchTasksData, isEditMode, taskData,fet
   const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
   const [accountdata, setaccountdata] = useState([]);
   const [selectedaccount, setSelectedaccount] = useState(null);
-
+  const [errorTooltip, setErrorTooltip] = useState("");
   const handleAccountChange = (selectedOptions) => {
     setSelectedaccount(selectedOptions);
     console.log("aacounts", selectedOptions);
@@ -734,7 +734,7 @@ console.log(subtaskData)
             <Box mt={2}>
               <Box>
                 <InputLabel sx={{ color: "black" }}>
-                  Account name,ID or email
+                Assignees
                 </InputLabel>
 
                 <Autocomplete
@@ -768,7 +768,7 @@ console.log(subtaskData)
                 />
               </Box>
               <Box mt={2}>
-                <InputLabel sx={{ color: "black" }}>Select Job</InputLabel>
+                <InputLabel sx={{ color: "black" }}>Job</InputLabel>
                 <Autocomplete
                   options={jobsoptions}
                   groupBy={(option) => option.group} // Group by pipeline name

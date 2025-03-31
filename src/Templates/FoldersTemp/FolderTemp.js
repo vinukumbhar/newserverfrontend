@@ -20,8 +20,8 @@ const FolderTemp = () => {
   const [isTempEditForm, setIsTempEditForm] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [tempName, setTempName] = useState("");
-  const [clientFolder, setClientFolder] = useState("FirmClient Uploaded Document");
-  const [firmFolder, setFirmFolder] = useState("Firm Doc Shared With Client");
+  const [clientFolder, setClientFolder] = useState("Client Uploaded Documents");
+  const [firmFolder, setFirmFolder] = useState("Firm Docs Shared With Client");
   const [privateFolder, setPrivateFolder] = useState("Private");
   const [templateId, setTemplateId] = useState();
 

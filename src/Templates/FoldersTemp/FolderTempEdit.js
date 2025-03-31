@@ -7,14 +7,14 @@ import {
   IconButton,
   Divider,
   Input,
-  Paper,
+  Paper,Drawer,LinearProgress
 } from "@mui/material";
 import { FaRegFolderClosed } from "react-icons/fa6";
 import { HiDocumentArrowUp } from "react-icons/hi2";
 import UploadDocument from "./uploadDocumentWorking";
 import CreateFolder from "./CreateFolder";
-
-
+import { MdOutlineDriveFolderUpload } from "react-icons/md";
+import JSZip from "jszip";
 
 function FolderTempEdit({templateId}) {
 
@@ -233,6 +233,66 @@ function FolderTempEdit({templateId}) {
       folders: updatedFolderStructure,
     }));
   };
+    // Inside your component
+const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+const [uploadProgress, setUploadProgress] = useState(0);
+const [uploadStatus, setUploadStatus] = useState('');
+  const handleFolderChange = async (event) => {
+    const folderFiles = event.target.files;
+    if (!folderFiles.length) return;
+  
+    // Open the drawer immediately
+    setIsDrawerOpen(true);
+    setUploadStatus('Preparing files...');
+    setUploadProgress(0);
+  
+    try {
+      const firstFile = folderFiles[0];
+      const folderPath = firstFile.webkitRelativePath;
+      const folderName = folderPath.split("/")[0];
+  
+      const zip = new JSZip();
+      
+      // Add files to zip
+      Array.from(folderFiles).forEach((file) => {
+        const relativePath = file.webkitRelativePath.replace(`${folderName}/`, "");
+        zip.file(relativePath, file);
+      });
+  
+      // Update progress
+      setUploadStatus('Compressing folder...');
+      setUploadProgress(30);
+  
+      const zipBlob = await zip.generateAsync({ 
+        type: "blob" 
+      }, (metadata) => {
+        setUploadProgress(30 + Math.round(metadata.percent * 0.6));
+      });
+  
+      const formData = new FormData();
+      formData.append("folderZip", zipBlob, `${folderName}.zip`);
+      formData.append("folderName", folderName);
+  
+      setUploadStatus('Uploading...');
+      setUploadProgress(90);
+  
+      await axios.post("http://127.0.0.1:8005/upload-folder", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          setUploadProgress(90 + (percentCompleted * 0.1));
+        }
+      });
+  
+      setUploadStatus('Success');
+      setUploadProgress(100);
+      
+    } catch (error) {
+      console.error("Upload failed:", error);
+      setUploadStatus('Error uploading folder');
+      setUploadProgress(0);
+    }
+  };
 
   useEffect(() => {
     if (newFolderPath) {
@@ -256,6 +316,37 @@ function FolderTempEdit({templateId}) {
 
 
 
+  // const handleFolderChange = async (event) => {
+  //   const folderFiles = event.target.files;
+  //   if (!folderFiles.length) return;
+
+  //   const firstFile = folderFiles[0];
+  //   const folderPath = firstFile.webkitRelativePath;
+  //   const folderName = folderPath.split("/")[0]; // Extract folder name
+
+  //   const zip = new JSZip();
+  //   Array.from(folderFiles).forEach((file) => {
+  //     const relativePath = file.webkitRelativePath.replace(`${folderName}/`, ""); // Maintain structure
+  //     zip.file(relativePath, file);
+  //   });
+
+  //   const zipBlob = await zip.generateAsync({ type: "blob" });
+
+  //   const formData = new FormData();
+  //   formData.append("folderZip", zipBlob, `${folderName}.zip`); // Name ZIP after the folder
+  //   formData.append("folderName", folderName); // Send folder name
+
+  //   try {
+  //     await axios.post("http://127.0.0.1:8005/upload-folder", formData, {
+  //       headers: { "Content-Type": "multipart/form-data" },
+  //     });
+  //     alert("Folder uploaded successfully!");
+    
+  //   } catch (error) {
+  //     console.error("Upload failed:", error);
+  //     alert("Error uploading folder.");
+  //   }
+  // };
   return (
     <div >
      <Typography>Edit folder template</Typography>
@@ -299,7 +390,7 @@ function FolderTempEdit({templateId}) {
 
         /> 
 
-        {/* <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <IconButton
             component="label"
             htmlFor="folderInput"
@@ -314,18 +405,12 @@ function FolderTempEdit({templateId}) {
               id="folderInput"
               webkitdirectory="true"
               directory="true"
+              onChange={handleFolderChange}
               style={{ display: "none" }} // Hide the input element
             />
           </label>
-        </Box> */}
-        {/* <UploadFolder
-          isSendFolderForm={isSendFolderForm}
-          setIsSendFolderForm={setIsSendFolderForm}
-          templateId={templateId}
-          handleUploadFormClose={handleUploadFormClose}
-          contents={contents}
-          setContents={setContents}
-        /> */}
+        </Box>
+       
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <IconButton

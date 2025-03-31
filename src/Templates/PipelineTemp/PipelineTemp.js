@@ -52,6 +52,7 @@ import { CiMenuKebab } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
 import DeleteIcon from "@mui/icons-material/Delete";
+import TagAutomationComponent from "../TagAutomationComponent"
 const PipelineTemp = () => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -2040,7 +2041,7 @@ const PipelineTemp = () => {
       case "Update account tags":
         return (
           <>
-            <Grid item>
+            {/* <Grid item>
               <Box
                 sx={{
                   border: "2px solid #ddd",
@@ -2054,7 +2055,7 @@ const PipelineTemp = () => {
                 </Typography>
 
                 <Box sx={{ display: "flex", alignItems: "center", gap: 5 }}>
-                  {/* Add Tags Section */}
+                
                   <Box mt={2} width={"50%"}>
                     <Typography gutterBottom variant="body2">
                       Add Tags
@@ -2179,7 +2180,6 @@ const PipelineTemp = () => {
                     </FormControl>
                   </Box>
 
-                  {/* Remove Tags Section */}
                   <Box mt={2} width={"50%"}>
                     <Typography gutterBottom variant="body2">
                       Remove Tags
@@ -2332,8 +2332,16 @@ const PipelineTemp = () => {
                   Save Automation
                 </Button>
               </Box>
-            </Grid>
+            </Grid> */}
 
+<TagAutomationComponent
+        automationSelect="Priority Tagging"
+        // onSaveAutomation={handleSaveAutomation}
+        tagsoptions={tagsoptions}
+        initialAddTags={addTags}
+        initialRemoveTags={removeTags}
+        initialSelectedTags={selectedTags}
+      />
             {/* Condition tags for automation */}
             <Drawer
               anchor="right"

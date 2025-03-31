@@ -156,7 +156,7 @@ const PendingTasks = () => {
   // };
 
   const handleClick = async (id) => {
-    
+    console.log(id)
     try {
       const response = await fetch(`${ACCOUNT_TASKS_API}/accountstasks/task/listbyid/${id}`, {
         method: "GET",
