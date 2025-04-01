@@ -10,6 +10,7 @@ import {
   Typography,
   Box,
   TableContainer,
+  Button,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import { CiMenuKebab } from "react-icons/ci";
@@ -92,13 +93,36 @@ const ProposalsEls = () => {
         });
     }
   };
+  const handleCreateProposal=()=>{
+    navigate("/billing/proposalsandels/new");
+  }
 
   return (
-    <Box >
-      <Box>
+    <Box>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
         <Typography variant="h5" fontWeight="bold">
           Proposals & Els
         </Typography>
+        <Button
+          variant="contained"
+          sx={{
+            backgroundColor: "var(--color-save-btn)", // Normal background
+
+            "&:hover": {
+              backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+            },
+            borderRadius: "15px",
+          }}
+          onClick={handleCreateProposal}
+        >
+          New Proposals & Els
+        </Button>
       </Box>
 
       <TableContainer component={Paper} sx={{ overflow: "visible" }}>
@@ -331,7 +355,6 @@ const ProposalsEls = () => {
                         >
                           Delete
                         </Typography>
-                        
                       </Box>
                     )}
                   </IconButton>

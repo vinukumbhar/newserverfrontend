@@ -1,5 +1,5 @@
-import React, { useState, useEffect,  } from "react";
-import { Stepper, Step, StepLabel, Button, Typography, Box, Grid, TextField, FormControl, FormControlLabel, Switch, List, ListItem, ListItemText, Popover, Autocomplete, Alert, InputLabel } from "@mui/material";
+import React, { useState, useEffect, useMemo ,useContext} from "react";
+import { Chip, Stepper, Step, StepLabel, Button, Typography, Box, Grid, TextField, FormControl, FormControlLabel, Switch, List, ListItem, ListItemText, Popover, Autocomplete, Alert, InputLabel } from "@mui/material";
 import Editor from "../../Templates/Texteditor/Editor";
 import TermEditor from "../../Templates/Texteditor/TermEditor";
 import CreatableSelect from "react-select/creatable";
@@ -13,25 +13,23 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { RxCross2 } from "react-icons/rx";
 import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
-import { CiMenuKebab } from "react-icons/ci";
 import EditorShortcodes from "../../Templates/Texteditor/EditorShortcodes";
 import { useTheme } from "@mui/material/styles";
 import { IoArrowBackSharp } from "react-icons/io5";
+import { LoginContext } from '../../Sidebar/Context/Context.js'
+import AccountMultiSelectDropdown from "../../Templates/AccountMultiSelectDropdown.js"
+const MyStepperUpdate = () => {
 
-const MyStepperUpdateAcc = () => {
-
-  const { data, _id } = useParams();
-  console.log(_id);
-  console.log(data);
-
+  const { data } = useParams();
   const theme = useTheme();
   const navigate = useNavigate();
+
   const SERVICE_API = process.env.REACT_APP_SERVICES_URL;
   const USER_API = process.env.REACT_APP_USER_URL;
   const PROPOSAL_API = process.env.REACT_APP_PROPOSAL_TEMP_URL;
-  const PROPOSAL_ACCOUNT_API = process.env.REACT_APP_PROPOSAL_URL;
   const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
-
+  const PROPOSAL_ACCOUNT_API = process.env.REACT_APP_PROPOSAL_URL;
+  // const ACCOUNT_PROPOSAL= process.env.REACT_APP_PROPOSAL_UR;
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [activeStep, setActiveStep] = useState(0);
   const [introductionContent, setIntroductionContent] = useState("");
@@ -85,14 +83,95 @@ const MyStepperUpdateAcc = () => {
   };
   console.log(invoiceDataUpdate);
 
-  // console.log(combinedValues)
 
+  // console.log(combinedValues)
+  const [proposalTempData, setProposalTempData] = useState([]);
+  const [selectedProposalTemp, setSelectedProposalTemp] = useState();
+  const [combinedProposalTempValues, setCombinedProposalTempValues] = useState();
+
+  const fetchProposalTemplateData = async () => {
+    try {
+      const url = `${PROPOSAL_API}/Workflow/proposalesandels/proposalesandels`;
+      const response = await fetch(url);
+      const data = await response.json();
+      console.log(data);
+      setProposalTempData(data.proposalesAndElsTemplates);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const templateOptions = proposalTempData.map((proposaltemp) => ({
+    value: proposaltemp._id,
+    label: proposaltemp.templatename,
+  }));
+
+  const handleProposalTempChange = (event, selectedOption) => {
+    console.log(selectedOption); // Single selected object
+    setSelectedProposalTemp(selectedOption); // Update the selected template
+    // setCombinedProposalTempValues(selectedOption ? [selectedOption.value] : []); // Store value as an array with one element or an empty array if no selection
+    fetchproposalbyid(selectedOption.value)
+  };
+
+//   const [accountData, setAccountData] = useState([]);
+//   const [selectedAccount, setSelectedAccount] = useState([]);
+//   console.log(selectedAccount)
+//   const fetchAccountsData = async () => {
+//     try {
+//       const url = `${ACCOUNT_API}/accounts/account/accountdetailslist/`;
+//       const response = await fetch(url);
+//       const result = await response.json();
+
+//       if (Array.isArray(result.accountlist)) {
+//         setAccountData(result.accountlist);
+//         console.log(result.accountlist);
+
+//         // Assuming `data` contains the selected account ID(s) as a string or array of IDs
+
+//         // Adjust _id to the actual selected ID or IDs you need
+//         console.log(data)
+//         const selectedAccountData = result.accountlist.find((account) => account.id === data);
+//         console.log(selectedAccountData)
+//         if (selectedAccountData) {
+//           const selectedAccount = [{
+//             label: selectedAccountData.Name,
+//             value: selectedAccountData.id,
+//           }];
+//           setSelectedAccount(selectedAccount); // Set single account
+//         } else {
+//           setSelectedAccount(null); // Clear if no matching account found
+//         }
+//       } else {
+//         console.error("Account list is not an array", result.accountlist);
+//       }
+
+//     } catch (error) {
+//       console.log("Error:", error);
+//     }
+//   };
+//   const AccountsOptions = (accountData || []).map((account) => ({
+//     value: account.id,
+//     label: account.Name,
+//   }));
+ const [accountdata, setaccountdata] = useState([]);
+  const [selectedaccount, setSelectedaccount] = useState();
+
+  const [combinedaccountValues, setCombinedaccountValues] = useState();
+const handleAccountChange = (newSelectedAcc) => {
+    setSelectedaccount(newSelectedAcc);
+    console.log(newSelectedAcc)
+    const selectedValues = newSelectedAcc.map((option) => option.value);
+    setCombinedaccountValues(selectedValues);
+    console.log(selectedValues)
+  };
+//   const handleDelete = (valueToDelete) => {
+//     setSelectedAccount((prevSelected) => prevSelected.filter((value) => value !== valueToDelete));
+//   };
   useEffect(() => {
     fetchUserData();
     fetchProposalTemplateData();
-    // console.log('Invoice data received:', serviceAndInvoiceData);
+    // fetchAccountsData();
   }, []);
-  const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
+  // const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
   const fetchUserData = async () => {
     try {
       const url = `${LOGIN_API}/common/users/roles?roles=TeamMember,Admin`;
@@ -114,88 +193,6 @@ const MyStepperUpdateAcc = () => {
     value: user._id,
     label: user.username,
   }));
-
-  // useEffect(() => {
-  //   // Set shortcuts based on selected option
-  //   if (selectedOption === "contacts") {
-  //     const contactShortcuts = [
-  //       { title: "Account Shortcodes", isBold: true },
-  //       { title: "Account Name", isBold: false, value: "ACCOUNT_NAME" },
-  //       { title: "Custom field:Website", isBold: false, value: "ACCOUNT_CUSTOM_FIELD:Website" },
-  //       { title: "Contact Shortcodes", isBold: true },
-  //       { title: "Contact Name", isBold: false, value: "CONTACT_NAME" },
-  //       { title: "First Name", isBold: false, value: "FIRST_NAME" },
-  //       { title: "Middle Name", isBold: false, value: "MIDDLE_NAME" },
-  //       { title: "Last Name", isBold: false, value: "LAST_NAME" },
-  //       { title: "Phone number", isBold: false, value: "PHONE_NUMBER" },
-  //       { title: "Country", isBold: false, value: "COUNTRY" },
-  //       { title: "Company name", isBold: false, value: "COMPANY_NAME " },
-  //       { title: "Street address", isBold: false, value: "STREET_ADDRESS" },
-  //       { title: "City", isBold: false, value: "CITY" },
-  //       { title: "State/Province", isBold: false, value: "STATE / PROVINCE" },
-  //       { title: "Zip/Postal code", isBold: false, value: "ZIP / POSTAL CODE" },
-  //       { title: "Custom field:Email", isBold: false, value: "CONTACT_CUSTOM_FIELD:Email" },
-  //       { title: "Date Shortcodes", isBold: true },
-  //       { title: "Current day full date", isBold: false, value: "CURRENT_DAY_FULL_DATE" },
-  //       { title: "Current day number", isBold: false, value: "CURRENT_DAY_NUMBER" },
-  //       { title: "Current day name", isBold: false, value: "CURRENT_DAY_NAME" },
-  //       { title: "Current week", isBold: false, value: "CURRENT_WEEK" },
-  //       { title: "Current month number", isBold: false, value: "CURRENT_MONTH_NUMBER" },
-  //       { title: "Current month name", isBold: false, value: "CURRENT_MONTH_NAME" },
-  //       { title: "Current quarter", isBold: false, value: "CURRENT_QUARTER" },
-  //       { title: "Current year", isBold: false, value: "CURRENT_YEAR" },
-  //       { title: "Last day full date", isBold: false, value: "LAST_DAY_FULL_DATE" },
-  //       { title: "Last day number", isBold: false, value: "LAST_DAY_NUMBER" },
-  //       { title: "Last day name", isBold: false, value: "LAST_DAY_NAME" },
-  //       { title: "Last week", isBold: false, value: "LAST_WEEK" },
-  //       { title: "Last month number", isBold: false, value: "LAST_MONTH_NUMBER" },
-  //       { title: "Last month name", isBold: false, value: "LAST_MONTH_NAME" },
-  //       { title: "Last quarter", isBold: false, value: "LAST_QUARTER" },
-  //       { title: "Last_year", isBold: false, value: "LAST_YEAR" },
-  //       { title: "Next day full date", isBold: false, value: "NEXT_DAY_FULL_DATE" },
-  //       { title: "Next day number", isBold: false, value: "NEXT_DAY_NUMBER" },
-  //       { title: "Next day name", isBold: false, value: "NEXT_DAY_NAME" },
-  //       { title: "Next week", isBold: false, value: "NEXT_WEEK" },
-  //       { title: "Next month number", isBold: false, value: "NEXT_MONTH_NUMBER" },
-  //       { title: "Next month name", isBold: false, value: "NEXT_MONTH_NAME" },
-  //       { title: "Next quarter", isBold: false, value: "NEXT_QUARTER" },
-  //       { title: "Next year", isBold: false, value: "NEXT_YEAR" },
-  //     ];
-  //     setShortcuts(contactShortcuts);
-  //   } else if (selectedOption === "account") {
-  //     const accountShortcuts = [
-  //       { title: "Account Shortcodes", isBold: true },
-  //       { title: "Account Name", isBold: false, value: "ACCOUNT_NAME" },
-  //       { title: "Custom field:Website", isBold: false, value: "ACCOUNT_CUSTOM_FIELD:Website" },
-  //       { title: "Date Shortcodes", isBold: true },
-  //       { title: "Current day full date", isBold: false, value: "CURRENT_DAY_FULL_DATE" },
-  //       { title: "Current day number", isBold: false, value: "CURRENT_DAY_NUMBER" },
-  //       { title: "Current day name", isBold: false, value: "CURRENT_DAY_NAME" },
-  //       { title: "Current week", isBold: false, value: "CURRENT_WEEK" },
-  //       { title: "Current month number", isBold: false, value: "CURRENT_MONTH_NUMBER" },
-  //       { title: "Current month name", isBold: false, value: "CURRENT_MONTH_NAME" },
-  //       { title: "Current quarter", isBold: false, value: "CURRENT_QUARTER" },
-  //       { title: "Current year", isBold: false, value: "CURRENT_YEAR" },
-  //       { title: "Last day full date", isBold: false, value: "LAST_DAY_FULL_DATE" },
-  //       { title: "Last day number", isBold: false, value: "LAST_DAY_NUMBER" },
-  //       { title: "Last day name", isBold: false, value: "LAST_DAY_NAME" },
-  //       { title: "Last week", isBold: false, value: "LAST_WEEK" },
-  //       { title: "Last month number", isBold: false, value: "LAST_MONTH_NUMBER" },
-  //       { title: "Last month name", isBold: false, value: "LAST_MONTH_NAME" },
-  //       { title: "Last quarter", isBold: false, value: "LAST_QUARTER" },
-  //       { title: "Last_year", isBold: false, value: "LAST_YEAR" },
-  //       { title: "Next day full date", isBold: false, value: "NEXT_DAY_FULL_DATE" },
-  //       { title: "Next day number", isBold: false, value: "NEXT_DAY_NUMBER" },
-  //       { title: "Next day name", isBold: false, value: "NEXT_DAY_NAME" },
-  //       { title: "Next week", isBold: false, value: "NEXT_WEEK" },
-  //       { title: "Next month number", isBold: false, value: "NEXT_MONTH_NUMBER" },
-  //       { title: "Next month name", isBold: false, value: "NEXT_MONTH_NAME" },
-  //       { title: "Next quarter", isBold: false, value: "NEXT_QUARTER" },
-  //       { title: "Next year", isBold: false, value: "NEXT_YEAR" },
-  //     ];
-  //     setShortcuts(accountShortcuts);
-  //   }
-  // }, [selectedOption]);
 
   useEffect(() => {
     // Simulate filtered shortcuts based on some logic (e.g., search)
@@ -283,7 +280,7 @@ const MyStepperUpdateAcc = () => {
       setShortcuts(accountShortcuts);
     }
   }, [selectedOption]);
-  
+
   const handleCloseDropdown = () => {
     setAnchorEl(null);
     setShowDropdown(false);
@@ -313,7 +310,7 @@ const MyStepperUpdateAcc = () => {
   });
 
   const steps = ["General"].concat(stepsVisibility.Introduction ? ["Introduction"] : [], stepsVisibility.Terms ? ["Terms"] : [], stepsVisibility.ServicesInvoices ? ["Services & Invoices"] : [], activeOption === "invoice" ? ["Payments"] : []);
-  // console.log(steps)
+
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -322,6 +319,18 @@ const MyStepperUpdateAcc = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
+  const handleReset = (serviceAndInvoiceData) => {
+    // console.log(serviceAndInvoiceData)
+    if (!serviceAndInvoiceData) {
+      console.error("Error: serviceAndInvoiceData is undefined");
+      return;
+    }
+    // onupdateserviceandinvoiceSettings(serviceAndInvoiceData);
+    updatesaveProposaltemp();
+    setActiveStep(0);
+    // navigate(`accountsdash/proposals/${data}`)
+    navigate(`/billing/proposalsandels`);
+  };
 
 
   const handleStepClick = (step) => {
@@ -406,6 +415,7 @@ const MyStepperUpdateAcc = () => {
   };
   const [addInvoice, setAddInvoice] = useState("");
   const [addInvoiceitemized, setAddInvoiceitemized] = useState("");
+
   const handleShowInvoiceForm = () => {
     setActiveOption("invoice");
     setAddInvoice("invoice");
@@ -517,35 +527,18 @@ const MyStepperUpdateAcc = () => {
   const [invoiceData, setInvoiceData] = useState({});
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const fetchproposalbyid = async (_id) => {
+  const fetchproposalbyid = async (templateid) => {
     try {
-      const url = `${PROPOSAL_ACCOUNT_API}/proposalandels/proposalaccountwise/proposallist/${_id}`;
+      const url = `${PROPOSAL_API}/workflow/proposalesandels/proposalesandelslist/${templateid}`;
       const response = await fetch(url);
       const result = await response.json();
-      const proposalesandelsTemplate = result.proposalesandelsAccountwise;
+
+      const proposalesandelsTemplate = result.proposalesAndElsTemplate;
       console.log(proposalesandelsTemplate);
       // Set template name and proposal name
-
-      const accountData = proposalesandelsTemplate.accountid;
-
-      if (accountData && accountData._id) {
-        const selectedAccount = [{
-          label: accountData.accountName, // Map `accountName` to `label`
-          value: accountData._id,         // Map `_id` to `value`
-        }];
-        setSelectedAccount(selectedAccount);
-      } else {
-        setSelectedAccount(null); // Clear if no matching account found
-      }
-
-      const selectedProposal = {
-        label: proposalesandelsTemplate.proposaltemplateid?.templatename,
-        value: proposalesandelsTemplate.proposaltemplateid?._id,
-      };
-
-      setSelectedProposalTemp(selectedProposal);
-      // settemplatename(proposalesandelsTemplate.templatename);
+      settemplatename(proposalesandelsTemplate.templatename);
       setProposalName(proposalesandelsTemplate.proposalname);
+
       // Map team members for Autocomplete
       const mappedOptions = proposalesandelsTemplate.teammember.map((member) => ({
         label: member.username, // Display username
@@ -576,8 +569,13 @@ const MyStepperUpdateAcc = () => {
       setPaymentTerms(proposalesandelsTemplate.paymentterms);
       setPaymentDueDate(proposalesandelsTemplate.paymentduedate);
       setPaymentAmount(proposalesandelsTemplate.paymentamount);
-
+      // Set invoice data
+      console.log(proposalesandelsTemplate.servicesandinvoices);
+      // if (proposalesandelsTemplate.servicesandinvoices === "true") {
+      console.log(proposalesandelsTemplate.servicesandinvoices);
       if (proposalesandelsTemplate.Additemizedserviceswithoutcreatinginvoices === "service") {
+        console.log(proposalesandelsTemplate.lineItems);
+
         const mappedLineItems = proposalesandelsTemplate.lineItems.map((item) => ({
           productName: item.productorService || "", // Map productorService to productName
           description: item.description || "",
@@ -591,9 +589,8 @@ const MyStepperUpdateAcc = () => {
         setRows(mappedLineItems);
         // summary(proposalesandelsTemplate.summary)
       }
-
-      setTaxRate(proposalesandelsTemplate.summary.taxRate || '');
-
+      setTaxRate(proposalesandelsTemplate.summary.taxRate);
+      setIsUpdating(true);
       const invoiceData = {
         servicesandinvoicetempid: proposalesandelsTemplate.servicesandinvoicetempid,
         invoicetemplatename: proposalesandelsTemplate.invoicetemplatename,
@@ -605,10 +602,11 @@ const MyStepperUpdateAcc = () => {
         lineItems: proposalesandelsTemplate.lineItems,
         summary: proposalesandelsTemplate.summary,
         notetoclient: proposalesandelsTemplate.notetoclient,
+        // isUpdating: isUpdating,
       };
 
       setInvoiceData(invoiceData);
-
+      // serviceandinvoiceSettings(invoiceData);
       console.log(invoiceData);
       // Conditionally set the active option
       if (proposalesandelsTemplate.Addinvoiceoraskfordeposit === "invoice") {
@@ -619,7 +617,6 @@ const MyStepperUpdateAcc = () => {
         setAddInvoiceitemized(proposalesandelsTemplate.Additemizedserviceswithoutcreatinginvoices);
       }
       // }
-      setIsUpdating(true);
       // Set the rows (line items)
       // setRows(proposalesandelsTemplate.lineItems);
     } catch (error) {
@@ -627,8 +624,6 @@ const MyStepperUpdateAcc = () => {
     }
   };
 
-
-  // Define service and invoice settings outside of fetchData
   const serviceandinvoiceSettings = {
     servicesandinvoicetempid: invoiceData?.servicesandinvoicetempid,
     invoicetemplatename: invoiceData?.invoicetemplatename,
@@ -644,43 +639,102 @@ const MyStepperUpdateAcc = () => {
     isUpdating: isUpdating,
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      await fetchproposalbyid(_id);
-    };
+  console.log(serviceandinvoiceSettings);
 
+  // Define service and invoice settings outside of fetchData
+  // const serviceandinvoiceSettings = {
+  //   servicesandinvoicetempid: invoiceData?.servicesandinvoicetempid,
+  //   invoicetemplatename: invoiceData?.invoicetemplatename,
+  //   invoiceteammember: invoiceData?.invoiceteammember,
+  //   issueinvoice: invoiceData?.issueinvoice,
+  //   specificdate: invoiceData?.specificdate,
+  //   specifictime: invoiceData?.specifictime,
+  //   description: invoiceData?.description,
+  //   lineItems: invoiceData?.lineItems,
+  //   summary: invoiceData?.summary,
+  //   notetoclient: invoiceData?.notetoclient,
+
+  //   isUpdating: isUpdating,
+  // };
+
+  useEffect(() => {
+    // const fetchData = async () => {
+    //   await fetchproposalbyid();
+    // };
     fetchData();
   }, []); // Empty dependency array to run only once on mount
 
-  console.log(serviceandinvoiceSettings);
+  // console.log(serviceandinvoiceSettings);
+  const { logindata, setLoginData } = useContext(LoginContext);
 
-  const handleReset = (serviceAndInvoiceData) => {
-    // console.log(serviceAndInvoiceData)
-    if (!serviceAndInvoiceData) {
-      console.error("Error: serviceAndInvoiceData is undefined");
-      return;
-    }
-    // onupdateserviceandinvoiceSettings(serviceAndInvoiceData);
-    updatesaveProposaltemp();
-    setActiveStep(0);
-    navigate(`/accountsdash/proposals/${data}`);
+  const [loginsData, setloginsData] = useState("");
+
+  const [username, setUsername] = useState("");
+ 
+  const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
+  const fetchUserLoginData = async (id) => {
+    const maxLength = 15;
+    const myHeaders = new Headers();
+
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+    const url = `${LOGIN_API}/common/user/${id}`;
+    fetch(url + loginsData, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+       
+        setUsername(result.username);
+      });
   };
+  useEffect(() => {
+    
+    fetchUserLoginData(logindata.user.id);
+  }, []);
 
+  const proposalSendMail = () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      accountid: data,
+      username: username,
+      proposalName: templatename,
+      proposalLink: "http://localhost:3000/accountsdash/organizers/6718e47e1b7d40bc7d33611e"
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow"
+    };
+    console.log(raw)
+
+    fetch(`${PROPOSAL_ACCOUNT_API}/proposalsendemail`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => console.log(result))
+      .catch((error) => console.error(error));
+  }
   const updatesaveProposaltemp = () => {
     // if (!validateForm()) {
     //   // toast.error("Please fix the validation errors.");
     //   return;
     // }
     const currentStep = steps[activeStep];
-
+    console.log(activeOption)
+    console.log(activeStep)
+    console.log(currentStep)
     if (["General", "Introduction", "Terms"].includes(currentStep)) {
       const options = {
-        method: "PATCH",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          accountids: [data],
+          accountids: combinedaccountValues,
           proposaltemplateid: selectedProposalTemp.value,
           templatename: templatename,
           teammember: combinedTeamMemberValues,
@@ -689,6 +743,7 @@ const MyStepperUpdateAcc = () => {
           terms: stepsVisibility.Terms,
           servicesandinvoices: stepsVisibility.ServicesInvoices,
           introductiontext: introductionContent,
+          // servicesandinvoiceid: "66fa83ffe6e0f4ca11c2204d",
           custommessageinemail: stepsVisibility.CustomEmailMessage,
           custommessageinemailtext: description,
           reminders: stepsVisibility.Reminders,
@@ -701,35 +756,28 @@ const MyStepperUpdateAcc = () => {
           active: true,
         }),
       };
-
-      const url = `${PROPOSAL_ACCOUNT_API}/proposalandels/proposalaccountwise/${_id}`;
-      console.log(url); // Log the URL for debugging
-      console.log(options.body); // Log request body for debugging
-
-      fetch(url, options)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`Request failed with status ${response.status}`);
-          }
-          return response.json();
-        })
+      console.log(options.body);
+      fetch(`${PROPOSAL_ACCOUNT_API}/proposalandels/proposalaccountwise/`, options)
+        .then((response) => response.json())
         .then((result) => {
           console.log(result.message);
-          if (result?.message === "Proposalesandels Accountwise Updated successfully") {
-            toast.success("Proposalesandels Accountwise Updated successfully");
-            
+          // toast.success("Invoice created successfully");
+          if (result && result.message === "ProposalesandelsAccountwise created successfully") {
+            // fetchPrprosalsAllData();
+            // navigate("/firmtemp/templates/proposals");
+            toast.success("ProposalesAndEls Created successfully");
+            // proposalSendMail();
           } else {
-            toast.error(result.message || "Failed to update ProposalesAndEls");
+            toast.error(result.message || "Failed to Created ProposalesAndEls");
           }
         })
         .catch((error) => {
-          console.error("Fetch Error:", error);
-          toast.error("An error occurred while updating ProposalesAndEls.");
+          console.error("Error:", error);
         });
     }
     else if (currentStep === "Services & Invoices" || currentStep === "Payments") {
       if (activeOption === "invoice") {
-        const lineItems = invoiceData.lineItems.map((item) => ({
+        const lineItems = invoiceDataUpdate.lineItems.map((item) => ({
           productorService: item.productName, // Assuming productName maps to productorService
           description: item.description,
           rate: item.rate.replace("$", ""), // Removing '$' sign from rate
@@ -738,12 +786,12 @@ const MyStepperUpdateAcc = () => {
           tax: item.tax.toString(), // Converting boolean to string
         }));
         const options = {
-          method: "PATCH",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            accountids: [data],
+            accountids: combinedaccountValues,
             proposaltemplateid: selectedProposalTemp.value,
             templatename: templatename,
             teammember: combinedTeamMemberValues,
@@ -779,28 +827,22 @@ const MyStepperUpdateAcc = () => {
             active: true,
           }),
         };
-        const url = `${PROPOSAL_ACCOUNT_API}/proposalandels/proposalaccountwise/${_id}`;
-        console.log(url); // Log the URL for debugging
-        console.log(options.body); // Log request body for debugging
-
-        fetch(url, options)
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(`Request failed with status ${response.status}`);
-            }
-            return response.json();
-          })
+        console.log(options.body);
+        fetch(`${PROPOSAL_ACCOUNT_API}/proposalandels/proposalaccountwise/`, options)
+          .then((response) => response.json())
           .then((result) => {
-            console.log(result.message);
-            if (result?.message === "Proposalesandels Accountwise Updated successfully") {
-              toast.success("Proposalesandels Accountwise Updated successfully");
+            console.log(result);
+            if (result && result.message === "ProposalesandelsAccountwise created successfully") {
+              // fetchPrprosalsAllData();
+              // navigate("/firmtemp/templates/proposals");
+              toast.success("ProposalesAndEls Created successfully");
+              // proposalSendMail();
             } else {
-              toast.error(result.message || "Failed to update ProposalesAndEls");
+              toast.error(result.message || "Failed to create ProposalesAndEls");
             }
           })
           .catch((error) => {
-            console.error("Fetch Error:", error);
-            toast.error("An error occurred while updating ProposalesAndEls.");
+            console.error("Error:", error);
           });
       }
 
@@ -815,12 +857,12 @@ const MyStepperUpdateAcc = () => {
           tax: item.tax.toString(), // Converting boolean to string
         }));
         const options = {
-          method: "PATCH",
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            accountids: [data],
+            accountids: combinedaccountValues,
             proposaltemplateid: selectedProposalTemp.value,
             templatename: templatename,
             teammember: combinedTeamMemberValues,
@@ -855,37 +897,29 @@ const MyStepperUpdateAcc = () => {
             active: true,
           }),
         };
-        const url = `${PROPOSAL_ACCOUNT_API}/proposalandels/proposalaccountwise/${_id}`;
-        console.log(url); // Log the URL for debugging
-        console.log(options.body); // Log request body for debugging
-
-        fetch(url, options)
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error(`Request failed with status ${response.status}`);
-            }
-            return response.json();
-          })
+        console.log(options.body);
+        fetch(`${PROPOSAL_ACCOUNT_API}/proposalandels/proposalaccountwise/`, options)
+          .then((response) => response.json())
           .then((result) => {
             console.log(result.message);
-            if (result?.message === "Proposalesandels Accountwise Updated successfully") {
-              toast.success("Proposalesandels Accountwise Updated successfully");
+            // toast.success("Invoice created successfully");
+            if (result && result.message === "ProposalesandelsAccountwise created successfully") {
+              // fetchPrprosalsAllData();
+              // navigate("/firmtemp/templates/proposals");
+              toast.success("ProposalesAndEls Created successfully");
+              // proposalSendMail();
             } else {
-              toast.error(result.message || "Failed to update ProposalesAndEls");
+              toast.error(result.message || "Failed to Create ProposalesAndEls");
             }
           })
           .catch((error) => {
-            console.error("Fetch Error:", error);
-            toast.error("An error occurred while updating ProposalesAndEls.");
+            console.error("Error:", error);
           });
       }
     }
   };
 
-
-
-
-  
+  //*****Payments */
 
   const [paymentterms, setPaymentTerms] = useState("");
   const handlePaymentTerms = (e) => {
@@ -903,59 +937,6 @@ const MyStepperUpdateAcc = () => {
     setPaymentAmount(value);
   };
 
-  //*******ServiceUpdate */
-
-  //   const handleSaveInvoice = () => {
-  //     const serviceAndInvoice = {
-  //         // invoiceTempId: selectInvoiceTemp.value,
-  //         // invoiceTempName: selectInvoiceTemp.label,
-  //         // invoiceTeamMember: selecteduser.value,
-  //         // issueInvoiceSelect: issueInvoice,
-  //         // specificDate: startDate,
-  //         // specificTime: selectedTime,
-  //         descriptionData: description,
-  //         lineItems: rows,
-  //         summary: {
-  //             subtotal: subtotal,
-  //             taxRate: taxRate,
-  //             taxTotal: taxTotal,
-  //             total: totalAmount,
-  //         },
-  //         // noteToClient: clientNote,
-  //     };
-
-  //     console.log('Service and Invoice Settings:', serviceAndInvoice);
-
-  //     if (typeof serviceandinvoiceSettings === 'function') {
-  //         serviceandinvoiceSettings(serviceAndInvoice);
-  //     }
-  // };
-
-  // const handleSaveInvoiceonUpdate = () => {
-  //     const serviceAndInvoice = {
-  //         // invoiceTempId: selectInvoiceTemp.value,
-  //         // invoiceTempName: selectInvoiceTemp.label,
-  //         // invoiceTeamMember: selecteduser.value,
-  //         // issueInvoiceSelect: issueInvoice,
-  //         // specificDate: startDate,
-  //         // specificTime: selectedTime,
-  //         descriptionData: description,
-  //         lineItems: rows,
-  //         summary: {
-  //             subtotal: subtotal,
-  //             taxRate: taxRate,
-  //             taxTotal: taxTotal,
-  //             total: totalAmount,
-  //         },
-  //         // noteToClient: clientNote,
-  //     };
-  //     console.log('Service and Invoice Settings:', serviceAndInvoice);
-  //     if (typeof serviceandinvoiceSettingonupdate === 'function') {
-  //         serviceandinvoiceSettingonupdate(serviceAndInvoice);
-  //     }
-  //     setRows(rows)
-  // };
-
   const [anchorElNew, setAnchorElNew] = useState(null);
   const [selectedRow, setSelectedRow] = useState(null);
 
@@ -969,13 +950,7 @@ const MyStepperUpdateAcc = () => {
     setSelectedRow(null);
   };
 
-  // const handleEditService = (row) => {
-  //   console.log("Row data:", row);
 
-  //   setSelectedRowData(row);
-  //   handleMenuClose();
-  //   setIsEditDrawerOpen(true);
-  // };
   const handleEditService = (row, index) => {
     console.log("Row data:", row);
 
@@ -984,17 +959,7 @@ const MyStepperUpdateAcc = () => {
     handleMenuClose();
     setIsEditDrawerOpen(true);
   };
-  // const handleSaveChanges = () => {
-  //   if (selectedRowIndex !== null) {
-  //     const updatedRows = [...rows];
-  //     updatedRows[selectedRowIndex] = { ...selectedRowData }; // Update the row with new data
-  //     setRows(updatedRows); // Update the state with the new rows
 
-  //     console.log("Updated Rows:", updatedRows);
-  //   }
-
-  //   handleEditDrawerClose();
-  // };
   const handleSaveChanges = () => {
     if (selectedRowIndex !== null) {
       const updatedRows = [...rows];
@@ -1213,240 +1178,51 @@ const MyStepperUpdateAcc = () => {
     setTotalamount(`$${calculatedAmount.toFixed(2)}`);
   }, [selectedRowData?.rate, selectedRowData?.qty]);
 
-
-  const [accountData, setAccountData] = useState([]);
-  const [selectedAccount, setSelectedAccount] = useState([]);
-  console.log(selectedAccount)
-
-  const fetchAccountsData = async () => {
-    try {
-      const url = `${ACCOUNT_API}/accounts/account/accountdetailslist/`;
-      const response = await fetch(url);
-      const result = await response.json();
-
-      if (Array.isArray(result.accountlist)) {
-        setAccountData(result.accountlist);
-        console.log(result.accountlist);
-
-        // Assuming `data` contains the selected account ID(s) as a string or array of IDs
-
-        // Adjust _id to the actual selected ID or IDs you need
-        // console.log(data)
-        // const selectedAccountData = result.accountlist.find((account) => account.id === data);
-        // console.log(selectedAccountData)
-        // if (selectedAccountData) {
-        //   const selectedAccount = [{
-        //     label: selectedAccountData.Name,
-        //     value: selectedAccountData.id,
-        //   }];
-        //   setSelectedAccount(selectedAccount); // Set single account
-        // } else {
-        //   setSelectedAccount(null); // Clear if no matching account found
-        // }
-      } else {
-        console.error("Account list is not an array", result.accountlist);
-      }
-
-    } catch (error) {
-      console.log("Error:", error);
-    }
-  };
-
-  const AccountsOptions = (accountData || []).map((account) => ({
-    value: account.id,
-    label: account.Name,
-  }));
-  // console.log(combinedValues)
-  const [proposalTempData, setProposalTempData] = useState([]);
-  // const [selectedProposalTemp, setSelectedProposalTemp] = useState();
-
-  const [selectedProposalTemp, setSelectedProposalTemp] = useState({ label: "", value: "" });
-
-  const [combinedProposalTempValues, setCombinedProposalTempValues] = useState();
-
-
-  const fetchProposalTemplateData = async () => {
-    try {
-      const url = `${PROPOSAL_API}/Workflow/proposalesandels/proposalesandels`;
-      const response = await fetch(url);
-      const data = await response.json();
-      console.log(data);
-      setProposalTempData(data.proposalesAndElsTemplates);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const templateOptions = proposalTempData.map((proposaltemp) => ({
-    value: proposaltemp._id,
-    label: proposaltemp.templatename,
-  }));
-
-
-
-  const fetchproposalTemplatbyid = async (templateid) => {
-    try {
-      const url = `${PROPOSAL_API}/workflow/proposalesandels/proposalesandelslist/${templateid}`;
-      const response = await fetch(url);
-      const result = await response.json();
-
-      const proposalesandelsTemplate = result.proposalesAndElsTemplate;
-      console.log(proposalesandelsTemplate);
-      // Set template name and proposal name
-      settemplatename(proposalesandelsTemplate.templatename);
-      setProposalName(proposalesandelsTemplate.proposalname);
-
-      // Map team members for Autocomplete
-      const mappedOptions = proposalesandelsTemplate.teammember.map((member) => ({
-        label: member.username, // Display username
-        value: member._id, // Use _id as the value
-      }));
-      setOptions(mappedOptions);
-      setSelectedUser(mappedOptions);
-
-      const selectedValues = mappedOptions.map((option) => option.value);
-      setCombinedTeamMemberValues(selectedValues);
-      // Set the visibility of sections
-      setStepsVisibility({
-        Introduction: proposalesandelsTemplate.introduction,
-        Terms: proposalesandelsTemplate.terms,
-        ServicesInvoices: proposalesandelsTemplate.servicesandinvoices,
-        CustomEmailMessage: proposalesandelsTemplate.custommessageinemail,
-        Reminders: proposalesandelsTemplate.reminders,
-      });
-
-      // Set introduction and terms content
-      setIntroductionName(proposalesandelsTemplate.introductiontextname);
-      setIntroductionContent(proposalesandelsTemplate.introductiontext);
-      setTermsContent(proposalesandelsTemplate.termsandconditions);
-      setTermsandConditionName(proposalesandelsTemplate.termsandconditionsname);
-      setDescription(proposalesandelsTemplate.custommessageinemailtext);
-      setDaysuntilNextReminder(proposalesandelsTemplate.daysuntilnextreminder);
-      setNoOfReminder(proposalesandelsTemplate.numberofreminder);
-      setPaymentTerms(proposalesandelsTemplate.paymentterms);
-      setPaymentDueDate(proposalesandelsTemplate.paymentduedate);
-      setPaymentAmount(proposalesandelsTemplate.paymentamount);
-      // Set invoice data
-      console.log(proposalesandelsTemplate.servicesandinvoices);
-      // if (proposalesandelsTemplate.servicesandinvoices === "true") {
-      console.log(proposalesandelsTemplate.servicesandinvoices);
-      if (proposalesandelsTemplate.Additemizedserviceswithoutcreatinginvoices === "service") {
-        console.log(proposalesandelsTemplate.lineItems);
-
-        const mappedLineItems = proposalesandelsTemplate.lineItems.map((item) => ({
-          productName: item.productorService || "", // Map productorService to productName
-          description: item.description || "",
-          rate: item.rate ? `$${parseFloat(item.rate).toFixed(2)}` : "$0.00", // Ensure rate is properly formatted
-          qty: item.quantity ? item.quantity.toString() : "1", // Ensure quantity is a string
-          amount: item.amount ? `$${parseFloat(item.amount).toFixed(2)}` : "$0.00", // Ensure amount is properly formatted
-          tax: item.tax || false, // Default to false if tax is not provided
-          isDiscount: false, // Assuming isDiscount is not part of the response, default to false
-        }));
-
-        setRows(mappedLineItems);
-        // summary(proposalesandelsTemplate.summary)
-      }
-      setTaxRate(proposalesandelsTemplate.summary.taxRate);
-      const invoiceData = {
-        servicesandinvoicetempid: proposalesandelsTemplate.servicesandinvoicetempid,
-        invoicetemplatename: proposalesandelsTemplate.invoicetemplatename,
-        invoiceteammember: proposalesandelsTemplate.invoiceteammember,
-        issueinvoice: proposalesandelsTemplate.issueinvoice,
-        specificdate: proposalesandelsTemplate.specificdate,
-        specifictime: proposalesandelsTemplate.specifictime,
-        description: proposalesandelsTemplate.description,
-        lineItems: proposalesandelsTemplate.lineItems,
-        summary: proposalesandelsTemplate.summary,
-        notetoclient: proposalesandelsTemplate.notetoclient,
-      };
-
-      setInvoiceData(invoiceData);
-
-      console.log(invoiceData);
-      // Conditionally set the active option
-      if (proposalesandelsTemplate.Addinvoiceoraskfordeposit === "invoice") {
-        setActiveOption("invoice");
-        setAddInvoice(proposalesandelsTemplate.Addinvoiceoraskfordeposit);
-      } else if (proposalesandelsTemplate.Additemizedserviceswithoutcreatinginvoices === "service") {
-        setActiveOption("service");
-        setAddInvoiceitemized(proposalesandelsTemplate.Additemizedserviceswithoutcreatinginvoices);
-      }
-      // }
-      setIsUpdating(true);
-      // Set the rows (line items)
-      // setRows(proposalesandelsTemplate.lineItems);
-    } catch (error) {
-      console.error("Error fetching proposal by id:", error);
-    }
-  };
-
-  const handleProposalTempChange = (event, selectedOption) => {
-    console.log(selectedOption); // Single selected object
-    setSelectedProposalTemp(selectedOption); // Update the selected template
-    setCombinedProposalTempValues(selectedOption ? [selectedOption.value] : []); // Store value as an array with one element or an empty array if no selection
-    fetchproposalTemplatbyid(selectedOption.value)
-  };
-
   console.log(totalamount);
+
+
   const renderStepContent = (step) => {
+
     switch (step) {
       case 0:
         return (
+
           <Box>
+
             <Typography sx={{ fontWeight: "bold" }}>General </Typography>
 
             <Box mt={3}>
               <Typography>Accounts</Typography>
-              <Autocomplete
+              {/* <Autocomplete
                 multiple
-                disabled
-                // options={accountData ? [{ label: accountData.accountName, value: accountData._id }] : []}
-                options={AccountsOptions}
+                options={accountData.map(account => ({ label: account.Name, value: account.id }))}
                 getOptionLabel={(option) => option.label}
                 isOptionEqualToValue={(option, value) => option.value === value.value}
                 value={selectedAccount}
-                onChange={(event, newValue) => setSelectedAccount(newValue)}
-                renderInput={(params) => <TextField {...params} placeholder="Account" />}
-              />
+                onChange={(event, newValue) => {
+                  setSelectedAccount(newValue); // Update selection
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} placeholder="Account" />
+                )}
+              /> */}
+ <AccountMultiSelectDropdown 
+                    value={selectedaccount}
+                    onChange={handleAccountChange}
+                    placeholder="Accounts"
+                  />
             </Box>
 
-            {/* <Box mt={2}>
-              <label className="custom-input-label">Template name (not visible to clients)</label>
-              <TextField error={!!errors.templatename} placeholder="Template name (not visible to clients)" value={templatename} onChange={(e) => settemplatename(e.target.value)} size="small" margin="normal" fullWidth sx={{ backgroundColor: "#fff" }} />
-              {!!errors.templatename && (
-                <Alert
-                  sx={{
-                    width: "96%",
-                    p: "0", // Adjust padding to control the size
-                    pl: "4%",
-                    height: "23px",
-                    borderRadius: "10px",
-                    borderTopLeftRadius: "0",
-                    borderTopRightRadius: "0",
-                    fontSize: "15px",
-                    display: "flex",
-                    alignItems: "center", // Center content vertically
-                    "& .MuiAlert-icon": {
-                      fontSize: "16px", // Adjust the size of the icon
-                      mr: "8px", // Add margin to the right of the icon
-                    },
-                  }}
-                  variant="filled"
-                  severity="error"
-                >
-                  {errors.templatename}
-                </Alert>
-              )}
-            </Box> */}
             <Box mt={2}>
               <label className="custom-input-label">Template name (not visible to clients)</label>
               <Autocomplete
                 sx={{ mt: 2, backgroundColor: "#fff" }}
                 options={templateOptions} // Array of template options
-                getOptionLabel={(option) => option.label || ""} // Ensure it handles undefined options
+                getOptionLabel={(option) => option.label}
                 size="small"
                 value={selectedProposalTemp}
                 onChange={handleProposalTempChange}
+                // onChange={(e, newValue) => settemplatename(newValue ? newValue.value : '')}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -1455,7 +1231,7 @@ const MyStepperUpdateAcc = () => {
                     error={!!errors.templatename}
                   />
                 )}
-                isOptionEqualToValue={(option, value) => option.value === value.value} // Compare values accurately
+                isOptionEqualToValue={(option, value) => option.value === value}
               />
             </Box>
 
@@ -1465,14 +1241,56 @@ const MyStepperUpdateAcc = () => {
                 <Grid item xs={12} sm={6}>
                   <Box ml={2}>
                     <label className="custom-input-label">Team Member</label>
-                    <Autocomplete multiple sx={{ mt: 2, backgroundColor: "#fff" }} options={options} size="small" getOptionLabel={(option) => option.label} value={selectedUser} onChange={handleUserChange} renderInput={(params) => <TextField {...params} variant="outlined" placeholder="Assignees" />} isOptionEqualToValue={(option, value) => option.value === value.value} />
+                    <Autocomplete
+                      multiple sx={{ mt: 2, backgroundColor: "#fff" }}
+                      options={options} size="small" getOptionLabel={(option) => option.label}
+                      value={selectedUser} onChange={handleUserChange}
+                      renderInput={(params) => <TextField {...params}
+                        variant="outlined" placeholder="Assignees" />}
+                      isOptionEqualToValue={(option, value) => option.value === value.value} />
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Box ml={3}>
                     <label className="custom-input-label">Proposal name (visible to clients)</label>
                     <TextField fullWidth value={proposalName + selectedShortcut} onChange={handleProposalName} placeholder="Proposal name (visible to clients)" size="small" sx={{ mt: 2, backgroundColor: "#fff" }} />
-                    <Box>
+                    {/* <Box>
+                      <Button variant="contained" color="primary" onClick={toggleDropdown} sx={{ mt: 2 }}>
+                        Add Shortcode
+                      </Button>
+
+                      <Popover
+                        open={showDropdown}
+                        anchorEl={anchorEl}
+                        onClose={handleCloseDropdown}
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "left",
+                        }}
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "left",
+                        }}
+                      >
+                        <Box>
+                          <List className="dropdown-list" sx={{ width: "300px", height: "300px", cursor: "pointer" }}>
+                            {filteredShortcuts.map((shortcut, index) => (
+                              <ListItem key={index} onClick={() => handleAddShortcut(shortcut.value)}>
+                                <ListItemText
+                                  primary={shortcut.title}
+                                  primaryTypographyProps={{
+                                    style: {
+                                      fontWeight: shortcut.isBold ? "bold" : "normal",
+                                    },
+                                  }}
+                                />
+                              </ListItem>
+                            ))}
+                          </List>
+                        </Box>
+                      </Popover>
+                    </Box> */}
+ <Box>
                       <Button variant="contained" color="primary" onClick={toggleDropdown} sx={{
                 backgroundColor: 'var(--color-save-btn)',  // Normal background
                
@@ -1515,6 +1333,7 @@ const MyStepperUpdateAcc = () => {
                         </Box>
                       </Popover>
                     </Box>
+
                   </Box>
                 </Grid>
               </Grid>
@@ -1707,7 +1526,7 @@ const MyStepperUpdateAcc = () => {
 
             {/* Render the forms conditionally based on activeOption state */}
 
-            {activeOption === "invoice" && invoiceData && Object.keys(invoiceData).length > 0 && (
+            {activeOption === "invoice" && (
               <Box>
                 <Invoice serviceandinvoiceSettings={serviceandinvoiceSettings} serviceandinvoiceSettingonupdate={serviceandinvoiceSettingonupdate} />
               </Box>
@@ -1995,7 +1814,7 @@ const MyStepperUpdateAcc = () => {
                           </Box>
                         </Box>
                         <Box>
-                          <Button variant="contained" color="primary" onClick={setCategoryFormOpen} sx={{
+                          <Button variant="contained" color="primary" onClick={setCategoryFormOpen}  sx={{
                 backgroundColor: 'var(--color-save-btn)',  // Normal background
                
                 '&:hover': {
@@ -2109,10 +1928,26 @@ const MyStepperUpdateAcc = () => {
                     <TextField fullWidth name="Rate" placeholder="Category Name" size="small" margin="normal" value={categorycreate} onChange={(e) => setcategorycreate(e.target.value)} />
                   </Box>
                   <Box sx={{ pt: 2, display: "flex", alignItems: "center", gap: 5, margin: "8px", ml: 3 }}>
-                    <Button variant="contained" color="primary" onClick={createCategory}>
+                    <Button variant="contained" color="primary" onClick={createCategory} sx={{
+                backgroundColor: 'var(--color-save-btn)',  // Normal background
+               
+                '&:hover': {
+                  backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                },
+                width:'80px',borderRadius:'15px'
+              }}>
                       Create
                     </Button>
-                    <Button variant="outlined" onClick={handleCategoryFormClose}>
+                    <Button variant="outlined" onClick={handleCategoryFormClose} sx={{
+                  borderColor: 'var(--color-border-cancel-btn)',  // Normal background
+                 color:'var(--color-save-btn)',
+                  '&:hover': {
+                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                    color:'#fff',
+                    border:"none"
+                  },
+                  width:'80px',borderRadius:'15px'
+                }}>
                       Cancel
                     </Button>
                   </Box>
@@ -2218,6 +2053,7 @@ const MyStepperUpdateAcc = () => {
         );
 
       default:
+
         return <Typography>Unknown Step</Typography>;
     }
   };
@@ -2234,11 +2070,11 @@ const MyStepperUpdateAcc = () => {
           <Button
             // variant="outlined"
             onClick={handleBackToProposalTable}
-            startIcon={<IoArrowBackSharp style={{ fontSize: '25px' }} />}
-            sx={{ marginRight: 2 }}
+            startIcon={ <IoArrowBackSharp  style={{fontSize:'25px'}} />}
+             sx={{ marginRight: 2 }}
           >
           </Button>
-          <Box sx={{ typography: "h4" }}>Update proposal/engagement letter</Box>
+          <Box sx={{ typography: "h4" }}>Create proposal/engagement letter</Box>
         </Box>
 
         <Grid container spacing={3} mr={5} p={5}>
@@ -2255,10 +2091,7 @@ const MyStepperUpdateAcc = () => {
           </Grid>
           <Grid item xs={4} sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              {/* <Button variant="contained" onClick={activeStep === steps.length - 1 ? handleReset : handleNext} sx={{ width: "200px" }}>
-                {activeStep === steps.length - 1 ? "Save Template" : "Next"}
-              </Button> */}
-              <Button variant="contained" onClick={activeStep === steps.length - 1 ? handleReset : handleNext} sx={{
+              <Button variant="contained" onClick={activeStep === steps.length - 1 ? handleReset : handleNext}  sx={{
                 backgroundColor: 'var(--color-save-btn)',  // Normal background
                
                 '&:hover': {
@@ -2289,4 +2122,4 @@ const MyStepperUpdateAcc = () => {
   );
 };
 
-export default MyStepperUpdateAcc;
+export default MyStepperUpdate;

@@ -9,13 +9,14 @@ import {
   Collapse,
   Typography,
   Drawer,
-  Button,
+  Button,Dialog, DialogTitle, DialogContent, DialogActions,TextField
 } from "@mui/material";
 import {
   ChevronLeft,
   ChevronRight,
   Brightness4,
   Brightness7,
+  Task,
 } from "@mui/icons-material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
@@ -37,17 +38,21 @@ import { toast } from "react-toastify";
 import { AiOutlineLogout } from "react-icons/ai";
 import { LoginContext } from "../Sidebar/Context/Context";
 import { useLocation } from "react-router-dom";
+import TaskForm from "../Tasks/AccountTask"
 import { IoMoonOutline } from "react-icons/io5";
 import { MdOutlineWbSunny } from "react-icons/md";
 import { VscColorMode } from "react-icons/vsc";
 import user from "../Images/user.jpg";
 import { styled } from "@mui/material/styles";
 import Badge from "@mui/material/Badge";
+import CloseIcon from "@mui/icons-material/Close";
 // import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
 import SearchComponent from "./Search";
 // import Badge from "@mui/material/Badge";
 import Avatar from "@mui/material/Avatar";
+import ClientSelectionDialog from "../Billing/ClientSelectionDialog"
+import { faL } from "@fortawesome/free-solid-svg-icons";
 function Sidebar() {
   const StyledBadge = styled(Badge)(({ theme }) => ({
     "& .MuiBadge-badge": {
@@ -316,13 +321,29 @@ function Sidebar() {
   const handleNewDrawerClose = () => {
     setIsRightDrawerOpen(false);
   };
+  // const handleNewItemClick = (label) => {
+  //   if (label === "Account" || label === "Contact" || label === "Task") {
+  //     setRightDrawerContent(label);
+  //     setIsRightDrawerOpen(true);
+  //   }
+  //   if (label === "Jobs") {
+  //     setIsDrawerOpen(false);
+  //   }
+  //   if (label === "Invoice") {
+  //     setIsDialogOpen(true);
+  //   }
+  // };
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const handleNewItemClick = (label) => {
-    if (label === "Account" || label === "Contact") {
+    console.log("menu", label)
+    if (label === "Account" || label === "Contact" || label === "Task") {
       setRightDrawerContent(label);
       setIsRightDrawerOpen(true);
-    }
-    if (label === "Jobs") {
+    } else if (label === "Jobs") {
+      setIsRightDrawerOpen(false);
       setIsDrawerOpen(false);
+    } else if (label === "Invoice") {
+      setIsDialogOpen(true);
     }
   };
   const [theme, setTheme] = useState("light-theme");
@@ -534,7 +555,14 @@ function Sidebar() {
       .join("")
       .toUpperCase();
   };
-
+  const [selectedAccount, setSelectedAccount] = useState(null);
+  const [invoiceDrawerOpen,setInvoiceDrawerOpen] = useState(false)
+  const handleSelectAccount = (account) => {
+    setSelectedAccount(account);
+    console.log("selected account data", account)
+    setInvoiceDrawerOpen(true); // Open right drawer when an account is selected
+    setIsDialogOpen(false); // Close the client selection dialog
+  };
   return (
     <div className="grid-container">
       <header className="header">
@@ -1213,8 +1241,82 @@ function Sidebar() {
               handleDrawerClose={handleDrawerClose}
             />
           )}
+          {rightDrawerContent === "Task" && (
+            <TaskForm
+              handleNewDrawerClose={handleNewDrawerClose}
+              handleDrawerClose={handleDrawerClose}
+            />
+          )}
         </Box>
       </Drawer>
+
+
+
+         {/* <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} maxWidth="sm" fullWidth>
+         <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        Select client
+        <IconButton onClick={onClose}>
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+         <DialogContent>
+           <p>Invoice details go here...</p>
+         </DialogContent>
+         <DialogActions>
+           <Button onClick={() => setIsDialogOpen(false)}>Close</Button>
+         </DialogActions>
+       </Dialog> */}
+        {/* <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} maxWidth="sm" fullWidth>
+      <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        Select client
+        <IconButton onClick={() => setIsDialogOpen(false)}>
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      
+      <DialogContent dividers>
+        <TextField
+          fullWidth
+          variant="outlined"
+          placeholder="Start typing user name, ID or email"
+          //  value={searchTerm}
+          //  onChange={(e) => setSearchTerm(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+        
+        <List>
+           {filteredClients.map((client) => (
+            <ListItem button key={client.id}>
+              <ListItemAvatar>
+                <Avatar sx={{ bgcolor: client.color, color: "#fff", fontWeight: "bold" }}>
+                  {client.id}
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={client.name} />
+            </ListItem>
+          ))} 
+        </List>
+      </DialogContent>
+
+      <DialogActions>
+        <Button variant="outlined" onClick={() => setIsDialogOpen(false)}>
+          Cancel
+        </Button>
+      </DialogActions>
+    </Dialog>  */}
+       <ClientSelectionDialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}  />
+       {/* onSelectAccount={handleSelectAccount} */}
+       {/* <Drawer anchor="right" open={invoiceDrawerOpen} onClose={() => setInvoiceDrawerOpen(false)}>
+        <Box sx={{ width: 300, p: 2 }}>
+          <Typography variant="h6">Selected Client</Typography>
+          {selectedAccount ? (
+            <Typography variant="body1">{selectedAccount.label}</Typography>
+          ) : (
+            <Typography variant="body2">No client selected</Typography>
+          )}
+        </Box>
+      </Drawer> */}
+   
     </div>
   );
 }

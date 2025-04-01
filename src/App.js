@@ -89,6 +89,7 @@ import Inboxplus from './Inboxplus/Inboxplus.js';
 import AccountWiseProposal from "./nested-navbar/Proposals/PrposalTempUpdate.js"
 import AccountWiseProposalUpdate from "./nested-navbar/Proposals/ProposalAccWiseUpdate.js"
 import ProposalsELS from './Billing/Proposals&ELS/ProposalsEls.js'
+import CreateProposals from "./Billing/Proposals&ELS/CreateProposals.js"
 import NewTag from "./Templates/Tags/Tags";
 import MarketPlaces from "./Pages/MarketPlaces.js";
 import TimeEntry from "./Pages/TimeEntry.js";
@@ -129,6 +130,7 @@ const App = () => {
           <Route path="billing/Invoices" element={<Invoices />} />
           <Route path="billing/Invoices/Updateinvoice/:_id" element={<InvoiceUpdate />} />
           <Route path='billing/proposalsandels' element={<ProposalsELS/>}/>
+          <Route path='billing/proposalsandels/new' element={<CreateProposals/>}/>
           {/* <Route path="workflow/tasks" element={<WorkflowTask />} /> */}
           <Route path="tasks" element={<WorkflowTask />} >
           <Route path="pending" element={<PendingTasks/>}/>

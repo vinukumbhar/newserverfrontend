@@ -24,6 +24,11 @@ import { IoBagAddOutline } from "react-icons/io5";
 import { FaRegUser } from "react-icons/fa6";
 import { RiContactsBook3Line } from "react-icons/ri";
 import { AiOutlineImport } from "react-icons/ai";
+import { GrDocumentUpload } from "react-icons/gr";
+import { FaRegNewspaper } from "react-icons/fa";
+import { BiNotepad } from "react-icons/bi";
+import { MdAddCard } from "react-icons/md";
+import { MdOutlineTask } from "react-icons/md";
 const iconMapping = {
     AiOutlineAppstoreAdd,
     MdOutlineMail,
@@ -39,7 +44,12 @@ const iconMapping = {
     IoBagAddOutline ,
     FaRegUser  ,
     RiContactsBook3Line,
-    AiOutlineImport
+    AiOutlineImport,
+    GrDocumentUpload ,
+    FaRegNewspaper,
+    BiNotepad,
+    MdAddCard,
+    MdOutlineTask
 };
 
 export default iconMapping;

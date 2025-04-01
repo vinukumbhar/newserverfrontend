@@ -390,7 +390,7 @@ const [uploadStatus, setUploadStatus] = useState('');
 
         /> 
 
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        {/* <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <IconButton
             component="label"
             htmlFor="folderInput"
@@ -409,7 +409,7 @@ const [uploadStatus, setUploadStatus] = useState('');
               style={{ display: "none" }} // Hide the input element
             />
           </label>
-        </Box>
+        </Box> */}
        
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
