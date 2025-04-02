@@ -519,6 +519,19 @@ export default function Editor({ initialContent, onChange }) {
 
   return (
     <Box sx={{ height: '250px' }}>
+          {/* Quill Editor */}
+          <ReactQuill
+        ref={quillRef}
+        value={editorContent}
+        onChange={(content) => {
+          setEditorContent(content);
+          onChange(content);
+        }}
+        modules={modules}
+        formats={formats}
+        theme="snow"
+        style={{ height: '150px' }}
+      />
       {/* Shortcodes Button */}
       <Button
         variant="contained"
@@ -529,6 +542,7 @@ export default function Editor({ initialContent, onChange }) {
           "&:hover": { backgroundColor: "var(--color-save-hover-btn)" },
           borderRadius: "15px",
           mb: 1,
+          mt:10
         }}
       >
         Insert Shortcode
@@ -562,19 +576,7 @@ export default function Editor({ initialContent, onChange }) {
         </Box>
       </Popover>
 
-      {/* Quill Editor */}
-      <ReactQuill
-        ref={quillRef}
-        value={editorContent}
-        onChange={(content) => {
-          setEditorContent(content);
-          onChange(content);
-        }}
-        modules={modules}
-        formats={formats}
-        theme="snow"
-        style={{ height: '150px' }}
-      />
+  
     </Box>
   );
 }

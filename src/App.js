@@ -101,6 +101,9 @@ import ActiveJob from "./Pages/Jobs/ActiveJob.js"
 import ArchivedJob from "./Pages/Jobs/ArchiveJob.js";
 import PendingTasks from "./Tasks/PendingTasks.js";
 import CompletedTasks from "./Tasks/CompletedTasks.js";
+import AccountOrganizers from "./Pages/Organizers/AccountOrganizers.js"
+import ActiveOrganizers from "./Pages/Organizers/ActiveOrganizers.js";
+import ArchivedOrganizers from "./Pages/Organizers/ArchivedOrganizers.js";
 const App = () => {
   return (
     <BrowserRouter>
@@ -117,6 +120,10 @@ const App = () => {
           <Route path="/clients/accounts" element={<Account />} >
           <Route path="activeaccounts" element={<ActiveAccount/>}/>
           <Route path="archivedaccounts" element={<ArchivedAccount/>}/>
+          </Route>
+          <Route path="/organizers" element={<AccountOrganizers/>}>
+          <Route path="active" element={<ActiveOrganizers/>}/>
+          <Route path="archived" element={<ArchivedOrganizers/>}/>
           </Route>
           <Route path="clients/contacts" element={<Contact />} />
           <Route path="stages" element={<Stages />} />

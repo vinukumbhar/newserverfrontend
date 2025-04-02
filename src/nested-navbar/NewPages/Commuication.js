@@ -1,13 +1,14 @@
 
 
-import React, { useState, useEffect,useContext } from "react";
+import React, { useState, useEffect,useContext ,useRef} from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import {
   Container, Box, Button, Typography, Chip, Drawer, TextField, InputLabel, Autocomplete, Switch, FormControlLabel, Divider, List, ListItem, ListItemText, Popover, IconButton, Checkbox,
 } from '@mui/material';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import CloseIcon from '@mui/icons-material/Close';
-import Editor from '../../Templates/Texteditor/Editor';
+import Editor from "../../Templates/Texteditor/Editor";
+import EditorShortcodes from '../../Templates/Texteditor/EditorShortcodes';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { PiDotsSixVerticalBold } from "react-icons/pi";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -98,7 +99,7 @@ const Communication = () => {
     setSubtasks([]); // Clear subtasks if needed
     setCheckedSubtasks([]); // Clear selected subtasks
     setAbsoluteDates(false); // Reset the reminder switch if necessary
-  
+    setDescription('')
     // Close the drawer
     setOpen(false);
   };
@@ -110,10 +111,17 @@ const Communication = () => {
   const [inputTextError, setInputTextError] = useState('');
 
   const [selectedShortcut, setSelectedShortcut] = useState('');
-  const handlechatsubject = (e) => {
-    const { value } = e.target;
-    setInputText(value);
-  };
+  // const handlechatsubject = (e) => {
+  //   const { value } = e.target;
+  //   setInputText(value);
+  // };
+   const [cursorPosition, setCursorPosition] = useState(0);
+    const textFieldRef = useRef(null);
+    const handlechatsubject = (e) => {
+      const { value,selectionStart  } = e.target;
+      setInputText(value);
+      setCursorPosition(selectionStart);
+    };
   const [showDropdown, setShowDropdown] = useState(false);
   const [shortcuts, setShortcuts] = useState([]);
   const [filteredShortcuts, setFilteredShortcuts] = useState([]);
@@ -124,10 +132,26 @@ const Communication = () => {
     setAnchorEl(event.currentTarget);
     setShowDropdown(!showDropdown);
   };
+  // const handleAddShortcut = (shortcut) => {
+  //   setInputText((prevText) => prevText + `[${shortcut}]`);
+  //   setShowDropdown(false);
+  // };
   const handleAddShortcut = (shortcut) => {
-    setInputText((prevText) => prevText + `[${shortcut}]`);
+    setInputText((prevText) => {
+        const newText =
+            prevText.slice(0, cursorPosition) + `[${shortcut}]` + prevText.slice(cursorPosition);
+        return newText;
+    });
+
+    setTimeout(() => {
+        if (textFieldRef.current) {
+            textFieldRef.current.focus();
+            textFieldRef.current.setSelectionRange(cursorPosition + shortcut.length + 2, cursorPosition + shortcut.length + 2);
+        }
+    }, 0);
+
     setShowDropdown(false);
-  };
+};
   useEffect(() => {
     setFilteredShortcuts(shortcuts.filter((shortcut) => shortcut.title.toLowerCase().includes('')));
   }, [shortcuts]);
@@ -475,10 +499,10 @@ console.log(raw)
       })
       .then((result) => {
         console.log(result);
-        console.log("chat id",result.newChats._id)
-        setChatId(result.newChats._id)
+        // console.log("chat id",result.newChats._id)
+        // setChatId(result.newChats._id)
         toast.success("New Chat created successfully");
-        sendSaveChatMail(result.newChats._id)
+        // sendSaveChatMail(result.newChats._id)
         setIsSubmitted(true);
         accountwiseChatlist(data, isActiveTrue);
         handleClose()
@@ -1422,12 +1446,12 @@ console.log(raw)
           <Divider />
 
 <Box p={2} >
-          <Box  >
+          <Box ml={1} >
             <InputLabel sx={{ color: 'black' }}>To</InputLabel>
             <Autocomplete
               multiple
               size="small"
-              // sx={{ marginTop: "10px" }}
+              sx={{ mr:1}}
               options={AccountsOptions}
               getOptionLabel={(option) => option.label}
               value={selectedAccount}
@@ -1435,7 +1459,7 @@ console.log(raw)
                 setSelectedAccount(newValue);
               }}
               renderTags={(selected, getTagProps) => selected.map((option, index) => <Chip key={option.value} label={option.label} {...getTagProps({ index })} onDelete={() => handleDelete(option.value)} />)}
-              renderInput={(params) => <TextField {...params} variant="outlined" placeholder="Select Accounts" />}
+              renderInput={(params) => <TextField {...params} variant="outlined" placeholder="Select Accounts"  sx={{ width: '100%', marginTop: '8px' }}/>}
               renderOption={(props, option, { selected }) => (
                 <li {...props}>
                   <Checkbox checked={selectedAccount.some((acc) => acc.value === option.value)} style={{ marginRight: 8 }} />
@@ -1484,12 +1508,20 @@ console.log(raw)
               sx={{ mt: 2 }}
               fullWidth
               name="subject"
-              value={inputText + selectedShortcut} onChange={handlechatsubject}
+              inputRef={textFieldRef}
+              onClick={(e) => setCursorPosition(e.target.selectionStart)}
+              value={inputText} onChange={handlechatsubject}
               placeholder="Subject"
               size="small"
               error={!!inputTextError}
             />
           </Box>
+
+
+
+
+
+          
           <Box m={1}>
             <Button
               variant="contained"
@@ -1544,11 +1576,11 @@ borderRadius:'15px',mt:2
           </Box>
 
 
-          {/* <Box sx={{ m: 1 }}>
-            <Editor initialContent={description} onChange={handleEditorChange} />
-          </Box> */}
+           <Box sx={{ m: 1 }}>
+            <EditorShortcodes initialContent={description} onChange={handleEditorChange} />
+          </Box> 
 
-          <Box m={1}>
+          <Box mt={5}>
             <Box display={'flex'} alignItems={'center'} >
               <Box>
                 <FormControlLabel

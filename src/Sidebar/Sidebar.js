@@ -53,6 +53,8 @@ import SearchComponent from "./Search";
 import Avatar from "@mui/material/Avatar";
 import ClientSelectionDialog from "../Billing/ClientSelectionDialog"
 import { faL } from "@fortawesome/free-solid-svg-icons";
+import OrganizerDialog from "../Pages/Organizers/ClientSelectionDialog"
+import ChatForm from "../Pages/ChatForm"
 function Sidebar() {
   const StyledBadge = styled(Badge)(({ theme }) => ({
     "& .MuiBadge-badge": {
@@ -336,13 +338,16 @@ function Sidebar() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const handleNewItemClick = (label) => {
     console.log("menu", label)
-    if (label === "Account" || label === "Contact" || label === "Task") {
+    if (label === "Account" || label === "Contact" || label === "Task" || label === "Chat") {
       setRightDrawerContent(label);
       setIsRightDrawerOpen(true);
     } else if (label === "Jobs") {
       setIsRightDrawerOpen(false);
       setIsDrawerOpen(false);
     } else if (label === "Invoice") {
+      setIsDialogOpen(true);
+    }
+    else if (label === "Organizer") {
       setIsDialogOpen(true);
     }
   };
@@ -1247,76 +1252,18 @@ function Sidebar() {
               handleDrawerClose={handleDrawerClose}
             />
           )}
+          {rightDrawerContent === "Chat" && (
+            <ChatForm
+              handleNewDrawerClose={handleNewDrawerClose}
+              handleDrawerClose={handleDrawerClose}
+            />
+          )}
         </Box>
       </Drawer>
 
-
-
-         {/* <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} maxWidth="sm" fullWidth>
-         <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        Select client
-        <IconButton onClick={onClose}>
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-         <DialogContent>
-           <p>Invoice details go here...</p>
-         </DialogContent>
-         <DialogActions>
-           <Button onClick={() => setIsDialogOpen(false)}>Close</Button>
-         </DialogActions>
-       </Dialog> */}
-        {/* <Dialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        Select client
-        <IconButton onClick={() => setIsDialogOpen(false)}>
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      
-      <DialogContent dividers>
-        <TextField
-          fullWidth
-          variant="outlined"
-          placeholder="Start typing user name, ID or email"
-          //  value={searchTerm}
-          //  onChange={(e) => setSearchTerm(e.target.value)}
-          sx={{ mb: 2 }}
-        />
-        
-        <List>
-           {filteredClients.map((client) => (
-            <ListItem button key={client.id}>
-              <ListItemAvatar>
-                <Avatar sx={{ bgcolor: client.color, color: "#fff", fontWeight: "bold" }}>
-                  {client.id}
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText primary={client.name} />
-            </ListItem>
-          ))} 
-        </List>
-      </DialogContent>
-
-      <DialogActions>
-        <Button variant="outlined" onClick={() => setIsDialogOpen(false)}>
-          Cancel
-        </Button>
-      </DialogActions>
-    </Dialog>  */}
-       <ClientSelectionDialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)}  />
-       {/* onSelectAccount={handleSelectAccount} */}
-       {/* <Drawer anchor="right" open={invoiceDrawerOpen} onClose={() => setInvoiceDrawerOpen(false)}>
-        <Box sx={{ width: 300, p: 2 }}>
-          <Typography variant="h6">Selected Client</Typography>
-          {selectedAccount ? (
-            <Typography variant="body1">{selectedAccount.label}</Typography>
-          ) : (
-            <Typography variant="body2">No client selected</Typography>
-          )}
-        </Box>
-      </Drawer> */}
+       <ClientSelectionDialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} handleDrawerClose={handleDrawerClose}/>
    
+   <OrganizerDialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} handleDrawerClose={handleDrawerClose}/>
     </div>
   );
 }

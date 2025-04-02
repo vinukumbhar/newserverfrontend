@@ -718,10 +718,10 @@ const Pipeline = ({ charLimit = 4000 }) => {
         .then((response) => response.json())
         .then((result) => {
           console.log("send chat to account successfully:", result);
-          console.log("chat id", result.newChats._id);
-          setChatId(result.newChats._id);
+          // console.log("chat id", result.newChats._id);
+          // setChatId(result.newChats._id);
           toast.success("New Chat created successfully");
-          sendSaveChatMail(result.newChats._id);
+          // sendSaveChatMail(result.newChats._id);
         })
         .catch((error) => console.error("Error assigning invoice:", error));
     };

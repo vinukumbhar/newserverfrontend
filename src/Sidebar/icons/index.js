@@ -29,6 +29,7 @@ import { FaRegNewspaper } from "react-icons/fa";
 import { BiNotepad } from "react-icons/bi";
 import { MdAddCard } from "react-icons/md";
 import { MdOutlineTask } from "react-icons/md";
+import { IoPaperPlaneOutline } from "react-icons/io5";
 const iconMapping = {
     AiOutlineAppstoreAdd,
     MdOutlineMail,
@@ -49,7 +50,8 @@ const iconMapping = {
     FaRegNewspaper,
     BiNotepad,
     MdAddCard,
-    MdOutlineTask
+    MdOutlineTask,
+    IoPaperPlaneOutline 
 };
 
 export default iconMapping;
