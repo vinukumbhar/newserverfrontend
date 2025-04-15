@@ -573,13 +573,13 @@ const handleUpdateStatus = (invoiceNumber, status) => {
                     padding: "4px 8px",
                     lineHeight: "1",
                     cursor: "pointer",
-                  }}>${}</TableCell>
+                  }}>${row.paidAmount}</TableCell>
                   <TableCell style={{
                     fontSize: "12px",
                     padding: "4px 8px",
                     lineHeight: "1",
                     cursor: "pointer",
-                  }}>${row.summary.total} </TableCell>
+                  }}>${row.summary.total - row.paidAmount}</TableCell>
                   <TableCell style={{
                     fontSize: "12px",
                     padding: "4px 8px",
