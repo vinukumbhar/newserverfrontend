@@ -338,6 +338,7 @@ const Folder = ({
   onPathSelect,
   selectedPath,
 }) => {
+  console.log("janavi",content)
   const [isOpen, setIsOpen] = useState(false);
   const fullPath = currentPath ? `${currentPath}/${name}` : name;
   const isSelected = selectedPath === fullPath;

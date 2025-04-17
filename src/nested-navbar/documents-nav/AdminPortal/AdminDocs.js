@@ -892,11 +892,11 @@ const App = () => {
           {/* <Typography variant="h6">Firm Docs Shared With Client</Typography> */}
 
           <DocumentManager
-            folderName={firmdata.folder}
-            contents={firmdata.contents}
-            onPathSelect={(path) => setSelectedPath(path)}
-            selectedPath={selectedPath}
-          />
+        folderName={data.folderName}
+        structure={data.structure}
+        onPathSelect={(path) => setSelectedPath(path)}
+        selectedPath={selectedPath}
+      />
         </Box>
       </Box>
 

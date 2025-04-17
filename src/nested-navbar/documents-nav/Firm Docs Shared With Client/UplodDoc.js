@@ -215,71 +215,14 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Button, Box, Typography, Drawer } from "@mui/material";
 import { FaTimes } from "react-icons/fa";
-import DocumentManager from "../DocumentManager";
+import FileExplorer from "../FileExplorer";
 
-const UploadDocument = ({ open, onClose, file,accountId }) => {
-  const templateId = "67ea43c004956fca8db1d445";
+const UploadDocument = ({ open, onClose, file,accountId ,onUploadSuccess }) => {
+console.log("accc",onUploadSuccess)
   const [error, setError] = useState(null);
 
   const [destinationPath, setDestinationPath] = useState("");
-  const [clientFiles, setClientFiles] = useState([]);
-
-
-  // useEffect(() => {
-  //   const fetchFileDetails = async () => {
-  //     try {
-  //       const response = await axios.get("http://127.0.0.1:8006/api/files");
-  //       if (response.data.success) {
-  //         const basePath = "Firm Docs Shared With Client";
-  //         const filtered = response.data.data
-  //           .filter((file) => file.filePath.includes(basePath))
-  //           .map((file) => {
-  //             const pathParts = file.filePath.split(basePath);
-  //             return {
-  //               ...file,
-  //               filePath: basePath + (pathParts[1] || ""),
-  //             };
-  //           });
-  //         setClientFiles(filtered);
-  //       } else {
-  //         setError("Failed to fetch files");
-  //       }
-  //     } catch (error) {
-  //       setError(error.message);
-  //     }
-  //   };
-  //   fetchFileDetails();
-  // }, []);
-
- 
-
-  // const handleSubmitfile = async () => {
-  //   if (!destinationPath) {
-  //     alert("Destination path not selected.");
-  //     return;
-  //   }
-
-  //   const fullPath = `uploads/FolderTemplates/${templateId}/${destinationPath}`;
-  //   console.log("Uploading to:", fullPath);
   
-
-  //   let data = new FormData();
-  //   data.append("destinationPath", fullPath);
-  //   data.append("file", file);
-
-  //   try {
-  //     const response = await axios.post("http://127.0.0.1:8000/uploadfileinfirm", data, {
-  //       maxBodyLength: Infinity,
-  //     });
-  //     console.log(response.data);
-  //     alert("File uploaded successfully!");
-  //   } catch (error) {
-  //     console.error(error);
-  //     alert("Failed to upload the file.");
-  //   }
-  // };
-
-
   const handleSubmitfile = async () => {
     if (!destinationPath) {
       alert("Destination path not selected.");
@@ -314,6 +257,9 @@ const UploadDocument = ({ open, onClose, file,accountId }) => {
       });
       console.log(response.data);
       alert("File uploaded successfully!");
+      onClose()
+      onUploadSuccess?.(); 
+      setSelectedPath("")
     } catch (error) {
       console.error("Upload error:", error);
       alert("Failed to upload the file.");
@@ -324,26 +270,11 @@ const UploadDocument = ({ open, onClose, file,accountId }) => {
    
     await handleSubmitfile();
   };
-  const [data, setData] = useState({ folder: "", contents: [] });
+  
   const [selectedPath, setSelectedPath] = useState("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.get(
-        `http://127.0.0.1:8006/firmDocs/files/${accountId}`
-      );
-      console.log("url responce",response)
-      if (response.data && response.data.folder) {
-        setData({
-          folder: response.data.folder,
-          contents: response.data.contents,
-        });
-      }
-    };
-
-    fetchData();
-  }, []);
-  // const [selectedPath, setSelectedPath] = useState("");
+ 
+ 
 
 const handlePathSelect = (path) => {
   console.log("Selected path:", path); // for debugging
@@ -351,7 +282,6 @@ const handlePathSelect = (path) => {
   setDestinationPath(path); 
 };
   if (error) return <Box>Error: {error}</Box>;
-  // if (!structFolder) return <Box>Loading...</Box>;
 
   return (
     <Drawer
@@ -382,14 +312,9 @@ const handlePathSelect = (path) => {
 
         <Box sx={{ maxHeight: "500px", overflowY: "auto" }}>
      
- <DocumentManager
-        folderName={data.folder}
-        contents={data.contents}
-        onPathSelect={handlePathSelect}
-        selectedPath={selectedPath}
-      />
+        <FileExplorer onPathSelect={handlePathSelect} accountId={accountId}/>
 
-          {/* <DocumentManager files={clientFiles} /> */}
+       
         </Box>
 
      

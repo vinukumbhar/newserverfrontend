@@ -456,7 +456,7 @@ import {
   IconButton,
   Input,
   Menu,
-  MenuItem,
+  MenuItem,Collapse,
   Divider,
 } from "@mui/material";
 import { HiDocumentArrowUp } from "react-icons/hi2";
@@ -469,7 +469,9 @@ import UploadDrawer from "./AdminPortal/uploadDocumentWorking";
 import UploadFolder from "./AdminPortal/folderUpload";
 import DocumentManager from "./DocumentManager"
 import UploadDoc from "./Firm Docs Shared With Client/UplodDoc"
-import Test from "./Firm Docs Shared With Client/test"
+import CreateFolderInFirm from "./Firm Docs Shared With Client/CreateFolder"
+import { Folder, FolderOpen, InsertDriveFile } from '@mui/icons-material';
+import FileExplorer from "./FileExplorer"
 const Documents = () => {
   const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
   const { data } = useParams();
@@ -483,6 +485,8 @@ const Documents = () => {
   const [folderName, setFolderName] = useState("");
   const folderInputRef = useRef(null);
   const [uploadDocOpen, setUplaodDocOpen] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
+  console.log(refreshKey)
   const handleFileChange = (e) => setFile(e.target.files[0]);
   const handleNewFileChange = (e) => setFile(e.target.files[0]);
   const handleFileUpload = () => setIsDocumentForm(true);
@@ -816,50 +820,104 @@ const Documents = () => {
       return null;
     });
 
+
+
+  
     useEffect(() => {
-      const fetchFirmDocs = async () => {
+      const fetchData = async () => {
         try {
-          const response = await fetch("http://127.0.0.1:8006/firmDocs/files/67fd062847d30cdaf4ab6594");
+          const response = await fetch(
+            "http://127.0.0.1:8006/firmDocs/files/67fd062847d30cdaf4ab6594"
+          );
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
           const result = await response.json();
-    
-          const formatStructure = (nodes, parentId = "") =>
-            nodes.map((node, index) => {
-              const id = `${parentId}${index}`;
-              const contents = [
-                ...(node.files || []).map((file, fileIndex) => ({
-                  file,
-                  id: `${id}-f${fileIndex}`,
-                })),
-                ...(node.subfolders || []).map((subfolder, subIndex) => ({
-                  ...subfolder,
-                  folder: subfolder.name,
-                  id: `${id}-s${subIndex}`,
-                  isOpen: false,
-                  sealed: false,
-                  contents: formatStructure([subfolder], `${id}-s${subIndex}-`)[0]?.contents || [],
-                })),
-              ];
-    
-              return {
-                folder: node.name,
-                id,
-                isOpen: false,
-                sealed: false,
-                contents,
-              };
+          setFolderData(result);
+          
+          // Initialize open state for all folders
+          const initialState = {};
+          const initFolderState = (folder) => {
+            initialState[folder.folderName] = true; // Open root by default
+            folder.structure?.forEach(item => {
+              item.subfolders?.forEach(subfolder => {
+                initialState[subfolder.name] = false; // Closed by default
+              });
             });
-    
-            setFirmDocsStruture({
-            folderName: result.folderName,
-            folders: formatStructure(result.structure),
-          });
+          };
+          initFolderState(result);
+          setOpenFolders(initialState);
         } catch (error) {
-          console.error("Error fetching firm docs:", error);
+          setError(error.message);
+        } finally {
+          setLoading(false);
         }
       };
-    
-      fetchFirmDocs();
+  
+      fetchData();
     }, []);
+  
+    const toggleFirmFolder = (folderName) => {
+      setOpenFolders(prev => ({
+        ...prev,
+        [folderName]: !prev[folderName]
+      }));
+    };
+    const [folderData, setFolderData] = useState(null);
+    const [openFolders, setOpenFolders] = useState({});
+    const renderFolder = (folder) => {
+      return (
+        <Box key={folder.folderName} sx={{ ml: 2 }}>
+          <Box 
+            sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', my: 1 }}
+            onClick={() => toggleFirmFolder(folder.folderName)}
+          >
+            {openFolders[folder.folderName] ? <FolderOpen color="primary" /> : <Folder color="primary" />}
+            <Typography variant="body1" sx={{ ml: 1 }}>
+              {folder.folderName}
+            </Typography>
+          </Box>
+  
+          <Collapse in={openFolders[folder.folderName]}>
+            <Box sx={{ ml: 3 }}>
+              {folder.structure?.map((item, index) => (
+                <React.Fragment key={index}>
+                  {item.subfolders?.map(subfolder => (
+                    <Box key={subfolder.name} sx={{ ml: 2 }}>
+                      <Box 
+                        sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', my: 1 }}
+                        onClick={() => toggleFirmFolder(subfolder.name)}
+                      >
+                        {openFolders[subfolder.name] ? <FolderOpen color="primary" /> : <Folder color="primary" />}
+                        <Typography variant="body1" sx={{ ml: 1 }}>
+                          {subfolder.name}
+                        </Typography>
+                      </Box>
+  
+                      <Collapse in={openFolders[subfolder.name]}>
+                        <Box sx={{ ml: 3 }}>
+                          {subfolder.files.map((file, fileIndex) => (
+                            <Box key={fileIndex} sx={{ display: 'flex', alignItems: 'center', my: 1 }}>
+                              <InsertDriveFile color="action" />
+                              <Typography variant="body2" sx={{ ml: 1, color: 'text.secondary' }}>
+                                {file}
+                              </Typography>
+                            </Box>
+                          ))}
+                        </Box>
+                      </Collapse>
+                    </Box>
+                  ))}
+                </React.Fragment>
+              ))}
+            </Box>
+          </Collapse>
+        </Box>
+      );
+    };
+ 
+
+ 
     
   const handleFolderSelection = (e) => {
     const files = Array.from(e.target.files);
@@ -950,29 +1008,10 @@ const Documents = () => {
     // window.open(fileUrl, "_blank");
     window.location.href = fileUrl;
   };
-  const [firmdata, setFirmData] = useState({ folder: "", contents: [] });
-  const [selectedPath, setSelectedPath] = useState("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.get(
-        `http://127.0.0.1:8006/firmDocs/files/${data}`
-      );
-      if (response.data && response.data.folder) {
-        setFirmData({
-          folder: response.data.folder,
-          contents: response.data.contents,
-        });
-
-        console.log("responce", response.data)
-      }
-    };
-
-    fetchData();
-  }, []);
   if (error) return <div>Error: {error}</div>;
   if (!combinedFolderStructure || !privateStructFolder)
-    return <div>Loading...</div>;
+    return <div></div>;
   return (
     <Box>
       <Box
@@ -1105,9 +1144,9 @@ const Documents = () => {
               />
             </Box>
 
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }} onClick={handleNewFolderClick}>
               <IconButton
-                onClick={handleNewFolderClick}
+                
                 sx={{ color: "#e87800" }}
               >
                 <FaRegFolderClosed size={20} />
@@ -1119,23 +1158,11 @@ const Documents = () => {
           </Box>
         </Box>
         <Box>
-          {/* <Typography variant="h6">Firm Docs Shared With Client</Typography> */}
+         
 
-          {/* <DocumentManager
-            folderName={firmdata.folder}
-            contents={firmdata.contents}
-            onPathSelect={(path) => setSelectedPath(path)}
-            selectedPath={selectedPath}
-          />  */}
+          {/* <FileExplorer accountId={data}/> */}
+          <FileExplorer accountId={data} refreshTrigger={refreshKey} />
 
-{renderPrivateFolderContents(
-  privateStructFolder.folders,
-  (newFolders) =>
-    setPrivateStructFolder({
-      ...privateStructFolder,
-      folders: newFolders,
-    })
-)}
 
         </Box>
       </Box>
@@ -1204,11 +1231,19 @@ const Documents = () => {
 
 
         {/* FIRM DOCS SHARED WITH CLIENT UPLOAD DOC DRAWER */}
-        {/* <UploadDoc
+        <UploadDoc
         open={uploadDocOpen}
         onClose={() => setUplaodDocOpen(false)}
         file={file}
-      /> */}
+        accountId={data}
+        onUploadSuccess={() => setRefreshKey(prev => prev + 1)}
+      />
+      {/* FIRM DOCS SHARED WITH CLIENT CREATE FOLDER DRAWER */}
+      <CreateFolderInFirm
+        open={isFolderCreate}
+        onClose={() => setIsFolderCreate(false)}
+        accountId={data}
+      />
     </Box>
   );
 };

@@ -187,44 +187,13 @@ import {
 } from "@mui/material";
 import { MdClose } from "react-icons/md";
 import axios from "axios";
-import DocumentManager from "../DocumentManager";
-const CreateFolder = ({ open, onClose }) => {
-  const [clientFiles, setClientFiles] = useState([]);
-  useEffect(() => {
-    const fetchFileDetails = async () => {
-      try {
-        const response = await axios.get("http://127.0.0.1:8000/api/files");
-        if (response.data.success) {
-          const basePath = "Firm Docs Shared With Client";
-          const filtered = response.data.data
-            .filter((file) => file.filePath.includes(basePath))
-            .map((file) => {
-              const pathParts = file.filePath.split(basePath);
-              return {
-                ...file,
-                filePath: basePath + (pathParts[1] || ""),
-              };
-            });
+import FileExplorer from "../FileExplorer";
+const CreateFolder = ({ open, onClose,accountId }) => {
 
-          setClientFiles(filtered);
-          console.log(
-            "Filtered Files Under Firm Docs Shared With Client:",
-            filtered
-          );
-        } else {
-          setError("Failed to fetch files");
-        }
-      } catch (error) {
-        setError(error.message);
-      }
-    };
-    fetchFileDetails();
-  }, []);
-  const templateId = "67ea43c004956fca8db1d445";
 
   useEffect(() => {
-    console.log(templateId);
-  }, [templateId]);
+    console.log(accountId);
+  }, [accountId]);
   const API_KEY = process.env.REACT_APP_FOLDER_URL;
 
   const [structFolder, setStructFolder] = useState(null);
@@ -233,180 +202,7 @@ const CreateFolder = ({ open, onClose }) => {
   const [newFolderName, setNewFolderName] = useState("");
   const [newFolderPath, setNewFolderPath] = useState("");
 
-  useEffect(() => {
-    if (templateId) {
-      fetchFolders();
-    }
-  }, [templateId]);
-
-  const fetchFolders = async () => {
-    try {
-      const url = `http://localhost:8000/allFolders/${templateId}`;
-      const response = await axios.get(url);
-
-      const addIsOpenProperty = (folders, parentId = null) =>
-        folders.map((folder, index) => ({
-          ...folder,
-          isOpen: false, // Initially close all folders
-          id: `${parentId ? `${parentId}-` : ""}${index}`,
-          contents: folder.contents
-            ? addIsOpenProperty(
-                folder.contents,
-                `${parentId ? `${parentId}-` : ""}${index}`
-              )
-            : [],
-        }));
-
-      const processedData = {
-        ...response.data,
-        folders: addIsOpenProperty(response.data.folders || []),
-      };
-
-      setStructFolder(processedData);
-    } catch (err) {
-      console.error("Error fetching all folders:", err);
-      setError(err.message || "An error occurred");
-    }
-  };
-
-  // const renderContents = (contents, setContents) => {
-  //   return contents.map((item, index) => {
-  //     if (item.folder) {
-  //       const toggleFolder = () => {
-  //         const updatedContents = contents.map((folder, i) =>
-  //           i === index ? { ...folder, isOpen: !folder.isOpen } : folder
-  //         );
-  //         setContents(updatedContents);
-  //       };
-
-  //       const selectFolder = () => setSelectedFolderId(item.id);
-
-  //       return (
-  //         <div key={index} style={{ marginLeft: "20px" }}>
-  //           <div
-  //             style={{
-  //               cursor: "pointer",
-  //               display: "flex",
-  //               alignItems: "center",
-  //               backgroundColor:
-  //                 selectedFolderId === item.id ? "#e0f7fa" : "transparent",
-  //             }}
-  //             onClick={selectFolder}
-  //           >
-  //             <div onClick={toggleFolder}>
-  //               {item.isOpen ? "📂" : "📁"}{" "}
-  //               <strong style={{ marginLeft: "5px" }}>{item.folder}</strong>
-  //             </div>
-  //           </div>
-  //           {item.isOpen && item.contents && item.contents.length > 0 && (
-  //             <div>
-  //               {renderContents(item.contents, (newContents) => {
-  //                 const updatedFolders = contents.map((folder, i) =>
-  //                   i === index ? { ...folder, contents: newContents } : folder
-  //                 );
-  //                 setContents(updatedFolders);
-  //               })}
-  //             </div>
-  //           )}
-  //         </div>
-  //       );
-  //     } else if (item.file) {
-  //       return (
-  //         <div key={index} style={{ marginLeft: "40px" }}>
-  //           📄 {item.file}
-  //         </div>
-  //       );
-  //     }
-  //     return null;
-  //   });
-  // };
-
-  const renderContents = (contents, setContents) => {
-    return contents.map((item, index) => {
-      if (item.folder) {
-        const toggleFolder = () => {
-          const updatedContents = contents.map((folder, i) =>
-            i === index ? { ...folder, isOpen: !folder.isOpen } : folder
-          );
-          setContents(updatedContents);
-        };
-
-        const selectFolder = () => setSelectedFolderId(item.id);
-
-        return (
-          <div key={index} style={{ marginLeft: "20px", marginBottom: "4px" }}>
-            <div
-              style={{
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                padding: "6px 8px",
-                borderRadius: "4px",
-                backgroundColor:
-                  selectedFolderId === item.id ? "#f0f7ff" : "transparent",
-                transition: "background-color 0.2s ease",
-                "&:hover": {
-                  backgroundColor: "#f5f5f5",
-                },
-              }}
-              onClick={selectFolder}
-            >
-              <div
-                onClick={toggleFolder}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  width: "100%",
-                }}
-              >
-                <span style={{ marginRight: "8px" }}>
-                  {item.isOpen ? "📂" : "📁"}
-                </span>
-                <strong
-                  style={{
-                    fontWeight: 500,
-                    color: "#333",
-                    fontSize: "14px",
-                  }}
-                >
-                  {item.folder}
-                </strong>
-              </div>
-            </div>
-            {item.isOpen && item.contents && item.contents.length > 0 && (
-              <div style={{ marginTop: "4px" }}>
-                {renderContents(item.contents, (newContents) => {
-                  const updatedFolders = contents.map((folder, i) =>
-                    i === index ? { ...folder, contents: newContents } : folder
-                  );
-                  setContents(updatedFolders);
-                })}
-              </div>
-            )}
-          </div>
-        );
-      } else if (item.file) {
-        return (
-          <div
-            key={index}
-            style={{
-              marginLeft: "40px",
-              padding: "4px 8px",
-              fontSize: "14px",
-              color: "#555",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <span style={{ marginRight: "8px" }}>📄</span>
-            {item.file}
-          </div>
-        );
-      }
-      return null;
-    });
-  };
-
+ 
   const [destinationPath, setDestinationPath] = useState("");
   // const handleCreateFolder = async () => {
   //   try {
@@ -445,8 +241,8 @@ const CreateFolder = ({ open, onClose }) => {
       return;
     }
   
-    const fullPath = `uploads/FolderTemplates/${templateId}/${destinationPath}`;
-    const url = `http://127.0.0.1:8006/createFolderinfirm?path=${encodeURIComponent(fullPath)}&foldername=${encodeURIComponent(newFolderName)}`;
+    const fullPath = `uploads/AccountId/${accountId}/${destinationPath}`;
+    const url = `http://127.0.0.1:8006/firmDocs/createFolderinfirm?path=${encodeURIComponent(fullPath)}&foldername=${encodeURIComponent(newFolderName)}`;
   
     try {
       const response = await fetch(url, {
@@ -455,6 +251,7 @@ const CreateFolder = ({ open, onClose }) => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
+          accountId:accountId,
           permissions: {
             canView: true,
             canDownload: true,
@@ -485,21 +282,7 @@ const CreateFolder = ({ open, onClose }) => {
   const [data, setData] = useState({ folder: "", contents: [] });
   const [selectedPath, setSelectedPath] = useState("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.get(
-        "http://127.0.0.1:8000/admin/firmDocs/67ea43c004956fca8db1d445"
-      );
-      if (response.data && response.data.folder) {
-        setData({
-          folder: response.data.folder,
-          contents: response.data.contents,
-        });
-      }
-    };
-
-    fetchData();
-  }, []);
+ 
   // const [selectedPath, setSelectedPath] = useState("");
 
 const handlePathSelect = (path) => {
@@ -551,12 +334,7 @@ const handlePathSelect = (path) => {
           </Button>
 
           <Box sx={{ maxHeight: "500px", overflowY: "auto" }}>
-          <DocumentManager
-        folderName={data.folder}
-        contents={data.contents}
-        onPathSelect={handlePathSelect}
-        selectedPath={selectedPath}
-      />
+          <FileExplorer onPathSelect={handlePathSelect} accountId={accountId}/>
           </Box>
         </Box>
       </Drawer>
