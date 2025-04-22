@@ -465,8 +465,8 @@ import { MdOutlineDriveFolderUpload } from "react-icons/md";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useParams } from "react-router-dom";
 import CreateFolder from "./AdminPortal/CreateFolder";
-import UploadDrawer from "./AdminPortal/uploadDocumentWorking";
-import UploadFolder from "./AdminPortal/folderUpload";
+import UploadDrawer from "../../Templates/FoldersTemp/uploadDocumentWorking";
+import UploadFolder from "../../Templates/FoldersTemp/folderUpload";
 import DocumentManager from "./DocumentManager"
 import UploadDoc from "./Firm Docs Shared With Client/UplodDoc"
 import CreateFolderInFirm from "./Firm Docs Shared With Client/CreateFolder"

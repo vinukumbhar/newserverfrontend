@@ -1,4 +1,5 @@
 
+
 import React, { useEffect, useState } from "react";
 import {
   Box,
@@ -11,10 +12,10 @@ import {
 } from "@mui/material";
 import { MdClose } from "react-icons/md";
 import axios from "axios";
-
-const CreateFolder = ({
+import JSZip from "jszip";
+const UploadDocument = ({
   open,
-  onClose,
+  onClose,folderFiles,
   fetchUnSealedFolders,
   fetchAdminPrivateFolders,
   accountId
@@ -22,10 +23,10 @@ const CreateFolder = ({
   const templateId = "67ea43c004956fca8db1d445";
 
   useEffect(() => {
-    console.log("account id selected",accountId);
+    console.log(accountId);
   }, [accountId]);
 
-  const [newFolderName, setNewFolderName] = useState("");
+  // const [newFolderName, setNewFolderName] = useState("");
 
   const [structFolder, setStructFolder] = useState(null);
   const [privateStructFolder, setPrivateStructFolder] = useState(null);
@@ -288,52 +289,56 @@ const CreateFolder = ({
       return null;
     });
   };
-  // const createFolderAPI = (newFolderPath) => {
-  //   return axios
-  //     .get(
-  //       `http://localhost:8000/createFolder/?path=uploads/FolderTemplates/${templateId}/${newFolderPath}&foldername=${newFolderName}`
-  //     )
-  //     .then((response) => {
-  //       console.log("API Response:", response.data);
-  //       //fetchFolders();
-  //       //renderContents();
-  //       return response.data;
-  //       //setNewFolderName(""); // Clear input field
-  //     })
-  //     .catch((error) => {
-  //       console.log("API Error:", error);
-  //       throw error;
-  //     });
-  // };
 
-  const createFolderAPI = () => {
-    if (!destinationPath || !newFolderName) {
-      console.log("Missing path or folder name.");
+  
+  const handleSubmitFolder = async () => {
+    if (!folderFiles || folderFiles.length === 0 || !destinationPath) {
+      alert("Please select a folder and destination path before uploading.");
       return;
     }
   
-    return axios
-      .get(
-        `http://127.0.0.1:8005/createFolder/?path=${destinationPath}&foldername=${newFolderName}`
-      )
-      .then((response) => {
-        console.log("API Response:", response.data);
-        setNewFolderName(""); // Clear input
-        setDestinationPath("")
-        setNewFolderPath("")
-        onClose()
-        fetchUnSealedFolders()
-        fetchAdminPrivateFolders()
-
-        return response.data;
-      })
-      .catch((error) => {
-        console.log("API Error:", error);
-        throw error;
-      });
-  };
+    const firstFile = folderFiles[0];
+    const folderPath = firstFile.webkitRelativePath;
+    const folderName = folderPath.split("/")[0]; // Extract folder name
   
-
+    console.log("Uploading folder...");
+    console.log("folderFiles:", folderFiles);
+    console.log("folderName:", folderName);
+    console.log("destinationPath:", destinationPath);
+  
+    const zip = new JSZip();
+    Array.from(folderFiles).forEach((file) => {
+      const relativePath = file.webkitRelativePath.replace(`${folderName}/`, ""); // Maintain structure
+      zip.file(relativePath, file);
+    });
+  
+    const zipBlob = await zip.generateAsync({ type: "blob" });
+  
+    const formData = new FormData();
+    formData.append("folderZip", zipBlob, `${folderName}.zip`); // Name ZIP after the folder
+    formData.append("folderName", folderName);
+    formData.append("destinationPath", destinationPath); // Add missing destination path
+  
+    console.log("FormData contents:");
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]); // Log formData entries
+    }
+  
+    try {
+      const response = await axios.post(`http://127.0.0.1:8005/upload-folder`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+  
+      alert(response.data.message);
+      onClose()
+      console.log("Folder uploaded to:", response.data.path);
+      fetchAdminPrivateFolders()
+      fetchUnSealedFolders()
+    } catch (error) {
+      console.error("Error uploading folder:", error);
+      alert("Folder upload failed!");
+    }
+  };
   const handleSelectFolderPath = () => {
     const getFolderPath = (folders, parentPath = "") => {
       for (let folder of folders) {
@@ -436,26 +441,12 @@ const CreateFolder = ({
               alignItems: "center",
             }}
           >
-            <Typography variant="h6">Create folder new </Typography>
+            <Typography variant="h6">upload folder</Typography>
             <IconButton onClick={onClose}>
               <MdClose />
             </IconButton>
           </Box>
-          <TextField
-            fullWidth
-            size="small"
-            variant="outlined"
-            placeholder="Folder Name"
-            value={newFolderName}
-            onChange={(e) => setNewFolderName(e.target.value)}
-          />
-          <Button
-            variant="contained"
-            sx={{ mt: 2 }}
-            onClick={createFolderAPI}
-          >
-            Create Folder
-          </Button>
+          
 
           <Box sx={{ maxHeight: "500px", overflowY: "auto" }}>
             {renderContents(structFolder.folders, (newFolders) =>
@@ -469,84 +460,15 @@ const CreateFolder = ({
               })
             )}
           </Box>
+          <Box sx={{ marginTop: 2, textAlign: "center" }}>
+            <Button variant="contained" color="primary" onClick={handleSubmitFolder}>
+              Upload to Selected Folder
+            </Button>
+          </Box>
         </Box>
       </Drawer>
     </Box>
   );
 };
 
-export default CreateFolder;
-
-
-// import { Typography,Box,Drawer,Button } from '@mui/material'
-// import React from 'react'
-
-// const CreateFolder = ({
-//   open,
-//   onClose,
-//   fetchUnSealedFolders,
-//   fetchAdminPrivateFolders,
-//   accountId
-// }) => {
-//   return (
-//     <Box>
-//     <Drawer anchor="right" open={open} onClose={onClose}>
-      
-//       <Box
-//         sx={{
-//           backgroundColor: "#fff",
-//           borderRadius: "8px",
-
-//           padding: 2,
-//           width: 600,
-//           fontFamily:
-//             "'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
-//         }}
-//       >
-//         <Box
-//           sx={{
-//             display: "flex",
-//             justifyContent: "space-between",
-//             alignItems: "center",
-//           }}
-//         >
-//           <Typography variant="h6">Create folder new </Typography>
-//           <IconButton onClick={onClose}>
-//             <MdClose />
-//           </IconButton>
-//         </Box>
-//         <TextField
-//           fullWidth
-//           size="small"
-//           variant="outlined"
-//           placeholder="Folder Name"
-//           // value={newFolderName}
-//           // onChange={(e) => setNewFolderName(e.target.value)}
-//         />
-//         <Button
-//           variant="contained"
-//           sx={{ mt: 2 }}
-//           // onClick={createFolderAPI}
-//         >
-//           Create Folder
-//         </Button>
-
-//         <Box sx={{ maxHeight: "500px", overflowY: "auto" }}>
-//           {/* {renderContents(structFolder.folders, (newFolders) =>
-//             setStructFolder({ ...structFolder, folders: newFolders })
-//           )}
-
-//           {renderPrivateContents(privateStructFolder.folders, (newFolders) =>
-//             setPrivateStructFolder({
-//               ...privateStructFolder,
-//               folders: newFolders,
-//             })
-//           )} */}
-//         </Box>
-//       </Box>
-//     </Drawer>
-//   </Box>
-//   )
-// }
-
-// export default CreateFolder
+export default UploadDocument;

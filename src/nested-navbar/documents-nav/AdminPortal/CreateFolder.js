@@ -314,7 +314,7 @@ const CreateFolder = ({
   
     return axios
       .get(
-        `${DOCS_MANAGMENTS}/createnewFolder/?path=${destinationPath}&foldername=${newFolderName}`
+        `http://127.0.0.1:8005/createnewFolder/?path=${destinationPath}&foldername=${newFolderName}`
       )
       .then((response) => {
         console.log("API Response:", response.data);
