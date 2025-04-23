@@ -290,9 +290,7 @@ const handlePathSelect = (path) => {
   setSelectedPath(path);
   setDestinationPath(path); 
 };
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+ 
 
   return (
     <Box>

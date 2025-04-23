@@ -281,7 +281,7 @@ const handlePathSelect = (path) => {
   setSelectedPath(path);
   setDestinationPath(path); 
 };
-  if (error) return <Box>Error: {error}</Box>;
+  
 
   return (
     <Drawer

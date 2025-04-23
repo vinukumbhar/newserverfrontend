@@ -23,6 +23,7 @@ import FileExplorer from "./FileExplorer"
 function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
   console.log("jjj", templateId);
   console.log("jjj temp", tempName);
+  const API_KEY = process.env.REACT_APP_FOLDER_URL;
     const [refreshKey, setRefreshKey] = useState(0);
     console.log(refreshKey)
   const [isDocumentForm, setIsDocumentForm] = useState(false);
@@ -64,7 +65,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
   const fetchUnSealedFolders = async () => {
     try {
       const res = await axios.get(
-        `http://127.0.0.1:8005/foldertemplates/unsealed/${templateId}`
+        `${API_KEY}/foldertemplates/unsealed/${templateId}`
       );
       const folders = res.data.folders || [];
 
@@ -88,7 +89,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
   const fetchSealedFolders = async () => {
     try {
       const res = await axios.get(
-        `http://127.0.0.1:8005/foldertemplates/sealedFolders/${templateId}`
+        `${API_KEY}/foldertemplates/sealedFolders/${templateId}`
       );
       const folders = res.data.folders || [];
 
@@ -111,7 +112,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
   const fetchPrivateFolders = async () => {
     try {
       const res = await axios.get(
-        `http://127.0.0.1:8005/foldertemplates/privateDocs/${templateId}`
+        `${API_KEY}/foldertemplates/privateDocs/${templateId}`
       );
       const folders = res.data.folders || [];
 
@@ -180,7 +181,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
   };
   const handleFileOpen = (fileItem) => {
     // Assuming fileItem.filepath = "/uploads/folder1/filename.pdf"
-    const baseUrl = "http://127.0.0.1:8005"; // or http://127.0.0.1:8005 in dev
+    const baseUrl = `${API_KEY}`; // or http://127.0.0.1:8005 in dev
     const fileUrl = `${baseUrl}/${fileItem.path}`;
   
     // window.open(fileUrl, "_blank");
@@ -193,8 +194,8 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
   const fetchBothFolders = async () => {
     try {
       const [sealedRes, unsealedRes] = await Promise.all([
-        axios.get(`http://127.0.0.1:8005/foldertemplates/sealedFolders/${templateId}`),
-        axios.get(`http://127.0.0.1:8005/foldertemplates/unsealed/${templateId}`),
+        axios.get(`${API_KEY}/foldertemplates/sealedFolders/${templateId}`),
+        axios.get(`${API_KEY}/foldertemplates/unsealed/${templateId}`),
       ]);
   
       const addIsOpen = (items, parentId = "", sealed = false) =>
@@ -248,7 +249,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
         const relativePath = item.path.replace(`${basePath}/${currentDir}/`, '');
   
         // Call backend to move the item
-        await axios.post('http://127.0.0.1:8005/foldertemplates/moveBetweenSealedUnsealed', {
+        await axios.post('${API_KEY}/foldertemplates/moveBetweenSealedUnsealed', {
           id: folderId,
           itemPath: relativePath,
           direction: action === 'seal' ? 'toSealed' : 'toUnsealed',
@@ -648,7 +649,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
         onClose={() => setIsFolderFormOpen(false)}
         fetchUnSealedFolders={fetchUnSealedFolders}
         fetchAdminPrivateFolders={fetchPrivateFolders}
-        accountId={templateId}
+        templateId={templateId}
       />
 
       <UploadDrawer
@@ -657,7 +658,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
         file={file}
         fetchUnSealedFolders={fetchUnSealedFolders}
         fetchAdminPrivateFolders={fetchPrivateFolders}
-        accountId={templateId}
+        templateId={templateId}
       />
 
       <UploadFolder
@@ -669,7 +670,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
         onClose={() => setIsUploadFolderFormOpen(false)}
         fetchUnSealedFolders={fetchUnSealedFolders}
         fetchAdminPrivateFolders={fetchPrivateFolders}
-        accountId={templateId}
+        templateId={templateId}
       />
 
 

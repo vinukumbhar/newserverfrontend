@@ -25,10 +25,10 @@
 // import { BsFiletypePng } from "react-icons/bs";
 // import { FaRegFolderClosed } from "react-icons/fa6";
 // const Documents = () => {
-//   const API_KEY = process.env.REACT_APP_FOLDER_URL;
-//   const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
-//   const [folderTemplates, setFolderTemplates] = useState([]);
-//   const [selectedTemplate, setSelectedTemplate] = useState(null);
+  // const API_KEY = process.env.REACT_APP_FOLDER_URL;
+  // const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
+  // const [folderTemplates, setFolderTemplates] = useState([]);
+  // const [selectedTemplate, setSelectedTemplate] = useState(null);
 //   const { data } = useParams();
 //   console.log(data);
 //   const [isFolderFormOpen, setIsFolderFormOpen] = useState(false);
@@ -51,57 +51,57 @@
 //     const handleFileUpload = () => {
 //       setIsDocumentForm(true);
 //     };
-//   useEffect(() => {
-//     fetchFolderData();
-//   }, []);
+  // useEffect(() => {
+  //   fetchFolderData();
+  // }, []);
 
-//   const fetchFolderData = async () => {
-//     try {
-//       const url = `${API_KEY}/foldertemp/folder`;
-//       const response = await fetch(url);
-//       const data = await response.json();
-//       setFolderTemplates(data.folderTemplates);
-//     } catch (error) {
-//       console.error("Error fetching data:", error);
-//     }
-//   };
-//   const handleSelectTemplate = (selectedOptions) => {
-//     setSelectedTemplate(selectedOptions);
-//   };
-//   const optionFolders = folderTemplates.map((folderTemplates) => ({
-//     value: folderTemplates._id,
-//     label: folderTemplates.templatename,
-//   }));
+  // const fetchFolderData = async () => {
+  //   try {
+  //     const url = `${API_KEY}/foldertemp/folder`;
+  //     const response = await fetch(url);
+  //     const data = await response.json();
+  //     setFolderTemplates(data.folderTemplates);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+  // const handleSelectTemplate = (selectedOptions) => {
+  //   setSelectedTemplate(selectedOptions);
+  // };
+  // const optionFolders = folderTemplates.map((folderTemplates) => ({
+  //   value: folderTemplates._id,
+  //   label: folderTemplates.templatename,
+  // }));
 
-//   const assignfoldertemp = () => {
-//     const myHeaders = new Headers();
-//     myHeaders.append("Content-Type", "application/json");
+  // const assignfoldertemp = () => {
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Content-Type", "application/json");
 
-//     const raw = JSON.stringify({
-//       accountId: data,
-//       foldertempId: selectedTemplate.value,
-//     });
+  //   const raw = JSON.stringify({
+  //     accountId: data,
+  //     foldertempId: selectedTemplate.value,
+  //   });
 
-//     const requestOptions = {
-//       method: "POST",
-//       headers: myHeaders,
-//       body: raw,
-//       redirect: "follow",
-//     };
-//     console.log(raw);
-//     fetch(`${DOCS_MANAGMENTS}/clientdocs/accountfoldertemp`, requestOptions)
-//       .then((response) => response.json())
-//       .then((result) => {
-//         console.log(result);
-//         fetchFolders(data);
-//         setSelectedTemplate(null);
-//         toast.success("Folder Template Assign Successfully");
-//       })
-//       .catch((error) => {
-//         console.error(error);
-//         toast.error("Failed to Assign Folder Template");
-//       });
-//   };
+  //   const requestOptions = {
+  //     method: "POST",
+  //     headers: myHeaders,
+  //     body: raw,
+  //     redirect: "follow",
+  //   };
+  //   console.log(raw);
+  //   fetch(`${DOCS_MANAGMENTS}/clientdocs/accountfoldertemp`, requestOptions)
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       console.log(result);
+  //       fetchFolders(data);
+  //       setSelectedTemplate(null);
+  //       toast.success("Folder Template Assign Successfully");
+  //     })
+  //     .catch((error) => {
+  //       console.error(error);
+  //       toast.error("Failed to Assign Folder Template");
+  //     });
+  // };
 
 //   // Component to render folders and files recursively
 //  // item: {
@@ -359,68 +359,68 @@
 //             sx={{ display: "none" }}
 //           />
 //         </Box>
-//         <Button
-//         variant="contained"
-//         color="primary"
-//         onClick={() => setShowAutocomplete((prev) => !prev)}
-//         sx={{
-//           backgroundColor: "var(--color-save-btn)",
-//           "&:hover": { backgroundColor: "var(--color-save-hover-btn)" },
-//           borderRadius: "15px",
-//         }}
+//   <Button
+//   variant="contained"
+//   color="primary"
+//   onClick={() => setShowAutocomplete((prev) => !prev)}
+//   sx={{
+//     backgroundColor: "var(--color-save-btn)",
+//     "&:hover": { backgroundColor: "var(--color-save-hover-btn)" },
+//     borderRadius: "15px",
+//   }}
+// >
+//   Assign Folder Template
+// </Button>
+// </Box>
+// {showAutocomplete && (
+//   <Box sx={{display:'flex', alignItems:'center',gap:3,mt:2}}>
+// <Autocomplete
+//     options={optionFolders}
+//     getOptionLabel={(option) => option.label}
+//     value={selectedTemplate}
+//     onChange={(event, newValue) => handleSelectTemplate(newValue)}
+//     isOptionEqualToValue={(option, value) => option.value === value.value}
+//     renderOption={(props, option) => (
+//       <Box
+//         component="li"
+//         {...props}
+//         sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
 //       >
-//         Assign Folder Template
-//       </Button>
+//         {option.label}
 //       </Box>
-//       {showAutocomplete && (
-//         <Box sx={{display:'flex', alignItems:'center',gap:3,mt:2}}>
-//       <Autocomplete
-//           options={optionFolders}
-//           getOptionLabel={(option) => option.label}
-//           value={selectedTemplate}
-//           onChange={(event, newValue) => handleSelectTemplate(newValue)}
-//           isOptionEqualToValue={(option, value) => option.value === value.value}
-//           renderOption={(props, option) => (
-//             <Box
-//               component="li"
-//               {...props}
-//               sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
-//             >
-//               {option.label}
-//             </Box>
-//           )}
-//           renderInput={(params) => (
-//             <TextField
-//               {...params}
-//               sx={{ backgroundColor: "#fff" }}
-//               placeholder="Select Folder "
-//               variant="outlined"
-//               size="small"
-//             />
-//           )}
-//           sx={{ width: "30%", marginTop: "8px" }}
-//           clearOnEscape // Enable clearable functionality
-//         />
-//       <Box mt={2}>
-//         <Button
-//           variant="contained"
-//           color="primary"
-//           onClick={assignfoldertemp}
-//           disabled={!selectedTemplate}
-//           sx={{
-//             backgroundColor: "var(--color-save-btn)", // Normal background
+//     )}
+//     renderInput={(params) => (
+//       <TextField
+//         {...params}
+//         sx={{ backgroundColor: "#fff" }}
+//         placeholder="Select Folder "
+//         variant="outlined"
+//         size="small"
+//       />
+//     )}
+//     sx={{ width: "30%", marginTop: "8px" }}
+//     clearOnEscape // Enable clearable functionality
+//   />
+// <Box mt={2}>
+//   <Button
+//     variant="contained"
+//     color="primary"
+//     onClick={assignfoldertemp}
+//     disabled={!selectedTemplate}
+//     sx={{
+//       backgroundColor: "var(--color-save-btn)", // Normal background
 
-//             "&:hover": {
-//               backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-//             },
-//             borderRadius: "15px",width:'80px'
-//           }}
-//         >
-//          Save
-//         </Button>
-//       </Box>
-//       </Box>
-//       )}
+//       "&:hover": {
+//         backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+//       },
+//       borderRadius: "15px",width:'80px'
+//     }}
+//   >
+//    Save
+//   </Button>
+// </Box>
+// </Box>
+// )}
 //       <Box>
 //         {" "}
 //         {folderdata && folderdata.contents && (
@@ -456,22 +456,26 @@ import {
   IconButton,
   Input,
   Menu,
-  MenuItem,Collapse,
+  MenuItem,
+  Collapse,
   Divider,
+  Autocomplete,TextField,
+  Button,
 } from "@mui/material";
 import { HiDocumentArrowUp } from "react-icons/hi2";
 import { FaRegFolderClosed } from "react-icons/fa6";
 import { MdOutlineDriveFolderUpload } from "react-icons/md";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import CreateFolder from "./AdminPortal/CreateFolder";
-import UploadDrawer from "../../Templates/FoldersTemp/uploadDocumentWorking";
-import UploadFolder from "../../Templates/FoldersTemp/folderUpload";
-import DocumentManager from "./DocumentManager"
-import UploadDoc from "./Firm Docs Shared With Client/UplodDoc"
-import CreateFolderInFirm from "./Firm Docs Shared With Client/CreateFolder"
-import { Folder, FolderOpen, InsertDriveFile } from '@mui/icons-material';
-import FileExplorer from "./FileExplorer"
+import UploadDrawer from "./AdminPortal/uploadDocumentWorking";
+import UploadFolder from "./AdminPortal/folderUpload";
+// import DocumentManager from "./DocumentManager"
+import UploadDoc from "./Firm Docs Shared With Client/UplodDoc";
+import CreateFolderInFirm from "./Firm Docs Shared With Client/CreateFolder";
+import { Folder, FolderOpen, InsertDriveFile } from "@mui/icons-material";
+import FileExplorer from "./FileExplorer";
 const Documents = () => {
   const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
   const { data } = useParams();
@@ -486,7 +490,7 @@ const Documents = () => {
   const folderInputRef = useRef(null);
   const [uploadDocOpen, setUplaodDocOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
-  console.log(refreshKey)
+  console.log(refreshKey);
   const handleFileChange = (e) => setFile(e.target.files[0]);
   const handleNewFileChange = (e) => setFile(e.target.files[0]);
   const handleFileUpload = () => setIsDocumentForm(true);
@@ -495,12 +499,12 @@ const Documents = () => {
   const handleNewFolderClick = () => setIsFolderCreate((prev) => !prev);
   const [combinedFolderStructure, setCombinedFolderStructure] = useState(null);
 
-  const [contextItem, setContextItem] = useState(null);
+  // const [contextItem, setContextItem] = useState(null);
   const [structFolder, setStructFolder] = useState(null);
   const [sealedStructFolder, setSealedStructFolder] = useState(null);
   const [privateStructFolder, setPrivateStructFolder] = useState(null);
-  const [firmDocsStruture,setFirmDocsStruture]= useState(null);
-  const [firmDocsFolder, setFirmDocsFolder] = useState(null);
+  // const [firmDocsStruture,setFirmDocsStruture]= useState(null);
+  // const [firmDocsFolder, setFirmDocsFolder] = useState(null);
   const [error, setError] = useState(null);
   const [selectedFolderId, setSelectedFolderId] = useState(null);
   const openDrawer = () => {
@@ -819,106 +823,128 @@ const Documents = () => {
       }
       return null;
     });
-
-
-
-  
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await fetch(
-            "http://127.0.0.1:8006/firmDocs/files/67fd062847d30cdaf4ab6594"
-          );
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          const result = await response.json();
-          setFolderData(result);
-          
-          // Initialize open state for all folders
-          const initialState = {};
-          const initFolderState = (folder) => {
-            initialState[folder.folderName] = true; // Open root by default
-            folder.structure?.forEach(item => {
-              item.subfolders?.forEach(subfolder => {
-                initialState[subfolder.name] = false; // Closed by default
-              });
-            });
-          };
-          initFolderState(result);
-          setOpenFolders(initialState);
-        } catch (error) {
-          setError(error.message);
-        } finally {
-          setLoading(false);
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8006/firmDocs/files/${data}`
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
         }
-      };
-  
-      fetchData();
-    }, []);
-  
-    const toggleFirmFolder = (folderName) => {
-      setOpenFolders(prev => ({
-        ...prev,
-        [folderName]: !prev[folderName]
-      }));
+        const result = await response.json();
+        setFolderData(result);
+
+        // Initialize open state for all folders
+        const initialState = {};
+        const initFolderState = (folder) => {
+          initialState[folder.folderName] = true; // Open root by default
+          folder.structure?.forEach((item) => {
+            item.subfolders?.forEach((subfolder) => {
+              initialState[subfolder.name] = false; // Closed by default
+            });
+          });
+        };
+        initFolderState(result);
+        setOpenFolders(initialState);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
     };
-    const [folderData, setFolderData] = useState(null);
-    const [openFolders, setOpenFolders] = useState({});
-    const renderFolder = (folder) => {
-      return (
-        <Box key={folder.folderName} sx={{ ml: 2 }}>
-          <Box 
-            sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', my: 1 }}
-            onClick={() => toggleFirmFolder(folder.folderName)}
-          >
-            {openFolders[folder.folderName] ? <FolderOpen color="primary" /> : <Folder color="primary" />}
-            <Typography variant="body1" sx={{ ml: 1 }}>
-              {folder.folderName}
-            </Typography>
-          </Box>
-  
-          <Collapse in={openFolders[folder.folderName]}>
-            <Box sx={{ ml: 3 }}>
-              {folder.structure?.map((item, index) => (
-                <React.Fragment key={index}>
-                  {item.subfolders?.map(subfolder => (
-                    <Box key={subfolder.name} sx={{ ml: 2 }}>
-                      <Box 
-                        sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', my: 1 }}
-                        onClick={() => toggleFirmFolder(subfolder.name)}
-                      >
-                        {openFolders[subfolder.name] ? <FolderOpen color="primary" /> : <Folder color="primary" />}
-                        <Typography variant="body1" sx={{ ml: 1 }}>
-                          {subfolder.name}
-                        </Typography>
-                      </Box>
-  
-                      <Collapse in={openFolders[subfolder.name]}>
-                        <Box sx={{ ml: 3 }}>
-                          {subfolder.files.map((file, fileIndex) => (
-                            <Box key={fileIndex} sx={{ display: 'flex', alignItems: 'center', my: 1 }}>
-                              <InsertDriveFile color="action" />
-                              <Typography variant="body2" sx={{ ml: 1, color: 'text.secondary' }}>
-                                {file}
-                              </Typography>
-                            </Box>
-                          ))}
-                        </Box>
-                      </Collapse>
-                    </Box>
-                  ))}
-                </React.Fragment>
-              ))}
-            </Box>
-          </Collapse>
-        </Box>
-      );
-    };
+  useEffect(() => {
  
 
- 
-    
+    fetchData();
+  }, [data]);
+
+  const toggleFirmFolder = (folderName) => {
+    setOpenFolders((prev) => ({
+      ...prev,
+      [folderName]: !prev[folderName],
+    }));
+  };
+  const [folderData, setFolderData] = useState(null);
+  const [openFolders, setOpenFolders] = useState({});
+  const renderFolder = (folder) => {
+    return (
+      <Box key={folder.folderName} sx={{ ml: 2 }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+            my: 1,
+          }}
+          onClick={() => toggleFirmFolder(folder.folderName)}
+        >
+          {openFolders[folder.folderName] ? (
+            <FolderOpen color="primary" />
+          ) : (
+            <Folder color="primary" />
+          )}
+          <Typography variant="body1" sx={{ ml: 1 }}>
+            {folder.folderName}
+          </Typography>
+        </Box>
+
+        <Collapse in={openFolders[folder.folderName]}>
+          <Box sx={{ ml: 3 }}>
+            {folder.structure?.map((item, index) => (
+              <React.Fragment key={index}>
+                {item.subfolders?.map((subfolder) => (
+                  <Box key={subfolder.name} sx={{ ml: 2 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        my: 1,
+                      }}
+                      onClick={() => toggleFirmFolder(subfolder.name)}
+                    >
+                      {openFolders[subfolder.name] ? (
+                        <FolderOpen color="primary" />
+                      ) : (
+                        <Folder color="primary" />
+                      )}
+                      <Typography variant="body1" sx={{ ml: 1 }}>
+                        {subfolder.name}
+                      </Typography>
+                    </Box>
+
+                    <Collapse in={openFolders[subfolder.name]}>
+                      <Box sx={{ ml: 3 }}>
+                        {subfolder.files.map((file, fileIndex) => (
+                          <Box
+                            key={fileIndex}
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              my: 1,
+                            }}
+                          >
+                            <InsertDriveFile color="action" />
+                            <Typography
+                              variant="body2"
+                              sx={{ ml: 1, color: "text.secondary" }}
+                            >
+                              {file}
+                            </Typography>
+                          </Box>
+                        ))}
+                      </Box>
+                    </Collapse>
+                  </Box>
+                ))}
+              </React.Fragment>
+            ))}
+          </Box>
+        </Collapse>
+      </Box>
+    );
+  };
+
   const handleFolderSelection = (e) => {
     const files = Array.from(e.target.files);
     if (files.length > 0) {
@@ -1008,10 +1034,66 @@ const Documents = () => {
     // window.open(fileUrl, "_blank");
     window.location.href = fileUrl;
   };
+  const [showAutocomplete, setShowAutocomplete] = useState(false);
+  useEffect(() => {
+    fetchFolderData();
+  }, []);
+  const API_KEY = process.env.REACT_APP_FOLDER_URL;
+  // const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
+  const [folderTemplates, setFolderTemplates] = useState([]);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const fetchFolderData = async () => {
+    try {
+      const url = `${API_KEY}/foldertemp/folder`;
+      const response = await fetch(url);
+      const data = await response.json();
+      setFolderTemplates(data.folderTemplates);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const handleSelectTemplate = (selectedOptions) => {
+    setSelectedTemplate(selectedOptions);
+  };
+  const optionFolders = folderTemplates.map((folderTemplates) => ({
+    value: folderTemplates._id,
+    label: folderTemplates.templatename,
+  }));
+
+  const assignfoldertemp = () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      accountId: data,
+      foldertempId: selectedTemplate.value,
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+    console.log(raw);
+    fetch(`${DOCS_MANAGMENTS}/clientdocs/accountfoldertemp`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        // fetchFolders(data);
+        setSelectedTemplate(null);
+        fetchBothFolders()
+        fetchData()
+        toast.success("Folder Template Assign Successfully");
+      })
+      .catch((error) => {
+        console.error(error);
+        toast.error("Failed to Assign Folder Template");
+      });
+  };
 
   if (error) return <div>Error: {error}</div>;
-  if (!combinedFolderStructure || !privateStructFolder)
-    return <div></div>;
+  if (!combinedFolderStructure || !privateStructFolder) return <div></div>;
   return (
     <Box>
       <Box
@@ -1084,7 +1166,70 @@ const Documents = () => {
               onChange={handleFolderSelection}
             />
           </Box>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setShowAutocomplete((prev) => !prev)}
+            sx={{
+              backgroundColor: "var(--color-save-btn)",
+              "&:hover": { backgroundColor: "var(--color-save-hover-btn)" },
+              borderRadius: "15px",
+            }}
+          >
+            Assign Folder Template
+          </Button>
         </Box>
+
+        {showAutocomplete && (
+  <Box sx={{display:'flex', alignItems:'center',gap:3,mt:2}}>
+<Autocomplete
+    options={optionFolders}
+    getOptionLabel={(option) => option.label}
+    value={selectedTemplate}
+    onChange={(event, newValue) => handleSelectTemplate(newValue)}
+    isOptionEqualToValue={(option, value) => option.value === value.value}
+    renderOption={(props, option) => (
+      <Box
+        component="li"
+        {...props}
+        sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
+      >
+        {option.label}
+      </Box>
+    )}
+    renderInput={(params) => (
+      <TextField
+        {...params}
+        sx={{ backgroundColor: "#fff" }}
+        placeholder="Select Folder "
+        variant="outlined"
+        size="small"
+      />
+    )}
+    sx={{ width: "30%", marginTop: "8px" }}
+    clearOnEscape // Enable clearable functionality
+  />
+<Box mt={2}>
+  <Button
+    variant="contained"
+    color="primary"
+    onClick={assignfoldertemp}
+    disabled={!selectedTemplate}
+    sx={{
+      backgroundColor: "var(--color-save-btn)", // Normal background
+
+      "&:hover": {
+        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+      },
+      borderRadius: "15px",width:'80px'
+    }}
+  >
+   Save
+  </Button>
+</Box>
+</Box>
+)}
       </Box>
 
       <Box>
@@ -1092,8 +1237,6 @@ const Documents = () => {
       </Box>
 
       <Box>
-        {/* <Typography variant="h6">Private</Typography> */}
-
         {renderPrivateFolderContents(
           privateStructFolder.folders,
           (newFolders) =>
@@ -1104,10 +1247,9 @@ const Documents = () => {
         )}
       </Box>
 
+      <Box sx={{ mt: 2, borderBottom: "2px solid grey" }}></Box>
 
- <Box sx={{ mt: 2, borderBottom: "2px solid grey" }}></Box>
-
- <Box>
+      <Box>
         <Box
           sx={{
             backgroundColor: "#fff",
@@ -1144,11 +1286,11 @@ const Documents = () => {
               />
             </Box>
 
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }} onClick={handleNewFolderClick}>
-              <IconButton
-                
-                sx={{ color: "#e87800" }}
-              >
+            <Box
+              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+              onClick={handleNewFolderClick}
+            >
+              <IconButton sx={{ color: "#e87800" }}>
                 <FaRegFolderClosed size={20} />
               </IconButton>
               <Typography variant="body1" sx={{ cursor: "pointer" }}>
@@ -1158,12 +1300,8 @@ const Documents = () => {
           </Box>
         </Box>
         <Box>
-         
-
           {/* <FileExplorer accountId={data}/> */}
           <FileExplorer accountId={data} refreshTrigger={refreshKey} />
-
-
         </Box>
       </Box>
       <Menu
@@ -1229,14 +1367,13 @@ const Documents = () => {
         accountId={data}
       />
 
-
-        {/* FIRM DOCS SHARED WITH CLIENT UPLOAD DOC DRAWER */}
-        <UploadDoc
+      {/* FIRM DOCS SHARED WITH CLIENT UPLOAD DOC DRAWER */}
+      <UploadDoc
         open={uploadDocOpen}
         onClose={() => setUplaodDocOpen(false)}
         file={file}
         accountId={data}
-        onUploadSuccess={() => setRefreshKey(prev => prev + 1)}
+        onUploadSuccess={() => setRefreshKey((prev) => prev + 1)}
       />
       {/* FIRM DOCS SHARED WITH CLIENT CREATE FOLDER DRAWER */}
       <CreateFolderInFirm

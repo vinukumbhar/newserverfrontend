@@ -220,7 +220,7 @@ import FileExplorer from "../FileExplorer";
 const UploadDocument = ({ open, onClose, file,accountId ,onUploadSuccess }) => {
 console.log("accc",onUploadSuccess)
   const [error, setError] = useState(null);
-
+  const API_KEY = process.env.REACT_APP_FOLDER_URL;
   const [destinationPath, setDestinationPath] = useState("");
   
   const handleSubmitfile = async () => {
@@ -252,7 +252,7 @@ console.log("accc",onUploadSuccess)
     data.append("permissions", JSON.stringify(permissions));
   
     try {
-      const response = await axios.post("http://127.0.0.1:8005/firmClientDocs/uploadfileinfirm", data, {
+      const response = await axios.post(`${API_KEY}/firmClientDocs/uploadfileinfirm`, data, {
         maxBodyLength: Infinity,
       });
       console.log(response.data);

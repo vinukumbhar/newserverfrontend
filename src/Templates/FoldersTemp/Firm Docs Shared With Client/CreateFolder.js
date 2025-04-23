@@ -241,8 +241,8 @@ const CreateFolder = ({ open, onClose,accountId }) => {
       return;
     }
   
-    const fullPath = `uploads/AccountId/${accountId}/${destinationPath}`;
-    const url = `http://127.0.0.1:8006/firmDocs/createFolderinfirm?path=${encodeURIComponent(fullPath)}&foldername=${encodeURIComponent(newFolderName)}`;
+    const fullPath = `uploads/FolderTemplates/${accountId}/${destinationPath}`;
+    const url = `${API_KEY}/firmClientDocs/createFolderinfirm?path=${encodeURIComponent(fullPath)}&foldername=${encodeURIComponent(newFolderName)}`;
   
     try {
       const response = await fetch(url, {

@@ -412,7 +412,8 @@ const UploadDocument = ({ open, onClose, file ,fetchUnSealedFolders,fetchAdminPr
       setDestinationPath(`uploads/AccountId/${accountId}/${privateFolderPath}`);
     }
   }, [privateFolderPath, selectedType]);
-  
+
+
   if (error) {
     return <Box>Error: {error}</Box>;
   }
