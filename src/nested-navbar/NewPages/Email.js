@@ -1,8 +1,10 @@
 import React from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { Box, } from '@mui/material'
+import { useParams } from "react-router-dom";
 const Email = () => {
-  const accountid = '661b6d50187951c779906e29'
+   const { data } =  useParams();
+   console.log(data)
   return (
    
     <Box >
@@ -29,8 +31,8 @@ const Email = () => {
             }
           }
         }}>
-          <NavLink to={`/clients/accounts/accountsdash/email/${accountid}/inbox`}>Inbox</NavLink>
-          <NavLink to={`/clients/accounts/accountsdash/email/${accountid}/sent`} >Sent</NavLink>
+          <NavLink to={`/clients/accounts/accountsdash/email/${data}/inbox`}>Inbox</NavLink>
+          <NavLink to={`/clients/accounts/accountsdash/email/${data}/sent`} >Sent</NavLink>
         </Box>
 
       </Box>

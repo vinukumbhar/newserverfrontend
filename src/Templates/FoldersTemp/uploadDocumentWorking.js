@@ -3,7 +3,7 @@ import axios from "axios";
 import { Button, Box, Typography, Drawer } from "@mui/material";
 import { FaTimes } from "react-icons/fa";
 
-const UploadDocument = ({ open, onClose, file ,fetchUnSealedFolders,fetchAdminPrivateFolders,templateId}) => {
+const UploadDocument = ({ open, onClose, file ,fetchUnSealedFolders,fetchAdminPrivateFolders,accountId,fetchBothFolders}) => {
   
   const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
 
@@ -14,10 +14,10 @@ const UploadDocument = ({ open, onClose, file ,fetchUnSealedFolders,fetchAdminPr
   const [selectedFolderId, setSelectedFolderId] = useState(null);
   const [newFolderPath, setNewFolderPath] = useState("");
   const [destinationPath, setDestinationPath] = useState("");
-
+  const API_KEY = process.env.REACT_APP_FOLDER_URL;
   const fetchFolders = async () => {
     try {
-      const url = `http://127.0.0.1:8005/foldertemplates/clientDocs/${templateId}`;
+      const url = `${API_KEY}/foldertemplates/clientDocs/${accountId}`;
       const response = await axios.get(url);
       const addIsOpenProperty = (folders, parentId = null) =>
         folders.map((folder, index) => ({
@@ -46,7 +46,7 @@ const UploadDocument = ({ open, onClose, file ,fetchUnSealedFolders,fetchAdminPr
   const fetchPrivateFolders = async () => {
     try {
       const res = await axios.get(
-        `http://127.0.0.1:8005/foldertemplates/privateDocs/${templateId}`
+        `${API_KEY}/foldertemplates/privateDocs/${accountId}`
       );
       const folders = res.data.folders || [];
 
@@ -67,11 +67,11 @@ const UploadDocument = ({ open, onClose, file ,fetchUnSealedFolders,fetchAdminPr
     }
   };
   useEffect(() => {
-    if (templateId) {
+    if (accountId) {
       fetchFolders();
       fetchPrivateFolders();
     }
-  }, [templateId]);
+  }, [accountId]);
 
   useEffect(() => {
     if (selectedFolderId) {
@@ -295,7 +295,7 @@ const UploadDocument = ({ open, onClose, file ,fetchUnSealedFolders,fetchAdminPr
     let config = {
       method: "post",
       maxBodyLength: Infinity,
-      url: `http://127.0.0.1:8005/uploadfile`,
+      url: `${API_KEY}/uploadfile`,
       data: data,
     };
   
@@ -305,7 +305,9 @@ const UploadDocument = ({ open, onClose, file ,fetchUnSealedFolders,fetchAdminPr
         console.log(JSON.stringify(response.data));
         alert("File uploaded successfully!");
         onClose();
+        fetchBothFolders()
         fetchUnSealedFolders();
+
         fetchAdminPrivateFolders();
         setSelectedFolderId(null);
       })
@@ -403,13 +405,13 @@ const UploadDocument = ({ open, onClose, file ,fetchUnSealedFolders,fetchAdminPr
 
   useEffect(() => {
     if (newFolderPath && selectedType === "public") {
-      setDestinationPath(`uploads/FolderTemplates/${templateId}/${newFolderPath}`);
+      setDestinationPath(`uploads/FolderTemplates/${accountId}/${newFolderPath}`);
     }
   }, [newFolderPath, selectedType]);
   
   useEffect(() => {
     if (privateFolderPath && selectedType === "private") {
-      setDestinationPath(`uploads/FolderTemplates/${templateId}/${privateFolderPath}`);
+      setDestinationPath(`uploads/FolderTemplates/${accountId}/${privateFolderPath}`);
     }
   }, [privateFolderPath, selectedType]);
   

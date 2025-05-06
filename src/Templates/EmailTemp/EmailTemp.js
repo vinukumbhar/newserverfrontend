@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo,useRef } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { toast } from "react-toastify";
 import {
   Box,
@@ -24,7 +24,8 @@ import {
   TableHead,
   TableRow,
   Paper,
-  TablePagination,InputLabel
+  TablePagination,
+  InputLabel,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import {
@@ -71,35 +72,41 @@ const EmailTemp = () => {
 
   const handleChange = (event) => {
     setSelectedOption(event.target.value);
+    console.log(event.target.value)
   };
 
   const toggleDropdown = (event) => {
     setAnchorEl(event.currentTarget);
     setShowDropdown(!showDropdown);
   };
-const [cursorPosition, setCursorPosition] = useState(0);
-const handlesubject = (e) => {
-  const { value,selectionStart  } = e.target;
-  setInputText(value);
-  setCursorPosition(selectionStart);
-};
+  const [cursorPosition, setCursorPosition] = useState(0);
+  const handlesubject = (e) => {
+    const { value, selectionStart } = e.target;
+    setInputText(value);
+    setCursorPosition(selectionStart);
+  };
   const textFieldRef = useRef(null);
   const handleAddShortcut = (shortcut) => {
     setInputText((prevText) => {
-        const newText =
-            prevText.slice(0, cursorPosition) + `[${shortcut}]` + prevText.slice(cursorPosition);
-        return newText;
+      const newText =
+        prevText.slice(0, cursorPosition) +
+        `[${shortcut}]` +
+        prevText.slice(cursorPosition);
+      return newText;
     });
 
     setTimeout(() => {
-        if (textFieldRef.current) {
-            textFieldRef.current.focus();
-            textFieldRef.current.setSelectionRange(cursorPosition + shortcut.length + 2, cursorPosition + shortcut.length + 2);
-        }
+      if (textFieldRef.current) {
+        textFieldRef.current.focus();
+        textFieldRef.current.setSelectionRange(
+          cursorPosition + shortcut.length + 2,
+          cursorPosition + shortcut.length + 2
+        );
+      }
     }, 0);
 
     setShowDropdown(false);
-};
+  };
   // const handleAddShortcut = (shortcut) => {
   //   setInputText((prevText) => prevText + `[${shortcut}]`);
   //   setShowDropdown(false);
@@ -118,11 +125,11 @@ const handlesubject = (e) => {
       const contactShortcuts = [
         { title: "Account Shortcodes", isBold: true },
         { title: "Account Name", isBold: false, value: "ACCOUNT_NAME" },
-        {
-          title: "Custom field:Website",
-          isBold: false,
-          value: "ACCOUNT_CUSTOM_FIELD:Website",
-        },
+        // {
+        //   title: "Custom field:Website",
+        //   isBold: false,
+        //   value: "ACCOUNT_CUSTOM_FIELD:Website",
+        // },
         { title: "Contact Shortcodes", isBold: true },
         { title: "Contact Name", isBold: false, value: "CONTACT_NAME" },
         { title: "First Name", isBold: false, value: "FIRST_NAME" },
@@ -203,11 +210,11 @@ const handlesubject = (e) => {
       const accountShortcuts = [
         { title: "Account Shortcodes", isBold: true },
         { title: "Account Name", isBold: false, value: "ACCOUNT_NAME" },
-        {
-          title: "Custom field:Website",
-          isBold: false,
-          value: "ACCOUNT_CUSTOM_FIELD:Website",
-        },
+        // {
+        //   title: "Custom field:Website",
+        //   isBold: false,
+        //   value: "ACCOUNT_CUSTOM_FIELD:Website",
+        // },
         { title: "Date Shortcodes", isBold: true },
         {
           title: "Current day full date",
@@ -347,250 +354,199 @@ const handlesubject = (e) => {
   //         });
   // }
 
-//   const handleSaveExitTemplate = (e) => {
-//     e.preventDefault();
-//     if (!validateForm()) {
-//       return; // Prevent form submission if validation fails
-//     }
+  //   const handleSaveExitTemplate = (e) => {
+  //     e.preventDefault();
+  //     if (!validateForm()) {
+  //       return; // Prevent form submission if validation fails
+  //     }
 
-//     const formData = new FormData();
-//     formData.append("templatename", templateName);
-//     formData.append("from", selecteduser.value);
-//     formData.append("emailsubject", inputText);
-//     formData.append("emailbody", emailBody);
+  //     const formData = new FormData();
+  //     formData.append("templatename", templateName);
+  //     formData.append("from", selecteduser.value);
+  //     formData.append("emailsubject", inputText);
+  //     formData.append("emailbody", emailBody);
 
-//     // Append each selected file to formData
-//     selectedFiles.forEach((file) => {
-//       formData.append("files", file);
-//     });
+  //     // Append each selected file to formData
+  //     selectedFiles.forEach((file) => {
+  //       formData.append("files", file);
+  //     });
 
-//     // // Logging FormData contents for debugging
-//     // for (const [key, value] of formData.entries()) {
-//     //   if (value instanceof File) {
-//     //     console.log(`${key}: ${value.name} (size: ${value.size} bytes)`); // Logging file name and size
-//     //   } else {
-//     //     console.log(`${key}: ${value}`);
-//     //   }
-//     // }
+  //     // // Logging FormData contents for debugging
+  //     // for (const [key, value] of formData.entries()) {
+  //     //   if (value instanceof File) {
+  //     //     console.log(`${key}: ${value.name} (size: ${value.size} bytes)`); // Logging file name and size
+  //     //   } else {
+  //     //     console.log(`${key}: ${value}`);
+  //     //   }
+  //     // }
 
-//     const requestOptions = {
-//       method: "POST",
-//       body: formData,
-//       redirect: "follow",
-//     };
-// console.log(formData)
-//     const url = `${EMAIL_API}/workflow/emailtemplate`;
-//     fetch(url, requestOptions)
-//       .then((response) => {
-//         if (!response.ok) {
-//           throw new Error("Network response was not ok");
-//         }
-//         return response.json();
-//       })
-//       .then((result) => {
-//         console.log(result);
-//         toast.success("Email Template created successfully");
-//         handleClearTemplate();
-//         setShowForm(false);
-//         fetchEmailTemplates();
-//       })
-//       .catch((error) => {
-//         console.error("Error creating Email Template:", error);
-//         toast.error("Failed to create Email Template");
-//       });
-//   };
+  //     const requestOptions = {
+  //       method: "POST",
+  //       body: formData,
+  //       redirect: "follow",
+  //     };
+  // console.log(formData)
+  //     const url = `${EMAIL_API}/workflow/emailtemplate`;
+  //     fetch(url, requestOptions)
+  //       .then((response) => {
+  //         if (!response.ok) {
+  //           throw new Error("Network response was not ok");
+  //         }
+  //         return response.json();
+  //       })
+  //       .then((result) => {
+  //         console.log(result);
+  //         toast.success("Email Template created successfully");
+  //         handleClearTemplate();
+  //         setShowForm(false);
+  //         fetchEmailTemplates();
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error creating Email Template:", error);
+  //         toast.error("Failed to create Email Template");
+  //       });
+  //   };
 
-// *****without files*****
-// const handleSaveExitTemplate = (e) => {
-//   e.preventDefault();
-//   if (!validateForm()) {
-//       return; // Prevent form submission if validation fails
-//   }
+  // *****without files*****
+  // const handleSaveExitTemplate = (e) => {
+  //   e.preventDefault();
+  //   if (!validateForm()) {
+  //       return; // Prevent form submission if validation fails
+  //   }
 
-//   const myHeaders = new Headers();
-//   myHeaders.append("Content-Type", "application/json");
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Content-Type", "application/json");
 
-//   const raw = JSON.stringify({
-//       templatename: templateName,
-//       from: selecteduser.value,
-//       emailsubject: inputText,
-//       emailbody: emailBody,
-//   });
+  //   const raw = JSON.stringify({
+  //       templatename: templateName,
+  //       from: selecteduser.value,
+  //       emailsubject: inputText,
+  //       emailbody: emailBody,
+  //   });
 
-//   const requestOptions = {
-//       method: "POST",
-//       headers: myHeaders,
-//       body: raw,
-//       redirect: "follow"
-//   };
-// console.log(raw)
-//   // const url = `${EMAIL_API}/workflow/emailtemplate`;
+  //   const requestOptions = {
+  //       method: "POST",
+  //       headers: myHeaders,
+  //       body: raw,
+  //       redirect: "follow"
+  //   };
+  // console.log(raw)
+  //   // const url = `${EMAIL_API}/workflow/emailtemplate`;
 
-//   fetch(`${EMAIL_API}/workflow/emailtemplate`, requestOptions)
-//   .then((response) => response.json())
+  //   fetch(`${EMAIL_API}/workflow/emailtemplate`, requestOptions)
+  //   .then((response) => response.json())
 
-//  .then((result) => {
-//         console.log(result)
-//         if (result && result.message === "EmailTemplate  already exists") {
-//           toast.success('Email Template  already exists');
-//           // fetchData();
-//         } else {
-//           toast.success('Email Template created successfully');
-//           setShowForm(false);
-//           handleClearTemplate();
-//            fetchEmailTemplates();
-//         }
-//       })
-//       .catch((error) => {
-//         console.error(error);
-//         toast.error(error.message);
-//       })
+  //  .then((result) => {
+  //         console.log(result)
+  //         if (result && result.message === "EmailTemplate  already exists") {
+  //           toast.success('Email Template  already exists');
+  //           // fetchData();
+  //         } else {
+  //           toast.success('Email Template created successfully');
+  //           setShowForm(false);
+  //           handleClearTemplate();
+  //            fetchEmailTemplates();
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error(error);
+  //         toast.error(error.message);
+  //       })
 
-// };
+  // };
 
-
-
-const handleSaveExitTemplate = async (e) => {
-  e.preventDefault();
-
-  if (!validateForm()) {
-    return; // Prevent form submission if validation fails
-  }
-
-  // Create a FormData object
-  const formData = new FormData();
-
-  // Append form fields to FormData
-  formData.append("templatename", templateName);
-  formData.append("from", selecteduser.value);
-  formData.append("emailsubject", inputText);
-  formData.append("emailbody", emailBody);
-
-  // Append files to FormData
-  if (files && files.length > 0) {
-    files.forEach((file) => {
-      formData.append("attachments", file); // Use "attachments" as the field name
-    });
-  }
-
-  try {
-    const response = await fetch(`${EMAIL_API}/workflow/emailtemplate`, {
-      method: "POST",
-      body: formData, // Send FormData instead of JSON
-      redirect: "follow",
-    });
-console.log("jaanvi patil",formData)
-    const result = await response.json();
-
-    if (result && result.message === "EmailTemplate already exists") {
-      toast.success("Email Template already exists");
-    } else {
-      toast.success("Email Template created successfully");
-      setShowForm(false);
-      handleClearTemplate();
-      fetchEmailTemplates();
-    }
-  } catch (error) {
-    console.error(error);
-    toast.error(error.message);
-  }
-};
-
-  const handleSaveTemplate = (e) => {
-    // e.preventDefault();
-    // if (!validateForm()) {
-    //   return; // Prevent form submission if validation fails
-    // }
-
-    // const formData = new FormData();
-    // formData.append("templatename", templateName);
-    // formData.append("from", selecteduser.value);
-    // formData.append("emailsubject", inputText);
-    // formData.append("emailbody", emailBody);
-
-    // // Append each selected file to formData
-    // selectedFiles.forEach((file) => {
-    //   formData.append("files", file);
-    // });
-
-    // // Logging FormData contents for debugging
-    // for (const [key, value] of formData.entries()) {
-    //   if (value instanceof File) {
-    //     console.log(`${key}: ${value.name} (size: ${value.size} bytes)`); // Logging file name and size
-    //   } else {
-    //     console.log(`${key}: ${value}`);
-    //   }
-    // }
-
-    // const requestOptions = {
-    //   method: "POST",
-    //   body: formData,
-    //   redirect: "follow",
-    // };
-
-    // const url = `${EMAIL_API}/workflow/emailtemplate`;
-    // fetch(url, requestOptions)
-    //   .then((response) => {
-    //     if (!response.ok) {
-    //       throw new Error("Network response was not ok");
-    //     }
-    //     return response.json();
-    //   })
-    //   .then((result) => {
-    //     console.log(result);
-    //     toast.success("Email Template created successfully");
-    //     handleClearTemplate();
-    //     // setShowForm(false);
-    //     fetchEmailTemplates();
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error creating Email Template:", error);
-    //     toast.error("Failed to create Email Template");
-    //   });
-
+  const handleSaveExitTemplate = async (e) => {
     e.preventDefault();
+
     if (!validateForm()) {
-        return; // Prevent form submission if validation fails
+      return; // Prevent form submission if validation fails
     }
-  
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
-  
-    const raw = JSON.stringify({
-        templatename: templateName,
-        from: selecteduser.value,
-        emailsubject: inputText,
-        emailbody: emailBody,
-    });
-  
-    const requestOptions = {
+
+    // Create a FormData object
+    const formData = new FormData();
+
+    // Append form fields to FormData
+    formData.append("templatename", templateName);
+    formData.append("from", selecteduser.value);
+    formData.append("emailsubject", inputText);
+    formData.append("emailbody", emailBody);
+    formData.append("mode", selectedOption)
+
+    // Append files to FormData
+    if (files && files.length > 0) {
+      files.forEach((file) => {
+        formData.append("attachments", file); // Use "attachments" as the field name
+      });
+    }
+
+    try {
+      const response = await fetch(`${EMAIL_API}/workflow/emailtemplate`, {
         method: "POST",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow"
-    };
-  console.log(raw)
-    // const url = `${EMAIL_API}/workflow/emailtemplate`;
-  
-    fetch(`${EMAIL_API}/workflow/emailtemplate`, requestOptions)
-    .then((response) => response.json())
-  
-   .then((result) => {
-          console.log(result)
-          if (result && result.message === "EmailTemplate  already exists") {
-            toast.success('Email Template  already exists');
-            // fetchData();
-          } else {
-            toast.success('Email Template created successfully');
-            //  handleClearTemplate();
-            //  fetchEmailTemplates();
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-          toast.error(error.message);
-        })
-  
+        body: formData, // Send FormData instead of JSON
+        redirect: "follow",
+      });
+      console.log("jaanvi patil", formData);
+      const result = await response.json();
+
+      if (result && result.message === "EmailTemplate already exists") {
+        toast.success("Email Template already exists");
+      } else {
+        toast.success("Email Template created successfully");
+        setShowForm(false);
+        handleClearTemplate();
+        fetchEmailTemplates();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message);
+    }
+  };
+
+  const handleSaveTemplate = async(e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return; // Prevent form submission if validation fails
+    }
+
+    // Create a FormData object
+    const formData = new FormData();
+
+    // Append form fields to FormData
+    formData.append("templatename", templateName);
+    formData.append("from", selecteduser.value);
+    formData.append("emailsubject", inputText);
+    formData.append("emailbody", emailBody);
+    formData.append("mode", selectedOption)
+
+    // Append files to FormData
+    if (files && files.length > 0) {
+      files.forEach((file) => {
+        formData.append("attachments", file); // Use "attachments" as the field name
+      });
+    }
+
+    try {
+      const response = await fetch(`${EMAIL_API}/workflow/emailtemplate`, {
+        method: "POST",
+        body: formData, // Send FormData instead of JSON
+        redirect: "follow",
+      });
+      console.log("jaanvi patil", formData);
+      const result = await response.json();
+
+      if (result && result.message === "EmailTemplate already exists") {
+        toast.success("Email Template already exists");
+      } else {
+        toast.success("Email Template created successfully");
+        // setShowForm(false);
+        // handleClearTemplate();
+        // fetchEmailTemplates();
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message);
+    }
   };
   const [emailBody, setEmailBody] = useState("");
 
@@ -670,98 +626,9 @@ console.log("jaanvi patil",formData)
     setOpenMenuId(openMenuId === _id ? null : _id);
     setTempIdGet(_id);
   };
-  // console.log(tempIdget)
-  const columns = useMemo(
-    () => [
-      {
-        accessorKey: "templatename",
-        header: "Name",
-        Cell: ({ row }) => (
-          <Typography
-            sx={{ color: "#2c59fa", cursor: "pointer", fontWeight: "bold" }}
-            onClick={() => handleEdit(row.original._id)}
-          >
-            {row.original.templatename}
-          </Typography>
-        ),
-      },
-      {
-        accessorKey: "emailsubject",
-        header: "Subject",
-      },
-      {
-        accessorKey: "Used in pipeline",
-        header: "Used in pipeline",
-      },
-      {
-        accessorKey: "Setting",
-        header: "Setting",
-        Cell: ({ row }) => (
-          <IconButton
-            onClick={() => toggleMenu(row.original._id)}
-            style={{ color: "#2c59fa" }}
-          >
-            <CiMenuKebab style={{ fontSize: "25px" }} />
-            {openMenuId === row.original._id && (
-              <Box
-                sx={{
-                  position: "absolute",
-                  zIndex: 1,
-                  backgroundColor: "#fff",
-                  boxShadow: 1,
-                  borderRadius: 1,
-                  p: 1,
-                  left: "30px",
-                  m: 2,
-                }}
-              >
-                <Typography
-                  sx={{ fontSize: "12px", fontWeight: "bold" }}
-                  onClick={() => {
-                    handleEdit(row.original._id);
-                  }}
-                >
-                  Edit
-                </Typography>
-                <Typography
-                  sx={{ fontSize: "12px", color: "red", fontWeight: "bold" }}
-                  onClick={() => handleDelete(row.original._id)}
-                >
-                  Delete
-                </Typography>
-              </Box>
-            )}
-          </IconButton>
-        ),
-      },
-    ],
-    [openMenuId]
-  );
+ 
 
-  const table = useMaterialReactTable({
-    columns,
-    data: emailTemplates,
-    enableBottomToolbar: true,
-    enableStickyHeader: true,
-    columnFilterDisplayMode: "custom", // Render own filtering UI
-    enableRowSelection: true, // Enable row selection
-    enablePagination: true,
-    muiTableContainerProps: { sx: { maxHeight: "400px" } },
-    initialState: {
-      columnPinning: {
-        left: ["mrt-row-select", "tagName"],
-        right: ["settings"],
-      },
-    },
-    muiTableBodyCellProps: {
-      sx: (theme) => ({
-        backgroundColor:
-          theme.palette.mode === "dark-theme"
-            ? theme.palette.grey[900]
-            : theme.palette.grey[50],
-      }),
-    },
-  });
+ 
   const handleTempCancle = () => {
     if (isFormDirty) {
       const confirmClose = window.confirm(
@@ -823,18 +690,15 @@ console.log("jaanvi patil",formData)
     setSelectedFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
   }, []);
 
-  // const { getRootProps, getInputProps } = useDropzone({
-  //   onDrop,
-  // });
-  // import { useDropzone } from "react-dropzone";
 
-const { getRootProps, getInputProps } = useDropzone({
-  onDrop: (acceptedFiles) => {
-    handleFileChange(acceptedFiles); // Pass the array of files to handleFileChange
-  },
-  accept: "application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,image/jpeg,image/png",
-  multiple: true,
-});
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: (acceptedFiles) => {
+      handleFileChange(acceptedFiles); // Pass the array of files to handleFileChange
+    },
+    accept:
+      "application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,image/jpeg,image/png",
+    multiple: true,
+  });
 
   const handleRemoveFile = (index) => {
     setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
@@ -847,40 +711,17 @@ const { getRootProps, getInputProps } = useDropzone({
 
   const [files, setFiles] = useState([]);
 
-// const handleFileChange = (acceptedFiles) => {
-//   setFiles(acceptedFiles); // Store selected files in state
-// };
+  
 
-const handleFileChange = (acceptedFiles) => {
-  console.log("acceptedFiles:", acceptedFiles); // Debugging: Check what is being passed
-  if (!acceptedFiles || !Array.isArray(acceptedFiles)) {
-    console.error("acceptedFiles is not an array:", acceptedFiles);
-    return;
-  }
-  setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
-};
- 
+  const handleFileChange = (acceptedFiles) => {
+    console.log("acceptedFiles:", acceptedFiles); // Debugging: Check what is being passed
+    if (!acceptedFiles || !Array.isArray(acceptedFiles)) {
+      console.error("acceptedFiles is not an array:", acceptedFiles);
+      return;
+    }
+    setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
+  };
 
-//   const handleFileChange = (event) => {
-//     const files = Array.from(event.target.files); // Convert FileList to array
-//     setSelectedFiles((prevFiles) => [...prevFiles, ...files]); // Update selected files state
-//   };
-
-  // const handleFileChange = (event) => {
-  //     const files = event.target.files; // Get the selected files
-  //     const promises = Array.from(files).map(file => {
-  //         return new Promise((resolve, reject) => {
-  //             const reader = new FileReader();
-  //             reader.onloadend = () => resolve(reader.result); // Resolve with base64 string
-  //             reader.onerror = reject;
-  //             reader.readAsDataURL(file); // Read file as Data URL (base64)
-  //         });
-  //     });
-
-  //     Promise.all(promises)
-  //         .then(base64Strings => setFileBase64Array(base64Strings)) // Update state with base64 strings
-  //         .catch(error => console.error('Error converting files to base64:', error));
-  // };
 
   console.log(selectedFiles);
 
@@ -1039,7 +880,7 @@ const handleFileChange = (acceptedFiles) => {
               </TableContainer>
 
               <TablePagination
-              rowsPerPageOptions={[30,40,50,60,100]}
+                rowsPerPageOptions={[30, 40, 50, 60, 100]}
                 component="div"
                 count={emailTemplates.length}
                 rowsPerPage={rowsPerPage}
@@ -1060,10 +901,12 @@ const handleFileChange = (acceptedFiles) => {
           <hr />
           <Grid container spacing={2}>
             <Grid xs={12} sm={5.8}>
-              <Box >
+              <Box>
                 <form>
                   <Box>
-                  <InputLabel sx={{ color: "black" }}>Template Name</InputLabel>
+                    <InputLabel sx={{ color: "black" }}>
+                      Template Name
+                    </InputLabel>
                     <TextField
                       sx={{ background: "#fff", mt: 2 }}
                       fullWidth
@@ -1101,9 +944,7 @@ const handleFileChange = (acceptedFiles) => {
                     )}
                   </Box>
                   <Box mt={2}>
-                    <InputLabel sx={{color:'black'}}>
-                      Mode
-                    </InputLabel>
+                    <InputLabel sx={{ color: "black" }}>Mode</InputLabel>
                     <FormControl>
                       <RadioGroup
                         aria-labelledby="demo-controlled-radio-buttons-group"
@@ -1125,7 +966,7 @@ const handleFileChange = (acceptedFiles) => {
                     </FormControl>
                   </Box>
                   <Box>
-                  <InputLabel sx={{ color: "black" }}>From</InputLabel>
+                    <InputLabel sx={{ color: "black" }}>From</InputLabel>
                     <Autocomplete
                       options={options}
                       sx={{ mt: 2, mb: 2, backgroundColor: "#fff" }}
@@ -1174,7 +1015,7 @@ const handleFileChange = (acceptedFiles) => {
                     />
                   </Box>
                   <Box>
-                  <InputLabel sx={{ color: "black" }}>Subject</InputLabel>
+                    <InputLabel sx={{ color: "black" }}>Subject</InputLabel>
                     <TextField
                       fullWidth
                       name="subject"
@@ -1182,8 +1023,10 @@ const handleFileChange = (acceptedFiles) => {
                       // onChange={handlechatsubject}
                       onChange={handlesubject}
                       inputRef={textFieldRef}
-                          value={inputText}
-                      onClick={(e) => setCursorPosition(e.target.selectionStart)}
+                      value={inputText}
+                      onClick={(e) =>
+                        setCursorPosition(e.target.selectionStart)
+                      }
                       placeholder="Subject"
                       size="small"
                       error={!!inputTextError}
@@ -1359,7 +1202,9 @@ const handleFileChange = (acceptedFiles) => {
                 }}
               >
                 {/* Upload Zone */}
-                {/* <Box
+                
+
+                <Box
                   {...getRootProps()} // Spread dropzone props here
                   sx={{
                     alignItems: "center",
@@ -1372,13 +1217,12 @@ const handleFileChange = (acceptedFiles) => {
                     maxWidth: "500px",
                     textAlign: "center",
                     cursor: "pointer",
+                    marginBottom: "16px",
                   }}
                 >
                   <input
                     id="file-input"
                     {...getInputProps()} // Spread input props here
-                    onChange={handleFileChange} // Ensure to handle file changes
-                    accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,image/jpeg,image/png"
                     style={{ display: "none" }} // Hide the default file input
                     multiple // Enable multiple file selection
                   />
@@ -1387,12 +1231,10 @@ const handleFileChange = (acceptedFiles) => {
                   <Button
                     variant="contained"
                     color="primary"
-                   
                     sx={{
-                      backgroundColor: "var(--color-save-btn)", // Normal background
-
+                      backgroundColor: "var(--color-save-btn)",
                       "&:hover": {
-                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        backgroundColor: "var(--color-save-hover-btn)",
                       },
                       borderRadius: "15px",
                     }}
@@ -1403,85 +1245,42 @@ const handleFileChange = (acceptedFiles) => {
                     20 MB file size limit. Supported file types: PDF, DOC, DOCX,
                     XLS, XLSX, JPG, PNG.
                   </Typography>
-                </Box> */}
+                </Box>
 
-   
-<Box
-  {...getRootProps()} // Spread dropzone props here
-  sx={{
-    alignItems: "center",
-    justifyContent: "center",
-    display: "flex",
-    flexDirection: "column",
-    border: "2px dashed #ccc",
-    padding: "20px",
-    width: "100%",
-    maxWidth: "500px",
-    textAlign: "center",
-    cursor: "pointer",
-    marginBottom: "16px",
-  }}
->
-  <input
-    id="file-input"
-    {...getInputProps()} // Spread input props here
-    style={{ display: "none" }} // Hide the default file input
-    multiple // Enable multiple file selection
-  />
-  <Typography variant="h6">Drag & drop file here</Typography>
-  <Typography variant="body2">or</Typography>
-  <Button
-    variant="contained"
-    color="primary"
-    sx={{
-      backgroundColor: "var(--color-save-btn)",
-      "&:hover": {
-        backgroundColor: "var(--color-save-hover-btn)",
-      },
-      borderRadius: "15px",
-    }}
-  >
-    Browse Files
-  </Button>
-  <Typography variant="body2" sx={{ marginTop: "8px" }}>
-    20 MB file size limit. Supported file types: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG.
-  </Typography>
-</Box>
-
-
-
-{files.length > 0 && (
-        <Box sx={{ width: "100%", marginTop: "16px" }}>
-          <Typography variant="h6" sx={{ marginBottom: "8px" }}>
-            Selected Files:
-          </Typography>
-          {files.map((file, index) => (
-            <Box
-              key={index}
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "8px",
-                borderBottom: "1px solid #eee",
-              }}
-            >
-              <Typography variant="body1">
-                {file.name} ({(file.size / 1024).toFixed(2)} KB)
-              </Typography>
-              <IconButton
-                onClick={() => {
-                  const updatedFiles = files.filter((_, i) => i !== index);
-                  setFiles(updatedFiles); // Remove the file from the list
-                }}
-                sx={{ color: "red" }}
-              >
-                <DeleteIcon />
-              </IconButton>
-            </Box>
-          ))}
-        </Box>
-      )}
+                {files.length > 0 && (
+                  <Box sx={{ width: "100%", marginTop: "16px" }}>
+                    <Typography variant="h6" sx={{ marginBottom: "8px" }}>
+                      Selected Files:
+                    </Typography>
+                    {files.map((file, index) => (
+                      <Box
+                        key={index}
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          padding: "8px",
+                          borderBottom: "1px solid #eee",
+                        }}
+                      >
+                        <Typography variant="body1">
+                          {file.name} ({(file.size / 1024).toFixed(2)} KB)
+                        </Typography>
+                        <IconButton
+                          onClick={() => {
+                            const updatedFiles = files.filter(
+                              (_, i) => i !== index
+                            );
+                            setFiles(updatedFiles); // Remove the file from the list
+                          }}
+                          sx={{ color: "red" }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Box>
+                    ))}
+                  </Box>
+                )}
               </Box>
             </Grid>
           </Grid>

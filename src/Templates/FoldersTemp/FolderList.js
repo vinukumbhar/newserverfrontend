@@ -443,39 +443,40 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
     });
 
 
-        useEffect(() => {
-          const fetchData = async () => {
-            try {
-              const response = await fetch(
-                "http://127.0.0.1:8006/firmDocs/files/67fd062847d30cdaf4ab6594"
-              );
-              if (!response.ok) {
-                throw new Error('Network response was not ok');
-              }
-              const result = await response.json();
-              setFirmFolderData(result);
+        // useEffect(() => {
+        //   const fetchData = async () => {
+        //     try {
+        //       const response = await fetch(
+        //         `${API_KEY}/firmDocs/files/${templateId}`
+        //       );
+        //       console.log("url",response)
+        //       if (!response.ok) {
+        //         throw new Error('Network response was not ok');
+        //       }
+        //       const result = await response.json();
+        //       setFirmFolderData(result);
               
-              // Initialize open state for all folders
-              const initialState = {};
-              const initFolderState = (folder) => {
-                initialState[folder.folderName] = true; // Open root by default
-                folder.structure?.forEach(item => {
-                  item.subfolders?.forEach(subfolder => {
-                    initialState[subfolder.name] = false; // Closed by default
-                  });
-                });
-              };
-              initFolderState(result);
-              setOpenFolders(initialState);
-            } catch (error) {
-              setError(error.message);
-            } finally {
-              setLoading(false);
-            }
-          };
+        //       // Initialize open state for all folders
+        //       const initialState = {};
+        //       const initFolderState = (folder) => {
+        //         initialState[folder.folderName] = true; // Open root by default
+        //         folder.structure?.forEach(item => {
+        //           item.subfolders?.forEach(subfolder => {
+        //             initialState[subfolder.name] = false; // Closed by default
+        //           });
+        //         });
+        //       };
+        //       initFolderState(result);
+        //       setOpenFolders(initialState);
+        //     } catch (error) {
+        //       setError(error.message);
+        //     } finally {
+        //       setLoading(false);
+        //     }
+        //   };
       
-          fetchData();
-        }, []);
+        //   fetchData();
+        // }, []);
       
         const toggleFirmFolder = (folderName) => {
           setOpenFolders(prev => ({
@@ -645,6 +646,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
      </Box>
 
             <CreateFolder
+             fetchBothFolders={fetchBothFolders}
         open={isFolderFormOpen}
         onClose={() => setIsFolderFormOpen(false)}
         fetchUnSealedFolders={fetchUnSealedFolders}
@@ -656,6 +658,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
         open={isDocumentForm}
         onClose={() => setIsDocumentForm(false)}
         file={file}
+        fetchBothFolders={fetchBothFolders}
         fetchUnSealedFolders={fetchUnSealedFolders}
         fetchAdminPrivateFolders={fetchPrivateFolders}
         templateId={templateId}

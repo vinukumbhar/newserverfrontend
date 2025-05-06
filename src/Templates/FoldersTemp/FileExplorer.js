@@ -1,83 +1,4 @@
-// import React, { useEffect, useState } from "react";
 
-// // Recursive Folder/File component
-// const Folder = ({ name, content }) => {
-//   const [isOpen, setIsOpen] = useState(false);
-
-//   const isFile = content.filename;
-
-//   if (isFile) {
-//     return <div style={{ paddingLeft: 20 }}>📄 {content.filename}</div>;
-//   }
-
-//   return (
-//     <div style={{ paddingLeft: 20 }}>
-//       <div onClick={() => setIsOpen(!isOpen)} style={{ cursor: "pointer", fontWeight: "bold" }}>
-//         {isOpen ? "📂" : "📁"} {name}
-//       </div>
-//       {isOpen &&
-//         Object.entries(content).map(([childName, childContent]) => (
-//           <Folder key={childName} name={childName} content={childContent} />
-//         ))}
-//     </div>
-//   );
-// };
-
-// // Converts flat file list into a folder structure tree
-// const buildFileTree = (files, folderStart) => {
-//   const root = {};
-
-//   files.forEach((file) => {
-//     const folderIndex = file.filePath.indexOf(folderStart);
-//     if (folderIndex === -1) return;
-
-//     const relativePath = file.filePath.slice(folderIndex);
-//     const parts = relativePath.split("/");
-
-//     let current = root;
-//     parts.forEach((part, index) => {
-//       if (!current[part]) {
-//         current[part] = index === parts.length - 1 ? file : {};
-//       }
-//       current = current[part];
-//     });
-//   });
-
-//   return root;
-// };
-
-// // Main component
-// const FileExplorer = () => {
-//   const [files, setFiles] = useState([]);
-//   const folderName = "Firm Docs Shared With Client";
-
-//   useEffect(() => {
-//     const fetchFiles = async () => {
-//       try {
-//         const res = await fetch("http://127.0.0.1:8006/firmDocs/files/67fd062847d30cdaf4ab6594");
-//         const data = await res.json();
-//         setFiles(data.files || []);
-//       } catch (err) {
-//         console.error("Failed to fetch files", err);
-//       }
-//     };
-
-//     fetchFiles();
-//   }, []);
-
-//   const fileTree = buildFileTree(files, folderName);
-
-//   return (
-//     <div>
-//       {/* <h2>{folderName}</h2> */}
-//       {Object.entries(fileTree).map(([name, content]) => (
-//         <Folder key={name} name={name} content={content} />
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default FileExplorer;
 
 import React, { useEffect, useState } from "react";
 
@@ -124,39 +45,6 @@ const Folder = ({ name, content, onSelectPath, currentPath = "" }) => {
 };
 
 
-// Builds a nested tree from file paths
-
-
-// const buildFileTree = (files, folderStart) => {
-//   const root = {};
-
-//   files.forEach((file) => {
-//     let path = file.filePath.replace(/\\/g, "/"); // Normalize all slashes
-//     const index = path.toLowerCase().indexOf(folderStart.toLowerCase());
-
-//     if (index === -1) return;
-//     path = path.slice(index); // Remove everything before the folder start
-
-//     const parts = path.split("/");
-
-//     let current = root;
-
-//     // Create folder structure
-//     parts.forEach((part) => {
-//       if (!current[part]) {
-//         current[part] = {};
-//       }
-//       current = current[part];
-//     });
-
-//     // Add the file if it's not #$default.txt
-//     if (file.filename !== "#$default.txt") {
-//       current[file.filename] = file;
-//     }
-//   });
-
-//   return root;
-// };
 
 const buildFileTree = (files, folderStart) => {
   const root = {};
@@ -201,16 +89,16 @@ const buildFileTree = (files, folderStart) => {
 
 
 
-const FileExplorer = ({ onPathSelect,accountId }) => {
+const FileExplorer = ({ onPathSelect,accountId, }) => {
   const [files, setFiles] = useState([]);
   const folderName = "Firm Docs Shared With Client";
 
-  
+  const API_KEY = process.env.REACT_APP_FOLDER_URL;
 
   const fetchFiles = async () => {
     try {
       const res = await fetch(
-       `http://127.0.0.1:8005/firmClientDocs/files/${accountId}`
+       `${API_KEY}/firmClientDocs/files/${accountId}`
       );
       const data = await res.json();
       setFiles(data.files || []);

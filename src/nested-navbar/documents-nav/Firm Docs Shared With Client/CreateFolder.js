@@ -235,6 +235,7 @@ const CreateFolder = ({ open, onClose,accountId }) => {
   //     alert("Something went wrong!");
   //   }
   // };
+  const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
   const handleCreateFolder = async () => {
     if (!newFolderName || !destinationPath) {
       alert("Please enter a folder name and select a destination.");
@@ -242,7 +243,7 @@ const CreateFolder = ({ open, onClose,accountId }) => {
     }
   
     const fullPath = `uploads/AccountId/${accountId}/${destinationPath}`;
-    const url = `http://127.0.0.1:8006/firmDocs/createFolderinfirm?path=${encodeURIComponent(fullPath)}&foldername=${encodeURIComponent(newFolderName)}`;
+    const url = `${DOCS_MANAGMENTS}/firmDocs/createFolderinfirm?path=${encodeURIComponent(fullPath)}&foldername=${encodeURIComponent(newFolderName)}`;
   
     try {
       const response = await fetch(url, {

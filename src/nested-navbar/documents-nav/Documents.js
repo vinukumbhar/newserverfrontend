@@ -823,10 +823,11 @@ const Documents = () => {
       }
       return null;
     });
+    //
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://127.0.0.1:8006/firmDocs/files/${data}`
+          `${DOCS_MANAGMENTS}/firmDocs/files/${data}`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");

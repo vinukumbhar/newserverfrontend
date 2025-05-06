@@ -244,31 +244,31 @@ const CreateJob = ({ charLimit = 4000 }) => {
           : [...prevSelected, accountName] // Add if not selected
     );
   };
-  const fetchAccountDatas = async (data) => {
-    console.log("data", data);
-    try {
-      const response = await fetch(
-        `http://127.0.0.1/accounts/accountsdata?test=${data}`
-      );
-      const datas = await response.json();
-      console.log("accounts", datas);
-      setaccountdata(datas.accounts);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+  // const fetchAccountDatas = async (data) => {
+  //   console.log("data", data);
+  //   try {
+  //     const response = await fetch(
+  //       `http://127.0.0.1/accounts/accountsdata?test=${data}`
+  //     );
+  //     const datas = await response.json();
+  //     console.log("accounts", datas);
+  //     setaccountdata(datas.accounts);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
 
-    // const requestOptions = {
-    //   method: "GET",
-    //   redirect: "follow"
-    // };
+  //   // const requestOptions = {
+  //   //   method: "GET",
+  //   //   redirect: "follow"
+  //   // };
 
-    // fetch(`http://127.0.0.1/accounts/accountsdata?test=${data}`, requestOptions)
-    //   .then((response) => response.json())
-    //   .then((result) => {console.log(result)
-    //     setaccountdata(result.accounts)
-    //   })
-    //   .catch((error) => console.error(error));
-  };
+  //   // fetch(`http://127.0.0.1/accounts/accountsdata?test=${data}`, requestOptions)
+  //   //   .then((response) => response.json())
+  //   //   .then((result) => {console.log(result)
+  //   //     setaccountdata(result.accounts)
+  //   //   })
+  //   //   .catch((error) => console.error(error));
+  // };
 
   // console.log(userdata);
   const accountoptions = accountdata.map((account) => ({

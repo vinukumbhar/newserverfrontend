@@ -155,11 +155,11 @@ const PendingTasks = () => {
   // const handleClick = (id) => {
   // console.log(id)
   // };
-
+  const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
   const handleClick = async (id) => {
     
     try {
-      const response = await fetch(`http://127.0.0.1/accountstasks/task/listbyid/${id}`, {
+      const response = await fetch(`${ACCOUNT_API}/accountstasks/task/listbyid/${id}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });

@@ -385,7 +385,7 @@ const ChatTempUpdate = () => {
             redirect: "follow"
         };
     
-        const url = `${CHAT_API}/Workflow/chats/chattemplate/` + id;
+        const url = `${CHAT_API}/workflow/chats/chattemplate/` + id;
         
         fetch(url, requestOptions)
             .then((response) => {
@@ -435,7 +435,7 @@ const ChatTempUpdate = () => {
             redirect: "follow"
         };
     
-        const url = `${CHAT_API}/Workflow/chats/chattemplate/` + id;
+        const url = `${CHAT_API}/workflow/chats/chattemplate/` + id;
         
         fetch(url, requestOptions)
             .then((response) => {

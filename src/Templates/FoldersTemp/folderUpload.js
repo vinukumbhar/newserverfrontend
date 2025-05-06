@@ -18,13 +18,13 @@ const UploadDocument = ({
   onClose,folderFiles,
   fetchUnSealedFolders,
   fetchAdminPrivateFolders,
-  templateId
+  accountId,fetchBothFolders
 }) => {
 
   const API_KEY = process.env.REACT_APP_FOLDER_URL;
   useEffect(() => {
-    console.log(templateId);
-  }, [templateId]);
+    console.log(accountId);
+  }, [accountId]);
 
   // const [newFolderName, setNewFolderName] = useState("");
 
@@ -38,7 +38,7 @@ const UploadDocument = ({
   const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
   const fetchFolders = async () => {
     try {
-      const url = `${API_KEY}/foldertemplates/clientDocs/${templateId}`;
+      const url = `${API_KEY}/foldertemplates/clientDocs/${accountId}`;
       const response = await axios.get(url);
       const addIsOpenProperty = (folders, parentId = null) =>
         folders.map((folder, index) => ({
@@ -67,7 +67,7 @@ const UploadDocument = ({
   const fetchPrivateFolders = async () => {
     try {
       const res = await axios.get(
-        `${API_KEY}/foldertemplates/privateDocs/${templateId}`
+        `${API_KEY}/foldertemplates/privateDocs/${accountId}`
       );
       const folders = res.data.folders || [];
 
@@ -88,11 +88,11 @@ const UploadDocument = ({
     }
   };
   useEffect(() => {
-    if (templateId) {
+    if (accountId) {
       fetchFolders();
       fetchPrivateFolders();
     }
-  }, [templateId]);
+  }, [accountId]);
 
   useEffect(() => {
     if (selectedFolderId) {
@@ -325,12 +325,13 @@ const UploadDocument = ({
     }
   
     try {
-      const response = await axios.post(`${API_KEY}/upload-folder`, formData, {
+      const response = await axios.post(`${API_KEY}/uploadfolderintemplate`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
   
       alert(response.data.message);
       onClose()
+      fetchBothFolders()
       console.log("Folder uploaded to:", response.data.path);
       fetchAdminPrivateFolders()
       fetchUnSealedFolders()
@@ -398,7 +399,7 @@ const UploadDocument = ({
   useEffect(() => {
     if (newFolderPath && selectedType === "public") {
       setDestinationPath(
-        `uploads/FolderTemplates/${templateId}/${newFolderPath}`
+        `uploads/FolderTemplates/${accountId}${newFolderPath}`
       );
     }
   }, [newFolderPath, selectedType]);
@@ -406,7 +407,7 @@ const UploadDocument = ({
   useEffect(() => {
     if (privateFolderPath && selectedType === "private") {
       setDestinationPath(
-        `uploads/FolderTemplates/${templateId}/${privateFolderPath}`
+        `uploads/FolderTemplates/${accountId}${privateFolderPath}`
       );
     }
   }, [privateFolderPath, selectedType]);

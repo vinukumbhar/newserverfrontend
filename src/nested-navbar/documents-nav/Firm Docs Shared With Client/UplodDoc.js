@@ -222,7 +222,7 @@ console.log("accc",onUploadSuccess)
   const [error, setError] = useState(null);
 
   const [destinationPath, setDestinationPath] = useState("");
-  
+  const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
   const handleSubmitfile = async () => {
     if (!destinationPath) {
       alert("Destination path not selected.");
@@ -252,7 +252,7 @@ console.log("accc",onUploadSuccess)
     data.append("permissions", JSON.stringify(permissions));
   
     try {
-      const response = await axios.post("http://127.0.0.1:8006/firmDocs/uploadfileinfirm", data, {
+      const response = await axios.post(`${DOCS_MANAGMENTS}/firmDocs/uploadfileinfirm`, data, {
         maxBodyLength: Infinity,
       });
       console.log(response.data);

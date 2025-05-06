@@ -398,7 +398,7 @@ const UploadDocument = ({
   useEffect(() => {
     if (newFolderPath && selectedType === "public") {
       setDestinationPath(
-        `uploads/AccountId/${accountId}/${newFolderPath}`
+        `uploads/AccountId/${accountId}${newFolderPath}`
       );
     }
   }, [newFolderPath, selectedType]);
@@ -406,7 +406,7 @@ const UploadDocument = ({
   useEffect(() => {
     if (privateFolderPath && selectedType === "private") {
       setDestinationPath(
-        `uploads/AccountId/${accountId}/${privateFolderPath}`
+        `uploads/AccountId/${accountId}${privateFolderPath}`
       );
     }
   }, [privateFolderPath, selectedType]);

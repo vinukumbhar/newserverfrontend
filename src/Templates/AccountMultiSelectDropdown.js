@@ -33,13 +33,13 @@ const MultiSelectDropdown = ({
     if (!propOptions) {
       const fetchData = async () => {
         try {
-          const url = `${ACCOUNT_API}/accounts/accountdetails`;
+          const url = `${ACCOUNT_API}/accounts/account/accountdetailslist/true`;
           const response = await fetch(url);
           const data = await response.json();
-          console.log("accounts",data.accounts)
-          setInternalOptions(data.accounts.map(account => ({
-            value: account._id,
-            label: account.accountName,
+          console.log("accounts",data.accountlist)
+          setInternalOptions(data.accountlist.map(account => ({
+            value: account.id,
+            label: account.Name,
           })));
         } catch (error) {
           console.error("Error fetching data:", error);

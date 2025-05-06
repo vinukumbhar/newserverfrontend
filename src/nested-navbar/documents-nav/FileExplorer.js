@@ -199,7 +199,7 @@ const buildFileTree = (files, folderStart) => {
   return root;
 };
 
-
+ const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
 
 const FileExplorer = ({ onPathSelect,accountId }) => {
   const [files, setFiles] = useState([]);
@@ -210,7 +210,7 @@ const FileExplorer = ({ onPathSelect,accountId }) => {
   const fetchFiles = async () => {
     try {
       const res = await fetch(
-       `http://127.0.0.1:8006/firmDocs/files/${accountId}`
+       `${DOCS_MANAGMENTS}/firmDocs/files/${accountId}`
       );
       const data = await res.json();
       setFiles(data.files || []);

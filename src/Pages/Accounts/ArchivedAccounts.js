@@ -28,7 +28,9 @@ import {
   TableHead,
   TableRow,
   Checkbox,
-  Paper,Dialog,   DialogContentText, 
+  Paper,
+  Dialog,
+  DialogContentText,
 } from "@mui/material";
 import axios from "axios";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -54,10 +56,10 @@ import { CircularProgress } from "@mui/material";
 import Avatar from "@mui/material/Avatar";
 import AvatarGroup from "@mui/material/AvatarGroup";
 import "../account.css";
-import { useNavigate, } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../Sidebar/Context/Context.js";
 const FixedColumnTable = () => {
-      const navigate = useNavigate();
+  const navigate = useNavigate();
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
@@ -70,7 +72,6 @@ const FixedColumnTable = () => {
     direction: "asc",
   });
 
- 
   const [filters, setFilters] = useState({
     accountName: "",
     type: "",
@@ -131,13 +132,14 @@ const FixedColumnTable = () => {
     try {
       const storedData = JSON.parse(localStorage.getItem("teamMemberData"));
       console.log("Received stored teamMemberData:", storedData);
-const loginuserid = storedData?.teammember?.userid;
+      const loginuserid = storedData?.teammember?.userid;
       console.log("User role is:", userRole);
 
-      let url = userRole === "Admin"
-      ? `${ACCOUNT_API}/accounts/account/accountdetailslist/${isActiveTrue}`
-      : `${ACCOUNT_API}/accounts/getaccounts/${loginuserid}/${isActiveTrue}`;
-      
+      let url =
+        userRole === "Admin"
+          ? `${ACCOUNT_API}/accounts/account/accountdetailslist/${isActiveTrue}`
+          : `${ACCOUNT_API}/accounts/getaccounts/${loginuserid}/${isActiveTrue}`;
+
       const response = await axios.get(url);
       console.log("API Response:", response.data.accountlist);
 
@@ -157,8 +159,7 @@ const loginuserid = storedData?.teammember?.userid;
     }
   };
 
-  
-  console.log(viewAllAccounts)
+  console.log(viewAllAccounts);
 
   useEffect(() => {
     const storedUserRole = localStorage.getItem("userRole");
@@ -288,7 +289,9 @@ const loginuserid = storedData?.teammember?.userid;
   //       })
   //     : [];
   const uniqueTags = Array.from(
-    new Map(tags.map(tag => [`${tag.tagName}_${tag.tagColour}`, tag])).values()
+    new Map(
+      tags.map((tag) => [`${tag.tagName}_${tag.tagColour}`, tag])
+    ).values()
   );
   const calculateWidth = (tagName) => tagName.length * 8 + 20;
   // const calculateWidth = (tagName) => {
@@ -694,33 +697,136 @@ const loginuserid = storedData?.teammember?.userid;
       .catch((error) => console.error(error));
   };
   // const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
-  // const handleDeleteSelected = async () => {
-  //   const isConfirmed = window.confirm(
-  //     "Are you sure you want to delete the selected accounts?"
-  //   );
+  const handleDeleteSelected = async () => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete the selected accounts?"
+    );
 
-  //   if (isConfirmed) {
-  //     try {
-  //       // Delete selected accounts and extract their data
-  //       const deletedAccounts = await Promise.all(
-  //         selected.map(async (id) => {
+    if (isConfirmed) {
+      try {
+        // Delete selected accounts and extract their data
+        const deletedAccounts = await Promise.all(
+          selected.map(async (id) => {
+            const response = await axios.delete(
+              `${ACCOUNT_API}/accounts/accountdetails/${id}`
+            );
+            return response.data.deletedAccount; // Extract deleted account data
+          })
+        );
+
+        // Extract user IDs from deleted accounts
+        const userIds = deletedAccounts.map((acc) => acc.userid);
+
+        // Get user data and client data before deletion
+        const usersData = await Promise.all(
+          userIds.map(async (userid) => {
+            const response = await axios.get(
+              `${LOGIN_API}/common/user/${userid}`
+            );
+            return response.data; // Get user data
+          })
+        );
+
+        const clientsData = await Promise.all(
+          userIds.map(async (userid) => {
+            console.log("clientid", userid);
+            const response = await axios.get(
+              `${LOGIN_API}/admin/client/${userid}`
+            );
+            return response.data; // Get client data
+          })
+        );
+
+        // Extract client IDs from retrieved client data
+        // const clientIds = clientsData.map(client => client._id);
+        const clientIds = clientsData
+          .map((clientObj) => clientObj.client?._id)
+          .filter((id) => id);
+
+        console.log("clients", clientsData);
+        // Delete users
+        await Promise.all(
+          userIds.map((userid) =>
+            axios.delete(`${LOGIN_API}/common/user/${userid}`)
+          )
+        );
+
+        // Delete clients
+        await Promise.all(
+          clientIds.map((clientId) =>
+            axios.delete(`${LOGIN_API}/admin/clientsignup/${clientId}`)
+          )
+        );
+
+        // Update UI to remove deleted accounts
+        setAccountData((prevContacts) =>
+          prevContacts.filter((account) => !selected.includes(account.id))
+        );
+
+        toast.success(
+          "Selected account deleted successfully!"
+        );
+        setSelected([]); // Clear selected contacts
+      } catch (error) {
+        console.error("Delete API Error:", error);
+        toast.error("Failed to delete selected accounts, users, or clients.");
+      }
+    }
+  };
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [confirmText, setConfirmText] = useState("");
+
+  const handleDeleteClick = () => {
+    setOpenDialog(true);
+    handleClose();
+  };
+
+  const handleConfirmDelete = async () => {
+    if (confirmText === "DELETE") {
+      console.log("Accounts deleted");
+      await handleDeleteSelected();
+      setOpenDialog(false);
+      setConfirmText("");
+    }
+  };
+  // const JOBS_API = process.env.REACT_APP_ADD_JOBS_URL;
+  // const INVOICE_NEW = process.env.REACT_APP_INVOICES_URL;
+  // const handleDeleteSelected = async () => {
+  //   try {
+  //     // Delete selected accounts and extract their data
+  //     const deletedAccounts = await Promise.all(
+  //       selected.map(async (id) => {
+  //         try {
   //           const response = await axios.delete(
   //             `${ACCOUNT_API}/accounts/accountdetails/${id}`
   //           );
-  //           return response.data.deletedAccount; // Extract deleted account data
-  //         })
+  //           console.log("Deleted Account Response:", response.data);
+  //           return response.data.deletedAccount || null; // Ensure deletedAccount exists
+  //         } catch (error) {
+  //           console.error(`Failed to delete account with ID ${id}:`, error);
+  //           return null; // Skip failed deletions
+  //         }
+  //       })
+  //     );
+
+  //     // Filter out null responses and extract user IDs
+  //     const userIds = deletedAccounts
+  //       .filter((acc) => acc && acc.userid) // Skip if userid is missing
+  //       .map((acc) => acc.userid);
+
+  //     if (userIds.length === 0) {
+  //       console.warn(
+  //         "No user IDs found in deleted accounts. Skipping user deletion."
   //       );
-
-  //       // Extract user IDs from deleted accounts
-  //       const userIds = deletedAccounts.map((acc) => acc.userid);
-
+  //     } else {
   //       // Get user data and client data before deletion
   //       const usersData = await Promise.all(
   //         userIds.map(async (userid) => {
   //           const response = await axios.get(
   //             `${LOGIN_API}/common/user/${userid}`
   //           );
-  //           return response.data; // Get user data
+  //           return response.data;
   //         })
   //       );
 
@@ -730,152 +836,81 @@ const loginuserid = storedData?.teammember?.userid;
   //           const response = await axios.get(
   //             `${LOGIN_API}/admin/client/${userid}`
   //           );
-  //           return response.data; // Get client data
+  //           return response.data;
   //         })
   //       );
 
   //       // Extract client IDs from retrieved client data
-  //       // const clientIds = clientsData.map(client => client._id);
   //       const clientIds = clientsData
   //         .map((clientObj) => clientObj.client?._id)
   //         .filter((id) => id);
 
   //       console.log("clients", clientsData);
-  //       // Delete users
+
+  //       // Delete users if userIds exist
   //       await Promise.all(
   //         userIds.map((userid) =>
   //           axios.delete(`${LOGIN_API}/common/user/${userid}`)
   //         )
   //       );
 
-  //       // Delete clients
-  //       await Promise.all(
-  //         clientIds.map((clientId) =>
-  //           axios.delete(`${LOGIN_API}/admin/clientsignup/${clientId}`)
-  //         )
-  //       );
-
-  //       // Update UI to remove deleted accounts
-  //       setAccountData((prevContacts) =>
-  //         prevContacts.filter((account) => !selected.includes(account.id))
-  //       );
-
-  //       toast.success(
-  //         "Selected account deleted successfully!"
-  //       );
-  //       setSelected([]); // Clear selected contacts
-  //     } catch (error) {
-  //       console.error("Delete API Error:", error);
-  //       toast.error("Failed to delete selected accounts, users, or clients.");
+  //       // Delete clients if clientIds exist
+  //       if (clientIds.length > 0) {
+  //         await Promise.all(
+  //           clientIds.map((clientId) =>
+  //             axios.delete(`${LOGIN_API}/admin/clientsignup/${clientId}`)
+  //           )
+  //         );
+  //       }
   //     }
+
+  //     // ✅ DELETE JOBS by account IDs
+  //     if (selected.length > 0) {
+  //       console.log("Deleting jobs for account IDs:", selected);
+       
+  //       try {
+  //         const jobDeleteResponse = await axios.delete(
+  //           `${JOBS_API}/workflow/jobs/by-account/${selected.join(",")}`
+  //         );
+  //         console.log("Deleted Job Response:", jobDeleteResponse.data);
+  //       } catch (error) {
+  //         console.error(
+  //           "Failed to delete jobs for selected account IDs:",
+  //           error
+  //         );
+  //       }
+  //     }
+      
+  //     // ✅ DELETE INVOICE by account IDs
+  //     if (selected.length > 0) {
+  //       console.log("Deleting invoices for account IDs:", selected);
+       
+  //       try {
+  //         const invoiceDeleteResponse = await axios.delete(
+  //           `${INVOICE_NEW}/workflow/invoices/invoices/by-account/${selected.join(",")}`
+  //         );
+  //         console.log("Deleted Job Response:", invoiceDeleteResponse.data);
+  //       } catch (error) {
+  //         console.error(
+  //           "Failed to delete jobs for selected account IDs:",
+  //           error
+  //         );
+  //       }
+  //     }
+
+  //     // Update UI to remove deleted accounts
+  //     setAccountData((prevContacts) =>
+  //       prevContacts.filter((account) => !selected.includes(account.id))
+  //     );
+
+  //     toast.success("Selected account(s) deleted successfully!");
+  //     setSelected([]); // Clear selected contacts
+  //   } catch (error) {
+  //     console.error("Delete API Error:", error);
+  //     toast.error("Failed to delete selected accounts, users, or clients.");
   //   }
   // };
 
-
-
-   
-  const [openDialog, setOpenDialog] = useState(false);
-  const [confirmText, setConfirmText] = useState("");
- 
-  const handleDeleteClick = () => {
-    setOpenDialog(true);
-    handleClose();
-  };
-
-  const handleConfirmDelete = async () => {
-    if (confirmText === "DELETE") {
-      console.log("Accounts deleted");
-      await handleDeleteSelected(); 
-      setOpenDialog(false);
-      setConfirmText(""); 
-    }
-  };
-  const handleDeleteSelected = async () => {
-    // const isConfirmed = window.confirm(
-    //   "Are you sure you want to delete the selected accounts?"
-    // );
-  
-    // if (isConfirmed) {
-      try {
-        // Delete selected accounts and extract their data
-        const deletedAccounts = await Promise.all(
-          selected.map(async (id) => {
-            try {
-              const response = await axios.delete(
-                `${ACCOUNT_API}/accounts/accountdetails/${id}`
-              );
-              console.log("Deleted Account Response:", response.data);
-              return response.data.deletedAccount || null; // Ensure deletedAccount exists
-            } catch (error) {
-              console.error(`Failed to delete account with ID ${id}:`, error);
-              return null; // Skip failed deletions
-            }
-          })
-        );
-  
-        // Filter out null responses and extract user IDs
-        const userIds = deletedAccounts
-          .filter((acc) => acc && acc.userid) // Skip if userid is missing
-          .map((acc) => acc.userid);
-  
-        if (userIds.length === 0) {
-          console.warn("No user IDs found in deleted accounts. Skipping user deletion.");
-        } else {
-          // Get user data and client data before deletion
-          const usersData = await Promise.all(
-            userIds.map(async (userid) => {
-              const response = await axios.get(`${LOGIN_API}/common/user/${userid}`);
-              return response.data;
-            })
-          );
-  
-          const clientsData = await Promise.all(
-            userIds.map(async (userid) => {
-              console.log("clientid", userid);
-              const response = await axios.get(`${LOGIN_API}/admin/client/${userid}`);
-              return response.data;
-            })
-          );
-  
-          // Extract client IDs from retrieved client data
-          const clientIds = clientsData
-            .map((clientObj) => clientObj.client?._id)
-            .filter((id) => id);
-  
-          console.log("clients", clientsData);
-  
-          // Delete users if userIds exist
-          await Promise.all(
-            userIds.map((userid) =>
-              axios.delete(`${LOGIN_API}/common/user/${userid}`)
-            )
-          );
-  
-          // Delete clients if clientIds exist
-          if (clientIds.length > 0) {
-            await Promise.all(
-              clientIds.map((clientId) =>
-                axios.delete(`${LOGIN_API}/admin/clientsignup/${clientId}`)
-              )
-            );
-          }
-        }
-  
-        // Update UI to remove deleted accounts
-        setAccountData((prevContacts) =>
-          prevContacts.filter((account) => !selected.includes(account.id))
-        );
-  
-        toast.success("Selected account(s) deleted successfully!");
-        setSelected([]); // Clear selected contacts
-      } catch (error) {
-        console.error("Delete API Error:", error);
-        toast.error("Failed to delete selected accounts, users, or clients.");
-      }
-    // }
-  };
-  
- 
   return (
     <>
       <div style={{ display: "flex" }}>
@@ -952,7 +987,6 @@ const loginuserid = storedData?.teammember?.userid;
           Filter Options
         </Button> */}
 
-     
         <Drawer
           anchor="right"
           open={isSidebarOpen}
@@ -1151,7 +1185,7 @@ const loginuserid = storedData?.teammember?.userid;
           {" "}
           <CircularProgress style={{ fontSize: "300px", color: "blue" }} />
         </Box>
-      ): userRole === "TeamMember" && !viewAllAccounts ? (
+      ) : userRole === "TeamMember" && !viewAllAccounts ? (
         <Typography
           sx={{
             textAlign: "center",
@@ -1163,153 +1197,170 @@ const loginuserid = storedData?.teammember?.userid;
         >
           You do not have permission to view accounts.
         </Typography>
-      ) : (accountData.length > 0 && (
-        <Box>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 3, mt: 1 }}>
-            <Box
-              sx={{
-                width: "50px",
-                padding: "4px 8px",
-                cursor: "pointer",
-                color: "#3f51b5",
-              }}
-              onClick={handleFilterButtonClick}
-            >
-              {/* <Button variant="text" > */}
-              {/* Filter Options */}
-              Filters
-              {/* </Button> */}
-            </Box>
-<Box>
-       {/* Render action panel when items are selected */}
-       {selected.length > 0 && (
-          <div
-            data-test="clients-bulk-actions-panel"
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "12px",
-              padding: "10px",
-              // marginBottom: "20px",
-              // borderBottom: "1px solid #ddd",
-              // backgroundColor: "#f5f5f5",
-            }}
-          >
-            <Button
-              variant="text"
-              startIcon={<ListIcon />}
-              onClick={handleAssignOrganizer}
-            >
-              Send Organizer
-            </Button>
-            <Button
-              variant="text"
-              startIcon={<ListIcon />}
-              onClick={handleAddJob}
-            >
-              Add Job
-            </Button>
-            <Button
-              variant="text"
-              startIcon={<PersonIcon />}
-              onClick={handleManageTeam}
-            >
-              Manage Team
-            </Button>
-            <Button
-              variant="text"
-              startIcon={<EmailIcon />}
-              disabled={selected.length === 0}
-              onClick={handleSendEmail}
-            >
-              Send Email
-            </Button>
-            <Button
-              variant="text"
-              startIcon={<TagIcon />}
-              onClick={handleManageTags}
-            >
-              Manage Tags
-            </Button>
-            <Button
-              variant="text"
-              startIcon={<MoreVertIcon />}
-              onClick={handleMoreActionsClick}
-            >
-              More Actions
-            </Button>
+      ) : (
+        accountData.length > 0 && (
+          <Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 3, mt: 1 }}>
+              <Box
+                sx={{
+                  width: "50px",
+                  padding: "4px 8px",
+                  cursor: "pointer",
+                  color: "#3f51b5",
+                }}
+                onClick={handleFilterButtonClick}
+              >
+                {/* <Button variant="text" > */}
+                {/* Filter Options */}
+                Filters
+                {/* </Button> */}
+              </Box>
+              <Box>
+                {/* Render action panel when items are selected */}
+                {selected.length > 0 && (
+                  <div
+                    data-test="clients-bulk-actions-panel"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      padding: "10px",
+                      // marginBottom: "20px",
+                      // borderBottom: "1px solid #ddd",
+                      // backgroundColor: "#f5f5f5",
+                    }}
+                  >
+                    <Button
+                      variant="text"
+                      startIcon={<ListIcon />}
+                      onClick={handleAssignOrganizer}
+                    >
+                      Send Organizer
+                    </Button>
+                    <Button
+                      variant="text"
+                      startIcon={<ListIcon />}
+                      onClick={handleAddJob}
+                    >
+                      Add Job
+                    </Button>
+                    <Button
+                      variant="text"
+                      startIcon={<PersonIcon />}
+                      onClick={handleManageTeam}
+                    >
+                      Manage Team
+                    </Button>
+                    <Button
+                      variant="text"
+                      startIcon={<EmailIcon />}
+                      disabled={selected.length === 0}
+                      onClick={handleSendEmail}
+                    >
+                      Send Email
+                    </Button>
+                    <Button
+                      variant="text"
+                      startIcon={<TagIcon />}
+                      onClick={handleManageTags}
+                    >
+                      Manage Tags
+                    </Button>
+                    <Button
+                      variant="text"
+                      startIcon={<MoreVertIcon />}
+                      onClick={handleMoreActionsClick}
+                    >
+                      More Actions
+                    </Button>
 
-            {/* Dropdown menu for additional actions */}
-            <Menu
-              anchorEl={anchorE2}
-              open={Boolean(anchorE2)}
-              onClose={handleClose}
-              anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-            >
-              <MenuItem onClick={handleArchiveAccount}>
-                Active Account 
-              </MenuItem>
-              <MenuItem onClick={handleEditLoginNotifyEmailSync}>
-                Edit login notify emailSync
-              </MenuItem>
-              
-              <MenuItem onClick={handleDeleteClick}>
-                            Delete
-                           </MenuItem>
-            </Menu>
+                    {/* Dropdown menu for additional actions */}
+                    <Menu
+                      anchorEl={anchorE2}
+                      open={Boolean(anchorE2)}
+                      onClose={handleClose}
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "left",
+                      }}
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "left",
+                      }}
+                    >
+                      <MenuItem onClick={handleArchiveAccount}>
+                        Active Account
+                      </MenuItem>
+                      <MenuItem onClick={handleEditLoginNotifyEmailSync}>
+                        Edit login notify emailSync
+                      </MenuItem>
 
-          </div>
-        )}
-        <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <Box >
-        <Box sx={{display:'flex',alignItems:'center', justifyContent:'space-between'}}>
-        <DialogTitle>Delete Confirmation</DialogTitle>
-        <RxCross2 style={{marginRight:15, cursor:'pointer'}}/>
-        </Box>
-       <Divider/>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete <strong>{selected.length}</strong> {selected.length === 1 ? "account" : "accounts"}?
-            This action is not reversible. If you proceed, <strong>all files and data associated with them will be deleted.</strong>
-          </DialogContentText>
-          <br/>
-          <DialogContentText>
-            If you would like to proceed, please type <strong>DELETE</strong> below.
-          </DialogContentText>
-          <TextField
-            fullWidth
-            margin="normal"
-            size="small"
-            variant="outlined"
-            value={confirmText}
-            onChange={(e) => setConfirmText(e.target.value)}
-            placeholder="Please enter the word DELETE"
-          />
-        </DialogContent>
-        <DialogActions sx={{mr:2}}>
-         
-          <Button 
-            onClick={handleConfirmDelete} 
-            color="error" 
-            variant="contained" 
-            disabled={confirmText !== "DELETE"}
-          >
-            Delete
-          </Button>
-          <Button onClick={() => setOpenDialog(false)} variant="outlined">Cancel</Button>
-        </DialogActions>
-        </Box>
-      </Dialog>
-</Box>
-            
-            {/* <Box>
+                      <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
+                    </Menu>
+                  </div>
+                )}
+                <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+                  <Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <DialogTitle>Delete Confirmation</DialogTitle>
+                      <RxCross2
+                        style={{ marginRight: 15, cursor: "pointer" }}
+                      />
+                    </Box>
+                    <Divider />
+                    <DialogContent>
+                      <DialogContentText>
+                        Are you sure you want to delete{" "}
+                        <strong>{selected.length}</strong>{" "}
+                        {selected.length === 1 ? "account" : "accounts"}? This
+                        action is not reversible. If you proceed,{" "}
+                        <strong>
+                          all files and data associated with them will be
+                          deleted.
+                        </strong>
+                      </DialogContentText>
+                      <br />
+                      <DialogContentText>
+                        If you would like to proceed, please type{" "}
+                        <strong>DELETE</strong> below.
+                      </DialogContentText>
+                      <TextField
+                        fullWidth
+                        margin="normal"
+                        size="small"
+                        variant="outlined"
+                        value={confirmText}
+                        onChange={(e) => setConfirmText(e.target.value)}
+                        placeholder="Please enter the word DELETE"
+                      />
+                    </DialogContent>
+                    <DialogActions sx={{ mr: 2 }}>
+                      <Button
+                        onClick={handleConfirmDelete}
+                        color="error"
+                        variant="contained"
+                        disabled={confirmText !== "DELETE"}
+                      >
+                        Delete
+                      </Button>
+                      <Button
+                        onClick={() => setOpenDialog(false)}
+                        variant="outlined"
+                      >
+                        Cancel
+                      </Button>
+                    </DialogActions>
+                  </Box>
+                </Dialog>
+              </Box>
+
+              {/* <Box>
               {selected.length > 0 && (
                 <IconButton
                   onClick={handleDeleteSelected}
@@ -1319,110 +1370,110 @@ const loginuserid = storedData?.teammember?.userid;
                 </IconButton>
               )}
             </Box> */}
-            {/* Account Name Filter */}
-            {showFilters.accountName && (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  // marginBottom: "10px",
-                }}
-              >
-                <TextField
-                  name="accountName"
-                  value={filters.accountName}
-                  onChange={handleFilterChange}
-                  placeholder="Filter by Account Name"
-                  variant="outlined"
-                  size="small"
-                  style={{ marginRight: "10px" }}
-                />
-                <DeleteIcon
-                  onClick={() => clearFilter("accountName")}
-                  style={{ cursor: "pointer", color: "red" }}
-                />
-              </div>
-            )}
+              {/* Account Name Filter */}
+              {showFilters.accountName && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    // marginBottom: "10px",
+                  }}
+                >
+                  <TextField
+                    name="accountName"
+                    value={filters.accountName}
+                    onChange={handleFilterChange}
+                    placeholder="Filter by Account Name"
+                    variant="outlined"
+                    size="small"
+                    style={{ marginRight: "10px" }}
+                  />
+                  <DeleteIcon
+                    onClick={() => clearFilter("accountName")}
+                    style={{ cursor: "pointer", color: "red" }}
+                  />
+                </div>
+              )}
 
-            {/* Type Filter */}
-            {showFilters.type && (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  // marginBottom: "10px",
-                }}
-              >
-                <FormControl
-                  variant="outlined"
-                  size="small"
-                  style={{ marginRight: "10px", width: "150px" }}
+              {/* Type Filter */}
+              {showFilters.type && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    // marginBottom: "10px",
+                  }}
                 >
-                  <InputLabel>Type</InputLabel>
-                  <Select
-                    name="type"
-                    value={filters.type}
-                    onChange={handleFilterChange}
-                    label="Type"
+                  <FormControl
+                    variant="outlined"
+                    size="small"
+                    style={{ marginRight: "10px", width: "150px" }}
                   >
-                    <MenuItem value="">All</MenuItem>
-                    <MenuItem value="Individual">Individual</MenuItem>
-                    <MenuItem value="Company">Company</MenuItem>
-                  </Select>
-                </FormControl>
-                <DeleteIcon
-                  onClick={() => clearFilter("type")}
-                  style={{ cursor: "pointer", color: "red" }}
-                />
-              </div>
-            )}
-            {/* Team Member Filter */}
-            {showFilters.teamMember && (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  // marginBottom: "10px",
-                }}
-              >
-                <FormControl
-                  variant="outlined"
-                  size="small"
-                  style={{ marginRight: "10px", width: "150px" }}
+                    <InputLabel>Type</InputLabel>
+                    <Select
+                      name="type"
+                      value={filters.type}
+                      onChange={handleFilterChange}
+                      label="Type"
+                    >
+                      <MenuItem value="">All</MenuItem>
+                      <MenuItem value="Individual">Individual</MenuItem>
+                      <MenuItem value="Company">Company</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <DeleteIcon
+                    onClick={() => clearFilter("type")}
+                    style={{ cursor: "pointer", color: "red" }}
+                  />
+                </div>
+              )}
+              {/* Team Member Filter */}
+              {showFilters.teamMember && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    // marginBottom: "10px",
+                  }}
                 >
-                  <InputLabel>Team Member</InputLabel>
-                  <Select
-                    name="teamMember"
-                    value={filters.teamMember}
-                    onChange={handleFilterChange}
-                    label="Team Member"
+                  <FormControl
+                    variant="outlined"
+                    size="small"
+                    style={{ marginRight: "10px", width: "150px" }}
                   >
-                    <MenuItem value="">All</MenuItem>
-                    {teamMemberOptions.map((member) => (
-                      <MenuItem key={member} value={member}>
-                        {member}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-                <DeleteIcon
-                  onClick={() => clearFilter("teamMember")}
-                  style={{ cursor: "pointer", color: "red" }}
-                />
-              </div>
-            )}
-            {/* Tags Filter */}
-            {showFilters.tags && (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  width:'250px',
-                  gap:3
-                  // marginBottom: "10px",
-                }}
-              >
-                {/* <Autocomplete
+                    <InputLabel>Team Member</InputLabel>
+                    <Select
+                      name="teamMember"
+                      value={filters.teamMember}
+                      onChange={handleFilterChange}
+                      label="Team Member"
+                    >
+                      <MenuItem value="">All</MenuItem>
+                      {teamMemberOptions.map((member) => (
+                        <MenuItem key={member} value={member}>
+                          {member}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <DeleteIcon
+                    onClick={() => clearFilter("teamMember")}
+                    style={{ cursor: "pointer", color: "red" }}
+                  />
+                </div>
+              )}
+              {/* Tags Filter */}
+              {showFilters.tags && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    width: "250px",
+                    gap: 3,
+                    // marginBottom: "10px",
+                  }}
+                >
+                  {/* <Autocomplete
                   multiple
                   options={uniqueTags}
                   value={filters.tags || []}
@@ -1478,7 +1529,7 @@ const loginuserid = storedData?.teammember?.userid;
                   )}
                   style={{ marginRight: "10px", width: "250px" }}
                 /> */}
-                <FormControl sx={{ width: "100%" }}>
+                  <FormControl sx={{ width: "100%" }}>
                     <Select
                       multiple
                       multiline
@@ -1487,10 +1538,16 @@ const loginuserid = storedData?.teammember?.userid;
                       input={<OutlinedInput />}
                       displayEmpty
                       value={filters.tags || []} // Store selected tag objects
-                      onChange={(e) => handleMultiSelectChange("tags", e.target.value)} // Handle selection
+                      onChange={(e) =>
+                        handleMultiSelectChange("tags", e.target.value)
+                      } // Handle selection
                       renderValue={(selected) => {
                         if (selected.length === 0) {
-                          return <span style={{ color: "#aaa" }}>Select tags...</span>;
+                          return (
+                            <span style={{ color: "#aaa" }}>
+                              Select tags...
+                            </span>
+                          );
                         }
                         return (
                           <Box
@@ -1531,7 +1588,10 @@ const loginuserid = storedData?.teammember?.userid;
                       }}
                     >
                       {uniqueTags.map((option) => {
-                        const dynamicWidth = Math.min(option.tagName.length * 8 + 16, 150);
+                        const dynamicWidth = Math.min(
+                          option.tagName.length * 8 + 16,
+                          150
+                        );
                         return (
                           <MenuItem
                             key={option.tagName}
@@ -1558,252 +1618,255 @@ const loginuserid = storedData?.teammember?.userid;
                       })}
                     </Select>
                   </FormControl>
-                <DeleteIcon
-                  onClick={() => clearFilter("tags")}
-                  style={{ cursor: "pointer", color: "red" }}
-                />
-              </div>
-            )}
-          </Box>
-          <TableContainer  sx={{ mt: 2 }}>
-            <Table style={{ tableLayout: "fixed", width: "100%" }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell
-                    padding="checkbox"
-                    style={{
-                      position: "sticky",
-                      left: 0,
-                      zIndex: 1,
-                      background: "#fff",
-                      fontSize: "2px", // Set a professional font size
-                      fontWeight: "bold",
-                      textAlign: "center",
-                    }}
-                  >
-                    <Checkbox
-                      checked={selected.length === accountData.length}
-                      onChange={() => {
-                        if (selected.length === accountData.length) {
-                          setSelected([]);
-                        } else {
-                          const allSelected = accountData.map(
-                            (item) => item.id
-                          );
-                          setSelected(allSelected);
-                        }
-                      }}
-                    />
-                  </TableCell>
-                  <TableCell
-                    onClick={() => {
-                      if (sortBy === "Name") {
-                        setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-                      } else {
-                        setSortBy("Name");
-                        setSortOrder("asc");
-                      }
-                    }}
-                    style={{
-                      cursor: "pointer",
-                      position: "sticky",
-                      left: 50,
-                      zIndex: 1,
-                      background: "#fff",
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px", // Add more padding for better spacing
-                    }}
-                    width="200"
-                  >
-                    Account Name{" "}
-                    {sortBy === "Name" && (sortOrder === "asc" ? "▲" : "▼")}
-                  </TableCell>
-                  <TableCell
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="100"
-                  >
-                    Type
-                  </TableCell>
-                  <TableCell
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="250"
-                  >
-                    Email
-                  </TableCell>
-                  <TableCell
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="200"
-                    height="60"
-                  >
-                    Team Members
-                  </TableCell>
-                  <TableCell
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="200"
-                  >
-                    Tags
-                  </TableCell>
-                  <TableCell
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="100"
-                  >
-                    Invoices
-                  </TableCell>
-                  <TableCell
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="100"
-                  >
-                    Proposals
-                  </TableCell>
-                  <TableCell
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="100"
-                  >
-                    Chats
-                  </TableCell>
-                  <TableCell
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "bold",
-                      padding: "16px",
-                    }}
-                    width="100"
-                  >
-                    Pending Organizers
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {paginatedData.map((row) => {
-                  const isSelected = selected.indexOf(row.id) !== -1;
-                  return (
-                    <TableRow
-                      key={row.id}
-                      hover
-                      onClick={() => handleSelect(row.id)}
-                      role="checkbox"
-                      tabIndex={-1}
-                      selected={isSelected}
+                  <DeleteIcon
+                    onClick={() => clearFilter("tags")}
+                    style={{ cursor: "pointer", color: "red" }}
+                  />
+                </div>
+              )}
+            </Box>
+            <TableContainer sx={{ mt: 2 }}>
+              <Table style={{ tableLayout: "fixed", width: "100%" }}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell
+                      padding="checkbox"
                       style={{
-                        cursor: "pointer",
-                        transition: "background-color 0.3s ease",
-                        "&:hover": {
-                          backgroundColor: "#f4f4f4", // Add hover effect
-                        },
+                        position: "sticky",
+                        left: 0,
+                        zIndex: 1,
+                        background: "#fff",
+                        fontSize: "2px", // Set a professional font size
+                        fontWeight: "bold",
+                        textAlign: "center",
                       }}
                     >
-                      <TableCell
-                        padding="checkbox"
+                      <Checkbox
+                        checked={selected.length === accountData.length}
+                        onChange={() => {
+                          if (selected.length === accountData.length) {
+                            setSelected([]);
+                          } else {
+                            const allSelected = accountData.map(
+                              (item) => item.id
+                            );
+                            setSelected(allSelected);
+                          }
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell
+                      onClick={() => {
+                        if (sortBy === "Name") {
+                          setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+                        } else {
+                          setSortBy("Name");
+                          setSortOrder("asc");
+                        }
+                      }}
+                      style={{
+                        cursor: "pointer",
+                        position: "sticky",
+                        left: 50,
+                        zIndex: 1,
+                        background: "#fff",
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        padding: "16px", // Add more padding for better spacing
+                      }}
+                      width="200"
+                    >
+                      Account Name{" "}
+                      {sortBy === "Name" && (sortOrder === "asc" ? "▲" : "▼")}
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        padding: "16px",
+                      }}
+                      width="100"
+                    >
+                      Type
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        padding: "16px",
+                      }}
+                      width="250"
+                    >
+                      Email
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        padding: "16px",
+                      }}
+                      width="200"
+                      height="60"
+                    >
+                      Team Members
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        padding: "16px",
+                      }}
+                      width="200"
+                    >
+                      Tags
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        padding: "16px",
+                      }}
+                      width="100"
+                    >
+                      Invoices
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        padding: "16px",
+                      }}
+                      width="100"
+                    >
+                      Proposals
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        padding: "16px",
+                      }}
+                      width="100"
+                    >
+                      Chats
+                    </TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        padding: "16px",
+                      }}
+                      width="100"
+                    >
+                      Pending Organizers
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {paginatedData.map((row) => {
+                    const isSelected = selected.indexOf(row.id) !== -1;
+                    return (
+                      <TableRow
+                        key={row.id}
+                        hover
+                        onClick={() => handleSelect(row.id)}
+                        role="checkbox"
+                        tabIndex={-1}
+                        selected={isSelected}
                         style={{
-                          position: "sticky",
-                          left: 0,
-                          zIndex: 1,
-                          background: "#fff",
-                          fontSize: "12px",
-                          textAlign: "center",
-                          padding: "4px 8px",
-                          lineHeight: "1",
-                          // padding: "2px", // Adjust padding for better spacing
+                          cursor: "pointer",
+                          transition: "background-color 0.3s ease",
+                          "&:hover": {
+                            backgroundColor: "#f4f4f4", // Add hover effect
+                          },
                         }}
                       >
-                        <Checkbox checked={isSelected} />
-                      </TableCell>
-                      <TableCell
-                        style={{
-                          position: "sticky",
-                          left: 50,
-                          zIndex: 1,
-                          background: "#fff",
-                          fontSize: "12px",
-                          fontWeight: "normal",
-                          // padding: "12px 16px", // Add padding for better spacing
-                        }}
-                      >
-                        <Link
-                          to={`/clients/accounts/accountsdash/overview/${row.id}`}
-                          style={{ textDecoration: "none", color: "#3f51b5" }}
+                        <TableCell
+                          padding="checkbox"
+                          style={{
+                            position: "sticky",
+                            left: 0,
+                            zIndex: 1,
+                            background: "#fff",
+                            fontSize: "12px",
+                            textAlign: "center",
+                            padding: "4px 8px",
+                            lineHeight: "1",
+                            // padding: "2px", // Adjust padding for better spacing
+                          }}
                         >
-                          {row.Name}
-                        </Link>
-                      </TableCell>
-                      <TableCell
-                        style={{
-                          fontSize: "12px",
-                          padding: "4px 8px",
-                          lineHeight: "1",
-                        }}
-                      >
-                        {row.Type}
-                      </TableCell>
-                      <TableCell
-                        style={{
-                          fontSize: "12px",
-                          padding: "4px 8px",
-                          lineHeight: "1",
-                        }}
-                      >
-                        {row.Follow
-                          ? (() => {
-                              const emails = row.Follow.split(",").map(
-                                (email) => email.trim()
-                              );
-                              return (
-                                <Tooltip
-                                  title={emails.join("\n")}
-                                  arrow
-                                  placement="top"
-                                >
-                                  <Typography
-                                    sx={{ cursor: "pointer", fontSize: "12px" }}
+                          <Checkbox checked={isSelected} />
+                        </TableCell>
+                        <TableCell
+                          style={{
+                            position: "sticky",
+                            left: 50,
+                            zIndex: 1,
+                            background: "#fff",
+                            fontSize: "12px",
+                            fontWeight: "normal",
+                            // padding: "12px 16px", // Add padding for better spacing
+                          }}
+                        >
+                          <Link
+                            to={`/clients/accounts/accountsdash/overview/${row.id}`}
+                            style={{ textDecoration: "none", color: "#3f51b5" }}
+                          >
+                            {row.Name}
+                          </Link>
+                        </TableCell>
+                        <TableCell
+                          style={{
+                            fontSize: "12px",
+                            padding: "4px 8px",
+                            lineHeight: "1",
+                          }}
+                        >
+                          {row.Type}
+                        </TableCell>
+                        <TableCell
+                          style={{
+                            fontSize: "12px",
+                            padding: "4px 8px",
+                            lineHeight: "1",
+                          }}
+                        >
+                          {row.Follow
+                            ? (() => {
+                                const emails = row.Follow.split(",").map(
+                                  (email) => email.trim()
+                                );
+                                return (
+                                  <Tooltip
+                                    title={emails.join("\n")}
+                                    arrow
+                                    placement="top"
                                   >
-                                    {emails[0]}{" "}
-                                    {emails.length > 1
-                                      ? `+${emails.length - 1}`
-                                      : ""}
-                                  </Typography>
-                                </Tooltip>
-                              );
-                            })()
-                          : ""}
-                      </TableCell>
-                      <TableCell
-                        style={{
-                          fontSize: "12px",
-                          padding: "4px 8px",
-                          lineHeight: "1",
-                        }}
-                      >
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                          {/* <AvatarGroup max={2}>
+                                    <Typography
+                                      sx={{
+                                        cursor: "pointer",
+                                        fontSize: "12px",
+                                      }}
+                                    >
+                                      {emails[0]}{" "}
+                                      {emails.length > 1
+                                        ? `+${emails.length - 1}`
+                                        : ""}
+                                    </Typography>
+                                  </Tooltip>
+                                );
+                              })()
+                            : ""}
+                        </TableCell>
+                        <TableCell
+                          style={{
+                            fontSize: "12px",
+                            padding: "4px 8px",
+                            lineHeight: "1",
+                          }}
+                        >
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            {/* <AvatarGroup max={2}>
                             {row.Team.map((member) => {
                               const size = 25;
                               const initials = member.username
@@ -1840,157 +1903,170 @@ const loginuserid = storedData?.teammember?.userid;
                               );
                             })}
                           </AvatarGroup> */}
-                                {row.Team.length > 0 && (
-                            <>
-                              <Tooltip title={row.Team[0].username} placement="top">
-                                <span style={{ marginRight: 8 }}>{row.Team[0].username}</span>
-                              </Tooltip>
-                          
-                              {row.Team.length > 1 && (
+                            {row.Team.length > 0 && (
+                              <>
                                 <Tooltip
-                                  title={row.Team.slice(1).map((member) => member.username).join(", ")}
+                                  title={row.Team[0].username}
                                   placement="top"
                                 >
-                                  <Typography variant="body2" sx={{  marginLeft: "2px",cursor:'pointer',
-                                                          fontSize: "10px",
-                                                          color: "#555", }}>
-                                    +{row.Team.length - 1} 
-                                  </Typography>
+                                  <span style={{ marginRight: 8 }}>
+                                    {row.Team[0].username}
+                                  </span>
                                 </Tooltip>
-                              )}
-                            </>
-                          )}
-                        </Box>
-                      </TableCell>
-                      <TableCell
-                        style={{
-                          fontSize: "12px",
-                          padding: "4px 8px",
-                          lineHeight: "1",
-                        }}
-                      >
-                        {Array.isArray(row.Tags) && row.Tags.length > 0 ? (
-                          row.Tags.length > 1 ? (
-                            <Tooltip
-                              title={
-                                <div>
-                                  {row.Tags.map((tag) => (
-                                    <div
-                                      key={tag._id}
-                                      style={{
-                                        background: tag.tagColour,
-                                        color: "#fff",
-                                        borderRadius: "8px",
-                                        padding: "2px 8px",
-                                        marginBottom: "2px",
+
+                                {row.Team.length > 1 && (
+                                  <Tooltip
+                                    title={row.Team.slice(1)
+                                      .map((member) => member.username)
+                                      .join(", ")}
+                                    placement="top"
+                                  >
+                                    <Typography
+                                      variant="body2"
+                                      sx={{
+                                        marginLeft: "2px",
+                                        cursor: "pointer",
                                         fontSize: "10px",
+                                        color: "#555",
                                       }}
                                     >
-                                      {tag.tagName}
-                                    </div>
-                                  ))}
-                                </div>
-                              }
-                              placement="top"
+                                      +{row.Team.length - 1}
+                                    </Typography>
+                                  </Tooltip>
+                                )}
+                              </>
+                            )}
+                          </Box>
+                        </TableCell>
+                        <TableCell
+                          style={{
+                            fontSize: "12px",
+                            padding: "4px 8px",
+                            lineHeight: "1",
+                          }}
+                        >
+                          {Array.isArray(row.Tags) && row.Tags.length > 0 ? (
+                            row.Tags.length > 1 ? (
+                              <Tooltip
+                                title={
+                                  <div>
+                                    {row.Tags.map((tag) => (
+                                      <div
+                                        key={tag._id}
+                                        style={{
+                                          background: tag.tagColour,
+                                          color: "#fff",
+                                          borderRadius: "8px",
+                                          padding: "2px 8px",
+                                          marginBottom: "2px",
+                                          fontSize: "10px",
+                                        }}
+                                      >
+                                        {tag.tagName}
+                                      </div>
+                                    ))}
+                                  </div>
+                                }
+                                placement="top"
+                              >
+                                <span
+                                  style={{
+                                    background: row.Tags[0].tagColour,
+                                    color: "#fff",
+                                    borderRadius: "8px",
+                                    padding: "2px 8px",
+                                    fontSize: "10px",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  {row.Tags[0].tagName}
+                                </span>
+                              </Tooltip>
+                            ) : (
+                              row.Tags.map((tag) => (
+                                <span
+                                  key={tag._id}
+                                  style={{
+                                    background: tag.tagColour,
+                                    color: "#fff",
+                                    borderRadius: "8px",
+                                    padding: "2px 8px",
+                                    fontSize: "10px",
+                                    marginLeft: "3px",
+                                  }}
+                                >
+                                  {tag.tagName}
+                                </span>
+                              ))
+                            )
+                          ) : null}
+                          {Array.isArray(row.Tags) && row.Tags.length > 1 && (
+                            <span
+                              style={{
+                                marginLeft: "5px",
+                                fontSize: "10px",
+                                color: "#555",
+                              }}
                             >
-                              <span
-                                style={{
-                                  background: row.Tags[0].tagColour,
-                                  color: "#fff",
-                                  borderRadius: "8px",
-                                  padding: "2px 8px",
-                                  fontSize: "10px",
-                                  cursor: "pointer",
-                                }}
-                              >
-                                {row.Tags[0].tagName}
-                              </span>
-                            </Tooltip>
-                          ) : (
-                            row.Tags.map((tag) => (
-                              <span
-                                key={tag._id}
-                                style={{
-                                  background: tag.tagColour,
-                                  color: "#fff",
-                                  borderRadius: "8px",
-                                  padding: "2px 8px",
-                                  fontSize: "10px",
-                                  marginLeft: "3px",
-                                }}
-                              >
-                                {tag.tagName}
-                              </span>
-                            ))
-                          )
-                        ) : null}
-                        {Array.isArray(row.Tags) && row.Tags.length > 1 && (
-                          <span
-                            style={{
-                              marginLeft: "5px",
-                              fontSize: "10px",
-                              color: "#555",
-                            }}
-                          >
-                            +{row.Tags.length - 1}
-                          </span>
-                        )}
-                      </TableCell>
-                      <TableCell
-                        style={{
-                          fontSize: "12px",
-                          padding: "4px 8px",
-                          lineHeight: "1",
-                        }}
-                      >
-                        {row.Invoices}
-                      </TableCell>
-                      <TableCell
-                        style={{
-                          fontSize: "12px",
-                          padding: "4px 8px",
-                          lineHeight: "1",
-                        }}
-                      >
-                        {row.Proposals}
-                      </TableCell>
-                      <TableCell
-                        style={{
-                          fontSize: "12px",
-                          padding: "4px 8px",
-                          lineHeight: "1",
-                        }}
-                      >
-                        {row.Unreadchats}
-                      </TableCell>
-                      <TableCell
-                        style={{
-                          fontSize: "12px",
-                          padding: "4px 8px",
-                          lineHeight: "1",
-                        }}
-                      >
-                        {row.Pendingorganizers}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                              +{row.Tags.length - 1}
+                            </span>
+                          )}
+                        </TableCell>
+                        <TableCell
+                          style={{
+                            fontSize: "12px",
+                            padding: "4px 8px",
+                            lineHeight: "1",
+                          }}
+                        >
+                          {row.Invoices}
+                        </TableCell>
+                        <TableCell
+                          style={{
+                            fontSize: "12px",
+                            padding: "4px 8px",
+                            lineHeight: "1",
+                          }}
+                        >
+                          {row.Proposals}
+                        </TableCell>
+                        <TableCell
+                          style={{
+                            fontSize: "12px",
+                            padding: "4px 8px",
+                            lineHeight: "1",
+                          }}
+                        >
+                          {row.Unreadchats}
+                        </TableCell>
+                        <TableCell
+                          style={{
+                            fontSize: "12px",
+                            padding: "4px 8px",
+                            lineHeight: "1",
+                          }}
+                        >
+                          {row.Pendingorganizers}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
 
-          <TablePagination
-            rowsPerPageOptions={[30,40,50,60,100]}
-            component="div"
-            count={filteredData.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Box>
-      )
-      ) }
+            <TablePagination
+              rowsPerPageOptions={[30, 40, 50, 60, 100]}
+              component="div"
+              count={filteredData.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Box>
+        )
+      )}
 
       <Drawer
         anchor="right"

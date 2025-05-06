@@ -34,32 +34,55 @@ const FolderTemp = () => {
   //get all templateName Record
   const [folderTemplates, setFolderTemplates] = useState([]);
 const [loading, setLoading] = useState(true); // Loader state
-  useEffect(() => {
-    async function fetchFolderTemplates() {
-      setLoading(true); // Start loader
+  // useEffect(() => {
+  //   async function fetchFolderTemplates() {
+  //     setLoading(true); // Start loader
 
-      const loaderDelay = new Promise((resolve) => setTimeout(resolve, 1000));
-      try {
-        const url = `${API_KEY}/foldertemp/folder`;
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error("Failed to fetch folder templates");
-        }
-        const data = await response.json();
-        setFolderTemplates(data.folderTemplates);
-      } catch (error) {
-        console.error("Error fetching folder templates:", error);
+  //     const loaderDelay = new Promise((resolve) => setTimeout(resolve, 1000));
+  //     try {
+  //       const url = `${API_KEY}/foldertemp/folder`;
+  //       const response = await fetch(url);
+  //       if (!response.ok) {
+  //         throw new Error("Failed to fetch folder templates");
+  //       }
+  //       const data = await response.json();
+  //       setFolderTemplates(data.folderTemplates);
+  //     } catch (error) {
+  //       console.error("Error fetching folder templates:", error);
+  //     }
+  //     finally {
+  //       // Wait for the fetch and the 3-second timer to complete
+  //       await loaderDelay;
+  //       setLoading(false); // Stop loader
+  //     }
+  //   }
+
+  //   fetchFolderTemplates();
+  // }, []);
+
+  const fetchFolderTemplates = async () => {
+    setLoading(true); // Start loader
+
+    const loaderDelay = new Promise((resolve) => setTimeout(resolve, 1000));
+    try {
+      const url = `${API_KEY}/foldertemp/folder`;
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error("Failed to fetch folder templates");
       }
-      finally {
-        // Wait for the fetch and the 3-second timer to complete
-        await loaderDelay;
-        setLoading(false); // Stop loader
-      }
+      const data = await response.json();
+      setFolderTemplates(data.folderTemplates);
+    } catch (error) {
+      console.error("Error fetching folder templates:", error);
+    } finally {
+      // Wait for the fetch and the 1-second timer to complete
+      await loaderDelay;
+      setLoading(false); // Stop loader
     }
-
+  };
+  useEffect(() => {
     fetchFolderTemplates();
   }, []);
-
   const handleEdit = (_id) => {
     // Implement logic for editing here
     console.log("Edit action triggered for template id: ", _id);
@@ -72,6 +95,28 @@ const [loading, setLoading] = useState(true); // Loader state
    
   };
 
+  const handleCloseEdit =()=>{
+    setIsTempEditForm(false)
+    setShowTable(true);
+  }
+const handleDeleteTemplate = async(id)=>{
+  console.log("delete action triggered for template id: ", id);
+  try {
+    const response = await axios.delete(
+      `${API_KEY}/foldertemp/folder/${id}`,
+      {
+        maxBodyLength: Infinity,
+      }
+    );
+    console.log("Deleted:", response.data);
+toast.success("Folder Template Deleted Successfully")
+fetchFolderTemplates();
+    // Optional: Refresh your templates list here (e.g., refetch or filter locally)
+  } catch (error) {
+    console.error("Error deleting template:", error);
+    toast.error("Error deleting template")
+  }
+}
   const [showTable, setShowTable] = useState(true);
   const [templateName, setTemplateName] = useState(false);
   const [folderList, setFolderList] = useState(false);
@@ -87,7 +132,8 @@ const [loading, setLoading] = useState(true); // Loader state
   }, [templateId]);
 
   // todo
-  const handleSaveTemplate = async () => {
+  const 
+  handleSaveTemplate = async () => {
     // Check if the template name is empty
     if (tempName.trim() === "") {
       // Display a toast error message if the template name is empty
@@ -176,6 +222,7 @@ const [loading, setLoading] = useState(true); // Loader state
             handleCreateTemplate={handleCreateTemplate}
             folderTemplates={folderTemplates}
             handleEdit={handleEdit}
+            handleDelete={handleDeleteTemplate}
           />
         )
       )}
@@ -183,7 +230,8 @@ const [loading, setLoading] = useState(true); // Loader state
           {templateName && <TemplateName handleSaveTemplate={handleSaveTemplate} handleCancel={handleCancel} tempName={tempName} setTempName={setTempName} />}
 
           {folderList && <FolderList tempName={tempName} folderData={folderData} fetchAllFolders={fetchAllFolders} templateId={templateId} />}
-          {isTempEditForm && <FolderTempEdit tempName={tempName} folderData={folderData} fetchAllFolders={fetchAllFolders} templateId={templateId} />}
+          {isTempEditForm && <FolderTempEdit tempName={tempName} folderData={folderData} fetchAllFolders={fetchAllFolders} templateId={templateId} handleCancel={handleCloseEdit} fetchFolderTemplates={fetchFolderTemplates}
+ />}
         </Box>
       </Box>
     </>

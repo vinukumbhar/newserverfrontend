@@ -59,9 +59,9 @@ const NewTaskDrawer = ({ open, onClose, fetchTasksData, isEditMode, taskData,fet
 
   const fetchAccountData = async () => {
     try {
-      const response = await fetch(`${ACCOUNT_API}/accounts/accountdetails`);
+      const response = await fetch(`${ACCOUNT_API}/accounts/account/accountdetailslist/true`);
       const data = await response.json();
-      setaccountdata(data.accounts);
+      setaccountdata(data.accountlist);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -69,8 +69,8 @@ const NewTaskDrawer = ({ open, onClose, fetchTasksData, isEditMode, taskData,fet
 
   // console.log(userdata);
   const accountoptions = accountdata.map((account) => ({
-    value: account._id,
-    label: account.accountName,
+    value: account.id,
+    label: account.Name,
   }));
 
   //   *********joblist*******

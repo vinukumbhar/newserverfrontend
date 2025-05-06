@@ -18,7 +18,7 @@ const Invoice = () => {
   const [tempIdget, setTempIdGet] = useState("");
   const [accountInvoicesData, setAccountInvoicesData] = useState([]);
   const { data } = useParams();
-  console.log(data);
+
 
   useEffect(() => {
     fetchInvoices(data);

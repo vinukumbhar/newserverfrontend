@@ -312,7 +312,7 @@ const ChatTemp = () => {
 
     const loaderDelay = new Promise((resolve) => setTimeout(resolve, 1000));
     try {
-      const url = `${CHAT_API}/Workflow/chats/chattemplate`;
+      const url = `${CHAT_API}/workflow/chats/chattemplate`;
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error('Failed to fetch Chat templates');
@@ -380,8 +380,8 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
       body: raw,
       redirect: "follow"
     };
-
-    const url = `${CHAT_API}/Workflow/chats/chattemplate`;
+console.log(raw)
+    const url = `${CHAT_API}/workflow/chats/chattemplate`;
     fetch(url, requestOptions)
       .then((response) => {
       
@@ -439,7 +439,7 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
     redirect: "follow"
   };
 
-  const url = `${CHAT_API}/Workflow/chats/chattemplate`;
+  const url = `${CHAT_API}/workflow/chats/chattemplate`;
   fetch(url, requestOptions)
     .then((response) => {
       console.log(response)
@@ -481,7 +481,7 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
     };
 
     // Ensure the URL is correct, with _id appended correctly
-    const url = `${CHAT_API}/Workflow/chats/chattemplate/${_id}`;
+    const url = `${CHAT_API}/workflow/chats/chattemplate/${_id}`;
 
     fetch(url, requestOptions)
       .then((response) => {

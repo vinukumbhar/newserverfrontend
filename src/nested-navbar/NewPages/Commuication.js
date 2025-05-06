@@ -466,6 +466,7 @@ console.log(raw)
     const messageData = [{
       message: description,
       fromwhome: "Admin",
+      senderid:loginUserId
     }];
 
     const raw = JSON.stringify({
@@ -476,6 +477,7 @@ console.log(raw)
       chatsubject: inputText + selectedShortcut,
       // description: description,
       description: messageData,
+      chatstatus:'false',
       sendreminderstoclient: absoluteDate,
       daysuntilnextreminder: daysuntilNextReminder,
       numberofreminders: noOfReminder,
@@ -674,7 +676,7 @@ console.log(raw)
 
     const newDescription = {
       message: description,
-      fromwhome: "Admin"
+      fromwhome: "Admin",senderid:loginUserId
     };
     setAllDescriptions((prevDescriptions) => [...prevDescriptions, newDescription]);
     
@@ -903,8 +905,12 @@ console.log(raw)
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
-
-        const taskMessages = adminChatClientsTask.flat().map(task => task.text).join(", ");
+        const taskMessages = adminChatClientsTask
+        .flat()
+        .map(task => `• ${task.text}`)
+        .join("\n"); // newline-separated bullets
+      
+        // const taskMessages = adminChatClientsTask.flat().map(task => task.text).join(", ");
         const description = `${taskMessages}`;
         console.log(description)
 

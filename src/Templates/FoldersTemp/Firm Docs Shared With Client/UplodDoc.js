@@ -217,7 +217,7 @@ import { Button, Box, Typography, Drawer } from "@mui/material";
 import { FaTimes } from "react-icons/fa";
 import FileExplorer from "../FileExplorer";
 
-const UploadDocument = ({ open, onClose, file,accountId ,onUploadSuccess }) => {
+const UploadDocument = ({ open, onClose, file,accountId ,onUploadSuccess,fetchFirmFiles }) => {
 console.log("accc",onUploadSuccess)
   const [error, setError] = useState(null);
   const API_KEY = process.env.REACT_APP_FOLDER_URL;
@@ -259,6 +259,7 @@ console.log("accc",onUploadSuccess)
       alert("File uploaded successfully!");
       onClose()
       onUploadSuccess?.(); 
+      fetchFirmFiles()
       setSelectedPath("")
     } catch (error) {
       console.error("Upload error:", error);

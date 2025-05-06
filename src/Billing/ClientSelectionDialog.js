@@ -164,11 +164,11 @@ const ClientSelectionDialog = ({ open, onClose, charLimit = 4000,handleDrawerClo
   const fetchAccountData = async () => {
     try {
       const response = await fetch(
-        `${ACCOUNT_API}/accounts/nameandid/accountdetails`
+        `${ACCOUNT_API}/accounts/account/accountdetailslist/true`
       );
       const data = await response.json();
       console.log("client list", data);
-      setAccountData(data.accounts);
+      setAccountData(data.accountlist);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -180,8 +180,8 @@ const ClientSelectionDialog = ({ open, onClose, charLimit = 4000,handleDrawerClo
 
   // Map account data into options
   const accountOptions = accountData.map((account) => ({
-    value: account._id,
-    label: account.accountName,
+    value: account.id,
+    label: account.Name,
   }));
 
   // Filter accounts based on search input

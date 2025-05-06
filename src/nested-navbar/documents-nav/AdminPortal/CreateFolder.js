@@ -305,7 +305,7 @@ const CreateFolder = ({
   //       throw error;
   //     });
   // };
-
+  // const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
   const createFolderAPI = () => {
     if (!destinationPath || !newFolderName) {
       console.log("Missing path or folder name.");
@@ -314,7 +314,7 @@ const CreateFolder = ({
   
     return axios
       .get(
-        `http://127.0.0.1:8005/createnewFolder/?path=${destinationPath}&foldername=${newFolderName}`
+        `${DOCS_MANAGMENTS}/createnewFolder/?path=${destinationPath}&foldername=${newFolderName}`
       )
       .then((response) => {
         console.log("API Response:", response.data);

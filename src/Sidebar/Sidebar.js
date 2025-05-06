@@ -318,6 +318,7 @@ function Sidebar() {
 
   const handleDrawerClose = () => {
     setIsDrawerOpen(false);
+    setIsOrganizerDialogOpen(false)
   };
 
   const handleNewDrawerClose = () => {
@@ -336,6 +337,7 @@ function Sidebar() {
   //   }
   // };
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isOrganizerDialogOpen, setIsOrganizerDialogOpen] = useState(false);
   const handleNewItemClick = (label) => {
     console.log("menu", label)
     if (label === "Account" || label === "Contact" || label === "Task" || label === "Chat") {
@@ -348,7 +350,7 @@ function Sidebar() {
       setIsDialogOpen(true);
     }
     else if (label === "Organizer") {
-      setIsDialogOpen(true);
+      setIsOrganizerDialogOpen(true);
     }
   };
   const [theme, setTheme] = useState("light-theme");
@@ -1263,7 +1265,7 @@ function Sidebar() {
 
        <ClientSelectionDialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} handleDrawerClose={handleDrawerClose}/>
    
-   <OrganizerDialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} handleDrawerClose={handleDrawerClose}/>
+   <OrganizerDialog open={isOrganizerDialogOpen} onClose={() => setIsOrganizerDialogOpen(false)} handleDrawerClose={handleDrawerClose}/>
     </div>
   );
 }
