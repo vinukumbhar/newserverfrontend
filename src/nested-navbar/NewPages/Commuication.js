@@ -306,7 +306,7 @@ const Communication = () => {
 
   const fetchChatTemplates = async () => {
     try {
-      const url = `${CHAT_API}/Workflow/chats/chattemplate`;
+      const url = `${CHAT_API}/workflow/chats/chattemplate`;
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error("Failed to fetch ChatTemplate");

@@ -35,6 +35,8 @@ const CreateFolder = ({
   const [newFolderPath, setNewFolderPath] = useState("");
   const [destinationPath, setDestinationPath] = useState("");
   const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
+
+  
   const fetchFolders = async () => {
     try {
       const url = `${API_KEY}/foldertemplates/clientDocs/${accountId}`;
@@ -326,6 +328,12 @@ const CreateFolder = ({
         fetchBothFolders()
         fetchUnSealedFolders()
         fetchAdminPrivateFolders()
+        {renderPrivateContents(privateStructFolder.folders, (newFolders) =>
+          setPrivateStructFolder({
+            ...privateStructFolder,
+            folders: newFolders,
+          })
+        )}
 
         return response.data;
       })

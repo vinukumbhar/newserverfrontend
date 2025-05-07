@@ -6,13 +6,15 @@ import {
   Typography,
   Divider,
   Paper,
+  Button,Menu,MenuItem
 } from "@mui/material";
+import { toast } from "react-toastify";
 import FetchFolder from "./FetchFolder";
 import CreateFolder from "./CreateFolder";
 import UploadDrawer from "./uploadDocumentWorking";
 import UploadFolder from "./folderUpload";
 import { HiDocumentArrowUp } from "react-icons/hi2";
-import UploadDocument from "./uploadDocumentWorking";
+// import UploadDocument from "./uploadDocumentWorking";
 import axios from "axios";
 import { MdOutlineDriveFolderUpload } from "react-icons/md";
 import { FaRegFolderClosed } from "react-icons/fa6";
@@ -24,8 +26,8 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
   console.log("jjj", templateId);
   console.log("jjj temp", tempName);
   const API_KEY = process.env.REACT_APP_FOLDER_URL;
-    const [refreshKey, setRefreshKey] = useState(0);
-    console.log(refreshKey)
+
+  const [refreshKey, setRefreshKey] = useState(0);
   const [isDocumentForm, setIsDocumentForm] = useState(false);
   const [file, setFile] = useState(null);
   const [isFolderFormOpen, setIsFolderFormOpen] = useState(false);
@@ -36,32 +38,56 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
   const [folderName, setFolderName] = useState("");
   const folderInputRef = useRef(null);
   const [uploadDocOpen, setUplaodDocOpen] = useState(false);
+  const [selectedFolderId, setSelectedFolderId] = useState(null);
+  const [privateStructFolder, setPrivateStructFolder] = useState(null);
+  const [structFolder, setStructFolder] = useState(null);
+  const [sealedStructFolder, setSealedStructFolder] = useState(null);
+  const [combinedFolderStructure, setCombinedFolderStructure] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [activeMenu, setActiveMenu] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // FileExplorer related state
+  const [firmFiles, setFirmFiles] = useState([]);
+  const firmfolderName = "Firm Docs Shared With Client";
+
   const handleFileChange = (e) => setFile(e.target.files[0]);
   const handleNewFileChange = (e) => setFile(e.target.files[0]);
   const handleFileUpload = () => setIsDocumentForm(true);
   const handleOpenDrawer = () => setUplaodDocOpen(true);
   const handleCreateFolderClick = () => setIsFolderFormOpen((prev) => !prev);
   const handleNewFolderClick = () => setIsFolderCreate((prev) => !prev);
-  const [selectedFolderId, setSelectedFolderId] = useState(null);
-   const [privateStructFolder, setPrivateStructFolder] = useState(null);
-     const [structFolder, setStructFolder] = useState(null);
-       const [sealedStructFolder, setSealedStructFolder] = useState(null);
-   const openDrawer = () => {
+
+  const openDrawer = () => {
     setIsUploadFolderFormOpen(true);
   };
 
   useEffect(() => {
     if (isDrawerOpen) openDrawer();
   }, [isDrawerOpen]);
+
   useEffect(() => {
     if (templateId) {
       fetchUnSealedFolders();
       fetchSealedFolders();
       fetchPrivateFolders();
-      // fetchFrimDocsFolders();
-      fetchBothFolders()
+      fetchBothFolders();
+      fetchFirmFiles(); // Fetch firm files when templateId changes
     }
   }, [templateId]);
+
+  const fetchFirmFiles = async () => {
+    try {
+      const res = await fetch(`${API_KEY}/firmClientDocs/files/${templateId}`);
+      const data = await res.json();
+      setFirmFiles(data.files || []);
+    } catch (err) {
+      console.error("Failed to fetch files", err);
+    }
+  };
+
   const fetchUnSealedFolders = async () => {
     try {
       const res = await axios.get(
@@ -109,6 +135,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
       setError(err.message || "Error fetching sealed folders.");
     }
   };
+
   const fetchPrivateFolders = async () => {
     try {
       const res = await axios.get(
@@ -132,6 +159,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
       setError(err.message || "Error fetching sealed folders.");
     }
   };
+
   const handleFolderSelection = (e) => {
     const files = Array.from(e.target.files);
     if (files.length > 0) {
@@ -142,6 +170,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
     }
     e.target.value = "";
   };
+
   const toggleFolder = (folderId, folders) => {
     return folders.map((item) => {
       if (item.id === folderId) {
@@ -152,52 +181,76 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
       return item;
     });
   };
-  const [combinedFolderStructure,setCombinedFolderStructure]=useState(null)
 
   const handleToggle = (id) => {
     setCombinedFolderStructure((prev) => toggleFolder(id, prev));
   };
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [activeMenu, setActiveMenu] = useState(null);
-  
+
   const handleMenuOpen = (event, item) => {
     setAnchorEl(event.currentTarget);
     setSelectedItem(item);
-    setActiveMenu(item.id);
   };
-  
+
   const handleMenuClose = () => {
     setAnchorEl(null);
     setSelectedItem(null);
-    setActiveMenu(null);
   };
-  
+  const handleEdit = (item) => {
+    console.log("Edit", item);
+    // Add your edit logic here
+  };
+
+  // const handleDelete = (item) => {
+  //   console.log("Delete", item);
+  //   // Add your delete logic here
+  // };
+  const handleDelete = (item) => {
+    console.log("Delete", item);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      path: item.path, // dynamically from item
+      id: item.id, // dynamically from item
+    });
+
+    const requestOptions = {
+      method: "DELETE",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch("http://127.0.0.1/foldertemplates/delete-item", requestOptions)
+      .then((response) => response.text())
+      .then((result) => {
+        console.log("Delete Result:", result);
+        toast.success("Deleted successfully");
+        fetchBothFolders();
+      })
+      .catch((error) => console.error("Delete Error:", error));
+  };
+
   const handleMenuAction = (action) => {
     if (selectedItem) {
-      handleAction(action, selectedItem); // This function must be defined by you
+      handleAction(action, selectedItem);
       handleMenuClose();
     }
   };
+
   const handleFileOpen = (fileItem) => {
-    // Assuming fileItem.filepath = "/uploads/folder1/filename.pdf"
-    const baseUrl = `${API_KEY}`; // or http://127.0.0.1:8005 in dev
-    const fileUrl = `${baseUrl}/${fileItem.path}`;
-  
-    // window.open(fileUrl, "_blank");
+    const fileUrl = `${API_KEY}/${fileItem.path}`;
     window.location.href = fileUrl;
-  
   };
 
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
   const fetchBothFolders = async () => {
     try {
       const [sealedRes, unsealedRes] = await Promise.all([
         axios.get(`${API_KEY}/foldertemplates/sealedFolders/${templateId}`),
         axios.get(`${API_KEY}/foldertemplates/unsealed/${templateId}`),
       ]);
-  
+
       const addIsOpen = (items, parentId = "", sealed = false) =>
         items.map((folder, index) => ({
           ...folder,
@@ -208,11 +261,14 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
             ? addIsOpen(folder.contents, `${parentId}${index}-`, sealed)
             : [],
         }));
-  
+
       const sealedFolders = addIsOpen(sealedRes.data.folders || [], "", true);
-      const unsealedFolders = addIsOpen(unsealedRes.data.folders || [], "", false);
-  
-      // Combine into a single parent folder
+      const unsealedFolders = addIsOpen(
+        unsealedRes.data.folders || [],
+        "",
+        false
+      );
+
       const combinedFolders = [
         {
           folder: "Client Uploaded Documents",
@@ -221,55 +277,129 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
           contents: [...sealedFolders, ...unsealedFolders],
         },
       ];
-  
-      // Set to a single state
-      setCombinedFolderStructure(combinedFolders); // <- new unified state
-      console.log("jaanvi patil",combinedFolders)
+
+      setCombinedFolderStructure(combinedFolders);
     } catch (err) {
       setError(err.message || "Error fetching folders.");
     }
   };
+
   const handleAction = async (action, item) => {
     console.log(`Action: ${action} on`, item);
-    setActiveMenu(null); // Close the action menu
-  
-    if (action === 'seal' || action === 'unseal') {
+    setActiveMenu(null);
+
+    if (action === "seal" || action === "unseal") {
       try {
         setLoading(true);
-  
-        // Extract folder ID from item.path
-        const pathParts = item.path.split('/');
-        const folderId = pathParts[2]; // uploads/foldertemplateslates/{id}/...
-  
-        // Compute base path
+        const pathParts = item.path.split("/");
+        const folderId = pathParts[2];
         const basePath = `uploads/FolderTemplates/${folderId}/Client Uploaded Documents`;
-  
-        // Get relative path inside unsealed/sealed
-        const currentDir = action === 'seal' ? 'unsealed' : 'sealed';
-        const relativePath = item.path.replace(`${basePath}/${currentDir}/`, '');
-  
-        // Call backend to move the item
-        await axios.post('${API_KEY}/foldertemplates/moveBetweenSealedUnsealed', {
-          id: folderId,
-          itemPath: relativePath,
-          direction: action === 'seal' ? 'toSealed' : 'toUnsealed',
-        });
-  
-        // Refresh folders
+        const currentDir = action === "seal" ? "unsealed" : "sealed";
+        const relativePath = item.path.replace(
+          `${basePath}/${currentDir}/`,
+          ""
+        );
+
+        await axios.post(
+          `${API_KEY}/foldertemplates/moveBetweenSealedUnsealed`,
+          {
+            id: folderId,
+            itemPath: relativePath,
+            direction: action === "seal" ? "toSealed" : "toUnsealed",
+          }
+        );
+
         await fetchBothFolders();
-  
-        // Notify success
-        alert(`Item ${action === 'seal' ? 'sealed' : 'unsealed'} successfully`);
+        alert(`Item ${action === "seal" ? "sealed" : "unsealed"} successfully`);
       } catch (error) {
-        console.error('Error moving item:', error);
-        alert(`Failed to ${action} item: ${error.response?.data?.error || error.message}`);
+        console.error("Error moving item:", error);
+        alert(
+          `Failed to ${action} item: ${error.response?.data?.error || error.message}`
+        );
       } finally {
         setLoading(false);
       }
-    } else {
-      // Other actions if needed
     }
   };
+
+  // FileExplorer related functions
+  const buildFileTree = (files, folderStart) => {
+    const root = {};
+
+    const parts = folderStart.split("/");
+    let current = root;
+    parts.forEach((part) => {
+      if (!current[part]) {
+        current[part] = {};
+      }
+      current = current[part];
+    });
+
+    files.forEach((file) => {
+      let path = file.filePath.replace(/\\/g, "/");
+      const index = path.toLowerCase().indexOf(folderStart.toLowerCase());
+
+      if (index === -1) return;
+      path = path.slice(index);
+
+      const fileParts = path.split("/");
+
+      let current = root;
+
+      fileParts.forEach((part) => {
+        if (!current[part]) {
+          current[part] = {};
+        }
+        current = current[part];
+      });
+
+      if (file.filename !== "#$default.txt") {
+        current[file.filename] = file;
+      }
+    });
+
+    return root;
+  };
+
+  const FirmFolder = ({ name, content, onSelectPath, currentPath = "" }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const isFile = content.filename;
+    const fullPath = currentPath ? `${currentPath}/${name}` : name;
+
+    if (isFile) {
+      return (
+        <div style={{ paddingLeft: 20 }}>
+          📄 <span>{content.filename}</span>
+        </div>
+      );
+    }
+
+    const handleClick = () => {
+      setIsOpen(!isOpen);
+      if (onSelectPath) {
+        onSelectPath(fullPath);
+      }
+    };
+
+    return (
+      <div style={{ paddingLeft: 20 }}>
+        <div onClick={handleClick} style={{ cursor: "pointer" }}>
+          {isOpen ? "📂" : "📁"} <span>{name}</span>
+        </div>
+        {isOpen &&
+          Object.entries(content).map(([childName, childContent]) => (
+            <FirmFolder
+              key={childName}
+              name={childName}
+              content={childContent}
+              onSelectPath={onSelectPath}
+              currentPath={fullPath}
+            />
+          ))}
+      </div>
+    );
+  };
+
   const renderTree = (items) => {
     return items.map((item) => {
       if (item.folder) {
@@ -330,16 +460,11 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <span>📄</span>
               <span
-    onClick={() => handleFileOpen(item)}
-    style={{
-      cursor: "pointer",
-      // textDecoration: "underline",
-      // color: "red",
-    }}
-  >
-    {item.file}
-  </span>
-  
+                onClick={() => handleFileOpen(item)}
+                style={{ cursor: "pointer" }}
+              >
+                {item.file}
+              </span>
               {item.sealed && (
                 <span
                   style={{
@@ -395,7 +520,6 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
               >
                 <span>{item.isOpen ? "📂" : "📁"}</span>
                 <span>{item.folder}</span>
-                {/* <SealedChip sealed={item.sealed} /> */}
               </div>
             </div>
             {item.isOpen && item.contents?.length > 0 && (
@@ -418,84 +542,34 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
               marginLeft: "40px",
               padding: "4px 8px",
               fontSize: "15px",
-              // color: "#555",
               display: "flex",
               alignItems: "center",
             }}
           >
             <span style={{ marginRight: "8px" }}>📄</span>
-            {/* <span style={{ fontWeight: 500 }}>{item.file}</span> */}
             <span
               onClick={() => handleFileOpen(item)}
-              style={{
-                cursor: "pointer",
-                // textDecoration: "underline",
-                // color: "red",
-              }}
+              style={{ cursor: "pointer" }}
             >
               {item.file}
             </span>
-            {/* <SealedChip sealed={item.sealed} /> */}
           </div>
         );
       }
       return null;
     });
 
+  if (error) return <div>Error: {error}</div>;
+  if (!combinedFolderStructure || !privateStructFolder) return <div></div>;
 
-        // useEffect(() => {
-        //   const fetchData = async () => {
-        //     try {
-        //       const response = await fetch(
-        //         `${API_KEY}/firmDocs/files/${templateId}`
-        //       );
-        //       console.log("url",response)
-        //       if (!response.ok) {
-        //         throw new Error('Network response was not ok');
-        //       }
-        //       const result = await response.json();
-        //       setFirmFolderData(result);
-              
-        //       // Initialize open state for all folders
-        //       const initialState = {};
-        //       const initFolderState = (folder) => {
-        //         initialState[folder.folderName] = true; // Open root by default
-        //         folder.structure?.forEach(item => {
-        //           item.subfolders?.forEach(subfolder => {
-        //             initialState[subfolder.name] = false; // Closed by default
-        //           });
-        //         });
-        //       };
-        //       initFolderState(result);
-        //       setOpenFolders(initialState);
-        //     } catch (error) {
-        //       setError(error.message);
-        //     } finally {
-        //       setLoading(false);
-        //     }
-        //   };
-      
-        //   fetchData();
-        // }, []);
-      
-        const toggleFirmFolder = (folderName) => {
-          setOpenFolders(prev => ({
-            ...prev,
-            [folderName]: !prev[folderName]
-          }));
-        };
-        const [firmfolderData, setFirmFolderData] = useState(null);
-        const [openFolders, setOpenFolders] = useState({});
+  const fileTree = buildFileTree(firmFiles, firmfolderName);
 
-    if (error) return <div>Error: {error}</div>;
-    if (!combinedFolderStructure || !privateStructFolder)
-      return <div></div>;
   return (
     <Box sx={{ padding: 3 }} >
       <Typography variant="h6">
         Template Name: <strong>{tempName}</strong>
       </Typography>
-      <Divider sx={{ marginY: 2 }} />
+      {/* <Divider sx={{ marginY: 2 }} />
       <Box
         sx={{
           backgroundColor: "#fff",
@@ -572,7 +646,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
       {renderTree(combinedFolderStructure)}
       </Box>
        <Box>
-              {/* <Typography variant="h6">Private</Typography> */}
+             
       
               {renderPrivateFolderContents(
                 privateStructFolder.folders,
@@ -638,7 +712,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
        <Box>
         
 
-         {/* <FileExplorer accountId={data}/> */}
+         
          <FileExplorer accountId={templateId} refreshTrigger={refreshKey} />
 
 
@@ -680,8 +754,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
 
 
 
-      
-        {/* FIRM DOCS SHARED WITH CLIENT UPLOAD DOC DRAWER */}
+    
         <UploadDoc
         open={uploadDocOpen}
         onClose={() => setUplaodDocOpen(false)}
@@ -689,12 +762,309 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
         accountId={templateId}
         onUploadSuccess={() => setRefreshKey(prev => prev + 1)}
       />
-      {/* FIRM DOCS SHARED WITH CLIENT CREATE FOLDER DRAWER */}
+     
       <CreateFolderInFirm
         open={isFolderCreate}
         onClose={() => setIsFolderCreate(false)}
         accountId={templateId}
+      /> */}
+
+<Divider sx={{ marginY: 2 }} />
+      <Box
+        sx={{
+          backgroundColor: "#fff",
+          borderRadius: "8px",
+          padding: "16px",
+          maxWidth: "800px",
+        }}
+      >
+        <Box sx={{ display: "flex", gap: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <IconButton
+              component="label"
+              htmlFor="fileInput"
+              sx={{ color: "#e87800" }}
+            >
+              <HiDocumentArrowUp size={24} />
+            </IconButton>
+            <Typography
+              variant="body1"
+              component="label"
+              htmlFor="fileInput"
+              sx={{ cursor: "pointer" }}
+            >
+              Upload Document
+            </Typography>
+            <Input
+              type="file"
+              id="fileInput"
+              onChange={(e) => {
+                handleFileChange(e);
+                handleFileUpload();
+              }}
+              sx={{ display: "none" }}
+            />
+          </Box>
+
+          <Box
+            sx={{ display: "flex", alignItems: "center", gap: 1 }}
+            onClick={handleCreateFolderClick}
+          >
+            <IconButton sx={{ color: "#e87800" }}>
+              <FaRegFolderClosed size={20} />
+            </IconButton>
+            <Typography variant="body1" sx={{ cursor: "pointer" }}>
+              Create Folder
+            </Typography>
+          </Box>
+
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              cursor: "pointer",
+            }}
+            onClick={() => folderInputRef.current.click()}
+          >
+            <IconButton sx={{ color: "#e87800" }}>
+              <MdOutlineDriveFolderUpload size={24} />
+            </IconButton>
+            <Typography variant="body1">Upload Folder</Typography>
+            <input
+              type="file"
+              ref={folderInputRef}
+              style={{ display: "none" }}
+              webkitdirectory="true"
+              directory="true"
+              onChange={handleFolderSelection}
+            />
+          </Box>
+        </Box>
+      </Box>
+      <Box>{renderTree(combinedFolderStructure)}</Box>
+      {/* <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem
+          onClick={() => {
+            handleEdit(selectedItem);
+            handleMenuClose();
+          }}
+        >
+          Edit
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            handleDelete(selectedItem);
+            handleMenuClose();
+          }}
+        >
+          Delete
+        </MenuItem>
+      </Menu> */}
+      <Menu
+  anchorEl={anchorEl}
+  open={Boolean(anchorEl)}
+  onClose={handleMenuClose}
+>
+  <MenuItem
+    onClick={() => {
+      if (selectedItem?.folder !== 'Client Uploaded Documents') {
+        handleEdit(selectedItem);
+        handleMenuClose();
+      }
+    }}
+    disabled={selectedItem?.folder === 'Client Uploaded Documents'}
+  >
+    Edit
+  </MenuItem>
+  <MenuItem
+    onClick={() => {
+      if (selectedItem?.folder !== 'Client Uploaded Documents') {
+        handleDelete(selectedItem);
+        handleMenuClose();
+      }
+    }}
+    disabled={selectedItem?.folder === 'Client Uploaded Documents'}
+  >
+    Delete
+  </MenuItem>
+</Menu>
+
+      <Box>
+        {renderPrivateFolderContents(
+          privateStructFolder.folders,
+          (newFolders) =>
+            setPrivateStructFolder({
+              ...privateStructFolder,
+              folders: newFolders,
+            })
+        )}
+      </Box>
+      <Box sx={{ mt: 2, borderBottom: "2px solid grey" }}></Box>
+
+      <Box>
+        <Box
+          sx={{
+            backgroundColor: "#fff",
+            borderRadius: "8px",
+            padding: "16px",
+            maxWidth: "800px",
+          }}
+        >
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <IconButton
+                component="label"
+                htmlFor="firmDocFileInput"
+                sx={{ color: "#e87800" }}
+              >
+                <HiDocumentArrowUp size={24} />
+              </IconButton>
+              <Typography
+                variant="body1"
+                component="label"
+                htmlFor="firmDocFileInput"
+                sx={{ cursor: "pointer" }}
+              >
+                Upload Document in firm
+              </Typography>
+              <Input
+                type="file"
+                id="firmDocFileInput"
+                onChange={(e) => {
+                  handleNewFileChange(e);
+                  handleOpenDrawer();
+                }}
+                sx={{ display: "none" }}
+              />
+            </Box>
+
+            <Box
+              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+              onClick={handleNewFolderClick}
+            >
+              <IconButton sx={{ color: "#e87800" }}>
+                <FaRegFolderClosed size={20} />
+              </IconButton>
+              <Typography variant="body1" sx={{ cursor: "pointer" }}>
+                Create Folder in firm
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
+        <Box>
+          {Object.entries(fileTree).map(([name, content]) => (
+            <FirmFolder key={name} name={name} content={content} />
+          ))}
+        </Box>
+      </Box>
+      <Box sx={{ mt: 2, borderBottom: "2px solid grey" }}></Box>
+      {/* <Box mt={5}>
+        <Button
+          variant="outlined"
+          onClick={handleCancel}
+          sx={{
+            borderColor: "var(--color-border-cancel-btn)", // Normal background
+            color: "var(--color-save-btn)",
+            "&:hover": {
+              backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+              color: "#fff",
+              border: "none",
+            },
+            width: "80px",
+            borderRadius: "15px",
+          }}
+        >
+          Cancel
+        </Button>
+      </Box> */}
+      {/* <Box display="flex" gap={2} mt={5}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSaveTemplate}
+          sx={{
+            backgroundColor: "var(--color-save-btn)", // Normal background
+
+            "&:hover": {
+              backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+            },
+            borderRadius: "15px",
+            width: "80px",
+          }}
+        >
+          Save
+        </Button>
+        <Button
+          variant="outlined"
+          onClick={handleCancel}
+          sx={{
+            borderColor: "var(--color-border-cancel-btn)", // Normal background
+            color: "var(--color-save-btn)",
+            "&:hover": {
+              backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+              color: "#fff",
+              border: "none",
+            },
+            width: "80px",
+            borderRadius: "15px",
+          }}
+        >
+          Cancel
+        </Button>
+      </Box> */}
+      <CreateFolder
+        open={isFolderFormOpen}
+        onClose={() => setIsFolderFormOpen(false)}
+        fetchUnSealedFolders={fetchUnSealedFolders}
+        fetchAdminPrivateFolders={fetchPrivateFolders}
+        fetchBothFolders={fetchBothFolders}
+        accountId={templateId}
       />
+
+      <UploadDrawer
+        open={isDocumentForm}
+        onClose={() => setIsDocumentForm(false)}
+        file={file}
+        fetchUnSealedFolders={fetchUnSealedFolders}
+        fetchAdminPrivateFolders={fetchPrivateFolders}
+        accountId={templateId}
+        fetchBothFolders={fetchBothFolders}
+      />
+
+      <UploadFolder
+        open={isUploadFolderFormOpen}
+        folderFiles={folderFiles}
+        setFolderFiles={setFolderFiles}
+        setFolderName={setFolderName}
+        folderName={folderName}
+        onClose={() => setIsUploadFolderFormOpen(false)}
+        fetchUnSealedFolders={fetchUnSealedFolders}
+        fetchAdminPrivateFolders={fetchPrivateFolders}
+        accountId={templateId}
+        fetchBothFolders={fetchBothFolders}
+      />
+
+      <UploadDoc
+        open={uploadDocOpen}
+        onClose={() => setUplaodDocOpen(false)}
+        file={file}
+        accountId={templateId}
+        onUploadSuccess={() => setRefreshKey((prev) => prev + 1)}
+        fetchFirmFiles={fetchFirmFiles}
+      />
+
+      <CreateFolderInFirm
+        open={isFolderCreate}
+        onClose={() => setIsFolderCreate(false)}
+        accountId={templateId}
+        fetchFirmFiles={fetchFirmFiles}
+      />
+    
     </Box>
   );
 }

@@ -70,6 +70,8 @@ const UploadDocument = ({ open, onClose, file ,fetchUnSealedFolders,fetchAdminPr
     if (accountId) {
       fetchFolders();
       fetchPrivateFolders();
+      // fetchBothFolders();
+      // fetchUnSealedFolders()
     }
   }, [accountId]);
 
