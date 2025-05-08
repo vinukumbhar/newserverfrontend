@@ -25,7 +25,7 @@ import { FaRegFolderClosed } from "react-icons/fa6";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import UploadDoc from "./Firm Docs Shared With Client/UplodDoc";
 import CreateFolderInFirm from "./Firm Docs Shared With Client/CreateFolder";
-
+import EditNameDrawer from "./EditNameDrawer";
 function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
   const [templateName, setTemplateName] = useState("");
   const API_KEY = process.env.REACT_APP_FOLDER_URL;
@@ -260,9 +260,44 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
     setAnchorEl(null);
     setSelectedItem(null);
   };
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   const handleEdit = (item) => {
     console.log("Edit", item);
-    // Add your edit logic here
+    setSelectedItem(item);
+    setDrawerOpen(true);
+  };
+
+  const handleRename = async (item, newName, itemPath) => {
+    console.log("path", item);
+    try {
+      const response = await fetch(
+        "http://127.0.0.1/foldertemplates/rename-item",
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            currentPath: itemPath,
+            newName,
+            // id: item.id,
+          }),
+        }
+      );
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Renamed:", data);
+        fetchBothFolders();
+        fetchPrivateFolders();
+        // Refresh your data list here
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.error("Rename failed", error);
+    }
   };
 
   // const handleDelete = (item) => {
@@ -287,26 +322,20 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
       redirect: "follow",
     };
 
-    fetch("http://127.0.0.1/foldertemplates/delete-item", requestOptions)
+    fetch(`${API_KEY}/foldertemplates/delete-item`, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         console.log("Delete Result:", result);
         toast.success("Deleted successfully");
         fetchBothFolders();
+        fetchPrivateFolders();
       })
       .catch((error) => console.error("Delete Error:", error));
   };
 
-  const handleMenuAction = (action) => {
-    if (selectedItem) {
-      handleAction(action, selectedItem);
-      handleMenuClose();
-    }
-  };
-
   const handleFileOpen = (fileItem) => {
     const fileUrl = `${API_KEY}/${fileItem.path}`;
-    window.location.href = fileUrl;
+    // window.location.href = fileUrl;
   };
 
   const fetchBothFolders = async () => {
@@ -349,43 +378,7 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
     }
   };
 
-  const handleAction = async (action, item) => {
-    console.log(`Action: ${action} on`, item);
-    setActiveMenu(null);
-
-    if (action === "seal" || action === "unseal") {
-      try {
-        setLoading(true);
-        const pathParts = item.path.split("/");
-        const folderId = pathParts[2];
-        const basePath = `uploads/FolderTemplates/${folderId}/Client Uploaded Documents`;
-        const currentDir = action === "seal" ? "unsealed" : "sealed";
-        const relativePath = item.path.replace(
-          `${basePath}/${currentDir}/`,
-          ""
-        );
-
-        await axios.post(
-          `${API_KEY}/foldertemplates/moveBetweenSealedUnsealed`,
-          {
-            id: folderId,
-            itemPath: relativePath,
-            direction: action === "seal" ? "toSealed" : "toUnsealed",
-          }
-        );
-
-        await fetchBothFolders();
-        alert(`Item ${action === "seal" ? "sealed" : "unsealed"} successfully`);
-      } catch (error) {
-        console.error("Error moving item:", error);
-        alert(
-          `Failed to ${action} item: ${error.response?.data?.error || error.message}`
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
+ 
 
   // FileExplorer related functions
   const buildFileTree = (files, folderStart) => {
@@ -428,9 +421,30 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
 
   const FirmFolder = ({ name, content, onSelectPath, currentPath = "" }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
     const isFile = content.filename;
     const fullPath = currentPath ? `${currentPath}/${name}` : name;
-
+    const isProtectedFolder = name === "Firm Docs Shared With Client";
+ 
+  
+    const handleMenuOpen = (event) => {
+      event.stopPropagation(); // prevent folder toggle
+      setAnchorEl(event.currentTarget);
+    };
+  
+    const handleMenuClose = () => {
+      setAnchorEl(null);
+    };
+  
+    const handleEdit = () => {
+      console.log("Edit:", fullPath);
+      handleMenuClose();
+    };
+  
+    const handleDelete = () => {
+      console.log("Delete:", fullPath);
+      handleMenuClose();
+    };
     if (isFile) {
       return (
         <div style={{ paddingLeft: 20 }}>
@@ -450,6 +464,7 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
       <div style={{ paddingLeft: 20 }}>
         <div onClick={handleClick} style={{ cursor: "pointer" }}>
           {isOpen ? "📂" : "📁"} <span>{name}</span>
+          
         </div>
         {isOpen &&
           Object.entries(content).map(([childName, childContent]) => (
@@ -500,7 +515,10 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
                 )}
               </div>
               <div style={{ position: "relative" }}>
-                <IconButton onClick={(e) => handleMenuOpen(e, item)}>
+                <IconButton
+                  onClick={(e) => handleMenuOpen(e, item)}
+                  size="small"
+                >
                   <BsThreeDotsVertical />
                 </IconButton>
               </div>
@@ -545,7 +563,7 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
               )}
             </div>
             <div style={{ position: "relative" }}>
-              <IconButton onClick={(e) => handleMenuOpen(e, item)}>
+              <IconButton onClick={(e) => handleMenuOpen(e, item)} size="small">
                 <BsThreeDotsVertical />
               </IconButton>
             </div>
@@ -555,6 +573,75 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
     });
   };
 
+  // const renderPrivateFolderContents = (contents, setContents) =>
+  //   contents.map((item, index) => {
+  //     if (item.folder) {
+  //       const toggleFolder = () => {
+  //         const updated = contents.map((f, i) =>
+  //           i === index ? { ...f, isOpen: !f.isOpen } : f
+  //         );
+  //         setContents(updated);
+  //       };
+
+  //       const selectFolder = () => setSelectedFolderId(item.id);
+
+  //       return (
+  //         <div key={index} style={{ marginLeft: "20px", marginBottom: "4px" }}>
+  //           <div
+  //             style={{
+  //               cursor: "pointer",
+  //               display: "flex",
+  //               alignItems: "center",
+  //               paddingRight: "8px",
+  //               borderRadius: "4px",
+  //             }}
+  //             onClick={selectFolder}
+  //           >
+  //             <div
+  //               onClick={toggleFolder}
+  //               style={{ display: "flex", alignItems: "center", gap: "8px" }}
+  //             >
+  //               <span>{item.isOpen ? "📂" : "📁"}</span>
+  //               <span>{item.folder}</span>
+
+  //             </div>
+  //           </div>
+  //           {item.isOpen && item.contents?.length > 0 && (
+  //             <div style={{ marginTop: "4px" }}>
+  //               {renderPrivateFolderContents(item.contents, (newContents) => {
+  //                 const updated = contents.map((f, i) =>
+  //                   i === index ? { ...f, contents: newContents } : f
+  //                 );
+  //                 setContents(updated);
+  //               })}
+  //             </div>
+  //           )}
+  //         </div>
+  //       );
+  //     } else if (item.file) {
+  //       return (
+  //         <div
+  //           key={index}
+  //           style={{
+  //             marginLeft: "40px",
+  //             padding: "4px 8px",
+  //             fontSize: "15px",
+  //             display: "flex",
+  //             alignItems: "center",
+  //           }}
+  //         >
+  //           <span style={{ marginRight: "8px" }}>📄</span>
+  //           <span
+  //             onClick={() => handleFileOpen(item)}
+  //             style={{ cursor: "pointer" }}
+  //           >
+  //             {item.file}
+  //           </span>
+  //         </div>
+  //       );
+  //     }
+  //     return null;
+  //   });
   const renderPrivateFolderContents = (contents, setContents) =>
     contents.map((item, index) => {
       if (item.folder) {
@@ -576,6 +663,7 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
                 alignItems: "center",
                 paddingRight: "8px",
                 borderRadius: "4px",
+                justifyContent: "space-between",
               }}
               onClick={selectFolder}
             >
@@ -586,6 +674,13 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
                 <span>{item.isOpen ? "📂" : "📁"}</span>
                 <span>{item.folder}</span>
               </div>
+              <IconButton
+                onClick={(e) => handleMenuOpen(e, item)}
+                size="small"
+                style={{ marginLeft: "auto" }}
+              >
+                <BsThreeDotsVertical />
+              </IconButton>
             </div>
             {item.isOpen && item.contents?.length > 0 && (
               <div style={{ marginTop: "4px" }}>
@@ -609,15 +704,19 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
               fontSize: "15px",
               display: "flex",
               alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
-            <span style={{ marginRight: "8px" }}>📄</span>
-            <span
+            <div
+              style={{ display: "flex", alignItems: "center", gap: "8px" }}
               onClick={() => handleFileOpen(item)}
-              style={{ cursor: "pointer" }}
             >
-              {item.file}
-            </span>
+              <span>📄</span>
+              <span style={{ cursor: "pointer" }}>{item.file}</span>
+            </div>
+            <IconButton onClick={(e) => handleMenuOpen(e, item)} size="small">
+              <BsThreeDotsVertical />
+            </IconButton>
           </div>
         );
       }
@@ -718,57 +817,6 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
         </Box>
       </Box>
       <Box>{renderTree(combinedFolderStructure)}</Box>
-      {/* <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem
-          onClick={() => {
-            handleEdit(selectedItem);
-            handleMenuClose();
-          }}
-        >
-          Edit
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleDelete(selectedItem);
-            handleMenuClose();
-          }}
-        >
-          Delete
-        </MenuItem>
-      </Menu> */}
-      <Menu
-  anchorEl={anchorEl}
-  open={Boolean(anchorEl)}
-  onClose={handleMenuClose}
->
-  <MenuItem
-    onClick={() => {
-      if (selectedItem?.folder !== 'Client Uploaded Documents') {
-        handleEdit(selectedItem);
-        handleMenuClose();
-      }
-    }}
-    disabled={selectedItem?.folder === 'Client Uploaded Documents'}
-  >
-    Edit
-  </MenuItem>
-  <MenuItem
-    onClick={() => {
-      if (selectedItem?.folder !== 'Client Uploaded Documents') {
-        handleDelete(selectedItem);
-        handleMenuClose();
-      }
-    }}
-    disabled={selectedItem?.folder === 'Client Uploaded Documents'}
-  >
-    Delete
-  </MenuItem>
-</Menu>
-
       <Box>
         {renderPrivateFolderContents(
           privateStructFolder.folders,
@@ -779,6 +827,48 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
             })
         )}
       </Box>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem
+          onClick={() => {
+            if (
+              selectedItem?.folder !== "Client Uploaded Documents" &&
+              selectedItem?.folder !== "Private"
+            ) {
+              handleEdit(selectedItem);
+              handleMenuClose();
+            }
+          }}
+          disabled={
+            selectedItem?.folder === "Client Uploaded Documents" ||
+            selectedItem?.folder === "Private"
+          }
+        >
+          Edit
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            if (
+              selectedItem?.folder !== "Client Uploaded Documents" &&
+              selectedItem?.folder !== "Private"
+            ) {
+              handleDelete(selectedItem);
+              handleMenuClose();
+            }
+          }}
+          disabled={
+            selectedItem?.folder === "Client Uploaded Documents" ||
+            selectedItem?.folder === "Private"
+          }
+        >
+          Delete
+        </MenuItem>
+      </Menu>
+
+    
       <Box sx={{ mt: 2, borderBottom: "2px solid grey" }}></Box>
 
       <Box>
@@ -838,25 +928,7 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
         </Box>
       </Box>
       <Box sx={{ mt: 2, borderBottom: "2px solid grey" }}></Box>
-      {/* <Box mt={5}>
-        <Button
-          variant="outlined"
-          onClick={handleCancel}
-          sx={{
-            borderColor: "var(--color-border-cancel-btn)", // Normal background
-            color: "var(--color-save-btn)",
-            "&:hover": {
-              backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-              color: "#fff",
-              border: "none",
-            },
-            width: "80px",
-            borderRadius: "15px",
-          }}
-        >
-          Cancel
-        </Button>
-      </Box> */}
+
       <Box display="flex" gap={2} mt={5}>
         <Button
           variant="contained"
@@ -892,6 +964,12 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
           Cancel
         </Button>
       </Box>
+      <EditNameDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        item={selectedItem}
+        onRename={handleRename}
+      />
       <CreateFolder
         open={isFolderFormOpen}
         onClose={() => setIsFolderFormOpen(false)}

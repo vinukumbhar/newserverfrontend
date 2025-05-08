@@ -87,12 +87,12 @@ const UploadDocument = ({
       setError(err.message || "Error fetching sealed folders.");
     }
   };
-  useEffect(() => {
-    if (accountId) {
+ useEffect(() => {
+    if (open) { // Only fetch when the drawer is open
       fetchFolders();
       fetchPrivateFolders();
     }
-  }, [accountId]);
+  }, [open]); 
 
   useEffect(() => {
     if (selectedFolderId) {
@@ -330,6 +330,7 @@ const UploadDocument = ({
       });
   
       alert(response.data.message);
+      fetchFolders()
       onClose()
       fetchBothFolders()
       console.log("Folder uploaded to:", response.data.path);

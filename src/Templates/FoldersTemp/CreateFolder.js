@@ -17,13 +17,12 @@ const CreateFolder = ({
   onClose,
   fetchUnSealedFolders,
   fetchAdminPrivateFolders,
-  accountId,fetchBothFolders
+  accountId,
+  fetchBothFolders
 }) => {
   // const templateId = "67ea43c004956fca8db1d445";
-
-  useEffect(() => {
-    console.log("account id selected",accountId);
-  }, [accountId]);
+  console.log("account id selected",accountId);
+ 
   const API_KEY = process.env.REACT_APP_FOLDER_URL;
   const [newFolderName, setNewFolderName] = useState("");
 
@@ -34,7 +33,7 @@ const CreateFolder = ({
   const [selectedFolderId, setSelectedFolderId] = useState(null);
   const [newFolderPath, setNewFolderPath] = useState("");
   const [destinationPath, setDestinationPath] = useState("");
-  const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
+
 
   
   const fetchFolders = async () => {
@@ -60,6 +59,7 @@ const CreateFolder = ({
       };
 
       setStructFolder(processedData);
+      console.log("data", processedData)
     } catch (err) {
       console.error("Error fetching all folders:", err);
       setError(err.message || "An error occurred");
@@ -89,11 +89,11 @@ const CreateFolder = ({
     }
   };
   useEffect(() => {
-    if (accountId) {
+    if (open) { // Only fetch when the drawer is open
       fetchFolders();
       fetchPrivateFolders();
     }
-  }, [accountId]);
+  }, [open]); // Add open as a dependency
 
   useEffect(() => {
     if (selectedFolderId) {
@@ -290,23 +290,12 @@ const CreateFolder = ({
       return null;
     });
   };
-  // const createFolderAPI = (newFolderPath) => {
-  //   return axios
-  //     .get(
-  //       `http://localhost:8000/createFolder/?path=uploads/FolderTemplates/${templateId}/${newFolderPath}&foldername=${newFolderName}`
-  //     )
-  //     .then((response) => {
-  //       console.log("API Response:", response.data);
-  //       //fetchFolders();
-  //       //renderContents();
-  //       return response.data;
-  //       //setNewFolderName(""); // Clear input field
-  //     })
-  //     .catch((error) => {
-  //       console.log("API Error:", error);
-  //       throw error;
-  //     });
-  // };
+const handleclose=()=>{
+  fetchBothFolders()
+  fetchUnSealedFolders()
+  fetchAdminPrivateFolders()
+  onClose()
+}
 
   const createFolderAPI = () => {
     if (!destinationPath || !newFolderName) {
@@ -321,19 +310,16 @@ const CreateFolder = ({
       .then((response) => {
         console.log("API Response:", response.data);
         alert("Folder is created")
+        setSelectedFolderId(null)
+        fetchFolders();
+        
+        fetchPrivateFolders();
         setNewFolderName(""); // Clear input
         setDestinationPath("")
         setNewFolderPath("")
-        onClose()
-        fetchBothFolders()
-        fetchUnSealedFolders()
-        fetchAdminPrivateFolders()
-        {renderPrivateContents(privateStructFolder.folders, (newFolders) =>
-          setPrivateStructFolder({
-            ...privateStructFolder,
-            folders: newFolders,
-          })
-        )}
+        handleclose()
+       
+        
 
         return response.data;
       })
@@ -368,19 +354,10 @@ const CreateFolder = ({
       return;
     }
 
-    // if (selectedType === "public" && structFolder?.folders) {
-    //   const selectedPath = getFolderPath(structFolder.folders);
-    //   setNewFolderPath(selectedPath);
-    //   console.log("Selected public path:", selectedPath);
-    // }
 
     if (selectedType === "public" && structFolder?.folders) {
       let selectedPath = getFolderPath(structFolder.folders);
 
-      // Append /unsealed if the selected folder is "Client Uploaded Documents"
-      // if (selectedPath === "/Client Uploaded Documents") {
-      //   selectedPath += "/unsealed";
-      // }
       // Inject "unsealed" if path starts with "/Client Uploaded Documents"
       if (selectedPath?.startsWith("/Client Uploaded Documents")) {
         selectedPath = selectedPath.replace(
@@ -426,7 +403,7 @@ const CreateFolder = ({
 
   return (
     <Box>
-      <Drawer anchor="right" open={open} onClose={onClose}>
+      <Drawer anchor="right" open={open} onClose={handleclose}>
         
         <Box
           sx={{
@@ -447,7 +424,7 @@ const CreateFolder = ({
             }}
           >
             <Typography variant="h6">Create folder new </Typography>
-            <IconButton onClick={onClose}>
+            <IconButton onClick={handleclose}>
               <MdClose />
             </IconButton>
           </Box>
@@ -488,75 +465,3 @@ const CreateFolder = ({
 export default CreateFolder;
 
 
-// import { Typography,Box,Drawer,Button } from '@mui/material'
-// import React from 'react'
-
-// const CreateFolder = ({
-//   open,
-//   onClose,
-//   fetchUnSealedFolders,
-//   fetchAdminPrivateFolders,
-//   accountId
-// }) => {
-//   return (
-//     <Box>
-//     <Drawer anchor="right" open={open} onClose={onClose}>
-      
-//       <Box
-//         sx={{
-//           backgroundColor: "#fff",
-//           borderRadius: "8px",
-
-//           padding: 2,
-//           width: 600,
-//           fontFamily:
-//             "'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif",
-//         }}
-//       >
-//         <Box
-//           sx={{
-//             display: "flex",
-//             justifyContent: "space-between",
-//             alignItems: "center",
-//           }}
-//         >
-//           <Typography variant="h6">Create folder new </Typography>
-//           <IconButton onClick={onClose}>
-//             <MdClose />
-//           </IconButton>
-//         </Box>
-//         <TextField
-//           fullWidth
-//           size="small"
-//           variant="outlined"
-//           placeholder="Folder Name"
-//           // value={newFolderName}
-//           // onChange={(e) => setNewFolderName(e.target.value)}
-//         />
-//         <Button
-//           variant="contained"
-//           sx={{ mt: 2 }}
-//           // onClick={createFolderAPI}
-//         >
-//           Create Folder
-//         </Button>
-
-//         <Box sx={{ maxHeight: "500px", overflowY: "auto" }}>
-//           {/* {renderContents(structFolder.folders, (newFolders) =>
-//             setStructFolder({ ...structFolder, folders: newFolders })
-//           )}
-
-//           {renderPrivateContents(privateStructFolder.folders, (newFolders) =>
-//             setPrivateStructFolder({
-//               ...privateStructFolder,
-//               folders: newFolders,
-//             })
-//           )} */}
-//         </Box>
-//       </Box>
-//     </Drawer>
-//   </Box>
-//   )
-// }
-
-// export default CreateFolder

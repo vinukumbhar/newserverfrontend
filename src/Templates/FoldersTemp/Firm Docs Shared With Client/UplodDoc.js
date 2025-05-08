@@ -218,7 +218,7 @@ import { FaTimes } from "react-icons/fa";
 import FileExplorer from "../FileExplorer";
 
 const UploadDocument = ({ open, onClose, file,accountId ,onUploadSuccess,fetchFirmFiles }) => {
-console.log("accc",onUploadSuccess)
+// console.log("accc",onUploadSuccess)
   const [error, setError] = useState(null);
   const API_KEY = process.env.REACT_APP_FOLDER_URL;
   const [destinationPath, setDestinationPath] = useState("");

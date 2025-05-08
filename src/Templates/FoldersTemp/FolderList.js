@@ -22,6 +22,7 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import UploadDoc from "./Firm Docs Shared With Client/UplodDoc"
 import CreateFolderInFirm from "./Firm Docs Shared With Client/CreateFolder"
 import FileExplorer from "./FileExplorer"
+import EditNameDrawer from './EditNameDrawer'
 function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
   console.log("jjj", templateId);
   console.log("jjj temp", tempName);
@@ -195,11 +196,43 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
     setAnchorEl(null);
     setSelectedItem(null);
   };
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   const handleEdit = (item) => {
     console.log("Edit", item);
-    // Add your edit logic here
+    setSelectedItem(item);
+    setDrawerOpen(true);
   };
 
+
+  const handleRename = async (item, newName,itemPath) => {
+    console.log("path", item)
+    try {
+      const response = await fetch("http://127.0.0.1/foldertemplates/rename-item", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          currentPath: itemPath,
+          newName,
+          // id: item.id,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Renamed:", data);
+        fetchBothFolders()
+        fetchPrivateFolders()
+        // Refresh your data list here
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.error("Rename failed", error);
+    }
+  };
   // const handleDelete = (item) => {
   //   console.log("Delete", item);
   //   // Add your delete logic here
@@ -435,7 +468,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
                 )}
               </div>
               <div style={{ position: "relative" }}>
-                <IconButton onClick={(e) => handleMenuOpen(e, item)}>
+                <IconButton onClick={(e) => handleMenuOpen(e, item)} size="small">
                   <BsThreeDotsVertical />
                 </IconButton>
               </div>
@@ -480,7 +513,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
               )}
             </div>
             <div style={{ position: "relative" }}>
-              <IconButton onClick={(e) => handleMenuOpen(e, item)}>
+              <IconButton onClick={(e) => handleMenuOpen(e, item)} size="small"> 
                 <BsThreeDotsVertical />
               </IconButton>
             </div>
@@ -490,75 +523,155 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
     });
   };
 
-  const renderPrivateFolderContents = (contents, setContents) =>
-    contents.map((item, index) => {
-      if (item.folder) {
-        const toggleFolder = () => {
-          const updated = contents.map((f, i) =>
-            i === index ? { ...f, isOpen: !f.isOpen } : f
+  // const renderPrivateFolderContents = (contents, setContents) =>
+  //   contents.map((item, index) => {
+  //     if (item.folder) {
+  //       const toggleFolder = () => {
+  //         const updated = contents.map((f, i) =>
+  //           i === index ? { ...f, isOpen: !f.isOpen } : f
+  //         );
+  //         setContents(updated);
+  //       };
+
+  //       const selectFolder = () => setSelectedFolderId(item.id);
+
+  //       return (
+  //         <div key={index} style={{ marginLeft: "20px", marginBottom: "4px" }}>
+  //           <div
+  //             style={{
+  //               cursor: "pointer",
+  //               display: "flex",
+  //               alignItems: "center",
+  //               paddingRight: "8px",
+  //               borderRadius: "4px",
+  //             }}
+  //             onClick={selectFolder}
+  //           >
+  //             <div
+  //               onClick={toggleFolder}
+  //               style={{ display: "flex", alignItems: "center", gap: "8px" }}
+  //             >
+  //               <span>{item.isOpen ? "📂" : "📁"}</span>
+  //               <span>{item.folder}</span>
+  //             </div>
+  //           </div>
+  //           {item.isOpen && item.contents?.length > 0 && (
+  //             <div style={{ marginTop: "4px" }}>
+  //               {renderPrivateFolderContents(item.contents, (newContents) => {
+  //                 const updated = contents.map((f, i) =>
+  //                   i === index ? { ...f, contents: newContents } : f
+  //                 );
+  //                 setContents(updated);
+  //               })}
+  //             </div>
+  //           )}
+  //         </div>
+  //       );
+  //     } else if (item.file) {
+  //       return (
+  //         <div
+  //           key={index}
+  //           style={{
+  //             marginLeft: "40px",
+  //             padding: "4px 8px",
+  //             fontSize: "15px",
+  //             display: "flex",
+  //             alignItems: "center",
+  //           }}
+  //         >
+  //           <span style={{ marginRight: "8px" }}>📄</span>
+  //           <span
+  //             onClick={() => handleFileOpen(item)}
+  //             style={{ cursor: "pointer" }}
+  //           >
+  //             {item.file}
+  //           </span>
+  //         </div>
+  //       );
+  //     }
+  //     return null;
+  //   });
+
+   const renderPrivateFolderContents = (contents, setContents) =>
+      contents.map((item, index) => {
+        if (item.folder) {
+          const toggleFolder = () => {
+            const updated = contents.map((f, i) =>
+              i === index ? { ...f, isOpen: !f.isOpen } : f
+            );
+            setContents(updated);
+          };
+  
+          const selectFolder = () => setSelectedFolderId(item.id);
+  
+          return (
+            <div key={index} style={{ marginLeft: "20px", marginBottom: "4px" }}>
+              <div
+                style={{
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  paddingRight: "8px",
+                  borderRadius: "4px",
+                  justifyContent: "space-between",
+                }}
+                onClick={selectFolder}
+              >
+                <div
+                  onClick={toggleFolder}
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  <span>{item.isOpen ? "📂" : "📁"}</span>
+                  <span>{item.folder}</span>
+                </div>
+                <IconButton
+                  onClick={(e) => handleMenuOpen(e, item)}
+                  size="small"
+                  style={{ marginLeft: "auto" }}
+                >
+                  <BsThreeDotsVertical />
+                </IconButton>
+              </div>
+              {item.isOpen && item.contents?.length > 0 && (
+                <div style={{ marginTop: "4px" }}>
+                  {renderPrivateFolderContents(item.contents, (newContents) => {
+                    const updated = contents.map((f, i) =>
+                      i === index ? { ...f, contents: newContents } : f
+                    );
+                    setContents(updated);
+                  })}
+                </div>
+              )}
+            </div>
           );
-          setContents(updated);
-        };
-
-        const selectFolder = () => setSelectedFolderId(item.id);
-
-        return (
-          <div key={index} style={{ marginLeft: "20px", marginBottom: "4px" }}>
+        } else if (item.file) {
+          return (
             <div
+              key={index}
               style={{
-                cursor: "pointer",
+                marginLeft: "40px",
+                padding: "4px 8px",
+                fontSize: "15px",
                 display: "flex",
                 alignItems: "center",
-                paddingRight: "8px",
-                borderRadius: "4px",
+                justifyContent: "space-between",
               }}
-              onClick={selectFolder}
             >
               <div
-                onClick={toggleFolder}
                 style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                onClick={() => handleFileOpen(item)}
               >
-                <span>{item.isOpen ? "📂" : "📁"}</span>
-                <span>{item.folder}</span>
+                <span>📄</span>
+                <span style={{ cursor: "pointer" }}>{item.file}</span>
               </div>
+              <IconButton onClick={(e) => handleMenuOpen(e, item)} size="small">
+                <BsThreeDotsVertical />
+              </IconButton>
             </div>
-            {item.isOpen && item.contents?.length > 0 && (
-              <div style={{ marginTop: "4px" }}>
-                {renderPrivateFolderContents(item.contents, (newContents) => {
-                  const updated = contents.map((f, i) =>
-                    i === index ? { ...f, contents: newContents } : f
-                  );
-                  setContents(updated);
-                })}
-              </div>
-            )}
-          </div>
-        );
-      } else if (item.file) {
-        return (
-          <div
-            key={index}
-            style={{
-              marginLeft: "40px",
-              padding: "4px 8px",
-              fontSize: "15px",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
-            <span style={{ marginRight: "8px" }}>📄</span>
-            <span
-              onClick={() => handleFileOpen(item)}
-              style={{ cursor: "pointer" }}
-            >
-              {item.file}
-            </span>
-          </div>
-        );
-      }
-      return null;
-    });
-
+          );
+        }
+        return null;
+      });
   if (error) return <div>Error: {error}</div>;
   if (!combinedFolderStructure || !privateStructFolder) return <div></div>;
 
@@ -843,56 +956,43 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
         </Box>
       </Box>
       <Box>{renderTree(combinedFolderStructure)}</Box>
-      {/* <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-      >
-        <MenuItem
-          onClick={() => {
-            handleEdit(selectedItem);
-            handleMenuClose();
-          }}
-        >
-          Edit
-        </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleDelete(selectedItem);
-            handleMenuClose();
-          }}
-        >
-          Delete
-        </MenuItem>
-      </Menu> */}
-      <Menu
-  anchorEl={anchorEl}
-  open={Boolean(anchorEl)}
-  onClose={handleMenuClose}
->
-  <MenuItem
-    onClick={() => {
-      if (selectedItem?.folder !== 'Client Uploaded Documents') {
-        handleEdit(selectedItem);
-        handleMenuClose();
-      }
-    }}
-    disabled={selectedItem?.folder === 'Client Uploaded Documents'}
-  >
-    Edit
-  </MenuItem>
-  <MenuItem
-    onClick={() => {
-      if (selectedItem?.folder !== 'Client Uploaded Documents') {
-        handleDelete(selectedItem);
-        handleMenuClose();
-      }
-    }}
-    disabled={selectedItem?.folder === 'Client Uploaded Documents'}
-  >
-    Delete
-  </MenuItem>
-</Menu>
+     
+  <Menu
+         anchorEl={anchorEl}
+         open={Boolean(anchorEl)}
+         onClose={handleMenuClose}
+       >
+         <MenuItem
+           onClick={() => {
+             if (selectedItem?.folder !== "Client Uploaded Documents" &&
+               selectedItem?.folder !== "Private") {
+               handleEdit(selectedItem);
+               handleMenuClose();
+             }
+           }}
+           disabled={
+             selectedItem?.folder === "Client Uploaded Documents" ||
+             selectedItem?.folder === "Private"
+           }
+         >
+           Edit
+         </MenuItem>
+         <MenuItem
+           onClick={() => {
+             if (selectedItem?.folder !== "Client Uploaded Documents" &&
+               selectedItem?.folder !== "Private") {
+               handleDelete(selectedItem);
+               handleMenuClose();
+             }
+           }}
+           disabled={
+             selectedItem?.folder === "Client Uploaded Documents" ||
+             selectedItem?.folder === "Private"
+           }
+         >
+           Delete
+         </MenuItem>
+       </Menu>
 
       <Box>
         {renderPrivateFolderContents(
@@ -1017,6 +1117,13 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
           Cancel
         </Button>
       </Box> */}
+
+<EditNameDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        item={selectedItem}
+        onRename={handleRename}
+      />
       <CreateFolder
         open={isFolderFormOpen}
         onClose={() => setIsFolderFormOpen(false)}

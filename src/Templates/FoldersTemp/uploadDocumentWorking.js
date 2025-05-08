@@ -66,14 +66,12 @@ const UploadDocument = ({ open, onClose, file ,fetchUnSealedFolders,fetchAdminPr
       setError(err.message || "Error fetching sealed folders.");
     }
   };
-  useEffect(() => {
-    if (accountId) {
+ useEffect(() => {
+    if (open) { // Only fetch when the drawer is open
       fetchFolders();
       fetchPrivateFolders();
-      // fetchBothFolders();
-      // fetchUnSealedFolders()
     }
-  }, [accountId]);
+  }, [open]); 
 
   useEffect(() => {
     if (selectedFolderId) {
@@ -306,10 +304,13 @@ const UploadDocument = ({ open, onClose, file ,fetchUnSealedFolders,fetchAdminPr
       .then((response) => {
         console.log(JSON.stringify(response.data));
         alert("File uploaded successfully!");
+        setSelectedFolderId(null)
         onClose();
+        fetchFolders()
         fetchBothFolders()
         fetchUnSealedFolders();
-
+fetchPrivateFolders()
+fetchUnSealedFolders()
         fetchAdminPrivateFolders();
         setSelectedFolderId(null);
       })
@@ -448,7 +449,7 @@ const UploadDocument = ({ open, onClose, file ,fetchUnSealedFolders,fetchAdminPr
           }}
         >
           <Typography variant="h6">Select Folder to upload</Typography>
-          <FaTimes style={{ cursor: "pointer" }} onClick={onclose} />
+          <FaTimes style={{ cursor: "pointer" }} onClick={onClose} />
         </Box>
         <Box sx={{ maxHeight: "500px", overflowY: "auto" }}>
          
