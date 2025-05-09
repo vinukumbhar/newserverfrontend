@@ -26,6 +26,9 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import UploadDoc from "./Firm Docs Shared With Client/UplodDoc";
 import CreateFolderInFirm from "./Firm Docs Shared With Client/CreateFolder";
 import EditNameDrawer from "./EditNameDrawer";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
   const [templateName, setTemplateName] = useState("");
   const API_KEY = process.env.REACT_APP_FOLDER_URL;
@@ -148,6 +151,7 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
       const res = await fetch(`${API_KEY}/firmClientDocs/files/${templateId}`);
       const data = await res.json();
       setFirmFiles(data.files || []);
+      console.log("docs", data)
     } catch (err) {
       console.error("Failed to fetch files", err);
     }
@@ -258,7 +262,8 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-    setSelectedItem(null);
+    // setSelectedItem(null);
+    setTimeout(() => setSelectedItem(null), 100);
   };
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -272,7 +277,7 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
     console.log("path", item);
     try {
       const response = await fetch(
-        "http://127.0.0.1/foldertemplates/rename-item",
+        `${API_KEY}/foldertemplates/rename-item`,
         {
           method: "PATCH",
           headers: {
@@ -421,30 +426,13 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
 
   const FirmFolder = ({ name, content, onSelectPath, currentPath = "" }) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [anchorEl, setAnchorEl] = useState(null);
+ 
     const isFile = content.filename;
     const fullPath = currentPath ? `${currentPath}/${name}` : name;
-    const isProtectedFolder = name === "Firm Docs Shared With Client";
+  
  
   
-    const handleMenuOpen = (event) => {
-      event.stopPropagation(); // prevent folder toggle
-      setAnchorEl(event.currentTarget);
-    };
-  
-    const handleMenuClose = () => {
-      setAnchorEl(null);
-    };
-  
-    const handleEdit = () => {
-      console.log("Edit:", fullPath);
-      handleMenuClose();
-    };
-  
-    const handleDelete = () => {
-      console.log("Delete:", fullPath);
-      handleMenuClose();
-    };
+    
     if (isFile) {
       return (
         <div style={{ paddingLeft: 20 }}>
@@ -452,6 +440,30 @@ function FolderTempEdit({ templateId, handleCancel, fetchFolderTemplates }) {
         </div>
       );
     }
+    // if (isFile) {
+    //   const { canDelete, canUpdate } = content.permissions || {};
+    
+    //   return (
+    //     <div style={{ paddingLeft: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+    //       <div>
+    //         📄 <span>{content.filename}</span>
+    //       </div>
+    //       <div>
+    //         {canUpdate && (
+    //           <IconButton size="small" >
+    //               <EditIcon fontSize="small" />
+    //           </IconButton>
+    //         )}
+    //         {canDelete && (
+    //           <IconButton size="small" >
+    //            <DeleteIcon fontSize="small" />
+    //           </IconButton>
+    //         )}
+    //       </div>
+    //     </div>
+    //   );
+    // }
+    
 
     const handleClick = () => {
       setIsOpen(!isOpen);

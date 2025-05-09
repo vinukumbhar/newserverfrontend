@@ -45,25 +45,25 @@ function FolderTempEdit({ tempName, fetchAllFolders, folderData, templateId }) {
     });
   };
 
-  useEffect(() => {
-    console.log(templateId);
-    async function fetchFolderTemplates() {
-      try {
-        const url = `http://127.0.0.1:8001/allFolders/${templateId}`;
-        const response = await axios.get(url);
+  // useEffect(() => {
+  //   console.log(templateId);
+  //   async function fetchFolderTemplates() {
+  //     try {
+  //       const url = `http://127.0.0.1:8001/allFolders/${templateId}`;
+  //       const response = await axios.get(url);
 
-        setFolders(response.data.folders || []);
-        console.log(response.data.folders);
-      } catch (error) {
-        setError("Error fetching folder structure.");
-        console.error("Error fetching folder structure:", error);
-      }
-    }
+  //       setFolders(response.data.folders || []);
+  //       console.log(response.data.folders);
+  //     } catch (error) {
+  //       setError("Error fetching folder structure.");
+  //       console.error("Error fetching folder structure:", error);
+  //     }
+  //   }
 
-    if (templateId) {
-      fetchFolderTemplates();
-    }
-  }, [templateId]);
+  //   if (templateId) {
+  //     fetchFolderTemplates();
+  //   }
+  // }, [templateId]);
 
   const [menuVisible, setMenuVisible] = useState(false);
   const [menuVisibleFile, setMenuVisibleFile] = useState(false);

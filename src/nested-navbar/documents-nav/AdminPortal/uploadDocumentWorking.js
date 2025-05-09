@@ -3,7 +3,7 @@ import axios from "axios";
 import { Button, Box, Typography, Drawer } from "@mui/material";
 import { FaTimes } from "react-icons/fa";
 
-const UploadDocument = ({ open, onClose, file ,fetchUnSealedFolders,fetchAdminPrivateFolders,accountId}) => {
+const UploadDocument = ({ open, onClose, file ,fetchUnSealedFolders,fetchAdminPrivateFolders,accountId,fetchBothFolders}) => {
   const templateId = "67ea43c004956fca8db1d445";
   const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
 
@@ -67,11 +67,11 @@ const UploadDocument = ({ open, onClose, file ,fetchUnSealedFolders,fetchAdminPr
     }
   };
   useEffect(() => {
-    if (accountId) {
+    if (open) {
       fetchFolders();
       fetchPrivateFolders();
     }
-  }, [accountId]);
+  }, [open]);
 
   useEffect(() => {
     if (selectedFolderId) {
@@ -306,6 +306,7 @@ const UploadDocument = ({ open, onClose, file ,fetchUnSealedFolders,fetchAdminPr
         alert("File uploaded successfully!");
         onClose();
         fetchUnSealedFolders();
+        fetchBothFolders()
         fetchAdminPrivateFolders();
         setSelectedFolderId(null);
       })

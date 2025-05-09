@@ -18,7 +18,7 @@ const UploadDocument = ({
   onClose,folderFiles,
   fetchUnSealedFolders,
   fetchAdminPrivateFolders,
-  accountId
+  accountId,fetchBothFolders
 }) => {
   const templateId = "67ea43c004956fca8db1d445";
 
@@ -88,11 +88,11 @@ const UploadDocument = ({
     }
   };
   useEffect(() => {
-    if (accountId) {
+    if (open) {
       fetchFolders();
       fetchPrivateFolders();
     }
-  }, [accountId]);
+  }, [open]);
 
   useEffect(() => {
     if (selectedFolderId) {
@@ -334,6 +334,7 @@ const UploadDocument = ({
       console.log("Folder uploaded to:", response.data.path);
       fetchAdminPrivateFolders()
       fetchUnSealedFolders()
+      fetchBothFolders()
     } catch (error) {
       console.error("Error uploading folder:", error);
       alert("Folder upload failed!");

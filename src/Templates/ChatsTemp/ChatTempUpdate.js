@@ -24,7 +24,7 @@ import {
     IconButton
 } from '@mui/material';
 
-import Editor from '../Texteditor/Editor';
+import Editor from '../Texteditor/EditorShortcodes';
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 const ChatTempUpdate = () => {
@@ -190,6 +190,7 @@ const ChatTempUpdate = () => {
     // console.log(selectedOption)
     const handleCloseDropdown = () => {
         setAnchorEl(null);
+        setShowDropdown(false);
     };
     //Integration 
     const { id } = useParams();

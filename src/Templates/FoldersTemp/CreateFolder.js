@@ -40,6 +40,7 @@ const CreateFolder = ({
     try {
       const url = `${API_KEY}/foldertemplates/clientDocs/${accountId}`;
       const response = await axios.get(url);
+      console.log("url",url)
       const addIsOpenProperty = (folders, parentId = null) =>
         folders.map((folder, index) => ({
           ...folder,
@@ -70,6 +71,7 @@ const CreateFolder = ({
       const res = await axios.get(
         `${API_KEY}/foldertemplates/privateDocs/${accountId}`
       );
+
       const folders = res.data.folders || [];
 
       const addIsOpen = (items, parentId = "") =>

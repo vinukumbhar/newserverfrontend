@@ -17,7 +17,7 @@ const CreateFolder = ({
   onClose,
   fetchUnSealedFolders,
   fetchAdminPrivateFolders,
-  accountId
+  accountId,  fetchBothFolders
 }) => {
   const templateId = "67ea43c004956fca8db1d445";
 
@@ -87,11 +87,12 @@ const CreateFolder = ({
     }
   };
   useEffect(() => {
-    if (accountId) {
+    if (open) {
       fetchFolders();
       fetchPrivateFolders();
+      // fetchBothFolders()
     }
-  }, [accountId]);
+  }, [open]);
 
   useEffect(() => {
     if (selectedFolderId) {
@@ -319,6 +320,7 @@ const CreateFolder = ({
       .then((response) => {
         console.log("API Response:", response.data);
         setNewFolderName(""); // Clear input
+        fetchBothFolders()
         onClose()
         fetchUnSealedFolders()
         fetchAdminPrivateFolders()

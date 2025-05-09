@@ -180,6 +180,7 @@ const InvoiceTempUpdate = () => {
   }, [selectedOption]);
   const handleCloseDropdown = () => {
     setAnchorEl(null);
+    setShowDropdown(false);
   };
 
   ///

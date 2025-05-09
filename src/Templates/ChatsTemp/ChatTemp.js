@@ -28,7 +28,7 @@ import {
   Paper,
   TablePagination
 } from '@mui/material';
-import Editor from '../Texteditor/Editor';
+import Editor from '../Texteditor/EditorShortcodes';
 import { CiMenuKebab } from "react-icons/ci";
 import { toast } from "react-toastify";
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
@@ -261,6 +261,7 @@ const ChatTemp = () => {
   console.log(selectedOption)
   const handleCloseDropdown = () => {
     setAnchorEl(null);
+    setShowDropdown(false);
   };
   //Integration 
 
@@ -870,7 +871,7 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
                           sx={{ mt: 2 }}
                           fullWidth
                           name="subject"
-                          // value={inputText + selectedShortcut} onChange={handlechatsubject}
+                         
                           inputRef={textFieldRef}
                           value={inputText}
                           onChange={handlesubject}

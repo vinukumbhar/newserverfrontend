@@ -743,7 +743,7 @@ useEffect(() => {
           introduction: stepsVisibility.Introduction,
           terms: stepsVisibility.Terms,
           servicesandinvoices: stepsVisibility.ServicesInvoices,
-          servicesandinvoiceid: "66fa83ffe6e0f4ca11c2204d",
+          // servicesandinvoiceid: "66fa83ffe6e0f4ca11c2204d",
           custommessageinemail: stepsVisibility.CustomEmailMessage,
           custommessageinemailtext: description,
           reminders: stepsVisibility.Reminders,
@@ -1346,7 +1346,7 @@ useEffect(() => {
 
             <FormControl component="fieldset" sx={{ width: "100%", mt: 3 }}>
               <Typography sx={{ fontWeight: "bold" }}>Steps </Typography>
-              <Box sx={{ border: "1px solid grey", borderRadius: "20px", padding: "15px", mb: 2, mt: 2 }} className="stepsCard">
+              <Box sx={{ border: "1px solid grey", borderRadius: "20px", padding: "15px", mb: 2, mt: 2}} className="stepsCard">
                 <FormControlLabel control={<Switch checked={stepsVisibility.Introduction} onChange={handleSwitchChange("Introduction")} />} label="Introduction" />
                 <p>Explain to your clients who you are, what services you provide, the value you bring, and any other information you want to share</p>
               </Box>
@@ -1372,7 +1372,6 @@ useEffect(() => {
                   Your client will receive a link via email to view and sign this proposal.
                 </Typography>
 
-                {/* Conditionally render the WYSIWYG editor or static content */}
                 {stepsVisibility.CustomEmailMessage && (
                   <Grid item xs={12} sm={6}>
                     <Box>
@@ -1415,12 +1414,14 @@ useEffect(() => {
                 )}
               </Box>
 
-              <Box mt={2}>
+              
+            </FormControl>
+            <Box mt={2}>
                 <Box display={"flex"} alignItems={"center"}>
                   <Box>
-                    <FormControlLabel control={<Switch checked={stepsVisibility.Reminders} onChange={handleSwitchChange("Reminders")} />} label="Custom message in email" />
+                    <FormControlLabel control={<Switch checked={stepsVisibility.Reminders} onChange={handleSwitchChange("Reminders")} />} label="Reminders" />
                   </Box>
-                  <Typography variant="h6">Reminders</Typography>
+                  {/* <Typography variant="h6">Reminders</Typography> */}
                 </Box>
                 {stepsVisibility.Reminders && (
                   <Box mb={3}>
@@ -1428,7 +1429,7 @@ useEffect(() => {
                       <Box>
                         <InputLabel sx={{ color: "black" }}>Days until next reminder</InputLabel>
                         <TextField
-                          // margin="normal"
+                          
                           fullWidth
                           name="Daysuntilnextreminder"
                           value={daysuntilNextReminder}
@@ -1447,7 +1448,6 @@ useEffect(() => {
                   </Box>
                 )}
               </Box>
-            </FormControl>
           </Box>
         );
       case steps.indexOf("Introduction"):
@@ -1457,7 +1457,7 @@ useEffect(() => {
             <Box mt={1} mb={3}>
               <TextField
                 size="small"
-                // variant="standard"
+               
                 fullWidth
                 margin="normal"
                 placeholder="Introduction"
@@ -1505,8 +1505,7 @@ useEffect(() => {
                 boxShadow: activeOption === "invoice" ? "0 0 10px rgba(0, 0, 0, 0.1)" : "none",
               }}
               onClick={handleShowInvoiceForm}
-              //  value= {}
-              // onClick={() => setActiveOption('invoice')}
+            
             >
               Add invoice or ask for deposit
               <Typography component="p">Create one-time or recurring invoice, or ask for deposit to sign</Typography>
@@ -1523,13 +1522,13 @@ useEffect(() => {
                 boxShadow: activeOption === "service" ? "0 0 10px rgba(0, 0, 0, 0.1)" : "none",
               }}
               onClick={handleShowServiceForm}
-              // onClick={() => setActiveOption('service')}
+             
             >
               Add itemized services without creating invoices
               <Typography component="p">No invoice or deposit request will be created</Typography>
             </Typography>
 
-            {/* Render the forms conditionally based on activeOption state */}
+            
 
             {activeOption === "invoice" && invoiceData && Object.keys(invoiceData).length > 0 && (
               <Box>
@@ -1538,7 +1537,7 @@ useEffect(() => {
             )}
             {activeOption === "service" && (
               <Box p={2}>
-                {/* <Typography>Service Form</Typography> */}
+                
                 <div className="invoice-section-three">
                   <Box sx={{ margin: "20px 0 10px 0" }}>
                     <Typography variant="h6">Line items</Typography>
@@ -1576,7 +1575,7 @@ useEffect(() => {
                               }}
                               menuPortalTarget={document.body}
                             />
-                            {/* <CreatableSelect placeholder="Product or Service" options={serviceoptions} value={serviceoptions.find((option) => option.label === row.productName) || { label: row.productName, value: row.productName }} onChange={(selectedOption) => handleServiceChange(index, selectedOption)} onInputChange={(inputValue, actionMeta) => handleServiceInputChange(inputValue, actionMeta, index)} isClearable /> */}
+                           
                           </TableCell>
                           <TableCell>
                             <input type="text" name="description" value={row.description} onChange={(e) => handleInputChange(index, e)} style={{ border: "none" }} placeholder="Description" />

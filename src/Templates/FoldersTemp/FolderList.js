@@ -208,7 +208,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
   const handleRename = async (item, newName,itemPath) => {
     console.log("path", item)
     try {
-      const response = await fetch("http://127.0.0.1/foldertemplates/rename-item", {
+      const response = await fetch(`${API_KEY}/foldertemplates/rename-item`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -255,7 +255,7 @@ function FolderList({ tempName, fetchAllFolders, folderData, templateId }) {
       redirect: "follow",
     };
 
-    fetch("http://127.0.0.1/foldertemplates/delete-item", requestOptions)
+    fetch(`${API_KEY}/foldertemplates/delete-item`, requestOptions)
       .then((response) => response.text())
       .then((result) => {
         console.log("Delete Result:", result);

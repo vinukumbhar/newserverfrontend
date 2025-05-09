@@ -109,7 +109,7 @@ function FetchFolder({ folderData, setSelectedFolder, selectedFolder, templateId
     if (newFileName) {
       const url = `${API_KEY}/download/${folder}/common/renameFile/${templateId}/${folder}/${oldFileName}`;
       try {
-        //await axios.put(`http://127.0.0.1:8080/renameFile/${folder}/${oldFileName}`, { newFileName });
+      
         const response = await axios.put(url, { newFileName });
 
         setRenamedFile(newFileName); // Update renamed file name in state

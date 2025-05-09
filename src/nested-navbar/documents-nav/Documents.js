@@ -25,10 +25,10 @@
 // import { BsFiletypePng } from "react-icons/bs";
 // import { FaRegFolderClosed } from "react-icons/fa6";
 // const Documents = () => {
-  // const API_KEY = process.env.REACT_APP_FOLDER_URL;
-  // const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
-  // const [folderTemplates, setFolderTemplates] = useState([]);
-  // const [selectedTemplate, setSelectedTemplate] = useState(null);
+// const API_KEY = process.env.REACT_APP_FOLDER_URL;
+// const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
+// const [folderTemplates, setFolderTemplates] = useState([]);
+// const [selectedTemplate, setSelectedTemplate] = useState(null);
 //   const { data } = useParams();
 //   console.log(data);
 //   const [isFolderFormOpen, setIsFolderFormOpen] = useState(false);
@@ -51,57 +51,57 @@
 //     const handleFileUpload = () => {
 //       setIsDocumentForm(true);
 //     };
-  // useEffect(() => {
-  //   fetchFolderData();
-  // }, []);
+// useEffect(() => {
+//   fetchFolderData();
+// }, []);
 
-  // const fetchFolderData = async () => {
-  //   try {
-  //     const url = `${API_KEY}/foldertemp/folder`;
-  //     const response = await fetch(url);
-  //     const data = await response.json();
-  //     setFolderTemplates(data.folderTemplates);
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
-  // const handleSelectTemplate = (selectedOptions) => {
-  //   setSelectedTemplate(selectedOptions);
-  // };
-  // const optionFolders = folderTemplates.map((folderTemplates) => ({
-  //   value: folderTemplates._id,
-  //   label: folderTemplates.templatename,
-  // }));
+// const fetchFolderData = async () => {
+//   try {
+//     const url = `${API_KEY}/foldertemp/folder`;
+//     const response = await fetch(url);
+//     const data = await response.json();
+//     setFolderTemplates(data.folderTemplates);
+//   } catch (error) {
+//     console.error("Error fetching data:", error);
+//   }
+// };
+// const handleSelectTemplate = (selectedOptions) => {
+//   setSelectedTemplate(selectedOptions);
+// };
+// const optionFolders = folderTemplates.map((folderTemplates) => ({
+//   value: folderTemplates._id,
+//   label: folderTemplates.templatename,
+// }));
 
-  // const assignfoldertemp = () => {
-  //   const myHeaders = new Headers();
-  //   myHeaders.append("Content-Type", "application/json");
+// const assignfoldertemp = () => {
+//   const myHeaders = new Headers();
+//   myHeaders.append("Content-Type", "application/json");
 
-  //   const raw = JSON.stringify({
-  //     accountId: data,
-  //     foldertempId: selectedTemplate.value,
-  //   });
+//   const raw = JSON.stringify({
+//     accountId: data,
+//     foldertempId: selectedTemplate.value,
+//   });
 
-  //   const requestOptions = {
-  //     method: "POST",
-  //     headers: myHeaders,
-  //     body: raw,
-  //     redirect: "follow",
-  //   };
-  //   console.log(raw);
-  //   fetch(`${DOCS_MANAGMENTS}/clientdocs/accountfoldertemp`, requestOptions)
-  //     .then((response) => response.json())
-  //     .then((result) => {
-  //       console.log(result);
-  //       fetchFolders(data);
-  //       setSelectedTemplate(null);
-  //       toast.success("Folder Template Assign Successfully");
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //       toast.error("Failed to Assign Folder Template");
-  //     });
-  // };
+//   const requestOptions = {
+//     method: "POST",
+//     headers: myHeaders,
+//     body: raw,
+//     redirect: "follow",
+//   };
+//   console.log(raw);
+//   fetch(`${DOCS_MANAGMENTS}/clientdocs/accountfoldertemp`, requestOptions)
+//     .then((response) => response.json())
+//     .then((result) => {
+//       console.log(result);
+//       fetchFolders(data);
+//       setSelectedTemplate(null);
+//       toast.success("Folder Template Assign Successfully");
+//     })
+//     .catch((error) => {
+//       console.error(error);
+//       toast.error("Failed to Assign Folder Template");
+//     });
+// };
 
 //   // Component to render folders and files recursively
 //  // item: {
@@ -459,7 +459,8 @@ import {
   MenuItem,
   Collapse,
   Divider,
-  Autocomplete,TextField,
+  Autocomplete,
+  TextField,
   Button,
 } from "@mui/material";
 import { HiDocumentArrowUp } from "react-icons/hi2";
@@ -476,6 +477,7 @@ import UploadDoc from "./Firm Docs Shared With Client/UplodDoc";
 import CreateFolderInFirm from "./Firm Docs Shared With Client/CreateFolder";
 import { Folder, FolderOpen, InsertDriveFile } from "@mui/icons-material";
 import FileExplorer from "./FileExplorer";
+import EditNameDrawer from "./EditNameDrawer";
 const Documents = () => {
   const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
   const { data } = useParams();
@@ -652,6 +654,102 @@ const Documents = () => {
   const handleToggle = (id) => {
     setCombinedFolderStructure((prev) => toggleFolder(id, prev));
   };
+  // const renderTree = (items) => {
+  //   return items.map((item) => {
+  //     if (item.folder) {
+  //       return (
+  //         <div key={item.id} style={{ paddingLeft: "20px" }}>
+  //           <div
+  //             style={{
+  //               cursor: "pointer",
+  //               display: "flex",
+  //               alignItems: "center",
+  //               justifyContent: "space-between",
+  //               paddingRight: "8px",
+  //             }}
+  //           >
+  //             <div
+  //               style={{ display: "flex", alignItems: "center", gap: "8px" }}
+  //               onClick={() => handleToggle(item.id)}
+  //             >
+  //               <span>{item.isOpen ? "📂" : "📁"}</span>
+  //               <span>{item.folder}</span>
+  //               {item.sealed && (
+  //                 <span
+  //                   style={{
+  //                     backgroundColor: "#d50000",
+  //                     color: "#fff",
+  //                     padding: "2px 6px",
+  //                     borderRadius: "8px",
+  //                     fontSize: "12px",
+  //                   }}
+  //                 >
+  //                   Sealed
+  //                 </span>
+  //               )}
+  //             </div>
+  //             <div style={{ position: "relative" }}>
+  //               <IconButton onClick={(e) => handleMenuOpen(e, item)}>
+  //                 <BsThreeDotsVertical />
+  //               </IconButton>
+  //             </div>
+  //           </div>
+  //           {item.isOpen && item.contents?.length > 0 && (
+  //             <div>{renderTree(item.contents)}</div>
+  //           )}
+  //         </div>
+  //       );
+  //     } else {
+  //       return (
+  //         <div
+  //           key={item.id}
+  //           style={{
+  //             paddingLeft: "40px",
+  //             display: "flex",
+  //             alignItems: "center",
+  //             justifyContent: "space-between",
+  //             paddingRight: "8px",
+  //             fontSize: "14px",
+  //           }}
+  //         >
+  //           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+  //             <span>📄</span>
+  //             <span
+  //               onClick={() => handleFileOpen(item)}
+  //               style={{
+  //                 cursor: "pointer",
+  //                 // textDecoration: "underline",
+  //                 // color: "red",
+  //               }}
+  //             >
+  //               {item.file}
+  //             </span>
+
+  //             {item.sealed && (
+  //               <span
+  //                 style={{
+  //                   backgroundColor: "#d50000",
+  //                   color: "#fff",
+  //                   padding: "2px 6px",
+  //                   borderRadius: "8px",
+  //                   fontSize: "12px",
+  //                 }}
+  //               >
+  //                 Sealed
+  //               </span>
+  //             )}
+  //           </div>
+  //           <div style={{ position: "relative" }}>
+  //             <IconButton onClick={(e) => handleMenuOpen(e, item)}>
+  //               <BsThreeDotsVertical />
+  //             </IconButton>
+  //           </div>
+  //         </div>
+  //       );
+  //     }
+  //   });
+  // };
+
   const renderTree = (items) => {
     return items.map((item) => {
       if (item.folder) {
@@ -687,7 +785,10 @@ const Documents = () => {
                 )}
               </div>
               <div style={{ position: "relative" }}>
-                <IconButton onClick={(e) => handleMenuOpen(e, item)}>
+                <IconButton
+                  onClick={(e) => handleMenuOpen(e, item)}
+                  size="small"
+                >
                   <BsThreeDotsVertical />
                 </IconButton>
               </div>
@@ -707,22 +808,16 @@ const Documents = () => {
               alignItems: "center",
               justifyContent: "space-between",
               paddingRight: "8px",
-              fontSize: "14px",
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <span>📄</span>
               <span
                 onClick={() => handleFileOpen(item)}
-                style={{
-                  cursor: "pointer",
-                  // textDecoration: "underline",
-                  // color: "red",
-                }}
+                style={{ cursor: "pointer" }}
               >
                 {item.file}
               </span>
-
               {item.sealed && (
                 <span
                   style={{
@@ -738,7 +833,7 @@ const Documents = () => {
               )}
             </div>
             <div style={{ position: "relative" }}>
-              <IconButton onClick={(e) => handleMenuOpen(e, item)}>
+              <IconButton onClick={(e) => handleMenuOpen(e, item)} size="small">
                 <BsThreeDotsVertical />
               </IconButton>
             </div>
@@ -747,6 +842,7 @@ const Documents = () => {
       }
     });
   };
+
   const renderPrivateFolderContents = (contents, setContents) =>
     contents.map((item, index) => {
       if (item.folder) {
@@ -777,8 +873,14 @@ const Documents = () => {
               >
                 <span>{item.isOpen ? "📂" : "📁"}</span>
                 <span>{item.folder}</span>
-                {/* <SealedChip sealed={item.sealed} /> */}
               </div>
+              <IconButton
+                onClick={(e) => handlePrivateMenuOpen(e, item)}
+                size="small"
+                style={{ marginLeft: "auto" }}
+              >
+                <BsThreeDotsVertical />
+              </IconButton>
             </div>
             {item.isOpen && item.contents?.length > 0 && (
               <div style={{ marginTop: "4px" }}>
@@ -793,6 +895,33 @@ const Documents = () => {
           </div>
         );
       } else if (item.file) {
+        // return (
+        //   <div
+        //     key={index}
+        //     style={{
+        //       marginLeft: "40px",
+        //       padding: "4px 8px",
+        //       fontSize: "15px",
+
+        //       display: "flex",
+        //       alignItems: "center",
+        //     }}
+        //   >
+        //     <span style={{ marginRight: "8px" }}>📄</span>
+
+        //     <span
+        //       onClick={() => handleFileOpen(item)}
+        //       style={{
+        //         cursor: "pointer",
+
+        //       }}
+        //     >
+        //       {item.file}
+        //     </span>
+
+        //   </div>
+        // );
+
         return (
           <div
             key={index}
@@ -800,62 +929,58 @@ const Documents = () => {
               marginLeft: "40px",
               padding: "4px 8px",
               fontSize: "15px",
-              // color: "#555",
               display: "flex",
               alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
-            <span style={{ marginRight: "8px" }}>📄</span>
-            {/* <span style={{ fontWeight: 500 }}>{item.file}</span> */}
-            <span
+            <div
+              style={{ display: "flex", alignItems: "center", gap: "8px" }}
               onClick={() => handleFileOpen(item)}
-              style={{
-                cursor: "pointer",
-                // textDecoration: "underline",
-                // color: "red",
-              }}
             >
-              {item.file}
-            </span>
-            {/* <SealedChip sealed={item.sealed} /> */}
+              <span>📄</span>
+              <span style={{ cursor: "pointer" }}>{item.file}</span>
+            </div>
+            <IconButton
+              onClick={(e) => handlePrivateMenuOpen(e, item)}
+              size="small"
+            >
+              <BsThreeDotsVertical />
+            </IconButton>
           </div>
         );
       }
       return null;
     });
-    //
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${DOCS_MANAGMENTS}/firmDocs/files/${data}`
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const result = await response.json();
-        setFolderData(result);
 
-        // Initialize open state for all folders
-        const initialState = {};
-        const initFolderState = (folder) => {
-          initialState[folder.folderName] = true; // Open root by default
-          folder.structure?.forEach((item) => {
-            item.subfolders?.forEach((subfolder) => {
-              initialState[subfolder.name] = false; // Closed by default
-            });
-          });
-        };
-        initFolderState(result);
-        setOpenFolders(initialState);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`${DOCS_MANAGMENTS}/firmDocs/files/${data}`);
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
       }
-    };
-  useEffect(() => {
- 
+      const result = await response.json();
+      setFolderData(result);
 
+      // Initialize open state for all folders
+      const initialState = {};
+      const initFolderState = (folder) => {
+        initialState[folder.folderName] = true; // Open root by default
+        folder.structure?.forEach((item) => {
+          item.subfolders?.forEach((subfolder) => {
+            initialState[subfolder.name] = false; // Closed by default
+          });
+        });
+      };
+      initFolderState(result);
+      setOpenFolders(initialState);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchData();
   }, [data]);
 
@@ -959,16 +1084,91 @@ const Documents = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
   const [activeMenu, setActiveMenu] = useState(null);
+  const [privateAnchorEl, setPrivateAnchorEl] = useState(null);
 
+  const handlePrivateMenuOpen = (event, item) => {
+    setPrivateAnchorEl(event.currentTarget);
+    setSelectedItem(item);
+  };
+  const handlePrivateCloseMenu = () => {
+    setPrivateAnchorEl(null);
+    setTimeout(() => setSelectedItem(null), 100);
+  };
   const handleMenuOpen = (event, item) => {
     setAnchorEl(event.currentTarget);
     setSelectedItem(item);
     setActiveMenu(item.id);
   };
+ const [drawerOpen, setDrawerOpen] = useState(false);
+  const handleEdit = (item) => {
+    console.log("Edit", item);
+    setSelectedItem(item);
+    setDrawerOpen(true);
+  };
+  const handleRename = async (item, newName, itemPath) => {
+    console.log("path", item);
+    try {
+      const response = await fetch(
+        `${DOCS_MANAGMENTS}/admindocs/rename-item`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            currentPath: itemPath,
+            newName,
+            // id: item.id,
+          }),
+        }
+      );
 
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Renamed:", data);
+        fetchBothFolders();
+        fetchPrivateFolders();
+        // Refresh your data list here
+      } else {
+        alert(data.error);
+      }
+    } catch (error) {
+      console.error("Rename failed", error);
+    }
+  };
+
+   const handleDelete = (item) => {
+      console.log("Delete", item);
+  
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+  
+      const raw = JSON.stringify({
+        path: item.path, // dynamically from item
+        id: item.id, // dynamically from item
+      });
+  
+      const requestOptions = {
+        method: "DELETE",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+  
+      fetch(`${DOCS_MANAGMENTS}/admindocs/delete-item`, requestOptions)
+        .then((response) => response.text())
+        .then((result) => {
+          console.log("Delete Result:", result);
+          toast.success("Deleted successfully");
+          fetchBothFolders();
+          fetchPrivateFolders();
+        })
+        .catch((error) => console.error("Delete Error:", error));
+    };
   const handleMenuClose = () => {
     setAnchorEl(null);
-    setSelectedItem(null);
+    // setSelectedItem(null);
+    setTimeout(() => setSelectedItem(null), 100);
     setActiveMenu(null);
   };
   const [loading, setLoading] = useState(false);
@@ -1083,8 +1283,8 @@ const Documents = () => {
         console.log(result);
         // fetchFolders(data);
         setSelectedTemplate(null);
-        fetchBothFolders()
-        fetchData()
+        fetchBothFolders();
+        fetchData();
         toast.success("Folder Template Assign Successfully");
       })
       .catch((error) => {
@@ -1183,54 +1383,57 @@ const Documents = () => {
         </Box>
 
         {showAutocomplete && (
-  <Box sx={{display:'flex', alignItems:'center',gap:3,mt:2}}>
-<Autocomplete
-    options={optionFolders}
-    getOptionLabel={(option) => option.label}
-    value={selectedTemplate}
-    onChange={(event, newValue) => handleSelectTemplate(newValue)}
-    isOptionEqualToValue={(option, value) => option.value === value.value}
-    renderOption={(props, option) => (
-      <Box
-        component="li"
-        {...props}
-        sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
-      >
-        {option.label}
-      </Box>
-    )}
-    renderInput={(params) => (
-      <TextField
-        {...params}
-        sx={{ backgroundColor: "#fff" }}
-        placeholder="Select Folder "
-        variant="outlined"
-        size="small"
-      />
-    )}
-    sx={{ width: "30%", marginTop: "8px" }}
-    clearOnEscape // Enable clearable functionality
-  />
-<Box mt={2}>
-  <Button
-    variant="contained"
-    color="primary"
-    onClick={assignfoldertemp}
-    disabled={!selectedTemplate}
-    sx={{
-      backgroundColor: "var(--color-save-btn)", // Normal background
+          <Box sx={{ display: "flex", alignItems: "center", gap: 3, mt: 2 }}>
+            <Autocomplete
+              options={optionFolders}
+              getOptionLabel={(option) => option.label}
+              value={selectedTemplate}
+              onChange={(event, newValue) => handleSelectTemplate(newValue)}
+              isOptionEqualToValue={(option, value) =>
+                option.value === value.value
+              }
+              renderOption={(props, option) => (
+                <Box
+                  component="li"
+                  {...props}
+                  sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
+                >
+                  {option.label}
+                </Box>
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  sx={{ backgroundColor: "#fff" }}
+                  placeholder="Select Folder "
+                  variant="outlined"
+                  size="small"
+                />
+              )}
+              sx={{ width: "30%", marginTop: "8px" }}
+              clearOnEscape // Enable clearable functionality
+            />
+            <Box mt={2}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={assignfoldertemp}
+                disabled={!selectedTemplate}
+                sx={{
+                  backgroundColor: "var(--color-save-btn)", // Normal background
 
-      "&:hover": {
-        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-      },
-      borderRadius: "15px",width:'80px'
-    }}
-  >
-   Save
-  </Button>
-</Box>
-</Box>
-)}
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                  },
+                  borderRadius: "15px",
+                  width: "80px",
+                }}
+              >
+                Save
+              </Button>
+            </Box>
+          </Box>
+        )}
       </Box>
 
       <Box>
@@ -1305,6 +1508,7 @@ const Documents = () => {
           <FileExplorer accountId={data} refreshTrigger={refreshKey} />
         </Box>
       </Box>
+
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -1314,21 +1518,28 @@ const Documents = () => {
       >
         {selectedItem?.folder === "Client Uploaded Documents" ? (
           <>
-            <MenuItem onClick={() => handleMenuAction("new-folder")}>
+            <MenuItem onClick={() => handleMenuAction("new-folder")} disabled>
               New Folder
             </MenuItem>
-            <MenuItem onClick={() => handleMenuAction("edit")}>Edit</MenuItem>
+            <MenuItem disabled onClick={() => handleMenuAction("edit")}>
+              Edit
+            </MenuItem>
           </>
         ) : (
           <>
-            <MenuItem onClick={() => handleMenuAction("new-folder")}>
+            {/* <MenuItem onClick={() => handleMenuAction("new-folder")}>
               New Folder
-            </MenuItem>
-            <MenuItem onClick={() => handleMenuAction("edit")}>Edit</MenuItem>
-            <MenuItem onClick={() => handleMenuAction("delete")}>
+            </MenuItem> */}
+            <MenuItem onClick={() => {
+           
+              handleEdit(selectedItem);
+              handleMenuClose();
+           
+          }}>Edit</MenuItem>
+            <MenuItem onClick={() =>{ handleDelete(selectedItem); handleMenuClose();}}>
               Delete
             </MenuItem>
-            <MenuItem onClick={() => handleMenuAction("move")}>Move</MenuItem>
+
             <MenuItem
               onClick={() =>
                 handleMenuAction(selectedItem?.sealed ? "unseal" : "seal")
@@ -1339,11 +1550,48 @@ const Documents = () => {
           </>
         )}
       </Menu>
+
+      <Menu
+        anchorEl={privateAnchorEl}
+        open={Boolean(privateAnchorEl)}
+        onClose={handlePrivateCloseMenu}
+      >
+        <MenuItem
+          onClick={() => {
+            if (selectedItem?.folder !== "Private") {
+              handleEdit(selectedItem);
+              handlePrivateCloseMenu();
+            }
+          }}
+          disabled={selectedItem?.folder === "Private"}
+        >
+          Edit
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            if (selectedItem?.folder !== "Private") {
+              handleDelete(selectedItem);
+              handlePrivateCloseMenu();
+            }
+          }}
+          disabled={selectedItem?.folder === "Private"}
+        >
+          Delete
+        </MenuItem>
+      </Menu>
+
+      <EditNameDrawer
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        item={selectedItem}
+        onRename={handleRename}
+      />
       <CreateFolder
         open={isFolderFormOpen}
         onClose={() => setIsFolderFormOpen(false)}
         fetchUnSealedFolders={fetchUnSealedFolders}
         fetchAdminPrivateFolders={fetchPrivateFolders}
+        fetchBothFolders={fetchBothFolders}
         accountId={data}
       />
 
@@ -1354,6 +1602,7 @@ const Documents = () => {
         fetchUnSealedFolders={fetchUnSealedFolders}
         fetchAdminPrivateFolders={fetchPrivateFolders}
         accountId={data}
+        fetchBothFolders={fetchBothFolders}
       />
 
       <UploadFolder
@@ -1365,6 +1614,7 @@ const Documents = () => {
         onClose={() => setIsUploadFolderFormOpen(false)}
         fetchUnSealedFolders={fetchUnSealedFolders}
         fetchAdminPrivateFolders={fetchPrivateFolders}
+        fetchBothFolders={fetchBothFolders}
         accountId={data}
       />
 

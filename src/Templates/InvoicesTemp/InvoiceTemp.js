@@ -184,6 +184,7 @@ const InvoiceTemp = () => {
   }, [selectedOption]);
   const handleCloseDropdown = () => {
     setAnchorEl(null);
+    setShowDropdown(false);
   };
 
   // Calculate Summary Data
