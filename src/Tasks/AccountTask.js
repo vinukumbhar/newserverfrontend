@@ -17,8 +17,8 @@ import {
   Switch,
   Button,
 } from "@mui/material";
-import TagsMultiSelectDropDown  from "../Templates/TagsMultiSelectDropDown"
-import MultiSelectDropdown from "../Templates/MultiSelectDropdown"
+import TagsMultiSelectDropDown from "../Templates/TagsMultiSelectDropDown";
+import MultiSelectDropdown from "../Templates/MultiSelectDropdown";
 import { IoChevronBackOutline } from "react-icons/io5";
 import CloseIcon from "@mui/icons-material/Close";
 import Editor from "../Templates/Texteditor/Editor";
@@ -34,483 +34,546 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiPlusCircle } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 const AccountTask = ({ handleNewDrawerClose, handleDrawerClose }) => {
-    const handleClose = () => {
-        handleNewDrawerClose();
-        // handleDrawerClose();
-      };
-       
-        const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
-        const ACCOUNT_TASKS_API = process.env.REACT_APP_TASKS_API;
-        //****************Accounts */
-        const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
-        const [accountdata, setaccountdata] = useState([]);
-        const [selectedaccount, setSelectedaccount] = useState(null);
-        const [errorTooltip, setErrorTooltip] = useState("");
-        const handleAccountChange = (selectedOptions) => {
-          setSelectedaccount(selectedOptions);
-          console.log("aacounts", selectedOptions);
-      
-            fetchJobList(selectedOptions.value); // Fetch jobs based on selected account ID
-        
-        };
-      
-        useEffect(() => {
-          fetchAccountData();
-        }, []);
-      
-        const fetchAccountData = async () => {
-          try {
-            const response = await fetch(`${ACCOUNT_API}/accounts/account/accountdetailslist/true`);
-            const data = await response.json();
-            setaccountdata(data.accountlist);
-          } catch (error) {
-            console.error("Error fetching data:", error);
+  const handleClose = () => {
+    handleNewDrawerClose();
+    // handleDrawerClose();
+  };
+
+  const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
+  const ACCOUNT_TASKS_API = process.env.REACT_APP_TASKS_API;
+  //****************Accounts */
+  const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
+  const [accountdata, setaccountdata] = useState([]);
+  const [selectedaccount, setSelectedaccount] = useState(null);
+  const [errorTooltip, setErrorTooltip] = useState("");
+  const handleAccountChange = (selectedOptions) => {
+    setSelectedaccount(selectedOptions);
+    console.log("aacounts", selectedOptions);
+
+    fetchJobList(selectedOptions.value); // Fetch jobs based on selected account ID
+  };
+
+  useEffect(() => {
+    fetchAccountData();
+  }, []);
+
+  // const fetchAccountData = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `${ACCOUNT_API}/accounts/account/accountdetailslist/true`
+  //     );
+  //     const data = await response.json();
+  //     setaccountdata(data.accountlist);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+
+  // const fetchAccountData = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `${ACCOUNT_API}/accounts/account/accountdetailslist/true`
+  //     );
+  //     const data = await response.json();
+
+  //     const accountList = data.accountlist || [];
+  //     setaccountdata(accountList);
+
+  //     // Get accountId from cookie
+  //     const accountIdFromCookie = Cookies.get("accountId");
+  //     console.log("hhh", accountIdFromCookie);
+  //     if (accountIdFromCookie) {
+  //       const matchedAccount = accountoptions.find(
+  //         (acc) => acc.value === accountIdFromCookie
+  //       );
+  //       console.log("macc", matchedAccount);
+  //       if (matchedAccount) {
+  //         setSelectedaccount(matchedAccount); // NOT [matchedAccount], just the object
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+
+
+const fetchAccountData = async () => {
+  try {
+    const response = await fetch(
+      `${ACCOUNT_API}/accounts/account/accountdetailslist/true`
+    );
+    const data = await response.json();
+
+    const accountList = (data.accountlist || []).map(account => ({
+      value: account.id,
+      label: account.Name
+    }));
+
+    setaccountdata(accountList); // update the state with correct format
+
+    // Get accountId from cookie
+    const accountIdFromCookie = Cookies.get("accountId");
+console.log("accountList", accountList.map(a => a.value));
+console.log("accountIdFromCookie", accountIdFromCookie);
+
+
+    if (accountIdFromCookie) {
+      const matchedAccount = accountList.find(
+        (acc) => acc.value === accountIdFromCookie
+      );
+    
+
+      if (matchedAccount) {
+        setSelectedaccount(matchedAccount);
+      }
+    }
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+
+
+  
+  const accountoptions = accountdata.map((account) => ({
+    value: account.id,
+    label: account.Name,
+  }));
+
+  //   *********joblist*******
+  const JOBS_API = process.env.REACT_APP_ADD_JOBS_URL;
+  const [joblist, setJoblist] = useState([]);
+  const [selectedJob, setSelectedJob] = useState(null);
+
+  const handleJobChange = async (selectedOptions) => {
+    setSelectedJob(selectedOptions);
+    console.log(selectedOptions.value);
+  };
+
+  const fetchJobList = async (accountId) => {
+    const requestOptions = {
+      method: "GET",
+      redirect: "follow",
+    };
+
+    fetch(
+      `${JOBS_API}/Workflow/jobs/accountjoblist/${accountId}`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        setJoblist(result.jobList);
+      })
+      .catch((error) => console.error(error));
+  };
+  const jobsoptions = joblist.map((job) => ({
+    value: job.id,
+    label: job.Name,
+    group: job.Pipeline,
+  }));
+
+  //   ******TASK TEMP ******
+  const [taskTemplates, setTaskTemplates] = useState([]);
+  const TASK_API = process.env.REACT_APP_TASK_TEMP_URL;
+  const fetchTaskTemplates = async () => {
+    try {
+      const url = `${TASK_API}/workflow/tasks/tasktemplate/`;
+      const response = await fetch(url);
+      const data = await response.json();
+      setTaskTemplates(data.TaskTemplates);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const taskTemplateOptions = taskTemplates.map((temp) => ({
+    value: temp._id,
+    label: temp.templatename,
+  }));
+  useEffect(() => {
+    fetchTaskTemplates();
+  }, []);
+  const [selectedtemp, setselectedTemp] = useState(null);
+  const [tempNameNew, setTempNameNew] = useState("");
+  const [tagsNew, setTagsNew] = useState([]);
+  const [AssigneesNew, setAssigneesNew] = useState([]);
+
+  const [priority, setPriority] = useState("Medium");
+  const [status, setStatus] = useState("No status");
+  const [StartsDateNew, setStartsDateNew] = useState(null);
+  const [DueDateNew, setDueDateNew] = useState(null);
+
+  const [subtasks, setSubtasks] = useState([]);
+  const [checkedSubtasks, setCheckedSubtasks] = useState([]);
+  // const [checkedSubtasks, setCheckedSubtasks] = useState(
+  //   subtasks.filter((subtask) => subtask.checked).map((subtask) => subtask.id)
+  // );
+
+  // const handleCheckboxChange = (subtaskId) => {
+  //   // Update only the checked state of the specific subtask being changed
+  //   setSubtasks((prevSubtasks) =>
+  //     prevSubtasks.map(
+  //       (subtask) =>
+  //         subtask.id === subtaskId
+  //           ? { ...subtask, checked: !subtask.checked } // Toggle checked state for the clicked subtask
+  //           : subtask // Keep other subtasks the same
+  //     )
+  //   );
+
+  //   // Update checkedSubtasks to only reflect the clicked subtask's change
+  //   setCheckedSubtasks((prevCheckedSubtasks) => {
+
+  //     // If it is not checked, we add it to the checked list
+  //     return [...prevCheckedSubtasks, subtaskId]; // Add if not checked
+  //   });
+  // };
+
+  const handleCheckboxChange = (subtaskId) => {
+    setSubtasks((prevSubtasks) =>
+      prevSubtasks.map((subtask) =>
+        subtask.id === subtaskId
+          ? { ...subtask, checked: true } // Always set checked to true
+          : subtask
+      )
+    );
+
+    setCheckedSubtasks(
+      (prevCheckedSubtasks) =>
+        prevCheckedSubtasks.includes(subtaskId)
+          ? prevCheckedSubtasks // Keep already checked items
+          : [...prevCheckedSubtasks, subtaskId] // Add new checked item
+    );
+  };
+
+  // // Optional: Use useEffect to log after state updates
+  // useEffect(() => {
+  //   console.log("Updated checkedSubtasks:", checkedSubtasks);
+  //   console.log("Updated subtasks:", subtasks);
+  // }, [checkedSubtasks, subtasks]);
+
+  const handleAddSubtask = () => {
+    const newId = String(subtasks.length + 1);
+    setSubtasks([...subtasks, { id: newId, text: "" }]);
+  };
+
+  const handleDragEnd = (result) => {
+    // Ensure a valid drop location
+    if (!result.destination) return;
+
+    // Reorder subtasks based on the drag-and-drop result
+    const newSubtasks = Array.from(subtasks);
+    const [reorderedItem] = newSubtasks.splice(result.source.index, 1);
+    newSubtasks.splice(result.destination.index, 0, reorderedItem);
+
+    // Update the state with the new order of subtasks
+    setSubtasks(newSubtasks);
+  };
+
+  const handleInputChange = (id, value) => {
+    setSubtasks(
+      subtasks.map((subtask) =>
+        subtask.id === id ? { ...subtask, text: value } : subtask
+      )
+    );
+  };
+
+  const handleDeleteSubtask = (id) => {
+    setSubtasks(subtasks.filter((subtask) => subtask.id !== id));
+  };
+
+  const [SubtaskSwitch, setSubtaskSwitch] = useState(false);
+  const handleSubtaskSwitch = (checked) => {
+    setSubtaskSwitch(checked);
+  };
+
+  const handleStartDateChange = (date) => {
+    setStartsDateNew(date);
+  };
+  const handleDueDateChange = (date) => {
+    setDueDateNew(date);
+  };
+
+  const handlePriorityChange = (priority) => {
+    setPriority(priority);
+  };
+  const handleStatusChange = (status) => {
+    setStatus(status);
+    console.log(status);
+  };
+  // const [description, setDescription] = useState('');
+  const handleEditorChange = (content) => {
+    setTaskDescription(content);
+  };
+  const [taskDiscription, setTaskDescription] = useState();
+  const [combinedValues, setCombinedValues] = useState();
+  const [userData, setUserData] = useState([]);
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
+  const fetchData = async () => {
+    try {
+      const url = `${LOGIN_API}/common/users/roles?roles=TeamMember,Admin`;
+      const response = await fetch(url);
+      const data = await response.json();
+      setUserData(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const options = userData.map((user) => ({
+    value: user._id,
+    label: user.username,
+  }));
+  // const handleuserChange = (event, newValue) => {
+  //   setAssigneesNew(newValue);
+  //   // Map selected options to their values and send as an array
+  //   const selectedValues = newValue.map((option) => option.value);
+  //   // console.log(selectedValues);
+  //   setCombinedValues(selectedValues);
+  // };
+  const [selectedUser, setSelectedUser] = useState([]);
+  const handleUserChange = (newSelectedUsers) => {
+    setSelectedUser(newSelectedUsers);
+    console.log(newSelectedUsers);
+    const selectedValues = newSelectedUsers.map((option) => option.value);
+    setCombinedValues(selectedValues);
+    console.log(selectedValues);
+  };
+  //Tag FetchData ================
+  const [tags, setTags] = useState([]);
+  const [combinedTagsValues, setCombinedTagsValues] = useState();
+  useEffect(() => {
+    fetchTagData();
+  }, []);
+
+  const fetchTagData = async () => {
+    try {
+      const url = ` ${TAGS_API}/tags/`;
+
+      const response = await fetch(url);
+      const data = await response.json();
+      setTags(data.tags);
+      //   console.log(data.tags)
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  //  for tags
+  const calculateWidth = (tagName) => {
+    const baseWidth = 10; // base width for each tag
+    const charWidth = 8; // approximate width of each character
+    const padding = 10; // padding on either side
+    return baseWidth + charWidth * tagName.length + padding;
+  };
+  const tagsoptions = tags.map((tag) => ({
+    value: tag._id,
+    label: tag.tagName,
+    colour: tag.tagColour,
+
+    customStyle: {
+      backgroundColor: tag.tagColour,
+      color: "#fff",
+      borderRadius: "8px",
+      alignItems: "center",
+      textAlign: "center",
+      marginBottom: "5px",
+      padding: "2px,8px",
+      fontSize: "10px",
+      width: `${calculateWidth(tag.tagName)}px`,
+      margin: "7px",
+      cursor: "pointer",
+    },
+    customTagStyle: {
+      backgroundColor: tag.tagColour,
+      color: "#fff",
+      alignItems: "center",
+      textAlign: "center",
+      padding: "2px,8px",
+      fontSize: "10px",
+      cursor: "pointer",
+    },
+  }));
+
+  const handleTagChange = (newSelectedTags) => {
+    setTagsNew(newSelectedTags);
+    console.log(newSelectedTags);
+    const selectedValues = newSelectedTags.map((option) => option.value);
+    setCombinedTagsValues(selectedValues);
+    console.log(selectedValues);
+  };
+
+  const [tempvalues, setTempValues] = useState();
+
+  const handletemp = async (event, newValue) => {
+    setselectedTemp(newValue);
+    if (newValue && newValue.value) {
+      const templateId = newValue.value;
+      try {
+        const response = await fetch(
+          `${TASK_API}/workflow/tasks/tasktemplate/tasktemplatebyid/${templateId}`
+        );
+        const data = await response.json();
+
+        console.log("tasktemp", data);
+
+        if (
+          data.taskTemplate &&
+          Array.isArray(data.taskTemplate.taskassignees)
+        ) {
+          // Flatten the array in case of unnecessary nesting
+          const flatAssignees = data.taskTemplate.taskassignees.flat();
+
+          if (flatAssignees.length > 0) {
+            const assigneesData = flatAssignees.map((assignee) => ({
+              value: assignee._id,
+              label: assignee.username,
+            }));
+
+            setSelectedUser(assigneesData);
+
+            const selectedValues = assigneesData.map((option) => option.value);
+            setCombinedValues(selectedValues);
+          } else {
+            console.log("taskassignees contains an unexpected structure.");
           }
-        };
-      
-        // console.log(userdata);
-        const accountoptions = accountdata.map((account) => ({
-          value: account.id,
-          label: account.Name,
-        }));
-      
-        //   *********joblist*******
-        const JOBS_API = process.env.REACT_APP_ADD_JOBS_URL;
-        const [joblist, setJoblist] = useState([]);
-        const [selectedJob, setSelectedJob] = useState(null);
-      
-        const handleJobChange = async (selectedOptions) => {
-          setSelectedJob(selectedOptions)
-          console.log(selectedOptions.value)
         }
-      
-        const fetchJobList = async (accountId) => {
-          const requestOptions = {
-            method: "GET",
-            redirect: "follow",
-          };
-      
-          fetch(
-            `${JOBS_API}/Workflow/jobs/accountjoblist/${accountId}`,
-            requestOptions
-          )
-            .then((response) => response.json())
-            .then((result) => {
-              console.log(result);
-              setJoblist(result.jobList);
-            })
-            .catch((error) => console.error(error));
-        };
-        const jobsoptions = joblist.map((job) => ({
-          value: job.id,
-          label: job.Name,
-          group: job.Pipeline,
-        }));
-      
-        //   ******TASK TEMP ******
-        const [taskTemplates, setTaskTemplates] = useState([]);
-        const TASK_API = process.env.REACT_APP_TASK_TEMP_URL;
-        const fetchTaskTemplates = async () => {
-          try {
-            const url = `${TASK_API}/workflow/tasks/tasktemplate/`;
-            const response = await fetch(url);
-            const data = await response.json();
-            setTaskTemplates(data.TaskTemplates);
-          } catch (error) {
-            console.error("Error fetching data:", error);
-          }
-        };
-        const taskTemplateOptions = taskTemplates.map((temp) => ({
-          value: temp._id,
-          label: temp.templatename,
-        }));
-        useEffect(() => {
-          fetchTaskTemplates();
-        }, []);
-        const [selectedtemp, setselectedTemp] = useState(null);
-        const [tempNameNew, setTempNameNew] = useState("");
-        const [tagsNew, setTagsNew] = useState([]);
-        const [AssigneesNew, setAssigneesNew] = useState([]);
-      
-        const [priority, setPriority] = useState("Medium");
-        const [status, setStatus] = useState("No status");
-        const [StartsDateNew, setStartsDateNew] = useState(null);
-        const [DueDateNew, setDueDateNew] = useState(null);
-      
-        const [subtasks, setSubtasks] = useState([]);
-        const [checkedSubtasks, setCheckedSubtasks] = useState([]);
-        // const [checkedSubtasks, setCheckedSubtasks] = useState(
-        //   subtasks.filter((subtask) => subtask.checked).map((subtask) => subtask.id)
-        // );
-      
-        // const handleCheckboxChange = (subtaskId) => {
-        //   // Update only the checked state of the specific subtask being changed
-        //   setSubtasks((prevSubtasks) =>
-        //     prevSubtasks.map(
-        //       (subtask) =>
-        //         subtask.id === subtaskId
-        //           ? { ...subtask, checked: !subtask.checked } // Toggle checked state for the clicked subtask
-        //           : subtask // Keep other subtasks the same
-        //     )
-        //   );
-      
-        //   // Update checkedSubtasks to only reflect the clicked subtask's change
-        //   setCheckedSubtasks((prevCheckedSubtasks) => {
-            
-        //     // If it is not checked, we add it to the checked list
-        //     return [...prevCheckedSubtasks, subtaskId]; // Add if not checked
-        //   });
-        // };
-      
-        const handleCheckboxChange = (subtaskId) => {
-          setSubtasks((prevSubtasks) =>
-            prevSubtasks.map((subtask) =>
-              subtask.id === subtaskId
-                ? { ...subtask, checked: true } // Always set checked to true
-                : subtask
-            )
+        // Process tasktags
+        if (
+          data.taskTemplate.tasktags &&
+          Array.isArray(data.taskTemplate.tasktags)
+        ) {
+          const tagsData = data.taskTemplate.tasktags.map((tag) => ({
+            value: tag._id,
+            label: tag.tagName,
+            color: tag.tagColour, // Include color if needed
+            customTagStyle: {
+              backgroundColor: tag.tagColour,
+              color: "#fff",
+              borderRadius: "30px",
+              alignItems: "center",
+              textAlign: "center",
+              marginBottom: "5px",
+              padding: "2px,8px",
+              fontSize: "10px",
+              // width: ${calculateWidth(tag.tagName)}px,
+              margin: "7px",
+              cursor: "pointer",
+            },
+          }));
+          // console.log("Tags Data:", tagsData); // Log the processed tagsData
+
+          setTagsNew(tagsData); // Assuming you have a setTags function to update your state
+          const selectedTagsValues = tagsData.map((option) => option.value);
+          setCombinedTagsValues(selectedTagsValues);
+          console.log("Tags Data:", selectedTagsValues);
+        } else {
+          console.log("tasktags is not defined or not an array.");
+        }
+
+        setTempValues(data.taskTemplate);
+        tempallvalue();
+
+        // Extract and process subtasks
+        if (
+          data.taskTemplate.subtasks &&
+          Array.isArray(data.taskTemplate.subtasks)
+        ) {
+          const subtasksText = data.taskTemplate.subtasks.map(
+            (subtask) => subtask.text
           );
-        
-          setCheckedSubtasks((prevCheckedSubtasks) =>
-            prevCheckedSubtasks.includes(subtaskId)
-              ? prevCheckedSubtasks // Keep already checked items
-              : [...prevCheckedSubtasks, subtaskId] // Add new checked item
-          );
-        };
-        
-      
-        // // Optional: Use useEffect to log after state updates
-        // useEffect(() => {
-        //   console.log("Updated checkedSubtasks:", checkedSubtasks);
-        //   console.log("Updated subtasks:", subtasks);
-        // }, [checkedSubtasks, subtasks]);
-      
-        const handleAddSubtask = () => {
-          const newId = String(subtasks.length + 1);
-          setSubtasks([...subtasks, { id: newId, text: "" }]);
-        };
-      
-        const handleDragEnd = (result) => {
-          // Ensure a valid drop location
-          if (!result.destination) return;
-      
-          // Reorder subtasks based on the drag-and-drop result
-          const newSubtasks = Array.from(subtasks);
-          const [reorderedItem] = newSubtasks.splice(result.source.index, 1);
-          newSubtasks.splice(result.destination.index, 0, reorderedItem);
-      
-          // Update the state with the new order of subtasks
-          setSubtasks(newSubtasks);
-        };
-      
-        const handleInputChange = (id, value) => {
-          setSubtasks(
-            subtasks.map((subtask) =>
-              subtask.id === id ? { ...subtask, text: value } : subtask
-            )
-          );
-        };
-      
-        const handleDeleteSubtask = (id) => {
-          setSubtasks(subtasks.filter((subtask) => subtask.id !== id));
-        };
-      
-        const [SubtaskSwitch, setSubtaskSwitch] = useState(false);
-        const handleSubtaskSwitch = (checked) => {
-          setSubtaskSwitch(checked);
-        };
-      
-        const handleStartDateChange = (date) => {
-          setStartsDateNew(date);
-        };
-        const handleDueDateChange = (date) => {
-          setDueDateNew(date);
-        };
-      
-        const handlePriorityChange = (priority) => {
-          setPriority(priority);
-        };
-        const handleStatusChange = (status) => {
-          setStatus(status);
-          console.log(status);
-        };
-        // const [description, setDescription] = useState('');
-        const handleEditorChange = (content) => {
-          setTaskDescription(content);
-        };
-        const [taskDiscription, setTaskDescription] = useState();
-        const [combinedValues, setCombinedValues] = useState();
-        const [userData, setUserData] = useState([]);
-        useEffect(() => {
-          fetchData();
-        }, []);
-        const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
-        const fetchData = async () => {
-          try {
-            const url = `${LOGIN_API}/common/users/roles?roles=TeamMember,Admin`;
-            const response = await fetch(url);
-            const data = await response.json();
-            setUserData(data);
-          } catch (error) {
-            console.error("Error fetching data:", error);
-          }
-        };
-        const options = userData.map((user) => ({
-          value: user._id,
-          label: user.username,
-        }));
-        // const handleuserChange = (event, newValue) => {
-        //   setAssigneesNew(newValue);
-        //   // Map selected options to their values and send as an array
-        //   const selectedValues = newValue.map((option) => option.value);
-        //   // console.log(selectedValues);
-        //   setCombinedValues(selectedValues);
-        // };
-          const [selectedUser, setSelectedUser] = useState([]);
-        const handleUserChange = (newSelectedUsers) => {
-          setSelectedUser(newSelectedUsers);
-          console.log(newSelectedUsers)
-          const selectedValues = newSelectedUsers.map((option) => option.value);
-          setCombinedValues(selectedValues);
-          console.log(selectedValues)
-        };
-        //Tag FetchData ================
-        const [tags, setTags] = useState([]);
-        const [combinedTagsValues, setCombinedTagsValues] = useState();
-        useEffect(() => {
-          fetchTagData();
-        }, []);
-      
-        const fetchTagData = async () => {
-          try {
-            const url = ` ${TAGS_API}/tags/`;
-      
-            const response = await fetch(url);
-            const data = await response.json();
-            setTags(data.tags);
-            //   console.log(data.tags)
-          } catch (error) {
-            console.error("Error fetching data:", error);
-          }
-        };
-        //  for tags
-        const calculateWidth = (tagName) => {
-          const baseWidth = 10; // base width for each tag
-          const charWidth = 8; // approximate width of each character
-          const padding = 10; // padding on either side
-          return baseWidth + charWidth * tagName.length + padding;
-        };
-        const tagsoptions = tags.map((tag) => ({
-          value: tag._id,
-          label: tag.tagName,
-          colour: tag.tagColour,
-      
-          customStyle: {
-            backgroundColor: tag.tagColour,
-            color: "#fff",
-            borderRadius: "8px",
-            alignItems: "center",
-            textAlign: "center",
-            marginBottom: "5px",
-            padding: "2px,8px",
-            fontSize: "10px",
-            width: `${calculateWidth(tag.tagName)}px`,
-            margin: "7px",
-            cursor: "pointer",
-          },
-          customTagStyle: {
-            backgroundColor: tag.tagColour,
-            color: "#fff",
-            alignItems: "center",
-            textAlign: "center",
-            padding: "2px,8px",
-            fontSize: "10px",
-            cursor: "pointer",
-          },
-        }));
-      
-       
-        const handleTagChange = (newSelectedTags) => {
-          setTagsNew(newSelectedTags);
-          console.log(newSelectedTags)
-          const selectedValues = newSelectedTags.map((option) => option.value);
-          setCombinedTagsValues(selectedValues);
-          console.log(selectedValues)
-        };
-       
-        const [tempvalues, setTempValues] = useState();
-      
-        const handletemp = async (event, newValue) => {
-          setselectedTemp(newValue);
-          if (newValue && newValue.value) {
-            const templateId = newValue.value;
-            try {
-              const response = await fetch(
-                `${TASK_API}/workflow/tasks/tasktemplate/tasktemplatebyid/${templateId}`
-              );
-              const data = await response.json();
-              
-              console.log("tasktemp",data)
-             
-      
-              if (data.taskTemplate && Array.isArray(data.taskTemplate.taskassignees)) {
-                // Flatten the array in case of unnecessary nesting
-                const flatAssignees = data.taskTemplate.taskassignees.flat();
-            
-                if (flatAssignees.length > 0) {
-                    const assigneesData = flatAssignees.map(assignee => ({
-                        value: assignee._id,
-                        label: assignee.username,
-                    }));
-            
-                    setSelectedUser(assigneesData);
-            
-                    const selectedValues = assigneesData.map(option => option.value);
-                    setCombinedValues(selectedValues);
-                } else {
-                    console.log("taskassignees contains an unexpected structure.");
-                }
-            }
-              // Process tasktags
-              if (
-                data.taskTemplate.tasktags &&
-                Array.isArray(data.taskTemplate.tasktags)
-              ) {
-                const tagsData = data.taskTemplate.tasktags.map((tag) => ({
-                  value: tag._id,
-                  label: tag.tagName,
-                  color: tag.tagColour, // Include color if needed
-                  customTagStyle: {
-                    backgroundColor: tag.tagColour,
-                    color: "#fff",
-                    borderRadius: "30px",
-                    alignItems: "center",
-                    textAlign: "center",
-                    marginBottom: "5px",
-                    padding: "2px,8px",
-                    fontSize: "10px",
-                    // width: ${calculateWidth(tag.tagName)}px,
-                    margin: "7px",
-                    cursor: "pointer",
-                  },
-                }));
-                // console.log("Tags Data:", tagsData); // Log the processed tagsData
-      
-                setTagsNew(tagsData); // Assuming you have a setTags function to update your state
-                const selectedTagsValues = tagsData.map((option) => option.value);
-                setCombinedTagsValues(selectedTagsValues);
-                console.log("Tags Data:", selectedTagsValues);
-              } else {
-                console.log("tasktags is not defined or not an array.");
-              }
-      
-              setTempValues(data.taskTemplate);
-              tempallvalue();
-      
-              // Extract and process subtasks
-              if (
-                data.taskTemplate.subtasks &&
-                Array.isArray(data.taskTemplate.subtasks)
-              ) {
-                const subtasksText = data.taskTemplate.subtasks.map(
-                  (subtask) => subtask.text
-                );
-                console.log("Subtasks Text:", subtasksText); // Log the extracted subtasks text
-      
-                setSubtasks(subtasksText); // Assuming you have a state setter for this
-              } else {
-                console.log("subtasks is not defined or not an array.");
-              }
-            } catch (error) {
-              console.error("Error fetching template data:", error);
-            }
-          }
-        };
-        useEffect(() => {
-          if (tempvalues) {
-            tempallvalue();
-          }
-        }, [tempvalues]);
-        const tempallvalue = () => {
-          if (tempvalues) {
-            console.log(tempvalues);
-            setTempNameNew(tempvalues.templatename || "");
-            setStatus(tempvalues.status || "");
-            setTaskDescription(tempvalues.description || "");
-            setPriority(tempvalues.priority || "");
-      
-            setStartsDateNew(dayjs(tempvalues.startdate) || null);
-            setDueDateNew(dayjs(tempvalues.enddate) || null);
-      
-            setSubtaskSwitch(tempvalues.issubtaskschecked || false);
-            // console.log(tempvalues.isclienttaskchecked)
-            setSubtasks(tempvalues.subtasks);
-          }
-        };
-      
-      
-        const navigate = useNavigate();
-      
-      const createTask = async () => {
-        const myHeaders = new Headers();
-        myHeaders.append("Content-Type", "application/json");
-      
-        const subtaskData = subtasks.map(({ id, text }) => ({
-          id,
-          text,
-          checked: checkedSubtasks.includes(id),
-        }));
-      console.log(subtaskData)
-        const raw = JSON.stringify({
-          accounts: selectedaccount?.value,
-          job: selectedJob?.value,
-          templatename: selectedtemp?.value,
-          taskname: tempNameNew,
-          status: status,
-          taskassignees: combinedValues,
-          priority: priority,
-          description: taskDiscription,
-          tasktags: combinedTagsValues,
-          issubtaskschecked: SubtaskSwitch,
-          startdate: StartsDateNew,
-          enddate: DueDateNew,
-          subtasks: subtaskData,
-        });
-      
-        const requestOptions = {
-          method:  "POST",
-          headers: myHeaders,
-          body: raw,
-          redirect: "follow",
-        };
-      
-        const url =`${ACCOUNT_TASKS_API}/accountstasks/newtask`;
-      
-        fetch(url, requestOptions)
-          .then((response) => response.json())
-          .then((result) => {
-            console.log(result);
-            toast.success( "Task Created successfully");
-            handleClose();
-            handleDrawerClose()
-            navigate("/tasks/pending")
-           
-          })
-          .catch((error) => console.error(error));
-      };
+          console.log("Subtasks Text:", subtasksText); // Log the extracted subtasks text
+
+          setSubtasks(subtasksText); // Assuming you have a state setter for this
+        } else {
+          console.log("subtasks is not defined or not an array.");
+        }
+      } catch (error) {
+        console.error("Error fetching template data:", error);
+      }
+    }
+  };
+  useEffect(() => {
+    if (tempvalues) {
+      tempallvalue();
+    }
+  }, [tempvalues]);
+  const tempallvalue = () => {
+    if (tempvalues) {
+      console.log(tempvalues);
+      setTempNameNew(tempvalues.templatename || "");
+      setStatus(tempvalues.status || "");
+      setTaskDescription(tempvalues.description || "");
+      setPriority(tempvalues.priority || "");
+
+      setStartsDateNew(dayjs(tempvalues.startdate) || null);
+      setDueDateNew(dayjs(tempvalues.enddate) || null);
+
+      setSubtaskSwitch(tempvalues.issubtaskschecked || false);
+      // console.log(tempvalues.isclienttaskchecked)
+      setSubtasks(tempvalues.subtasks);
+    }
+  };
+
+  const navigate = useNavigate();
+
+  const createTask = async () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const subtaskData = subtasks.map(({ id, text }) => ({
+      id,
+      text,
+      checked: checkedSubtasks.includes(id),
+    }));
+    console.log(subtaskData);
+    const raw = JSON.stringify({
+      accounts: selectedaccount?.value,
+      job: selectedJob?.value,
+      templatename: selectedtemp?.value,
+      taskname: tempNameNew,
+      status: status,
+      taskassignees: combinedValues,
+      priority: priority,
+      description: taskDiscription,
+      tasktags: combinedTagsValues,
+      issubtaskschecked: SubtaskSwitch,
+      startdate: StartsDateNew,
+      enddate: DueDateNew,
+      subtasks: subtaskData,
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    const url = `${ACCOUNT_TASKS_API}/accountstasks/newtask`;
+
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        toast.success("Task Created successfully");
+        handleClose();
+        handleDrawerClose();
+        navigate("/tasks/pending");
+      })
+      .catch((error) => console.error(error));
+  };
   return (
     <>
-   <Box >
+      <Box>
         <Box
           display="flex"
           justifyContent="space-between"
           alignItems="center"
           padding={1.5}
         >
-          <Typography variant="h6">
-         Create Task
-          </Typography>
+          <Typography variant="h6">Create Task</Typography>
           <IconButton onClick={handleClose}>
             <CloseIcon />
           </IconButton>
@@ -519,9 +582,7 @@ const AccountTask = ({ handleNewDrawerClose, handleDrawerClose }) => {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Box mt={2}>
               <Box>
-                <InputLabel sx={{ color: "black" }}>
-                Assignees
-                </InputLabel>
+                <InputLabel sx={{ color: "black" }}>Accounts</InputLabel>
 
                 <Autocomplete
                   options={accountoptions}
@@ -529,9 +590,9 @@ const AccountTask = ({ handleNewDrawerClose, handleDrawerClose }) => {
                   value={selectedaccount}
                   // onChange={handleAccountChange}
                   onChange={(event, newValue) => handleAccountChange(newValue)}
-                isOptionEqualToValue={(option, value) =>
-                  option.value === value.value
-                }
+                  isOptionEqualToValue={(option, value) =>
+                    option.value === value.value
+                  }
                   renderOption={(props, option) => (
                     <Box
                       component="li"
@@ -560,9 +621,7 @@ const AccountTask = ({ handleNewDrawerClose, handleDrawerClose }) => {
                   groupBy={(option) => option.group} // Group by pipeline name
                   value={selectedJob}
                   disabled={!selectedaccount}
-                  onChange={(event, newValue) =>
-                    handleJobChange(newValue)
-                  }
+                  onChange={(event, newValue) => handleJobChange(newValue)}
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -646,7 +705,7 @@ const AccountTask = ({ handleNewDrawerClose, handleDrawerClose }) => {
                           option.value === value.value
                         }
                       /> */}
-                      <MultiSelectDropdown 
+                      <MultiSelectDropdown
                         value={selectedUser}
                         onChange={handleUserChange}
                         placeholder="Assignees"
@@ -791,7 +850,7 @@ const AccountTask = ({ handleNewDrawerClose, handleDrawerClose }) => {
                     })}
                   </Select>
                 </FormControl> */}
-                                   <TagsMultiSelectDropDown 
+                <TagsMultiSelectDropDown
                   value={tagsNew}
                   onChange={handleTagChange}
                   placeholder="Tags"
@@ -952,12 +1011,12 @@ const AccountTask = ({ handleNewDrawerClose, handleDrawerClose }) => {
             }}
             onClick={createTask}
           >
-           Create Task
+            Create Task
           </Button>
         </Box>
       </Box>
-  </>
-  )
-}
+    </>
+  );
+};
 
-export default AccountTask
+export default AccountTask;

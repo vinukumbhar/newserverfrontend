@@ -131,7 +131,7 @@ const App = () => {
           <Route path="firmtemp/pipelines" element={<PipelineTemp/>}/>
           <Route path="/firmtemp/marketplace" element={<MarketPlaces/>}/>
           <Route path="/PipelineTemplateUpdate/:id" element={<PipelineTempUpdate />} />
-          <Route path="addJobs" element={<CreateJob />} />
+          {/* <Route path="addJobs" element={<CreateJob />} /> */}
           <Route path="billing/time" element={<TimeEntry />} />
         
           <Route path="billing/Invoices" element={<Invoices />} />

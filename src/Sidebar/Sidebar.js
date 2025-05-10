@@ -55,6 +55,7 @@ import ClientSelectionDialog from "../Billing/ClientSelectionDialog"
 import { faL } from "@fortawesome/free-solid-svg-icons";
 import OrganizerDialog from "../Pages/Organizers/ClientSelectionDialog"
 import ChatForm from "../Pages/ChatForm"
+import JobDrawer from "../Jobs/JobDrawer";
 function Sidebar() {
   const StyledBadge = styled(Badge)(({ theme }) => ({
     "& .MuiBadge-badge": {
@@ -340,13 +341,15 @@ function Sidebar() {
   const [isOrganizerDialogOpen, setIsOrganizerDialogOpen] = useState(false);
   const handleNewItemClick = (label) => {
     console.log("menu", label)
-    if (label === "Account" || label === "Contact" || label === "Task" || label === "Chat") {
+    if (label === "Account" || label === "Contact" || label === "Task" || label === "Chat" || label === "Jobs") {
       setRightDrawerContent(label);
       setIsRightDrawerOpen(true);
-    } else if (label === "Jobs") {
-      setIsRightDrawerOpen(false);
-      setIsDrawerOpen(false);
-    } else if (label === "Invoice") {
+    } 
+    // else if (label === "Jobs") {
+    //   setIsRightDrawerOpen(false);
+    //   setIsDrawerOpen(false);
+    // } 
+    else if (label === "Invoice") {
       setIsDialogOpen(true);
     }
     else if (label === "Organizer") {
@@ -1259,6 +1262,11 @@ function Sidebar() {
               handleNewDrawerClose={handleNewDrawerClose}
               handleDrawerClose={handleDrawerClose}
             />
+          )}
+
+          {rightDrawerContent === "Jobs" && (
+            <JobDrawer  handleNewDrawerClose={handleNewDrawerClose}
+              handleDrawerClose={handleDrawerClose}/>
           )}
         </Box>
       </Drawer>

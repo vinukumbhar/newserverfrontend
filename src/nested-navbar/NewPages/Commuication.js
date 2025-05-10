@@ -1,37 +1,52 @@
-
-
-import React, { useState, useEffect,useContext ,useRef} from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { FiPlusCircle } from "react-icons/fi";
 import {
-  Container, Box, Button, Typography, Chip, Drawer, TextField, InputLabel, Autocomplete, Switch, FormControlLabel, Divider, List, ListItem, ListItemText, Popover, IconButton, Checkbox,
-} from '@mui/material';
-import BorderColorIcon from '@mui/icons-material/BorderColor';
-import CloseIcon from '@mui/icons-material/Close';
+  Container,
+  Box,
+  Button,
+  Typography,
+  Chip,
+  Drawer,
+  TextField,
+  InputLabel,
+  Autocomplete,
+  Switch,
+  FormControlLabel,
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
+  Popover,
+  IconButton,
+  Checkbox,
+} from "@mui/material";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
+import CloseIcon from "@mui/icons-material/Close";
 import Editor from "../../Templates/Texteditor/Editor";
-import EditorShortcodes from '../../Templates/Texteditor/EditorShortcodes';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import EditorShortcodes from "../../Templates/Texteditor/EditorShortcodes";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { PiDotsSixVerticalBold } from "react-icons/pi";
 import { RiDeleteBin6Line } from "react-icons/ri";
-import { useParams } from "react-router-dom"
-import { toast } from "react-toastify"
-import Grid from '@mui/material/Grid';
-import TelegramIcon from '@mui/icons-material/Telegram';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { LoginContext } from '../../Sidebar/Context/Context'
+import { useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import Grid from "@mui/material/Grid";
+import TelegramIcon from "@mui/icons-material/Telegram";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { LoginContext } from "../../Sidebar/Context/Context";
 
 const Communication = () => {
   const { logindata } = useContext(LoginContext);
-  console.log("login data",logindata)
-  const [loginUserId, setLoginUserId] = useState()
+  console.log("login data", logindata);
+  const [loginUserId, setLoginUserId] = useState();
 
   useEffect(() => {
     if (logindata?.user?.id) {
@@ -42,9 +57,8 @@ const Communication = () => {
   console.log("Login User ID:", loginUserId);
   const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
   const [username, setUsername] = useState("");
-  console.log(logindata)
+  console.log(logindata);
   const fetchUserData = async (id) => {
-   
     const myHeaders = new Headers();
 
     const requestOptions = {
@@ -53,11 +67,11 @@ const Communication = () => {
       redirect: "follow",
     };
     const url = `${LOGIN_API}/common/user/${id}`;
-    fetch(url , requestOptions)
+    fetch(url, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log("id", result);
-        
+
         // console.log(userData)
         setUsername(result.username);
       });
@@ -69,11 +83,11 @@ const Communication = () => {
   const handleEditEditorChange = (newContent) => {
     setDescription(newContent);
   };
-  const [editmessageid, setEditmessagid] = useState('')
+  const [editmessageid, setEditmessagid] = useState("");
   const handleEditClick = (desc) => {
     setSelectedMessage(desc.message);
     setIsEditing(true);
-    setEditmessagid(desc._id)
+    setEditmessagid(desc._id);
   };
   const handleCancelEdit = () => {
     setIsEditing(false);
@@ -92,40 +106,40 @@ const Communication = () => {
     // Clear fields
     // setSelectedAccount([]);
     setSelectedInvoiceTemp("");
-    setInputText('');
-    setSelectedShortcut('');
-    setDaysuntilNextReminder('');
-    setNoOfReminder('');
+    setInputText("");
+    setSelectedShortcut("");
+    setDaysuntilNextReminder("");
+    setNoOfReminder("");
     setSubtasks([]); // Clear subtasks if needed
     setCheckedSubtasks([]); // Clear selected subtasks
     setAbsoluteDates(false); // Reset the reminder switch if necessary
-    setDescription('')
+    setDescription("");
     // Close the drawer
     setOpen(false);
   };
-  
+
   const [activeButton, setActiveButton] = useState("active");
   const [isActiveTrue, setIsActiveTrue] = useState(true);
   //for shortcode
-  const [inputText, setInputText] = useState('');
-  const [inputTextError, setInputTextError] = useState('');
+  const [inputText, setInputText] = useState("");
+  const [inputTextError, setInputTextError] = useState("");
 
-  const [selectedShortcut, setSelectedShortcut] = useState('');
+  const [selectedShortcut, setSelectedShortcut] = useState("");
   // const handlechatsubject = (e) => {
   //   const { value } = e.target;
   //   setInputText(value);
   // };
-   const [cursorPosition, setCursorPosition] = useState(0);
-    const textFieldRef = useRef(null);
-    const handlechatsubject = (e) => {
-      const { value,selectionStart  } = e.target;
-      setInputText(value);
-      setCursorPosition(selectionStart);
-    };
+  const [cursorPosition, setCursorPosition] = useState(0);
+  const textFieldRef = useRef(null);
+  const handlechatsubject = (e) => {
+    const { value, selectionStart } = e.target;
+    setInputText(value);
+    setCursorPosition(selectionStart);
+  };
   const [showDropdown, setShowDropdown] = useState(false);
   const [shortcuts, setShortcuts] = useState([]);
   const [filteredShortcuts, setFilteredShortcuts] = useState([]);
-  const [selectedOption, setSelectedOption] = useState('contacts');
+  const [selectedOption, setSelectedOption] = useState("contacts");
 
   const [anchorEl, setAnchorEl] = useState(null);
   const toggleDropdown = (event) => {
@@ -138,101 +152,184 @@ const Communication = () => {
   // };
   const handleAddShortcut = (shortcut) => {
     setInputText((prevText) => {
-        const newText =
-            prevText.slice(0, cursorPosition) + `[${shortcut}]` + prevText.slice(cursorPosition);
-        return newText;
+      const newText =
+        prevText.slice(0, cursorPosition) +
+        `[${shortcut}]` +
+        prevText.slice(cursorPosition);
+      return newText;
     });
 
     setTimeout(() => {
-        if (textFieldRef.current) {
-            textFieldRef.current.focus();
-            textFieldRef.current.setSelectionRange(cursorPosition + shortcut.length + 2, cursorPosition + shortcut.length + 2);
-        }
+      if (textFieldRef.current) {
+        textFieldRef.current.focus();
+        textFieldRef.current.setSelectionRange(
+          cursorPosition + shortcut.length + 2,
+          cursorPosition + shortcut.length + 2
+        );
+      }
     }, 0);
 
     setShowDropdown(false);
-};
+  };
   useEffect(() => {
-    setFilteredShortcuts(shortcuts.filter((shortcut) => shortcut.title.toLowerCase().includes('')));
+    setFilteredShortcuts(
+      shortcuts.filter((shortcut) => shortcut.title.toLowerCase().includes(""))
+    );
   }, [shortcuts]);
 
   useEffect(() => {
     // Set shortcuts based on selected option
-    if (selectedOption === 'contacts') {
+    if (selectedOption === "contacts") {
       const contactShortcuts = [
-        { title: 'Account Shortcodes', isBold: true },
-        { title: 'Account Name', isBold: false, value: 'ACCOUNT_NAME' },
-        { title: 'Custom field:Website', isBold: false, value: 'ACCOUNT_CUSTOM_FIELD:Website' },
-        { title: 'Contact Shortcodes', isBold: true, },
-        { title: 'Contact Name', isBold: false, value: 'CONTACT_NAME' },
-        { title: 'First Name', isBold: false, value: 'FIRST_NAME' },
-        { title: 'Middle Name', isBold: false, value: 'MIDDLE_NAME' },
-        { title: 'Last Name', isBold: false, value: 'LAST_NAME' },
-        { title: 'Phone number', isBold: false, value: 'PHONE_NUMBER' },
-        { title: 'Country', isBold: false, value: 'COUNTRY' },
-        { title: 'Company name', isBold: false, value: 'COMPANY_NAME ' },
-        { title: 'Street address', isBold: false, value: 'STREET_ADDRESS' },
-        { title: 'City', isBold: false, value: 'CITY' },
-        { title: 'State/Province', isBold: false, value: 'STATE / PROVINCE' },
-        { title: 'Zip/Postal code', isBold: false, value: 'ZIP / POSTAL CODE' },
-        { title: 'Custom field:Email', isBold: false, value: 'CONTACT_CUSTOM_FIELD:Email' },
-        { title: 'Date Shortcodes', isBold: true },
-        { title: 'Current day full date', isBold: false, value: 'CURRENT_DAY_FULL_DATE' },
-        { title: 'Current day number', isBold: false, value: 'CURRENT_DAY_NUMBER' },
-        { title: 'Current day name', isBold: false, value: 'CURRENT_DAY_NAME' },
-        { title: 'Current week', isBold: false, value: 'CURRENT_WEEK' },
-        { title: 'Current month number', isBold: false, value: 'CURRENT_MONTH_NUMBER' },
-        { title: 'Current month name', isBold: false, value: 'CURRENT_MONTH_NAME' },
-        { title: 'Current quarter', isBold: false, value: 'CURRENT_QUARTER' },
-        { title: 'Current year', isBold: false, value: 'CURRENT_YEAR' },
-        { title: 'Last day full date', isBold: false, value: 'LAST_DAY_FULL_DATE' },
-        { title: 'Last day number', isBold: false, value: 'LAST_DAY_NUMBER' },
-        { title: 'Last day name', isBold: false, value: 'LAST_DAY_NAME' },
-        { title: 'Last week', isBold: false, value: 'LAST_WEEK' },
-        { title: 'Last month number', isBold: false, value: 'LAST_MONTH_NUMBER' },
-        { title: 'Last month name', isBold: false, value: 'LAST_MONTH_NAME' },
-        { title: 'Last quarter', isBold: false, value: 'LAST_QUARTER' },
-        { title: 'Last_year', isBold: false, value: 'LAST_YEAR' },
-        { title: 'Next day full date', isBold: false, value: 'NEXT_DAY_FULL_DATE' },
-        { title: 'Next day number', isBold: false, value: 'NEXT_DAY_NUMBER' },
-        { title: 'Next day name', isBold: false, value: 'NEXT_DAY_NAME' },
-        { title: 'Next week', isBold: false, value: 'NEXT_WEEK' },
-        { title: 'Next month number', isBold: false, value: 'NEXT_MONTH_NUMBER' },
-        { title: 'Next month name', isBold: false, value: 'NEXT_MONTH_NAME' },
-        { title: 'Next quarter', isBold: false, value: 'NEXT_QUARTER' },
-        { title: 'Next year', isBold: false, value: 'NEXT_YEAR' }
+        { title: "Account Shortcodes", isBold: true },
+        { title: "Account Name", isBold: false, value: "ACCOUNT_NAME" },
+        {
+          title: "Custom field:Website",
+          isBold: false,
+          value: "ACCOUNT_CUSTOM_FIELD:Website",
+        },
+        { title: "Contact Shortcodes", isBold: true },
+        { title: "Contact Name", isBold: false, value: "CONTACT_NAME" },
+        { title: "First Name", isBold: false, value: "FIRST_NAME" },
+        { title: "Middle Name", isBold: false, value: "MIDDLE_NAME" },
+        { title: "Last Name", isBold: false, value: "LAST_NAME" },
+        { title: "Phone number", isBold: false, value: "PHONE_NUMBER" },
+        { title: "Country", isBold: false, value: "COUNTRY" },
+        { title: "Company name", isBold: false, value: "COMPANY_NAME " },
+        { title: "Street address", isBold: false, value: "STREET_ADDRESS" },
+        { title: "City", isBold: false, value: "CITY" },
+        { title: "State/Province", isBold: false, value: "STATE / PROVINCE" },
+        { title: "Zip/Postal code", isBold: false, value: "ZIP / POSTAL CODE" },
+        {
+          title: "Custom field:Email",
+          isBold: false,
+          value: "CONTACT_CUSTOM_FIELD:Email",
+        },
+        { title: "Date Shortcodes", isBold: true },
+        {
+          title: "Current day full date",
+          isBold: false,
+          value: "CURRENT_DAY_FULL_DATE",
+        },
+        {
+          title: "Current day number",
+          isBold: false,
+          value: "CURRENT_DAY_NUMBER",
+        },
+        { title: "Current day name", isBold: false, value: "CURRENT_DAY_NAME" },
+        { title: "Current week", isBold: false, value: "CURRENT_WEEK" },
+        {
+          title: "Current month number",
+          isBold: false,
+          value: "CURRENT_MONTH_NUMBER",
+        },
+        {
+          title: "Current month name",
+          isBold: false,
+          value: "CURRENT_MONTH_NAME",
+        },
+        { title: "Current quarter", isBold: false, value: "CURRENT_QUARTER" },
+        { title: "Current year", isBold: false, value: "CURRENT_YEAR" },
+        {
+          title: "Last day full date",
+          isBold: false,
+          value: "LAST_DAY_FULL_DATE",
+        },
+        { title: "Last day number", isBold: false, value: "LAST_DAY_NUMBER" },
+        { title: "Last day name", isBold: false, value: "LAST_DAY_NAME" },
+        { title: "Last week", isBold: false, value: "LAST_WEEK" },
+        {
+          title: "Last month number",
+          isBold: false,
+          value: "LAST_MONTH_NUMBER",
+        },
+        { title: "Last month name", isBold: false, value: "LAST_MONTH_NAME" },
+        { title: "Last quarter", isBold: false, value: "LAST_QUARTER" },
+        { title: "Last_year", isBold: false, value: "LAST_YEAR" },
+        {
+          title: "Next day full date",
+          isBold: false,
+          value: "NEXT_DAY_FULL_DATE",
+        },
+        { title: "Next day number", isBold: false, value: "NEXT_DAY_NUMBER" },
+        { title: "Next day name", isBold: false, value: "NEXT_DAY_NAME" },
+        { title: "Next week", isBold: false, value: "NEXT_WEEK" },
+        {
+          title: "Next month number",
+          isBold: false,
+          value: "NEXT_MONTH_NUMBER",
+        },
+        { title: "Next month name", isBold: false, value: "NEXT_MONTH_NAME" },
+        { title: "Next quarter", isBold: false, value: "NEXT_QUARTER" },
+        { title: "Next year", isBold: false, value: "NEXT_YEAR" },
       ];
       setShortcuts(contactShortcuts);
-    } else if (selectedOption === 'account') {
+    } else if (selectedOption === "account") {
       const accountShortcuts = [
-        { title: 'Account Shortcodes', isBold: true },
-        { title: 'Account Name', isBold: false, value: 'ACCOUNT_NAME' },
-        { title: 'Custom field:Website', isBold: false, value: 'ACCOUNT_CUSTOM_FIELD:Website' },
-        { title: 'Date Shortcodes', isBold: true },
-        { title: 'Current day full date', isBold: false, value: 'CURRENT_DAY_FULL_DATE' },
-        { title: 'Current day number', isBold: false, value: 'CURRENT_DAY_NUMBER' },
-        { title: 'Current day name', isBold: false, value: 'CURRENT_DAY_NAME' },
-        { title: 'Current week', isBold: false, value: 'CURRENT_WEEK' },
-        { title: 'Current month number', isBold: false, value: 'CURRENT_MONTH_NUMBER' },
-        { title: 'Current month name', isBold: false, value: 'CURRENT_MONTH_NAME' },
-        { title: 'Current quarter', isBold: false, value: 'CURRENT_QUARTER' },
-        { title: 'Current year', isBold: false, value: 'CURRENT_YEAR' },
-        { title: 'Last day full date', isBold: false, value: 'LAST_DAY_FULL_DATE' },
-        { title: 'Last day number', isBold: false, value: 'LAST_DAY_NUMBER' },
-        { title: 'Last day name', isBold: false, value: 'LAST_DAY_NAME' },
-        { title: 'Last week', isBold: false, value: 'LAST_WEEK' },
-        { title: 'Last month number', isBold: false, value: 'LAST_MONTH_NUMBER' },
-        { title: 'Last month name', isBold: false, value: 'LAST_MONTH_NAME' },
-        { title: 'Last quarter', isBold: false, value: 'LAST_QUARTER' },
-        { title: 'Last_year', isBold: false, value: 'LAST_YEAR' },
-        { title: 'Next day full date', isBold: false, value: 'NEXT_DAY_FULL_DATE' },
-        { title: 'Next day number', isBold: false, value: 'NEXT_DAY_NUMBER' },
-        { title: 'Next day name', isBold: false, value: 'NEXT_DAY_NAME' },
-        { title: 'Next week', isBold: false, value: 'NEXT_WEEK' },
-        { title: 'Next month number', isBold: false, value: 'NEXT_MONTH_NUMBER' },
-        { title: 'Next month name', isBold: false, value: 'NEXT_MONTH_NAME' },
-        { title: 'Next quarter', isBold: false, value: 'NEXT_QUARTER' },
-        { title: 'Next year', isBold: false, value: 'NEXT_YEAR' }
+        { title: "Account Shortcodes", isBold: true },
+        { title: "Account Name", isBold: false, value: "ACCOUNT_NAME" },
+        {
+          title: "Custom field:Website",
+          isBold: false,
+          value: "ACCOUNT_CUSTOM_FIELD:Website",
+        },
+        { title: "Date Shortcodes", isBold: true },
+        {
+          title: "Current day full date",
+          isBold: false,
+          value: "CURRENT_DAY_FULL_DATE",
+        },
+        {
+          title: "Current day number",
+          isBold: false,
+          value: "CURRENT_DAY_NUMBER",
+        },
+        { title: "Current day name", isBold: false, value: "CURRENT_DAY_NAME" },
+        { title: "Current week", isBold: false, value: "CURRENT_WEEK" },
+        {
+          title: "Current month number",
+          isBold: false,
+          value: "CURRENT_MONTH_NUMBER",
+        },
+        {
+          title: "Current month name",
+          isBold: false,
+          value: "CURRENT_MONTH_NAME",
+        },
+        { title: "Current quarter", isBold: false, value: "CURRENT_QUARTER" },
+        { title: "Current year", isBold: false, value: "CURRENT_YEAR" },
+        {
+          title: "Last day full date",
+          isBold: false,
+          value: "LAST_DAY_FULL_DATE",
+        },
+        { title: "Last day number", isBold: false, value: "LAST_DAY_NUMBER" },
+        { title: "Last day name", isBold: false, value: "LAST_DAY_NAME" },
+        { title: "Last week", isBold: false, value: "LAST_WEEK" },
+        {
+          title: "Last month number",
+          isBold: false,
+          value: "LAST_MONTH_NUMBER",
+        },
+        { title: "Last month name", isBold: false, value: "LAST_MONTH_NAME" },
+        { title: "Last quarter", isBold: false, value: "LAST_QUARTER" },
+        { title: "Last_year", isBold: false, value: "LAST_YEAR" },
+        {
+          title: "Next day full date",
+          isBold: false,
+          value: "NEXT_DAY_FULL_DATE",
+        },
+        { title: "Next day number", isBold: false, value: "NEXT_DAY_NUMBER" },
+        { title: "Next day name", isBold: false, value: "NEXT_DAY_NAME" },
+        { title: "Next week", isBold: false, value: "NEXT_WEEK" },
+        {
+          title: "Next month number",
+          isBold: false,
+          value: "NEXT_MONTH_NUMBER",
+        },
+        { title: "Next month name", isBold: false, value: "NEXT_MONTH_NAME" },
+        { title: "Next quarter", isBold: false, value: "NEXT_QUARTER" },
+        { title: "Next year", isBold: false, value: "NEXT_YEAR" },
       ];
       setShortcuts(accountShortcuts);
     }
@@ -242,19 +339,21 @@ const Communication = () => {
   };
 
   //for texteditor.
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState("");
   const handleEditorChange = (content) => {
     setDescription(content);
   };
   const [noOfReminder, setNoOfReminder] = useState(1);
-  const [daysuntilNextReminder, setDaysuntilNextReminder] = useState('3');
+  const [daysuntilNextReminder, setDaysuntilNextReminder] = useState("3");
   const [absoluteDate, setAbsoluteDates] = useState(false);
   const handleAbsolutesDates = (checked) => {
     setAbsoluteDates(checked);
   };
   ///clienttask
 
-  const [subtasks, setSubtasks] = useState([{ id: '1', text: '', checked: '' }]);
+  const [subtasks, setSubtasks] = useState([
+    { id: "1", text: "", checked: "" },
+  ]);
   const handleDragEnd = (result) => {
     if (!result.destination) return;
     const newSubtasks = Array.from(subtasks);
@@ -283,9 +382,9 @@ const Communication = () => {
   const [checkedSubtasks, setCheckedSubtasks] = useState([]);
 
   const handleCheckboxChange = (id, description) => {
-    setCheckedSubtasks(prevCheckedSubtasks => {
+    setCheckedSubtasks((prevCheckedSubtasks) => {
       const updatedCheckedSubtasks = prevCheckedSubtasks.includes(id)
-        ? prevCheckedSubtasks.filter(checkedId => checkedId !== id)
+        ? prevCheckedSubtasks.filter((checkedId) => checkedId !== id)
         : [...prevCheckedSubtasks, id];
       console.log(updatedCheckedSubtasks);
       return updatedCheckedSubtasks;
@@ -296,8 +395,8 @@ const Communication = () => {
   const [chatTemplates, setChatTemplates] = useState([]);
   useEffect(() => {
     fetchChatTemplates();
-    fetchAccountsData()
-    fetchUserData(logindata.user.id)
+    fetchAccountsData();
+    fetchUserData(logindata.user.id);
   }, []);
 
   useEffect(() => {
@@ -325,7 +424,7 @@ const Communication = () => {
 
   const [selectInvoiceTemp, setSelectedInvoiceTemp] = useState("");
   const [templateId, setTemplateId] = useState(null);
-
+const [from,setFrom]=useState()
   const handleInvoiceTempChange = async (event, newValue) => {
     setSelectedInvoiceTemp(newValue);
     if (newValue && newValue.value) {
@@ -336,18 +435,21 @@ const Communication = () => {
         const response = await fetch(url);
         const result = await response.json();
         const chatTemplate = result.chatTemplate;
-
-        setAbsoluteDates(chatTemplate.sendreminderstoclient)
+console.log(result.chatTemplate)
+        setAbsoluteDates(chatTemplate.sendreminderstoclient);
         setTemplateName(chatTemplate.templatename);
         setInputText(chatTemplate.chatsubject);
         setDescription(chatTemplate.description);
         setDaysuntilNextReminder(chatTemplate.daysuntilnextreminder);
         setNoOfReminder(chatTemplate.numberofreminders);
-        setSubtasks(chatTemplate.clienttasks.flat().map(task => ({
-          id: task.id,
-          text: task.text,
-          checked: task.checked,
-        })));
+        setFrom(chatTemplate.from.username)
+        setSubtasks(
+          chatTemplate.clienttasks.flat().map((task) => ({
+            id: task.id,
+            text: task.text,
+            checked: task.checked,
+          }))
+        );
         console.log("Subtasks updated:", subtasks);
       } catch (error) {
         console.error("Error fetching chat template:", error);
@@ -355,11 +457,10 @@ const Communication = () => {
     }
   };
 
-  const [templateName, setTemplateName] = useState('');
-  //for accountwise 
+  const [templateName, setTemplateName] = useState("");
+  //for accountwise
   const [accountData, setAccountData] = useState([]);
   const [selectedAccount, setSelectedAccount] = useState([]);
-
 
   const fetchAccountsData = async () => {
     try {
@@ -370,7 +471,11 @@ const Communication = () => {
       if (Array.isArray(result.accountlist)) {
         setAccountData(result.accountlist);
         const selectedAccounts = result.accountlist
-          .filter((account) => (Array.isArray(data) ? data.includes(account.id) : account.id === data))
+          .filter((account) =>
+            Array.isArray(data)
+              ? data.includes(account.id)
+              : account.id === data
+          )
           .map((selectedAccount) => ({
             label: selectedAccount.Name,
             value: selectedAccount.id,
@@ -394,10 +499,12 @@ const Communication = () => {
   }));
 
   const handleDelete = (valueToDelete) => {
-    setSelectedAccount((prevSelected) => prevSelected.filter((value) => value !== valueToDelete));
+    setSelectedAccount((prevSelected) =>
+      prevSelected.filter((value) => value !== valueToDelete)
+    );
   };
-  const [chatId, setChatId] = useState()
-console.log("new chat id",chatId)
+  const [chatId, setChatId] = useState();
+  console.log("new chat id", chatId);
 
   // mail for drawer btn
   const sendSaveChatMail = (chatId) => {
@@ -408,26 +515,26 @@ console.log("new chat id",chatId)
       accountid: data,
       chattemplateid: templateId,
       username: username,
-      chatId:chatId,
-      "viewchatlink": "/login",
-
+      chatId: chatId,
+      viewchatlink: "/login",
     });
 
     const requestOptions = {
       method: "POST",
       headers: myHeaders,
       body: raw,
-      redirect: "follow"
+      redirect: "follow",
     };
-console.log(raw)
+    console.log(raw);
     fetch(`${CHATTOCLIENT_API}/chatsend/securechatsend`, requestOptions)
       .then((response) => response.json())
       .then((result) => console.log(result))
       .catch((error) => console.error(error));
-  }
+  };
 
   // mail for msgs
   const securemessagechatsend = (chatId) => {
+    console.log("bvhg", chatId)
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -435,23 +542,22 @@ console.log(raw)
       accountid: data,
       chattemplateid: templateId,
       username: username,
-      "viewchatlink": "/login",
-      chatId:chatId
-
+      viewchatlink: "/login",
+      chatId: chatId,
     });
-    console.log(raw)
+    console.log(raw);
     const requestOptions = {
       method: "POST",
       headers: myHeaders,
       body: raw,
-      redirect: "follow"
+      redirect: "follow",
     };
 
     fetch(`${CHATTOCLIENT_API}/chatmsg/securemessagechatsend`, requestOptions)
       .then((response) => response.json())
       .then((result) => console.log(result))
       .catch((error) => console.error(error));
-  }
+  };
 
   ///for drawer save btn
   const saveChat = () => {
@@ -461,37 +567,39 @@ console.log(raw)
     const subtaskData = subtasks.map(({ id, text, checked }) => ({
       id,
       text,
-      checked: checked !== undefined ? checked : false // Ensure checked is either true or false
+      checked: checked !== undefined ? checked : false, // Ensure checked is either true or false
     }));
-    const messageData = [{
-      message: description,
-      fromwhome: "Admin",
-      senderid:loginUserId
-    }];
+    const messageData = [
+      {
+        message: description,
+        fromwhome: "Admin",
+        senderid: loginUserId,
+      },
+    ];
 
     const raw = JSON.stringify({
       accountids: selectedAccountIds,
       chattemplateid: selectInvoiceTemp?.value,
       templatename: templateName,
-      // from: "65e7149c570b4c1aba9fcfd4",
+      from: from,
       chatsubject: inputText + selectedShortcut,
       // description: description,
       description: messageData,
-      chatstatus:'false',
+      chatstatus: "false",
       sendreminderstoclient: absoluteDate,
       daysuntilnextreminder: daysuntilNextReminder,
       numberofreminders: noOfReminder,
       clienttasks: subtaskData,
       // isclienttaskchecked: SubtaskSwitch,
-      active: "true"
+      active: "true",
     });
     const requestOptions = {
       method: "POST",
       headers: myHeaders,
       body: raw,
-      redirect: "follow"
+      redirect: "follow",
     };
-    console.log(raw)
+    console.log(raw);
     fetch(`${CHATTOCLIENT_API}/chats/chatsaccountwise`, requestOptions)
       .then((response) => {
         if (!response.ok) {
@@ -507,27 +615,27 @@ console.log(raw)
         // sendSaveChatMail(result.newChats._id)
         setIsSubmitted(true);
         accountwiseChatlist(data, isActiveTrue);
-        handleClose()
+        handleClose();
       })
       .catch((error) => {
         console.error("Fetch error: ", error.message);
         toast.error("Failed to create new chat. Please try again.");
       });
   };
-  const [adminChatSubject, setAdminChatSubject] = useState()
-  const [adminChatDiscription, setAdminChatDiscription] = useState()
-  const [accountName, setAccountName] = useState()
-  const [time, setTime] = useState()
+  const [adminChatSubject, setAdminChatSubject] = useState();
+  const [adminChatDiscription, setAdminChatDiscription] = useState();
+  const [accountName, setAccountName] = useState();
+  const [time, setTime] = useState();
   const [chatList, setChatList] = useState([]);
-  const [adminChatClientsTask, setAdminChatClientsTask] = useState()
+  const [adminChatClientsTask, setAdminChatClientsTask] = useState();
 
   const accountwiseChatlist = (data, isActiveTrue) => {
     const requestOptions = {
       method: "GET",
       redirect: "follow",
     };
-    const url = `${CHATTOCLIENT_API}/chats/chatsaccountwise/isactivechat/${data}/${isActiveTrue}`
-    console.log(url)
+    const url = `${CHATTOCLIENT_API}/chats/chatsaccountwise/isactivechat/${data}/${isActiveTrue}`;
+    console.log(url);
     fetch(url, requestOptions)
       .then((response) => response.json())
       .then((result) => {
@@ -539,14 +647,17 @@ console.log(raw)
               setSubtasks(chat.clienttasks);
             });
             setAccountName(chat.accountid.accountName);
-            setTime(chat.updatedAt)
-            setSubtasks(chat.clienttasks)
-            setSelectedmsgId(chat.description.map((msg) => msg._id))
-            console.log("Message IDs:", chat.description.map((msg) => msg._id));
+            setTime(chat.updatedAt);
+            setSubtasks(chat.clienttasks);
+            setSelectedmsgId(chat.description.map((msg) => msg._id));
+            console.log(
+              "Message IDs:",
+              chat.description.map((msg) => msg._id)
+            );
           });
-          setIsSubmitted(true)
+          setIsSubmitted(true);
           setChatList(result.chataccountwise);
-          console.log(result.chataccountwise)
+          console.log(result.chataccountwise);
         } else {
           setChatList(result.chataccountwise);
           console.log("No chat data available");
@@ -554,11 +665,11 @@ console.log(raw)
       })
       .catch((error) => console.error(error));
   };
-   // Call accountwiseChatlist in useEffect
-   useEffect(() => {
+  // Call accountwiseChatlist in useEffect
+  useEffect(() => {
     accountwiseChatlist(data, isActiveTrue);
   }, [data, isActiveTrue]); // Dependencies
-  console.log(chatList)
+  console.log(chatList);
   const [expanded, setExpanded] = useState(false);
   const [activeChatIndex, setActiveChatIndex] = useState(null);
 
@@ -569,24 +680,28 @@ console.log(raw)
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-  const [selectedContent, setSelectedContent] = useState('chat');
+  const [selectedContent, setSelectedContent] = useState("chat");
   const handleContentClick = (content) => {
     setSelectedContent(content); // Change the content when clicked
   };
-  const formattedTime = new Date(time).toLocaleDateString("en-US", {
-    month: "short",
-    day: "2-digit",
-  }).replace(',', '');
-
+  const formattedTime = new Date(time)
+    .toLocaleDateString("en-US", {
+      month: "short",
+      day: "2-digit",
+    })
+    .replace(",", "");
 
   //delete chat
   const DeleteChat = () => {
     const requestOptions = {
       method: "DELETE",
-      redirect: "follow"
+      redirect: "follow",
     };
 
-    fetch(`${CHATTOCLIENT_API}/chats/chatsaccountwise/${chatId}`, requestOptions)
+    fetch(
+      `${CHATTOCLIENT_API}/chats/chatsaccountwise/${chatId}`,
+      requestOptions
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to delete chat");
@@ -598,7 +713,7 @@ console.log(raw)
 
         toast.success("Chat deleted successfully!");
 
-        accountwiseChatlist(data, isActiveTrue)
+        accountwiseChatlist(data, isActiveTrue);
         setExpanded(false);
       })
       .catch((error) => {
@@ -609,22 +724,21 @@ console.log(raw)
 
   //Archive Chat
   const ArchiveChat = () => {
-
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
     const raw = JSON.stringify({
-      active: isActiveTrue
+      active: isActiveTrue,
     });
-    console.log(raw)
+    console.log(raw);
     const requestOptions = {
       method: "PATCH",
       headers: myHeaders,
       body: raw,
-      redirect: "follow"
+      redirect: "follow",
     };
-    const url = (`${CHATTOCLIENT_API}/chats/chatsaccountwise/${chatId}`);
-    console.log(url)
+    const url = `${CHATTOCLIENT_API}/chats/chatsaccountwise/${chatId}`;
+    console.log(url);
     fetch(url, requestOptions)
       .then((response) => response.json())
       .then((result) => {
@@ -635,33 +749,30 @@ console.log(raw)
         if (isActiveTrue === true) {
           setActiveButton("active");
           setActiveorarchive("Archive");
-        }
-        else if (isActiveTrue === false) {
+        } else if (isActiveTrue === false) {
           setActiveButton("archived");
           setActiveorarchive("Active");
         }
 
-        accountwiseChatlist(data, isActiveTrue)
+        accountwiseChatlist(data, isActiveTrue);
       })
       .catch((error) => {
         console.error(error);
         toast.error("Failed to archive chat. Please try again.");
       });
-  }
+  };
   const [openDialog, setOpenDialog] = React.useState(false);
-  const [activeorarchive, setActiveorarchive] = React.useState('Active');
+  const [activeorarchive, setActiveorarchive] = React.useState("Active");
   // const [openDialog, setOpenDialog] = React.useState(false);
-  console.log(activeorarchive)
+  console.log(activeorarchive);
   const handleClickDialog = () => {
     setOpenDialog(true);
 
-    if (activeorarchive === 'Archive') {
-      setIsActiveTrue(false)
+    if (activeorarchive === "Archive") {
+      setIsActiveTrue(false);
+    } else if (activeorarchive === "Active") {
+      setIsActiveTrue(true);
     }
-    else if (activeorarchive === 'Active') {
-      setIsActiveTrue(true)
-    }
-
   };
 
   const handleCloseDialog = () => {
@@ -670,16 +781,19 @@ console.log(raw)
 
   const [allDescriptions, setAllDescriptions] = useState([]); // State to hold all descriptions
 
-
   const updateChatDescription = () => {
     if (!description.trim()) return;
 
     const newDescription = {
       message: description,
-      fromwhome: "Admin",senderid:loginUserId
+      fromwhome: "Admin",
+      senderid: loginUserId,
     };
-    setAllDescriptions((prevDescriptions) => [...prevDescriptions, newDescription]);
-    
+    setAllDescriptions((prevDescriptions) => [
+      ...prevDescriptions,
+      newDescription,
+    ]);
+
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     const raw = JSON.stringify({
@@ -692,7 +806,10 @@ console.log(raw)
       redirect: "follow",
     };
     console.log("Payload:", raw);
-    fetch(`${CHATTOCLIENT_API}/chats/chatsaccountwise/chatupdatemessage/${chatId}`, requestOptions)
+    fetch(
+      `${CHATTOCLIENT_API}/chats/chatsaccountwise/chatupdatemessage/${chatId}`,
+      requestOptions
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -700,17 +817,16 @@ console.log(raw)
         return response.json();
       })
       .then((result) => {
-
         console.log("Response:", result);
-        securemessagechatsend(chatId)
+        securemessagechatsend(chatId);
         setAdminChatSubject(result.updatedChats.chatsubject);
         setAdminChatDiscription(result.updatedChats.description);
         setExpanded(true);
         setDescription("");
-        setChatId(result.updatedChats._id)
+        setChatId(result.updatedChats._id);
+        handleUpdateChatAccount()
         toast.success("Chat description updated successfully");
-        accountwiseChatlist(data, isActiveTrue)
-       
+        accountwiseChatlist(data, isActiveTrue);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -718,13 +834,39 @@ console.log(raw)
       });
   };
 
+  const handleUpdateChatAccount = () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      chatstatus: false,
+    });
+
+    const requestOptions = {
+      method: "PATCH",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch(
+      `http://127.0.0.1/chats/chatsaccountwise/${chatId}`,
+      requestOptions
+    )
+      .then((response) => response.text())
+      .then((result) => console.log(result))
+      .catch((error) => console.error(error));
+  };
   const updateAdminChatDescription = (description) => {
     if (!description.trim()) return; // Do not send if description is empty
     const newDescription = {
       message: description,
-      fromwhome: "Admin"
+      fromwhome: "Admin",
     };
-    setAllDescriptions((prevDescriptions) => [...prevDescriptions, newDescription]);
+    setAllDescriptions((prevDescriptions) => [
+      ...prevDescriptions,
+      newDescription,
+    ]);
     setDescription("");
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -738,7 +880,10 @@ console.log(raw)
       redirect: "follow",
     };
     console.log("Payload:", raw);
-    fetch(`${CHATTOCLIENT_API}/chats/chatsaccountwise/chatupdatemessage/${chatId}`, requestOptions)
+    fetch(
+      `${CHATTOCLIENT_API}/chats/chatsaccountwise/chatupdatemessage/${chatId}`,
+      requestOptions
+    )
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -746,15 +891,15 @@ console.log(raw)
         return response.json();
       })
       .then((result) => {
-
         console.log("Response:", result);
         // securemessagechatsend()
         setAdminChatSubject(result.updatedChats.chatsubject);
         setAdminChatDiscription(result.updatedChats.description);
         setExpanded(true);
-        setChatId(result.updatedChats._id)
+        setChatId(result.updatedChats._id);
         toast.success("Chat description updated successfully");
-        accountwiseChatlist(data, isActiveTrue)
+        handleUpdateChatAccount()
+        accountwiseChatlist(data, isActiveTrue);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -763,26 +908,29 @@ console.log(raw)
   };
 
   //for update msgs
-  const [selectedmsgId, setSelectedmsgId] = useState()
+  const [selectedmsgId, setSelectedmsgId] = useState();
 
   const updateMsgs = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    console.log(description)
+    console.log(description);
     const raw = JSON.stringify({
       chatId: chatId,
       messageId: editmessageid,
       newMessage: description,
     });
-    console.log(raw)
+    console.log(raw);
     const requestOptions = {
       method: "PATCH",
       headers: myHeaders,
       body: raw,
-      redirect: "follow"
+      redirect: "follow",
     };
 
-    fetch(`${CHATTOCLIENT_API}/chats/chatsaccountwise/chatmessage/bymessageid/update`, requestOptions)
+    fetch(
+      `${CHATTOCLIENT_API}/chats/chatsaccountwise/chatmessage/bymessageid/update`,
+      requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
@@ -790,19 +938,19 @@ console.log(raw)
         setAdminChatDiscription(result.updatedChat.description);
         setExpanded(true);
         // setActiveChatIndex(index);
-        setChatId(result.updatedChat._id)
+        setChatId(result.updatedChat._id);
         toast.success("message updated successfully!");
-        accountwiseChatlist(data, isActiveTrue)
+        accountwiseChatlist(data, isActiveTrue);
       })
       .catch((error) => {
         console.error(error);
         toast.error("Failed to updated message. Please try again.");
       });
-  }
+  };
 
   ///for delete message
   const handleDeleteClick = (desc) => {
-    deletemessge(desc._id)
+    deletemessge(desc._id);
   };
 
   const deletemessge = (deletemessageid) => {
@@ -814,15 +962,18 @@ console.log(raw)
       messageId: deletemessageid,
       newMessage: description,
     });
-    console.log(raw)
+    console.log(raw);
     const requestOptions = {
       method: "DELETE",
       headers: myHeaders,
       body: raw,
-      redirect: "follow"
+      redirect: "follow",
     };
 
-    fetch(`${CHATTOCLIENT_API}/chats/chatsaccountwise/chatmessage/bymessageid/delete`, requestOptions)
+    fetch(
+      `${CHATTOCLIENT_API}/chats/chatsaccountwise/chatmessage/bymessageid/delete`,
+      requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
@@ -830,15 +981,15 @@ console.log(raw)
         setAdminChatDiscription(result.updatedChat.description);
         setExpanded(true);
         // setActiveChatIndex(index);
-        setChatId(result.updatedChat._id)
+        setChatId(result.updatedChat._id);
         toast.success("message deleted successfully!");
-        accountwiseChatlist(data, isActiveTrue)
+        accountwiseChatlist(data, isActiveTrue);
       })
       .catch((error) => {
         console.error(error);
         toast.error("Failed to deleted message. Please try again.");
       });
-  }
+  };
 
   const handleActiveClick = () => {
     setIsActiveTrue(true);
@@ -866,7 +1017,8 @@ console.log(raw)
     console.log(groupIndex);
     const taskGroup = adminChatClientsTask[groupIndex];
     if (!Array.isArray(taskGroup)) return;
-    const lastTask = taskGroup.length > 0 ? taskGroup[taskGroup.length - 1] : null;
+    const lastTask =
+      taskGroup.length > 0 ? taskGroup[taskGroup.length - 1] : null;
     const newId = lastTask ? String(Number(lastTask.id) + 1) : "1";
     const newTask = { id: newId, text: "", checked: false };
     const updatedTasks = [...adminChatClientsTask];
@@ -882,68 +1034,115 @@ console.log(raw)
     setAdminChatClientsTask(updatedTasks);
   };
 
-  console.log(adminChatClientsTask)
+  console.log(adminChatClientsTask);
 
   ///for resend client task
+  // const resendClientTask = () => {
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Content-Type", "application/json");
+  //   const raw = JSON.stringify({
+  //     chatId: chatId,
+  //     newTask: adminChatClientsTask.flat()
+  //   });
+  //   console.log(raw);
+
+  //   const requestOptions = {
+  //     method: "POST",
+  //     headers: myHeaders,
+  //     body: raw,
+  //     redirect: "follow"
+  //   };
+
+  //   fetch(`${CHATTOCLIENT_API}/chats/chatsaccountwise/addclienttask`, requestOptions)
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       console.log(result);
+  //       const taskMessages = adminChatClientsTask
+  //       .flat()
+  //       .map(task => `• ${task.text}`)
+  //       .join("\n"); // newline-separated bullets
+
+  //       // const taskMessages = adminChatClientsTask.flat().map(task => task.text).join(", ");
+  //       const description = `${taskMessages}`;
+  //       console.log(description)
+
+  //       updateAdminChatDescription(description)
+
+  //     })
+  //     .catch((error) => console.error(error));
+  // };
+
   const resendClientTask = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
+
+    // Filter out checked tasks
+    const uncheckedTasks = adminChatClientsTask
+      .flat()
+      .filter((task) => task.checked !== "true");
+
     const raw = JSON.stringify({
       chatId: chatId,
-      newTask: adminChatClientsTask.flat()
+      newTask: uncheckedTasks,
     });
+
     console.log(raw);
 
     const requestOptions = {
       method: "POST",
       headers: myHeaders,
       body: raw,
-      redirect: "follow"
+      redirect: "follow",
     };
 
-    fetch(`${CHATTOCLIENT_API}/chats/chatsaccountwise/addclienttask`, requestOptions)
+    fetch(
+      `${CHATTOCLIENT_API}/chats/chatsaccountwise/addclienttask`,
+      requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
-        const taskMessages = adminChatClientsTask
-        .flat()
-        .map(task => `• ${task.text}`)
-        .join("\n"); // newline-separated bullets
-      
-        // const taskMessages = adminChatClientsTask.flat().map(task => task.text).join(", ");
+
+        const taskMessages =
+          `created client tasks <br/>` +
+          uncheckedTasks
+            // .map(task => `• ${task.text}`)
+            // .join("\n");
+            .map((task) => `• <s>${task.text}</s>`)
+            .join("<br>");
         const description = `${taskMessages}`;
-        console.log(description)
+        console.log(description);
 
-        updateAdminChatDescription(description)
-
+        updateAdminChatDescription(description);
       })
       .catch((error) => console.error(error));
   };
 
-
-
   const handleTaskTextChange = (groupIndex, taskIndex, newText) => {
     const updatedTasks = [...adminChatClientsTask];
     updatedTasks[groupIndex][taskIndex].text = newText;
-    console.log(updatedTasks)
+    console.log(updatedTasks);
     setAdminChatClientsTask(updatedTasks); // Ensure this updates the state
   };
 
-
-
   return (
     <Box>
-
-      <Box mt={2} display="flex" alignItems="center" justifyContent="space-between">
+      <Box
+        mt={2}
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+      >
         <Typography m={1} variant="h4">
           <b>Chats & tasks</b>
-
         </Typography>
-        <Box display={"flex"} alignItems={'center'} gap={2}>
+        <Box display={"flex"} alignItems={"center"} gap={2}>
           <Typography
             style={{
               backgroundColor:
-                activeButton === "active" ? "var(--color-save-btn)" : "transparent",
+                activeButton === "active"
+                  ? "var(--color-save-btn)"
+                  : "transparent",
               color: activeButton === "active" ? "white" : "black",
               fontWeight: activeButton === "active" ? "bold" : "normal",
               padding: "4px 8px",
@@ -959,7 +1158,9 @@ console.log(raw)
           <Typography
             style={{
               backgroundColor:
-                activeButton === "archived" ? "var(--color-save-btn)" : "transparent",
+                activeButton === "archived"
+                  ? "var(--color-save-btn)"
+                  : "transparent",
               color: activeButton === "archived" ? "white" : "black",
               fontWeight: activeButton === "archived" ? "bold" : "normal",
               padding: "4px 8px",
@@ -972,145 +1173,221 @@ console.log(raw)
             Archived
           </Typography>
           <Box onClick={handleOpen}>
-            <Button variant="contained"  sx={{
-                  backgroundColor: 'var(--color-save-btn)',  // Normal background
-                 
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                  },
-  borderRadius:'15px'
-                }}>New Chat</Button>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "var(--color-save-btn)", // Normal background
+
+                "&:hover": {
+                  backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                },
+                borderRadius: "15px",
+              }}
+            >
+              New Chat
+            </Button>
           </Box>
         </Box>
       </Box>
       <Box
 
-        // border={'1px solid #e2e8f0'}
+      // border={'1px solid #e2e8f0'}
       >
-        <Box mt={3}
-          border={'1px solid #e2e8f0'}
-          height={'auto'}
-        >
-
+        <Box mt={3} border={"1px solid #e2e8f0"} height={"auto"}>
           <Box>
             <Box>
-              <Grid container spacing={3} sx={{ height: 'auto', mt: 2, }}>
-                <Grid item xs={4} >
-                  <Box sx={{ml:2, height: '90vh', borderRight: '1px solid #697991',overflowY:'auto' }}>
-                    {chatList.length > 0 && (
+              <Grid container spacing={3} sx={{ height: "auto", mt: 2 }}>
+                <Grid item xs={4}>
+                  <Box
+                    sx={{
+                      ml: 2,
+                      height: "90vh",
+                      borderRight: "1px solid #697991",
+                      overflowY: "auto",
+                    }}
+                  >
+                    {chatList.length > 0 &&
                       chatList.map((chat, index) => (
-                        <Box key={index}   padding={1.5}>
+                        <Box key={index} padding={1.5}>
                           <Box display="flex" alignItems="center" mb={1}>
-                            <TelegramIcon sx={{ color: 'rgb(113, 53, 247)', mr: 1 }} />
+                            <TelegramIcon
+                              sx={{ color: "rgb(113, 53, 247)", mr: 1 }}
+                            />
                             <Typography fontSize={13} color="#697991">
-                              Chat with {chat.accountid.accountName} {/* Accessing accountName */}
+                              Chat with {chat.accountid.accountName}{" "}
+                              {/* Accessing accountName */}
                             </Typography>
                           </Box>
                           <Box
-                            sx={{ cursor: 'pointer' }}
+                            sx={{ cursor: "pointer" }}
                             onClick={() => {
                               setAdminChatSubject(chat.chatsubject);
                               setAdminChatDiscription(chat.description);
                               setExpanded(true);
                               setActiveChatIndex(index);
-                              setAdminChatClientsTask(chat.clienttasks)
-                              setChatId(chat._id)
-                              console.log(chat._id)
+                              setAdminChatClientsTask(chat.clienttasks);
+                              setChatId(chat._id);
+                              console.log(chat._id);
                             }}
                           >
-                            <Typography variant="h6" fontSize={16} noWrap ml={1}>
+                            <Typography
+                              variant="h6"
+                              fontSize={16}
+                              noWrap
+                              ml={1}
+                            >
                               <b>{chat.chatsubject}</b>
                             </Typography>
                             <Typography
                               fontSize={14}
                               sx={{
-                                display: '-webkit-box',
-                                WebkitBoxOrient: 'vertical',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
+                                display: "-webkit-box",
+                                WebkitBoxOrient: "vertical",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
                                 WebkitLineClamp: 2, // Show only 2 lines
-                                ml: 1
+                                ml: 1,
                               }}
                             >
-                              {chat.description[0]?.message.replace(/<[^>]+>/g, '')} {/* Accessing message from description array */}
+                              {chat.description[0]?.message.replace(
+                                /<[^>]+>/g,
+                                ""
+                              )}{" "}
+                              {/* Accessing message from description array */}
                             </Typography>
 
-                            <Box display="flex" justifyContent="flex-end" ml={1}>
+                            <Box
+                              display="flex"
+                              justifyContent="flex-end"
+                              ml={1}
+                            >
                               <Typography fontSize={13} color="#697991">
                                 {formattedTime}
                               </Typography>
-
                             </Box>
                             <Divider
                               sx={{
-                                borderColor: activeChatIndex === index ? '#2c85de' : '', // Active color and default color
+                                borderColor:
+                                  activeChatIndex === index ? "#2c85de" : "", // Active color and default color
                               }}
                             />
                           </Box>
                         </Box>
-
-                      ))
-                    )}
+                      ))}
                   </Box>
                 </Grid>
                 {/* Second Grid: Shown on Expand */}
                 <Grid item xs={6} ml={3}>
                   {expanded && (
                     <Box>
-                      <Grid container spacing={3} sx={{ height: 'auto', mt: 2, }}>
-                        <Grid item xs={showClientTaskGrid ? 9 : 12} >
-                          <Box ml={1} >
-                            <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+                      <Grid
+                        container
+                        spacing={3}
+                        sx={{ height: "auto", mt: 2 }}
+                      >
+                        <Grid item xs={showClientTaskGrid ? 9 : 12}>
+                          <Box ml={1}>
+                            <Box
+                              display={"flex"}
+                              justifyContent={"space-between"}
+                              alignItems={"center"}
+                            >
                               <Typography fontSize={23}>
                                 <strong>{adminChatSubject}</strong>
-
-
                               </Typography>
-                              <MoreVertIcon onClick={handleMenuOpen} sx={{ color: '#1976d3', cursor: 'pointer' }} />
+                              <MoreVertIcon
+                                onClick={handleMenuOpen}
+                                sx={{ color: "#1976d3", cursor: "pointer" }}
+                              />
                             </Box>
                             <Divider sx={{ mt: 2 }} />
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: '15px', mt: 2 }}>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "15px",
+                                mt: 2,
+                              }}
+                            >
                               <Typography
-                                onClick={() => handleContentClick('chat')}
+                                onClick={() => handleContentClick("chat")}
                                 sx={{
-                                  cursor: 'pointer',
-                                  fontWeight: selectedContent === 'chat' ? 'bold' : 'normal',
-                                  color: selectedContent === 'chat' ? '#1976d3' : 'inherit',
-                                  borderBottom: selectedContent === 'chat' ? '3px solid #1976d3' : 'none', // Border for active state
-                                  paddingBottom: '4px', // Adjust padding for the border
+                                  cursor: "pointer",
+                                  fontWeight:
+                                    selectedContent === "chat"
+                                      ? "bold"
+                                      : "normal",
+                                  color:
+                                    selectedContent === "chat"
+                                      ? "#1976d3"
+                                      : "inherit",
+                                  borderBottom:
+                                    selectedContent === "chat"
+                                      ? "3px solid #1976d3"
+                                      : "none", // Border for active state
+                                  paddingBottom: "4px", // Adjust padding for the border
                                 }}
                               >
                                 Chat
                               </Typography>
                               <Typography
-                                onClick={() => handleContentClick('reminders')}
+                                onClick={() => handleContentClick("reminders")}
                                 sx={{
-                                  cursor: 'pointer',
-                                  fontWeight: selectedContent === 'reminders' ? 'bold' : 'normal',
-                                  color: selectedContent === 'reminders' ? '#1976d3' : 'inherit',
-                                  borderBottom: selectedContent === 'reminders' ? '3px solid #1976d3' : 'none', // Border for active state
-                                  paddingBottom: '4px', // Adjust padding for the border
+                                  cursor: "pointer",
+                                  fontWeight:
+                                    selectedContent === "reminders"
+                                      ? "bold"
+                                      : "normal",
+                                  color:
+                                    selectedContent === "reminders"
+                                      ? "#1976d3"
+                                      : "inherit",
+                                  borderBottom:
+                                    selectedContent === "reminders"
+                                      ? "3px solid #1976d3"
+                                      : "none", // Border for active state
+                                  paddingBottom: "4px", // Adjust padding for the border
                                 }}
                               >
                                 Reminders
                               </Typography>
                               <Typography
-                                onClick={() => handleContentClick('linkedjobs')}
+                                onClick={() => handleContentClick("linkedjobs")}
                                 sx={{
-                                  cursor: 'pointer',
-                                  fontWeight: selectedContent === 'linkedjobs' ? 'bold' : 'normal',
-                                  color: selectedContent === 'linkedjobs' ? '#1976d3' : 'inherit',
-                                  borderBottom: selectedContent === 'linkedjobs' ? '3px solid #1976d3' : 'none', // Border for active state
-                                  paddingBottom: '4px', // Adjust padding for the border
+                                  cursor: "pointer",
+                                  fontWeight:
+                                    selectedContent === "linkedjobs"
+                                      ? "bold"
+                                      : "normal",
+                                  color:
+                                    selectedContent === "linkedjobs"
+                                      ? "#1976d3"
+                                      : "inherit",
+                                  borderBottom:
+                                    selectedContent === "linkedjobs"
+                                      ? "3px solid #1976d3"
+                                      : "none", // Border for active state
+                                  paddingBottom: "4px", // Adjust padding for the border
                                 }}
                               >
                                 Linked Jobs
                               </Typography>
-                              <Box sx={{ ml: 'auto', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 2 }}>
+                              <Box
+                                sx={{
+                                  ml: "auto",
+                                  cursor: "pointer",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 2,
+                                }}
+                              >
                                 {/* <Typography color={'#1976d3'} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                   <AddCircleIcon /> Client request
                                 </Typography> */}
-                                <Typography color={'#1976d3'} onClick={handleAddClientTask}>
+                                <Typography
+                                  color={"#1976d3"}
+                                  onClick={handleAddClientTask}
+                                >
                                   Show Client task
                                 </Typography>
                               </Box>
@@ -1125,16 +1402,16 @@ console.log(raw)
                             >
                               <MenuItem
                                 onClick={() => {
-                                  const newStatus = isActiveTrue ? 'Archive' : 'Active';
+                                  const newStatus = isActiveTrue
+                                    ? "Archive"
+                                    : "Active";
                                   setActiveorarchive(newStatus);
                                   handleClickDialog(); // Executes the dialog logic
                                   // handleMenuClose(); // Close the menu after clicking
                                 }}
                               >
-                                {isActiveTrue ? 'Archive' : 'Active'}
+                                {isActiveTrue ? "Archive" : "Active"}
                               </MenuItem>
-
-
 
                               <Dialog
                                 open={openDialog}
@@ -1142,132 +1419,200 @@ console.log(raw)
                                 aria-labelledby="alert-dialog-title"
                                 aria-describedby="alert-dialog-description"
                               >
-                                <Box display="flex" alignItems="center" justifyContent="space-between">
-                                  <DialogTitle id="alert-dialog-title" style={{ display: 'flex', alignItems: 'center' }}>
+                                <Box
+                                  display="flex"
+                                  alignItems="center"
+                                  justifyContent="space-between"
+                                >
+                                  <DialogTitle
+                                    id="alert-dialog-title"
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                    }}
+                                  >
                                     {"Archive chat?"}
                                   </DialogTitle>
-                                  <CloseIcon onClick={handleCloseDialog} sx={{ cursor: 'pointer' }} />
+                                  <CloseIcon
+                                    onClick={handleCloseDialog}
+                                    sx={{ cursor: "pointer" }}
+                                  />
                                 </Box>
 
                                 <Divider />
                                 <DialogContent>
                                   <DialogContentText id="alert-dialog-description">
-                                    If this chat is no longer active, please archive it. This will remove it from the 'Active' queue for both you and the client.
-
+                                    If this chat is no longer active, please
+                                    archive it. This will remove it from the
+                                    'Active' queue for both you and the client.
                                   </DialogContentText>
                                 </DialogContent>
                                 <DialogActions>
-
-                                  <Button variant="contained" onClick={ArchiveChat} autoFocus>
+                                  <Button
+                                    variant="contained"
+                                    onClick={ArchiveChat}
+                                    autoFocus
+                                  >
                                     Agree
                                   </Button>
 
-                                  <Button onClick={handleCloseDialog}>Cancel</Button>
+                                  <Button onClick={handleCloseDialog}>
+                                    Cancel
+                                  </Button>
                                 </DialogActions>
                               </Dialog>
-                              <MenuItem onClick={DeleteChat} sx={{ color: '#eb5858' }} >Delete</MenuItem>
+                              <MenuItem
+                                onClick={DeleteChat}
+                                sx={{ color: "#eb5858" }}
+                              >
+                                Delete
+                              </MenuItem>
                             </Menu>
                             <Box mt={2}>
                               <Box>
-                                {selectedContent === 'chat' && (
-                                  <Box sx={{ width: '100%', mb: 6, }}>
+                                {selectedContent === "chat" && (
+                                  <Box sx={{ width: "100%", mb: 6 }}>
                                     <Box
                                       sx={{
-                                        overflowY: 'auto',
-                                        height: '18vh',
-                                        paddingRight: '10px',
+                                        overflowY: "auto",
+                                        height: "18vh",
+                                        paddingRight: "10px",
                                       }}
                                     >
-                                      {adminChatDiscription?.map((desc, index) => (
-                                        <Box
-                                          key={desc._id}
+                                      {adminChatDiscription?.map(
+                                        (desc, index) => (
+                                          <Box
+                                            key={desc._id}
+                                            // sx={{
+                                            //   marginBottom: '10px',
+                                            //   // backgroundColor: '#dbe1e8',
+                                            //   //  backgroundColor: '#eff7ff',
+                                            //   backgroundColor: desc.fromwhome === 'admin' ? '#ffcccc' : desc.fromwhome === 'client' ? '#eff7ff' : '#dbe1e8',
+                                            //   border: '1px solid transparent',
+                                            //   borderRadius: '12px',
+                                            //   padding: '30px 20px',
+                                            //   width: 'fit-content',
+                                            //   textAlign: 'left',
 
-                                          // sx={{
-                                          //   marginBottom: '10px',
-                                          //   // backgroundColor: '#dbe1e8',
-                                          //   //  backgroundColor: '#eff7ff', 
-                                          //   backgroundColor: desc.fromwhome === 'admin' ? '#ffcccc' : desc.fromwhome === 'client' ? '#eff7ff' : '#dbe1e8',
-                                          //   border: '1px solid transparent',
-                                          //   borderRadius: '12px',
-                                          //   padding: '30px 20px',
-                                          //   width: 'fit-content',
-                                          //   textAlign: 'left',
+                                            //   marginLeft: desc.fromwhome === 'admin' ? 'auto' : '10px',  // Align right for admin
+                                            //   marginRight: desc.fromwhome === 'client' ? 'auto' : '10px', // Align left for client
+                                            //   boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                                            //   position: 'relative',
+                                            //   borderBottomRightRadius: '1px',
+                                            // }}
 
-                                          //   marginLeft: desc.fromwhome === 'admin' ? 'auto' : '10px',  // Align right for admin
-                                          //   marginRight: desc.fromwhome === 'client' ? 'auto' : '10px', // Align left for client
-                                          //   boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-                                          //   position: 'relative',
-                                          //   borderBottomRightRadius: '1px',
-                                          // }}
-
-                                          sx={{
-                                            mb: '10px',
-                                            backgroundColor:
-                                              desc.fromwhome === 'admin'
-                                                ? '#ffcccc'
-                                                : desc.fromwhome === 'client'
-                                                  ? '#eff7ff'
-                                                  : '#dbe1e8',
-                                            border: '1px solid transparent',
-                                            borderRadius: '12px',
-                                            padding: '30px 20px',
-                                            width: 'fit-content',
-                                            textAlign: 'left',
-                                            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-                                            position: 'relative',
-                                            borderBottomRightRadius: '1px',
-                                            ml: desc.fromwhome === 'client' ? 'auto' : '10px',
-                                            mr: desc.fromwhome === 'admin' ? 'auto' : '10px',
-                                          }}
-
-                                        >
-                                          <strong style={{ display: 'flex', alignItems: "center", justifyContent: 'space-between', marginBottom: '5px', color: '#333', }}>
-                                            {desc.fromwhome}
-                                            {/* {console.log(desc)} */}
-
-                                            <Box>
-                                              <BorderColorIcon onClick={() => handleEditClick(desc)} sx={{ cursor: 'pointer', color: 'rgb(25, 118, 211)', }} />
-                                              <DeleteIcon onClick={() => handleDeleteClick(desc)} sx={{ color: '#eb5858', cursor: 'pointer' }} />
-                                            </Box>
-
-                                          </strong>
-                                          <p
-                                            style={{
-                                              margin: 0,
-                                              fontSize: '14px',
-                                              lineHeight: '1.5',
-                                              color: '#555',
-
-                                            }}
-                                            dangerouslySetInnerHTML={{
-                                              __html: typeof desc.message === 'string' ? desc.message.replace(/<[^>]+>/g, '') : desc.message,
-                                            }}
-                                          />
-                                          <span
-                                            style={{
-                                              display: 'block',
-                                              marginTop: '8px',
-                                              fontSize: '12px',
-                                              color: '#aaa',
-                                              textAlign: 'right',
-                                              padding: 3
+                                            sx={{
+                                              mb: "10px",
+                                              backgroundColor:
+                                                desc.fromwhome === "admin"
+                                                  ? "#ffcccc"
+                                                  : desc.fromwhome === "client"
+                                                    ? "#eff7ff"
+                                                    : "#dbe1e8",
+                                              border: "1px solid transparent",
+                                              borderRadius: "12px",
+                                              padding: "30px 20px",
+                                              width: "fit-content",
+                                              textAlign: "left",
+                                              boxShadow:
+                                                "0 1px 3px rgba(0, 0, 0, 0.1)",
+                                              position: "relative",
+                                              borderBottomRightRadius: "1px",
+                                              ml:
+                                                desc.fromwhome === "client"
+                                                  ? "auto"
+                                                  : "10px",
+                                              mr:
+                                                desc.fromwhome === "admin"
+                                                  ? "auto"
+                                                  : "10px",
                                             }}
                                           >
-                                          </span>
+                                            <strong
+                                              style={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "space-between",
+                                                marginBottom: "5px",
+                                                color: "#333",
+                                              }}
+                                            >
+                                              {desc.fromwhome}
+                                              {/* {console.log(desc)} */}
 
-
-
-                                        </Box>
-                                      ))}
+                                              <Box>
+                                                <BorderColorIcon
+                                                  onClick={() =>
+                                                    handleEditClick(desc)
+                                                  }
+                                                  sx={{
+                                                    cursor: "pointer",
+                                                    color: "rgb(25, 118, 211)",
+                                                  }}
+                                                />
+                                                <DeleteIcon
+                                                  onClick={() =>
+                                                    handleDeleteClick(desc)
+                                                  }
+                                                  sx={{
+                                                    color: "#eb5858",
+                                                    cursor: "pointer",
+                                                  }}
+                                                />
+                                              </Box>
+                                            </strong>
+                                            <p
+                                              style={{
+                                                margin: 0,
+                                                fontSize: "14px",
+                                                lineHeight: "1.5",
+                                                color: "#555",
+                                              }}
+                                              dangerouslySetInnerHTML={{
+                                                __html:
+                                                  typeof desc.message ===
+                                                  "string"
+                                                    ? desc.message.replace(
+                                                        /<[^>]+>/g,
+                                                        ""
+                                                      )
+                                                    : desc.message,
+                                              }}
+                                            />
+                                            <span
+                                              style={{
+                                                display: "block",
+                                                marginTop: "8px",
+                                                fontSize: "12px",
+                                                color: "#aaa",
+                                                textAlign: "right",
+                                                padding: 3,
+                                              }}
+                                            ></span>
+                                          </Box>
+                                        )
+                                      )}
                                     </Box>
                                     {!isEditing && (
-                                      <Box sx={{ width: '100%', mb: 6 }}>
+                                      <Box sx={{ width: "100%", mb: 6 }}>
                                         <Box mt={5}>
-
-                                          <Editor onChange={handleEditorChange} />
+                                          <Editor
+                                            onChange={handleEditorChange}
+                                          />
                                         </Box>
-                                        <Box sx={{ mt: 8, display: 'flex', justifyContent: 'flex-end' }}>
-                                          <Button onClick={updateChatDescription} variant="contained">Send</Button>
+                                        <Box
+                                          sx={{
+                                            mt: 8,
+                                            display: "flex",
+                                            justifyContent: "flex-end",
+                                          }}
+                                        >
+                                          <Button
+                                            onClick={updateChatDescription}
+                                            variant="contained"
+                                          >
+                                            Send bngh
+                                          </Button>
                                         </Box>
                                       </Box>
                                     )}
@@ -1277,17 +1622,32 @@ console.log(raw)
                                           onChange={handleEditEditorChange}
                                           initialContent={selectedMessage}
                                         />
-                                        <Box sx={{ mt: 8, display: 'flex', justifyContent: 'flex-end' }}>
-                                          <Button onClick={updateMsgs} variant="contained">Send</Button>
-                                          <Button onClick={handleCancelEdit} sx={{ ml: 2 }}>Cancel</Button>
+                                        <Box
+                                          sx={{
+                                            mt: 8,
+                                            display: "flex",
+                                            justifyContent: "flex-end",
+                                          }}
+                                        >
+                                          <Button
+                                            onClick={updateMsgs}
+                                            variant="contained"
+                                          >
+                                            Send
+                                          </Button>
+                                          <Button
+                                            onClick={handleCancelEdit}
+                                            sx={{ ml: 2 }}
+                                          >
+                                            Cancel
+                                          </Button>
                                         </Box>
                                       </Box>
                                     )}
-
                                   </Box>
                                 )}
                               </Box>
-                              {selectedContent === 'reminders' && (
+                              {selectedContent === "reminders" && (
                                 <TextField
                                   label="Reminders"
                                   variant="outlined"
@@ -1295,11 +1655,10 @@ console.log(raw)
                                   sx={{ mt: 2 }}
                                 />
                               )}
-                              {selectedContent === 'linkedjobs' && (
+                              {selectedContent === "linkedjobs" && (
                                 <Typography>Linked jobs</Typography>
                               )}
                             </Box>
-
                           </Box>
                         </Grid>
                         {/* 3rd grid for client task */}
@@ -1307,108 +1666,122 @@ console.log(raw)
                           {showClientTaskGrid && (
                             <Box
                               sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                height: '90vh',
+                                display: "flex",
+                                flexDirection: "column",
+                                height: "90vh",
                                 ml: 1,
-                                borderLeft: '1px solid #697991',
-                                width: '100%',
+                                borderLeft: "1px solid #697991",
+                                width: "100%",
                               }}
                             >
-                              {adminChatClientsTask && adminChatClientsTask.length > 0 ? (
-                                adminChatClientsTask.map((taskGroup, groupIndex) => (
-                                  <Box key={groupIndex} >
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                                      <Typography fontSize={25} whiteSpace="nowrap">
-                                        <b>Client tasks</b>
-                                      </Typography>
-                                      <Button
-
-                                        size="small"
-                                        startIcon={<AddCircleIcon sx={{ fontSize: 12 }} />}
-                                        sx={{ ml: 2, whiteSpace: 'nowrap' }}
-                                        onClick={() => handleAddTask(groupIndex)}
+                              {adminChatClientsTask &&
+                              adminChatClientsTask.length > 0 ? (
+                                adminChatClientsTask.map(
+                                  (taskGroup, groupIndex) => (
+                                    <Box key={groupIndex}>
+                                      <Box
+                                        sx={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                          gap: 10,
+                                        }}
                                       >
-                                        Add Task
-                                      </Button>
-                                    </Box>
-                                    <Divider sx={{ mt: 2, mb: 5, width: '100%' }} />
-
-                                    {/* <Box m={1} width={'200%'}>
-                                      {taskGroup && taskGroup.length > 0 ? (
-                                        taskGroup.map((task, taskIndex) => (
-                                        
-                                          <Box key={task.id} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                                            <Checkbox
-                                              style={{ cursor: 'pointer' }}
-
-                                              checked={task.checked}
-                                              onChange={() => handleCheckboxChange(task.id, task.checked)}
+                                        <Typography
+                                          fontSize={25}
+                                          whiteSpace="nowrap"
+                                        >
+                                          <b>Client tasks</b>
+                                        </Typography>
+                                        <Button
+                                          size="small"
+                                          startIcon={
+                                            <AddCircleIcon
+                                              sx={{ fontSize: 12 }}
                                             />
-                                            <TextField
-                                              fullWidth
-                                              variant="outlined"
-                                              value={task.text}
-                                              onChange={(e) => handleTaskTextChange(groupIndex, taskIndex, e.target.value)}
-                                            />
-                                            <IconButton
-                                              color="error"
-                                              onClick={() => handleDeleteTask(groupIndex, task.id)}
-                                            >
-                                              <DeleteIcon />
-                                            </IconButton>
+                                          }
+                                          sx={{ ml: 2, whiteSpace: "nowrap" }}
+                                          onClick={() =>
+                                            handleAddTask(groupIndex)
+                                          }
+                                        >
+                                          Add Task
+                                        </Button>
+                                      </Box>
+                                      <Divider
+                                        sx={{ mt: 2, mb: 5, width: "100%" }}
+                                      />
 
-
-
-                                          </Box>
-
-                                        ))
-
-                                      ) : (
-                                        <Box>No tasks in this group</Box>
-                                      )}
-                                    </Box> */}
-
-                                    <Box m={1} width="300%">
-                                      {taskGroup.length > 0 ? (
-                                        taskGroup.map((task, taskIndex) => {
-                                          // Log task to console for debugging
-                                          console.log("Task:", taskGroup);
-                                          const isChecked = task.checked === "true";
-                                          return (
-                                            <Box key={task.id} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                                              <Checkbox
-                                                checked={isChecked}
-                                                onChange={() => handleCheckboxChange(task.id, task.checked)}
-                                              />
-                                              <TextField
-                                                fullWidth
-                                                variant="outlined"
-                                                value={task.text}
-                                                onChange={(e) =>
-                                                  handleTaskTextChange(groupIndex, taskIndex, e.target.value)
-                                                }
-                                              />
-
-                                              <IconButton
-                                                color="error"
-                                                onClick={() => handleDeleteTask(groupIndex, task.id)}
+                                      <Box m={1} width="300%">
+                                        {taskGroup.length > 0 ? (
+                                          taskGroup.map((task, taskIndex) => {
+                                            // Log task to console for debugging
+                                            console.log("Task:", taskGroup);
+                                            const isChecked =
+                                              task.checked === "true";
+                                            return (
+                                              <Box
+                                                key={task.id}
+                                                sx={{
+                                                  display: "flex",
+                                                  alignItems: "center",
+                                                  mb: 1,
+                                                }}
                                               >
-                                                <DeleteIcon />
-                                              </IconButton>
-                                            </Box>
-                                          );
-                                        })
-                                      ) : (
-                                        <Typography>No tasks in this group</Typography>
-                                      )}
-                                    </Box>
+                                                <Checkbox
+                                                  checked={isChecked}
+                                                  onChange={() =>
+                                                    handleCheckboxChange(
+                                                      task.id,
+                                                      task.checked
+                                                    )
+                                                  }
+                                                />
+                                                <TextField
+                                                  fullWidth
+                                                  variant="outlined"
+                                                  value={task.text}
+                                                  onChange={(e) =>
+                                                    handleTaskTextChange(
+                                                      groupIndex,
+                                                      taskIndex,
+                                                      e.target.value
+                                                    )
+                                                  }
+                                                />
 
-                                    <Box mt={2} m={2} whiteSpace={'nowrap'}>
-                                      <Button onClick={resendClientTask} variant="outlined"> Resend client task</Button>
+                                                <IconButton
+                                                  color="error"
+                                                  onClick={() =>
+                                                    handleDeleteTask(
+                                                      groupIndex,
+                                                      task.id
+                                                    )
+                                                  }
+                                                >
+                                                  <DeleteIcon />
+                                                </IconButton>
+                                              </Box>
+                                            );
+                                          })
+                                        ) : (
+                                          <Typography>
+                                            No tasks in this group
+                                          </Typography>
+                                        )}
+                                      </Box>
+
+                                      <Box mt={2} m={2} whiteSpace={"nowrap"}>
+                                        <Button
+                                          onClick={resendClientTask}
+                                          variant="outlined"
+                                        >
+                                          {" "}
+                                          Resend client task
+                                        </Button>
+                                      </Box>
                                     </Box>
-                                  </Box>
-                                ))
+                                  )
+                                )
                               ) : (
                                 <Box>No tasks available</Box>
                               )}
@@ -1420,8 +1793,6 @@ console.log(raw)
                   )}
                 </Grid>
               </Grid>
-
-
             </Box>
           </Box>
           {/* )} */}
@@ -1441,287 +1812,374 @@ console.log(raw)
           },
         }}
       >
-        <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }} >
+        <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
           {/* Drawer Header */}
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: 2,
+            }}
+          >
             <Typography variant="h6">New chat</Typography>
-            <Box onClick={handleClose} sx={{ cursor: 'pointer', color: '#1976d3' }}>
+            <Box
+              onClick={handleClose}
+              sx={{ cursor: "pointer", color: "#1976d3" }}
+            >
               <CloseIcon />
             </Box>
           </Box>
           <Divider />
 
-<Box p={2} >
-          <Box ml={1} >
-            <InputLabel sx={{ color: 'black' }}>To</InputLabel>
-            <Autocomplete
-              multiple
-              size="small"
-              sx={{ mr:1}}
-              options={AccountsOptions}
-              getOptionLabel={(option) => option.label}
-              value={selectedAccount}
-              onChange={(event, newValue) => {
-                setSelectedAccount(newValue);
-              }}
-              renderTags={(selected, getTagProps) => selected.map((option, index) => <Chip key={option.value} label={option.label} {...getTagProps({ index })} onDelete={() => handleDelete(option.value)} />)}
-              renderInput={(params) => <TextField {...params} variant="outlined" placeholder="Select Accounts"  sx={{ width: '100%', marginTop: '8px' }}/>}
-              renderOption={(props, option, { selected }) => (
-                <li {...props}>
-                  <Checkbox checked={selectedAccount.some((acc) => acc.value === option.value)} style={{ marginRight: 8 }} />
-                  {option.label}
-                </li>
-              )}
-            />
-          </Box>
-
-          <Box m={1}>
-            <InputLabel sx={{ color: "black" }}> Template</InputLabel>
-            <Autocomplete
-              options={invoiceoptions}
-              getOptionLabel={(option) => option.label}
-              value={selectInvoiceTemp}
-
-              onChange={handleInvoiceTempChange}
-
-              isOptionEqualToValue={(option, value) => option.value === value.value}
-              renderOption={(props, option) => (
-                <Box
-                  component="li"
-                  {...props}
-                  sx={{ cursor: 'pointer', margin: '5px 10px' }} // Add cursor pointer style
-                >
-                  {option.label}
-                </Box>
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  sx={{ backgroundColor: '#fff' }}
-                  placeholder="Job Template"
-                  variant="outlined"
-                  size="small"
-                />
-              )}
-              sx={{ width: '100%', marginTop: '8px' }}
-              clearOnEscape // Enable clearable functionality
-            />
-          </Box>
-
-          <Box m={1}>
-            <InputLabel sx={{ color: 'black' }}>Subject</InputLabel>
-            <TextField
-              sx={{ mt: 2 }}
-              fullWidth
-              name="subject"
-              inputRef={textFieldRef}
-              onClick={(e) => setCursorPosition(e.target.selectionStart)}
-              value={inputText} onChange={handlechatsubject}
-              placeholder="Subject"
-              size="small"
-              error={!!inputTextError}
-            />
-          </Box>
-
-
-
-
-
-          
-          <Box m={1}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={toggleDropdown}
-              // sx={{ mt: 2 }}
-              sx={{
-                backgroundColor: 'var(--color-save-btn)',  // Normal background
-               
-                '&:hover': {
-                  backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                },
-borderRadius:'15px',mt:2
-              }}
-            >
-              Add Shortcode
-            </Button>
-
-            <Popover
-              open={showDropdown}
-              anchorEl={anchorEl}
-              onClose={handleCloseDropdown}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-            >
-              <Box >
-                <List className="dropdown-list" sx={{ width: '300px', height: '300px', cursor: 'pointer' }}>
-                  {filteredShortcuts.map((shortcut, index) => (
-                    <ListItem
-                      key={index}
-                      onClick={() => handleAddShortcut(shortcut.value)}
-                    >
-                      <ListItemText
-                        primary={shortcut.title}
-                        primaryTypographyProps={{
-                          style: {
-                            fontWeight: shortcut.isBold ? 'bold' : 'normal',
-                          },
-                        }}
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-              </Box>
-            </Popover>
-          </Box>
-
-
-           <Box sx={{ m: 1 }}>
-            <EditorShortcodes initialContent={description} onChange={handleEditorChange} />
-          </Box> 
-
-          <Box mt={5}>
-            <Box display={'flex'} alignItems={'center'} >
-              <Box>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={absoluteDate}
-                      onChange={(event) => handleAbsolutesDates(event.target.checked)}
-                      color="primary"
+          <Box p={2}>
+            <Box ml={1}>
+              <InputLabel sx={{ color: "black" }}>To</InputLabel>
+              <Autocomplete
+                multiple
+                size="small"
+                sx={{ mr: 1 }}
+                options={AccountsOptions}
+                getOptionLabel={(option) => option.label}
+                value={selectedAccount}
+                onChange={(event, newValue) => {
+                  setSelectedAccount(newValue);
+                }}
+                renderTags={(selected, getTagProps) =>
+                  selected.map((option, index) => (
+                    <Chip
+                      key={option.value}
+                      label={option.label}
+                      {...getTagProps({ index })}
+                      onDelete={() => handleDelete(option.value)}
                     />
-                  }
-
-                />
-              </Box>
-              <Typography variant='h6'>Send reminders to clients</Typography>
-
-            </Box>
-            {absoluteDate && (
-              <Box mb={3}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mt: 2, m: 1 }}>
-
-                  <Box>
-                    <InputLabel sx={{ color: 'black' }}>Days until next reminder</InputLabel>
-                    <TextField
-                      // margin="normal"
-                      fullWidth
-                      name="Daysuntilnextreminder"
-                      value={daysuntilNextReminder}
-                      onChange={(e) => setDaysuntilNextReminder(e.target.value)}
-                      placeholder="Days until next reminder"
-                      size="small"
-                      sx={{ mt: 2 }}
-                    />
-                  </Box>
-
-                  <Box>
-                    <InputLabel sx={{ color: 'black' }}>No Of reminders</InputLabel>
-                    <TextField
-
-                      fullWidth
-                      name="No Of reminders"
-                      value={noOfReminder}
-                      onChange={(e) => setNoOfReminder(e.target.value)}
-
-                      placeholder="NoOfreminders"
-                      size="small"
-                      sx={{ mt: 2 }}
-                    />
-                  </Box>
-
-                </Box>
-              </Box>
-            )}
-          </Box>
-
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', m: 2 }}>
-              <Typography variant='h6'>Client tasks</Typography>
-              <Box sx={{ cursor: 'pointer' }} onClick={handleAddSubtask} style={{ margin: "10px", color: "#1976d3" }}>
-                <FiPlusCircle /> Add Subtasks
-              </Box>
-            </Box>
-
-            <Droppable droppableId="subtaskList">
-              {(provided) => (
-                <div className="subtask-input" {...provided.droppableProps} ref={provided.innerRef}>
-                  {(subtasks.length > 0 ? subtasks : [{ id: 'default', text: '' }]).map((subtask, index) => (
-                    <Draggable key={subtask.id} draggableId={subtask.id} index={index}>
-                      {(provided) => (
-                        <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
-                          <Box display="flex" gap="30px" alignItems="center" m={1}>
-                            <Checkbox
-                              style={{ cursor: 'pointer' }}
-                              checked={checkedSubtasks.includes(subtask.id)}
-                              onChange={() => handleCheckboxChange(subtask.id, subtask.checked)}
-                            />
-                            <TextField
-                              placeholder="Things To do"
-                              value={subtask.text}
-                              size='small'
-                              margin='normal'
-                              fullWidth
-                              onChange={(e) => handleInputChange(subtask.id, e.target.value)}
-                              variant="outlined"
-                            />
-                            <IconButton onClick={() => handleDeleteSubtask(subtask.id)} style={{ cursor: 'pointer' }}>
-                              <RiDeleteBin6Line />
-                            </IconButton>
-                            <IconButton style={{ cursor: 'move' }}>
-                              <PiDotsSixVerticalBold />
-                            </IconButton>
-                          </Box>
-                        </div>
+                  ))
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    placeholder="Select Accounts"
+                    sx={{ width: "100%", marginTop: "8px" }}
+                  />
+                )}
+                renderOption={(props, option, { selected }) => (
+                  <li {...props}>
+                    <Checkbox
+                      checked={selectedAccount.some(
+                        (acc) => acc.value === option.value
                       )}
-                    </Draggable>
-                  ))}
+                      style={{ marginRight: 8 }}
+                    />
+                    {option.label}
+                  </li>
+                )}
+              />
+            </Box>
 
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
+            <Box m={1}>
+              <InputLabel sx={{ color: "black" }}> Template</InputLabel>
+              <Autocomplete
+                options={invoiceoptions}
+                getOptionLabel={(option) => option.label}
+                value={selectInvoiceTemp}
+                onChange={handleInvoiceTempChange}
+                isOptionEqualToValue={(option, value) =>
+                  option.value === value.value
+                }
+                renderOption={(props, option) => (
+                  <Box
+                    component="li"
+                    {...props}
+                    sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
+                  >
+                    {option.label}
+                  </Box>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    sx={{ backgroundColor: "#fff" }}
+                    placeholder="Job Template"
+                    variant="outlined"
+                    size="small"
+                  />
+                )}
+                sx={{ width: "100%", marginTop: "8px" }}
+                clearOnEscape // Enable clearable functionality
+              />
+            </Box>
 
+            <Box m={1}>
+              <InputLabel sx={{ color: "black" }}>Subject</InputLabel>
+              <TextField
+                sx={{ mt: 2 }}
+                fullWidth
+                name="subject"
+                inputRef={textFieldRef}
+                onClick={(e) => setCursorPosition(e.target.selectionStart)}
+                value={inputText}
+                onChange={handlechatsubject}
+                placeholder="Subject"
+                size="small"
+                error={!!inputTextError}
+              />
+            </Box>
 
-          {/* Drawer Actions */}
-          <Box sx={{  display: "flex", alignItems: "center", gap: 2, mt: 5, }}>
-            <Button
+            <Box m={1}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={toggleDropdown}
+                // sx={{ mt: 2 }}
+                sx={{
+                  backgroundColor: "var(--color-save-btn)", // Normal background
 
-
-              variant="contained"   sx={{
-                backgroundColor: 'var(--color-save-btn)',  // Normal background
-               
-                '&:hover': {
-                  backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                },
-                width:'80px',borderRadius:'15px'
-              }}
-              // onClick={sendSaveChatMail}
-              onClick={saveChat}
-
-            >
-              Save
-            </Button>
-            <Button onClick={handleClose} variant="outlined" sx={{
-                  borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                 color:'var(--color-save-btn)',
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                    color:'#fff',
-                    border:"none"
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                   },
-                  width:'80px',borderRadius:'15px'
-                }}>
-              Cancel
-            </Button>
-          </Box>
+                  borderRadius: "15px",
+                  mt: 2,
+                }}
+              >
+                Add Shortcode
+              </Button>
+
+              <Popover
+                open={showDropdown}
+                anchorEl={anchorEl}
+                onClose={handleCloseDropdown}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+              >
+                <Box>
+                  <List
+                    className="dropdown-list"
+                    sx={{ width: "300px", height: "300px", cursor: "pointer" }}
+                  >
+                    {filteredShortcuts.map((shortcut, index) => (
+                      <ListItem
+                        key={index}
+                        onClick={() => handleAddShortcut(shortcut.value)}
+                      >
+                        <ListItemText
+                          primary={shortcut.title}
+                          primaryTypographyProps={{
+                            style: {
+                              fontWeight: shortcut.isBold ? "bold" : "normal",
+                            },
+                          }}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
+              </Popover>
+            </Box>
+
+            <Box sx={{ m: 1 }}>
+              <EditorShortcodes
+                initialContent={description}
+                onChange={handleEditorChange}
+              />
+            </Box>
+
+            <Box mt={5}>
+              <Box display={"flex"} alignItems={"center"}>
+                <Box>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={absoluteDate}
+                        onChange={(event) =>
+                          handleAbsolutesDates(event.target.checked)
+                        }
+                        color="primary"
+                      />
+                    }
+                  />
+                </Box>
+                <Typography variant="h6">Send reminders to clients</Typography>
+              </Box>
+              {absoluteDate && (
+                <Box mb={3}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 3,
+                      mt: 2,
+                      m: 1,
+                    }}
+                  >
+                    <Box>
+                      <InputLabel sx={{ color: "black" }}>
+                        Days until next reminder
+                      </InputLabel>
+                      <TextField
+                        // margin="normal"
+                        fullWidth
+                        name="Daysuntilnextreminder"
+                        value={daysuntilNextReminder}
+                        onChange={(e) =>
+                          setDaysuntilNextReminder(e.target.value)
+                        }
+                        placeholder="Days until next reminder"
+                        size="small"
+                        sx={{ mt: 2 }}
+                      />
+                    </Box>
+
+                    <Box>
+                      <InputLabel sx={{ color: "black" }}>
+                        No Of reminders
+                      </InputLabel>
+                      <TextField
+                        fullWidth
+                        name="No Of reminders"
+                        value={noOfReminder}
+                        onChange={(e) => setNoOfReminder(e.target.value)}
+                        placeholder="NoOfreminders"
+                        size="small"
+                        sx={{ mt: 2 }}
+                      />
+                    </Box>
+                  </Box>
+                </Box>
+              )}
+            </Box>
+
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  m: 2,
+                }}
+              >
+                <Typography variant="h6">Client tasks</Typography>
+                <Box
+                  sx={{ cursor: "pointer" }}
+                  onClick={handleAddSubtask}
+                  style={{ margin: "10px", color: "#1976d3" }}
+                >
+                  <FiPlusCircle /> Add Subtasks
+                </Box>
+              </Box>
+
+              <Droppable droppableId="subtaskList">
+                {(provided) => (
+                  <div
+                    className="subtask-input"
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                  >
+                    {(subtasks.length > 0
+                      ? subtasks
+                      : [{ id: "default", text: "" }]
+                    ).map((subtask, index) => (
+                      <Draggable
+                        key={subtask.id}
+                        draggableId={subtask.id}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <Box
+                              display="flex"
+                              gap="30px"
+                              alignItems="center"
+                              m={1}
+                            >
+                              <Checkbox
+                                style={{ cursor: "pointer" }}
+                                checked={checkedSubtasks.includes(subtask.id)}
+                                onChange={() =>
+                                  handleCheckboxChange(
+                                    subtask.id,
+                                    subtask.checked
+                                  )
+                                }
+                              />
+                              <TextField
+                                placeholder="Things To do"
+                                value={subtask.text}
+                                size="small"
+                                margin="normal"
+                                fullWidth
+                                onChange={(e) =>
+                                  handleInputChange(subtask.id, e.target.value)
+                                }
+                                variant="outlined"
+                              />
+                              <IconButton
+                                onClick={() => handleDeleteSubtask(subtask.id)}
+                                style={{ cursor: "pointer" }}
+                              >
+                                <RiDeleteBin6Line />
+                              </IconButton>
+                              <IconButton style={{ cursor: "move" }}>
+                                <PiDotsSixVerticalBold />
+                              </IconButton>
+                            </Box>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+
+            {/* Drawer Actions */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 5 }}>
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: "var(--color-save-btn)", // Normal background
+
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                  },
+                  width: "80px",
+                  borderRadius: "15px",
+                }}
+                // onClick={sendSaveChatMail}
+                onClick={saveChat}
+              >
+                Save
+              </Button>
+              <Button
+                onClick={handleClose}
+                variant="outlined"
+                sx={{
+                  borderColor: "var(--color-border-cancel-btn)", // Normal background
+                  color: "var(--color-save-btn)",
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                    color: "#fff",
+                    border: "none",
+                  },
+                  width: "80px",
+                  borderRadius: "15px",
+                }}
+              >
+                Cancel
+              </Button>
+            </Box>
           </Box>
         </Box>
       </Drawer>

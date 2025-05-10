@@ -13,10 +13,18 @@ const AccountsDash = () => {
 
   useEffect(() => {
     if (data) {
-      // Set the account ID in a cookie, with an expiration of 7 days (optional)
-      Cookies.set('accountId', data, { expires: 7 });
+    
+      Cookies.set('accountId', data);
     }
   }, [data]);
+
+  useEffect(() => {
+  return () => {
+    Cookies.remove('accountId');
+    console.log("accountId cookie removed");
+  };
+}, []);
+
   const [accName, setAccName] = useState();
 
   // eslint-disable-next-line

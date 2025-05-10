@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import Cookies from "js-cookie";
 import {
   Box,
   Checkbox,
@@ -28,27 +29,61 @@ const MultiSelectDropdown = ({
   // Determine if using internal or external options
   const options = propOptions || internalOptions;
 
-  useEffect(() => {
-    // Only fetch data if no options prop provided
-    if (!propOptions) {
-      const fetchData = async () => {
-        try {
-          const url = `${ACCOUNT_API}/accounts/account/accountdetailslist/true`;
-          const response = await fetch(url);
-          const data = await response.json();
-          console.log("accounts",data.accountlist)
-          setInternalOptions(data.accountlist.map(account => ({
-            value: account.id,
-            label: account.Name,
-          })));
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [ACCOUNT_API, propOptions]);
+  // useEffect(() => {
+  //   // Only fetch data if no options prop provided
+  //   if (!propOptions) {
+  //     const fetchData = async () => {
+  //       try {
+  //         const url = `${ACCOUNT_API}/accounts/account/accountdetailslist/true`;
+  //         const response = await fetch(url);
+  //         const data = await response.json();
+  //         console.log("accounts",data.accountlist)
+  //         setInternalOptions(data.accountlist.map(account => ({
+  //           value: account.id,
+  //           label: account.Name,
+  //         })));
+  //       } catch (error) {
+  //         console.error("Error fetching data:", error);
+  //       }
+  //     };
+  //     fetchData();
+  //   }
+  // }, [ACCOUNT_API, propOptions]);
 
+
+  useEffect(() => {
+  if (!propOptions) {
+    const fetchData = async () => {
+      try {
+        const url = `${ACCOUNT_API}/accounts/account/accountdetailslist/true`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        const options = data.accountlist.map(account => ({
+          value: account.id,
+          label: account.Name,
+        }));
+
+        setInternalOptions(options);
+
+        // Automatically select the account from cookie
+        const accountIdFromCookie = Cookies.get('accountId');
+        if (accountIdFromCookie) {
+          const matchedAccount = options.find(
+            (acc) => acc.value === accountIdFromCookie
+          );
+          if (matchedAccount && onChange) {
+            onChange([matchedAccount]); // Set initial selected value
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }
+}, [ACCOUNT_API, propOptions, onChange]);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
     if (containerRef.current) {
