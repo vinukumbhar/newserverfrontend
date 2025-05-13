@@ -51,15 +51,17 @@ import {
   // MenuItem,
   Checkbox,
   FormControl,
-  OutlinedInput,ListItemText
+  OutlinedInput,
+  ListItemText,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { MdOutlineArchive } from "react-icons/md";
 import TablePagination from "@mui/material/TablePagination";
 import { GoDotFill } from "react-icons/go";
-import TagsMultiSelectDropDown  from "../../Templates/TagsMultiSelectDropDown"
-import MultiSelectDropdown from "../../Templates/MultiSelectDropdown"
+import TagsMultiSelectDropDown from "../../Templates/TagsMultiSelectDropDown";
+import MultiSelectDropdown from "../../Templates/MultiSelectDropdown";
 import CircularProgress from "@mui/material/CircularProgress"; // MUI Loader
+import FilterDropdown from "./JobFilter";
 const Example = ({ charLimit = 4000 }) => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -108,53 +110,6 @@ const Example = ({ charLimit = 4000 }) => {
       fetchData();
     }
   }, [userRole, isActiveTrue]);
-  // const fetchData = async () => {
-  //   try {
-  //     const storedData = JSON.parse(localStorage.getItem("teamMemberData"));
-  //     console.log("Received stored teamMemberData:", storedData);
-  //     const loginuserid = storedData?.teammember?.userid;
-  //     console.log("User role is:", userRole);
-
-  //     let url = userRole === "Admin"
-  //     ? `${JOBS_API}/workflow/jobs/job/joblist/list/${isActiveTrue}`
-  //     : `${JOBS_API}/workflow/jobs/joblist/list/${loginuserid}/${isActiveTrue}`;
-
-  //     const jobListResponse = await axios.get(url);
-  //     // const jobListResponse = await axios.get(
-  //     //   `${JOBS_API}/workflow/jobs/job/joblist/list/${isActive}`
-  //     // );
-  //     const formattedData = jobListResponse.data.jobList.map((job) => ({
-  //       ...job,
-  //       // StartDate: format(new Date(job.StartDate), "MMMM dd, yyyy"),
-  //       // DueDate: format(new Date(job.DueDate), "MMMM dd, yyyy"),
-  //       StartDate: job.StartDate
-  //         ? format(new Date(job.StartDate), "MMMM dd, yyyy")
-  //         : "",
-  //       DueDate: job.DueDate
-  //         ? format(new Date(job.DueDate), "MMMM dd, yyyy")
-  //         : "",
-  //       updatedAt: formatDistanceToNow(new Date(job.updatedAt), {
-  //         addSuffix: true,
-  //       }),
-  //       JobAssignee: Array.isArray(job.JobAssignee)
-  //         ? job.JobAssignee.join(", ")
-  //         : job.JobAssignee,
-  //       // clientfacingstatus: job.ClientFacingStatus?.statusName,
-  //       clientfacingstatus: {
-  //         statusName: job.ClientFacingStatus?.statusName || "",
-  //         statusColor: job.ClientFacingStatus?.statusColor || "", // default color if undefined
-  //       },
-  //     }));
-  //     setJobData(formattedData);
-  //     console.log(formattedData);
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
-
-  // Define the filter function
-
-  // account
 
   // const fetchData = async () => {
   //   try {
@@ -225,7 +180,6 @@ const Example = ({ charLimit = 4000 }) => {
     setLoading(true); // Start loading
     const loaderDelay = new Promise((resolve) => setTimeout(resolve, 1000));
     try {
-
       const storedData = JSON.parse(localStorage.getItem("teamMemberData"));
       console.log("Received stored teamMemberData:", storedData);
 
@@ -247,8 +201,8 @@ const Example = ({ charLimit = 4000 }) => {
           alert("You do not have permission to view accounts.");
           setJobData([]); // Set empty job data
           // Wait for the fetch and the 3-second timer to complete
-      await loaderDelay;
-      setLoading(false); // Stop loader
+          await loaderDelay;
+          setLoading(false); // Stop loader
           return;
         }
 
@@ -258,7 +212,7 @@ const Example = ({ charLimit = 4000 }) => {
         );
         const accountsData = accountsResponse.data.accountlist;
         console.log("cfdf", accountsResponse);
-        // `${JOBS_API}/workflow/jobs/joblist/list/${loginuserid}/${isActiveTrue}`
+
         if (!accountsData || accountsData.length === 0) {
           console.warn("No accounts found for user.");
           setJobData([]); // Set empty job data
@@ -275,8 +229,8 @@ const Example = ({ charLimit = 4000 }) => {
       // If no URL is set, exit
       if (!url) {
         // Wait for the fetch and the 3-second timer to complete
-      await loaderDelay;
-      setLoading(false); // Stop loader
+        await loaderDelay;
+        setLoading(false); // Stop loader
         return;
       }
       console.log("test url", url);
@@ -306,12 +260,125 @@ const Example = ({ charLimit = 4000 }) => {
       console.log(formattedData);
     } catch (error) {
       console.error("Error fetching data:", error);
-    }finally {
-       // Wait for the fetch and the 3-second timer to complete
-       await loaderDelay;
-       setLoading(false); // Stop loader
+    } finally {
+      // Wait for the fetch and the 3-second timer to complete
+      await loaderDelay;
+      setLoading(false); // Stop loader
     }
   };
+
+  const [filters, setFilters] = useState({
+    jobAssignees: [],
+    clientStatus: [],
+    pipelineStages: {},
+    accountName: "",
+    priority: "",
+  });
+
+  const handleFilterChange = (newFilters) => {
+    setFilters(newFilters);
+  };
+
+  // Filter the jobData based on active filters
+  const filteredData = useMemo(() => {
+    return jobData.filter((job) => {
+      // Job Assignees filter
+      if (filters.jobAssignees?.length > 0) {
+        const jobAssignees = Array.isArray(job.JobAssignee)
+          ? job.JobAssignee
+          : typeof job.JobAssignee === "string"
+            ? job.JobAssignee.split(",").map((a) => a.trim())
+            : [];
+
+        if (
+          !jobAssignees?.some((assignee) =>
+            filters.jobAssignees.includes(assignee)
+          )
+        ) {
+          return false;
+        }
+      }
+
+      // Client-facing status filter
+      if (filters.clientStatus?.length > 0) {
+        const status = job.clientfacingstatus?.statusName || "";
+        if (!filters.clientStatus.includes(status)) {
+          return false;
+        }
+      }
+
+      // Pipeline and stage filter - updated to match your data structure
+      // if (Object.keys(filters.pipelineStages).length > 0) {
+
+      //   console.log("jhsdgfsd",filters.pipelineStages)
+      //   // Check if job's pipeline matches any filtered pipeline
+      //   const pipelineMatch = Object.entries(filters.pipelineStages).some(
+      //     ([pipelineName, stageNames]) => {
+      //       // Check if pipeline names match (case insensitive)
+      //       const jobPipeline = job.Pipeline || '';
+      //       const filterPipeline = pipelineName || '';
+
+      //       if (jobPipeline.toLowerCase() !== filterPipeline.toLowerCase()) {
+      //         return false;
+      //       }
+
+      //       // Check if any of the job's stages are in the filtered stages
+      //       const jobStages = Array.isArray(job.Stage) ? job.Stage : [job.Stage || ''];
+      //       return stageNames.some(name =>
+      //         jobStages.some(jobStage =>
+      //           jobStage.toLowerCase() === name.toLowerCase()
+      //         )
+      //       );
+      //     }
+      //   );
+
+      //   if (!pipelineMatch) return false;
+      // }
+
+      if (Object.keys(filters.pipelineStages).length > 0) {
+        console.log(filters.pipelineStages);
+        const pipelineMatch = Object.entries(filters.pipelineStages).some(
+          ([pipelineName, stageNames]) => {
+            const jobPipeline = job.Pipeline || "";
+            if (jobPipeline.toLowerCase() !== pipelineName.toLowerCase()) {
+              return false;
+            }
+
+            const jobStages = Array.isArray(job.Stage)
+              ? job.Stage
+              : [job.Stage || ""];
+
+            return stageNames.some((stage) =>
+              jobStages.some(
+                (jobStage) => jobStage.toLowerCase() === stage.toLowerCase()
+              )
+            );
+          }
+        );
+        console.log("jkhdfds", pipelineMatch);
+        if (!pipelineMatch) return false;
+      }
+      // Account name filter - with null/undefined check
+      if (filters.accountName) {
+        const accountName = job.Account
+          ? String(job.Account).toLowerCase()
+          : "";
+        if (!accountName.includes(filters.accountName.toLowerCase())) {
+          return false;
+        }
+      }
+
+      // Priority filter - with null/undefined check
+      if (filters.priority) {
+        const jobPriority = job.Priority || "";
+        if (jobPriority !== filters.priority) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [jobData, filters]);
 
   const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
   const [accountData, setAccountData] = useState([]);
@@ -363,7 +430,7 @@ const Example = ({ charLimit = 4000 }) => {
           label: stage.name,
         }));
         setstages(stagesdata);
-        // setSelectedstage(stagesdata[0]);
+
         console.log(stagesdata);
       }
     } catch (error) {
@@ -398,7 +465,6 @@ const Example = ({ charLimit = 4000 }) => {
     fetchPipelineDataid(selectedOptions.value);
   };
 
-  // const [selectedStage, setSelectedStage] = useState(null);
   const [stagesoptions, setStagesOptions] = useState([]);
   const [selectedstage, setSelectedstage] = useState("");
   const handleStageChange = (selectedOptions) => {
@@ -432,52 +498,16 @@ const Example = ({ charLimit = 4000 }) => {
       console.error("Error fetching data:", error);
     }
   };
-  //  for tags
-  const calculateWidth = (label) => {
-    const textWidth = label.length * 8;
-    return Math.min(textWidth, 200);
-  };
-  const calculateWidthOptions = (label) =>
-    `${Math.max(label.length * 8, 90)}px`;
-  const tagoptions = tags.map((tag) => ({
-    value: tag._id,
-    label: tag.tagName,
-    colour: tag.tagColour,
-
-    customTagStyle: {
-      backgroundColor: tag.tagColour,
-      color: "#fff",
-      borderRadius: "8px",
-      alignItems: "center",
-      textAlign: "center",
-      marginBottom: "5px",
-      padding: "2px,8px",
-
-      fontSize: "10px",
-      // width: `${calculateWidth(tag.tagName)}px`,
-      margin: "7px",
-    },
-  }));
 
   const [selectedTags, setSelectedTags] = useState([]);
   const [dataAccountjob, setDataAccountjob] = useState();
 
-  // const handleTagChange = (event, newValue) => {
-  //   setSelectedTags(newValue); // Keep the full tag objects
-
-  //   // Send only the values to your backend
-  //   const tagValues = newValue.map((option) => option.value);
-  //   console.log("Selected Values:", tagValues);
-
-  //   // Assuming setCombinedTagsValues is a function to send the values to your backend
-  //   setCombinedTagsValues(tagValues);
-  // };
   const handleTagChange = (newSelectedTags) => {
     setSelectedTags(newSelectedTags);
-    console.log(newSelectedTags)
+    console.log(newSelectedTags);
     const selectedValues = newSelectedTags.map((option) => option.value);
     setCombinedTagsValues(selectedValues);
-    console.log(selectedValues)
+    console.log(selectedValues);
   };
   useEffect(() => {
     fetchUserData();
@@ -500,21 +530,14 @@ const Example = ({ charLimit = 4000 }) => {
     value: user._id,
     label: user.username,
   }));
-  // for autocomplete
-  // const handleUserChange = (event, selectedOptions) => {
-  //   setSelectedUser(selectedOptions);
-  //   const selectedValues = selectedOptions.map((option) => option.value);
-  //   setCombinedValues(selectedValues);
-  // };
 
-  // const [combinedValues, setCombinedValues] = useState();
-    const handleUserChange = (newSelectedUsers) => {
-      setSelectedUser(newSelectedUsers);
-      console.log(newSelectedUsers)
-      const selectedValues = newSelectedUsers.map((option) => option.value);
-      setCombinedValues(selectedValues);
-      console.log(selectedValues)
-    };
+  const handleUserChange = (newSelectedUsers) => {
+    setSelectedUser(newSelectedUsers);
+    console.log(newSelectedUsers);
+    const selectedValues = newSelectedUsers.map((option) => option.value);
+    setCombinedValues(selectedValues);
+    console.log(selectedValues);
+  };
   const [startDate, setStartDate] = useState(null);
   const [dueDate, setDueDate] = useState(null);
   const handleStartDateChange = (date) => {
@@ -559,13 +582,7 @@ const Example = ({ charLimit = 4000 }) => {
       setDueDate(dayjs(data.jobList.DueDate) || null);
       // (dayjs(tempvalues.startdate) || null)
       setStartDate(dayjs(data.jobList.StartDate) || null);
-      // if (data.jobList && data.jobList.Stage) {
-      //   const stageData = {
-      //     value: data.jobList.Stage._id,
-      //     label: data.jobList.Stage.name,
-      //   };
-      //   setSelectedstage(stageData);
-      // }
+
       if (data.jobList && data.jobList.Stage && data.jobList.Stage.length > 0) {
         const stageData = {
           value: data.jobList.Stage[0]._id, // Access first element of array
@@ -626,7 +643,7 @@ const Example = ({ charLimit = 4000 }) => {
             padding: "2px,8px",
 
             fontSize: "10px",
-            // width: `${calculateWidth(tag.tagName)}px`,
+
             margin: "7px",
           },
         }));
@@ -644,7 +661,7 @@ const Example = ({ charLimit = 4000 }) => {
         const selectedValues = assigneesData.map((option) => option.value);
         setCombinedValues(selectedValues);
       }
-    
+
       setIsDrawerOpen(true);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -673,8 +690,7 @@ const Example = ({ charLimit = 4000 }) => {
         console.log(result);
         fetchData();
         handleClose();
-        // console.log(result.updatedAccount); // Log the result
-        // setAccountId(result.updatedAccount._id);
+
         toast.success("Job updated successfully"); // Display success toast
         navigate("/workflow/jobs/archivedjob");
       })
@@ -688,36 +704,6 @@ const Example = ({ charLimit = 4000 }) => {
     handleDeleteJob(selectedJob);
     console.log("Deleted:", selectedJob);
   };
-  // const handleDeleteJob = (id) => {
-  //   console.log(id);
-  //   const confirmDelete = window.confirm(
-  //     "Are you sure you want to delete this job? This action cannot be undone."
-  //   );
-  //   if (!confirmDelete) return;
-  //   setjobid(id);
-  //   const requestOptions = {
-  //     method: "DELETE",
-  //     redirect: "follow",
-  //   };
-
-  //   fetch(`${JOBS_API}/workflow/jobs/job/` + id, requestOptions)
-  //     .then((response) => {
-  //       if (!response.ok) {
-  //         throw new Error("Failed to delete item");
-  //       }
-  //       return response.json();
-  //     })
-  //     .then((result) => {
-  //       // console.log(result);
-  //       toast.success("Job deleted successfully");
-  //       fetchData();
-  //     })
-  //     .catch((error) => {
-  //       console.error(error);
-  //       toast.error("Failed to delete item");
-  //     });
-  // };
-  // console.log(selectedTags);
 
   const handleDeleteJob = async () => {
     const isConfirmed = window.confirm(
@@ -734,10 +720,6 @@ const Example = ({ charLimit = 4000 }) => {
             })
           )
         );
-
-        // Optionally, you can remove the deleted jobs from the UI (if needed)
-        // If you're using jobData in state, for example:
-        // setJobData((prevJobs) => prevJobs.filter((job) => !selected.includes(job.id)));
 
         toast.success("Job deleted successfully!");
         setSelected([]); // Clear the selected jobs
@@ -770,9 +752,7 @@ const Example = ({ charLimit = 4000 }) => {
       .then((result) => {
         console.log(result);
         setAnchorEl(null);
-        // setIsActiveTrue(action === "Archive" ? false : true);
-        // setActiveButton(action === "Archive" ? "archived" : "active")
-        // fetchData(action === "Archive" ? false : true);
+
         if (action === "Archive") {
           handleArchivedClick(); // Call the handleArchivedClick function
         } else if (action === "Make Active") {
@@ -782,112 +762,6 @@ const Example = ({ charLimit = 4000 }) => {
       })
       .catch((error) => console.error(error));
   };
-
-  // const columns = useMemo(
-  //   () => [
-  //     {
-  //       accessorKey: "Name",
-  //       header: "Name",
-
-  //       Cell: ({ row }) => (
-  //         <span style={{ cursor: "pointer", color: "blue" }} onClick={() => handleClick(row.original.id)}>
-  //           {row.original.Name}
-  //         </span>
-  //       ),
-  //     },
-
-  //     { accessorKey: "JobAssignee", header: "Job Assignee", size: 150 },
-  //     {
-  //       accessorKey: "Pipeline",
-  //       header: "Pipeline",
-  //       size: 200,
-  //     },
-  //     {
-  //       accessorKey: "Stage",
-  //       header: "Stage",
-  //       size: 150,
-  //     },
-  //     {
-  //       accessorKey: "Account",
-  //       header: "Account",
-  //       size: 150,
-  //     },
-  //     {
-  //       accessorKey: "clientfacingstatus",
-  //       header: "client-facing status",
-  //       size: 200,
-  //       Cell: ({ row }) => {
-  //         const { statusName, statusColor } = row.original.clientfacingstatus || {}; // Use default destructuring to handle undefined
-  //         return (
-  //           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-  //             {statusName && <GoDotFill style={{ color: statusColor, fontSize: "25px" }} />}
-  //             <span>{statusName}</span>
-  //           </Box>
-  //         );
-  //       },
-  //     },
-  //     // clientfacingstatus
-  //     {
-  //       accessorKey: "StartDate",
-  //       header: "Start Date",
-  //       size: 150,
-  //       // Cell: ({ value }) => (value === "null" ? "null" : value),
-  //     },
-  //     {
-  //       accessorKey: "DueDate",
-  //       header: "Due Date",
-  //       size: 150,
-  //       // Cell: ({ value }) => (value === "null" ? "null" : value),
-  //     },
-  //     {
-  //       accessorKey: "updatedAt",
-  //       header: "Time in current stage",
-  //       size: 150,
-  //     },
-  //     {
-  //       accessorKey: "Settings",
-  //       header: "Settings",
-  //       size: 100,
-  //       Cell: ({ row }) => {
-  //         const [anchorEl, setAnchorEl] = useState(null);
-
-  //         const handleMenuClick = (event) => {
-  //           setAnchorEl(event.currentTarget);
-  //         };
-
-  //         const handleClose = () => {
-  //           setAnchorEl(null);
-  //         };
-
-  //         const handleArchive = () => {
-  //           handleClose();
-  //           handleSubmit(row.original.id);
-  //           console.log("Archived:", row.original.id);
-  //         };
-
-  //         const handleDelete = () => {
-  //           handleClose();
-  //           handleDeleteJob(row.original.id);
-  //           // Add logic to delete by ID here
-  //           console.log("Deleted:", row.original.id);
-  //         };
-
-  //         return (
-  //           <>
-  //             <IconButton onClick={handleMenuClick}>
-  //               <MoreVertIcon />
-  //             </IconButton>
-  //             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
-  //               <MenuItem onClick={handleArchive}>{isActiveTrue ? "Archive " : "Make Active"}</MenuItem>
-  //               <MenuItem onClick={handleDelete}>Delete</MenuItem>
-  //             </Menu>
-  //           </>
-  //         );
-  //       },
-  //     },
-  //   ],
-  //   [optionpipeline, accountOptions]
-  // );
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -900,25 +774,6 @@ const Example = ({ charLimit = 4000 }) => {
     setSelectedJob(null);
   };
 
-  // const table = useMaterialReactTable({
-  //   columns,
-  //   data: jobData,
-  //   enableBottomToolbar: true,
-  //   enableStickyHeader: true,
-  //   columnFilterDisplayMode: "custom",
-  //   enableRowSelection: true,
-  //   enablePagination: true,
-  //   muiTableContainerProps: { sx: { maxHeight: "400px" } },
-  //   initialState: {
-  //     columnPinning: { left: ["mrt-row-select", "Name"] },
-  //   },
-  //   muiTableBodyCellProps: {
-  //     sx: (theme) => ({
-  //       backgroundColor: theme.palette.mode === "dark" ? theme.palette.grey[900] : theme.palette.grey[50],
-  //     }),
-  //   },
-  // });
-
   const handleSaveClick = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -927,7 +782,7 @@ const Example = ({ charLimit = 4000 }) => {
       pipeline: selectedPipeline.value,
       stageid: selectedstage.value,
       jobassignees: combinedValues,
-      priority: priority.value,
+      priority: priority,
       description: description,
       startdate: startDate,
       enddate: dueDate,
@@ -963,7 +818,6 @@ const Example = ({ charLimit = 4000 }) => {
   };
   const handleSaveExitClick = () => {
     updatejobdata();
-    handleSaveTags();
   };
   console.log(accountId);
   const handleSaveTags = () => {
@@ -1003,7 +857,7 @@ const Example = ({ charLimit = 4000 }) => {
       stageid: selectedstage.value,
       jobassignees: combinedValues,
 
-      priority: priority.value,
+      priority: priority,
       description: description,
       startdate: startDate,
       enddate: dueDate,
@@ -1032,6 +886,7 @@ const Example = ({ charLimit = 4000 }) => {
       .then((result) => {
         // Handle success
         toast.success("Job Template updated successfully");
+        handleSaveTags();
         setIsDrawerOpen(false);
         fetchData();
       })
@@ -1187,13 +1042,17 @@ const Example = ({ charLimit = 4000 }) => {
     setPage(0);
   };
   // Compute paginated tasks
-  const paginatedChats = jobData.slice(
+  // const paginatedChats = jobData.slice(
+  //   page * rowsPerPage,
+  //   page * rowsPerPage + rowsPerPage
+  // );
+  // Update your pagination to use filteredData instead of jobData
+  const paginatedChats = filteredData.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
-
-  // 
- // Define additional action handlers
+  //
+  // Define additional action handlers
   const handleArchive = () => {
     console.log("Additional Action 1 triggered");
 
@@ -1201,38 +1060,102 @@ const Example = ({ charLimit = 4000 }) => {
       handleArchiveJob(jobId);
     });
     toast.success("Jobs archived successfully");
-   
+
     navigate("/jobs/archivedjob");
   };
 
-   const handleArchiveJob = (selected) => {
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-  
-      const raw = JSON.stringify({
-        active: !isActiveTrue,
-      });
-      console.log(raw);
-      const requestOptions = {
-        method: "PATCH",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow",
-      };
-      const url = `${JOBS_API}/workflow/jobs/job/${selected}`;
-      fetch(url, requestOptions)
-        .then((response) => response.json())
-        .then((result) => {
-          console.log(result);
-          // console.log(result.); // Log the result
-          // setAccountId(result.updatedAccount._id);
-          // toast.success("Form submitted successfully"); // Display success toast
-        })
-        .catch((error) => {
-          console.error(error); // Log the error
-          toast.error("An error occurred while submitting the form"); // Display error toast
-        });
+  const handleArchiveJob = (selected) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      active: !isActiveTrue,
+    });
+    console.log(raw);
+    const requestOptions = {
+      method: "PATCH",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
     };
+    const url = `${JOBS_API}/workflow/jobs/job/${selected}`;
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        // console.log(result.); // Log the result
+        // setAccountId(result.updatedAccount._id);
+        // toast.success("Form submitted successfully"); // Display success toast
+      })
+      .catch((error) => {
+        console.error(error); // Log the error
+        toast.error("An error occurred while submitting the form"); // Display error toast
+      });
+  };
+const getPriorityStyle = (priority) => {
+  const baseStyle = {
+    display: "inline-block",
+    borderRadius: "50px",
+    padding: "2px 10px",
+    fontSize: "12px",
+    fontWeight: 500,
+    textTransform: "capitalize",
+    color: "white",
+    width: "fit-content",
+  };
+
+  switch (priority?.toLowerCase()) {
+    case "urgent":
+      return { ...baseStyle, backgroundColor: "#0E0402" };
+    case "high":
+      return { ...baseStyle, backgroundColor: "#fe676e" };
+    case "medium":
+      return { ...baseStyle, backgroundColor: "#FFC300", };
+    case "low":
+      return { ...baseStyle, backgroundColor: "#56c288" };
+    default:
+      return { ...baseStyle, backgroundColor: "#6c757d" }; // default gray
+  }
+};
+
+  // const getPriorityStyle = (priority) => {
+  //   switch (priority.toLowerCase()) {
+  //     case "urgent":
+  //       return {
+  //         color: "white",
+  //         backgroundColor: "#0E0402",
+  //         fontSize: "12px",
+  //         borderRadius: "50px",
+  //         padding: "3px 7px",
+  //       };
+  //     case "high":
+  //       return {
+  //         color: "white",
+  //         backgroundColor: "#fe676e",
+  //         fontSize: "12px",
+  //         borderRadius: "50px",
+  //         padding: "3px 7px",
+  //       }; // light red background
+  //     case "medium":
+  //       return {
+  //         color: "white",
+  //         backgroundColor: "#FFC300",
+  //         fontSize: "12px",
+  //         borderRadius: "50px",
+  //         padding: "3px 7px",
+  //       }; // light orange background
+  //     case "low":
+  //       return {
+  //         color: "white",
+  //         backgroundColor: "#56c288",
+  //         fontSize: "12px",
+  //         borderRadius: "50px",
+  //         padding: "3px 7px",
+  //       }; // light green background
+  //     default:
+  //       return {};
+  //   }
+  // };
   return (
     <>
       <Drawer
@@ -1453,14 +1376,14 @@ const Example = ({ charLimit = 4000 }) => {
                   //     ))}
                   //   </Box>
                   // )} */}
-                                 <TagsMultiSelectDropDown 
-  value={selectedTags}
-  onChange={handleTagChange}
-  placeholder="Tags"
-/>
+              <TagsMultiSelectDropDown
+                value={selectedTags}
+                onChange={handleTagChange}
+                placeholder="Tags"
+              />
             </Box>
             <Box mt={2} mr={2.5}>
-              <InputLabel sx={{ color: "black" }}>Task Assignee</InputLabel>
+              <InputLabel sx={{ color: "black" }}>Job Assignee</InputLabel>
               {/* <Autocomplete
                 multiple
                 sx={{ background: "#fff", mt: 1 }}
@@ -1490,11 +1413,11 @@ const Example = ({ charLimit = 4000 }) => {
                 }
               /> */}
 
-<MultiSelectDropdown 
-                   value={selectedUser}
-                   onChange={handleUserChange}
-                   placeholder="Job Assignees"
-                 />
+              <MultiSelectDropdown
+                value={selectedUser}
+                onChange={handleUserChange}
+                placeholder="Job Assignees"
+              />
             </Box>
             <Box mt={2}>
               <InputLabel sx={{ color: "black" }}>Stage</InputLabel>
@@ -1886,201 +1809,48 @@ const Example = ({ charLimit = 4000 }) => {
       </Typography>
     </Box> */}
 
-
-<Box>
-                {/* Render action panel when items are selected */}
-                {selected.length > 0 && (
-                 
-
-                   
-                   
-                  <Box sx={{cursor:'pointer',display:'flex', alignItems:'center', gap:2}}>
-                  <MdOutlineArchive />
-                    <Typography sx={{ fontSize:'15px', fontWeight:'bold'}} onClick={handleArchive}>Archive</Typography>
-                  </Box>
-                )}
-              </Box>
-
-              {loading ? (
-      <Box
-                     sx={{
-                       display: "flex",
-                       alignItems: "center",
-                       justifyContent: "center",
-                     }}
-                   >
-                     {" "}
-                     <CircularProgress
-                       style={{ fontSize: "300px", color: "blue" }}
-                     />
-                   </Box>
-    ) : (
       <Box>
-      <TableContainer component={Paper}>
-        <Table style={{ tableLayout: "fixed", width: "100%" }}>
-          <TableHead>
-            <TableRow>
-              <TableCell
-                padding="checkbox"
-                style={{
-                  position: "sticky",
-                  left: 0,
-                  zIndex: 1,
-                  background: "#fff",
-                  fontSize: "2px", // Set a professional font size
-                  fontWeight: "bold",
-                  textAlign: "center",
-                }}
-              >
-                <Checkbox
-                  checked={selected.length === jobData.length}
-                  onChange={() => {
-                    if (selected.length === jobData.length) {
-                      setSelected([]);
-                    } else {
-                      const allSelected = jobData.map((item) => item.id);
-                      setSelected(allSelected);
-                    }
-                  }}
-                />
-              </TableCell>
-              <TableCell
-                style={{
-                  cursor: "pointer",
-                  position: "sticky",
-                  left: 50,
-                  zIndex: 1,
-                  background: "#fff",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  padding: "16px", // Add more padding for better spacing
-                }}
-                width="200"
-              >
-                Name
-              </TableCell>
-              <TableCell
-                style={{
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  padding: "16px",
-                }}
-                width="100"
-              >
-                Job Assignee
-              </TableCell>
-              <TableCell
-                style={{
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  padding: "16px",
-                }}
-                width="100"
-                height="60"
-              >
-                Pipeline
-              </TableCell>
-              <TableCell
-                style={{
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  padding: "16px",
-                }}
-                width="100"
-              >
-                Stage
-              </TableCell>
-              <TableCell
-                style={{
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  padding: "16px",
-                }}
-                width="100"
-              >
-                Account
-              </TableCell>
-              <TableCell
-                style={{
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  padding: "16px",
-                }}
-                width="200"
-              >
-                Client-Facing Status
-              </TableCell>
-              <TableCell
-                style={{
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  padding: "16px",
-                }}
-                width="100"
-              >
-                Start Date
-              </TableCell>
-              <TableCell
-                style={{
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  padding: "16px",
-                }}
-                width="100"
-              >
-                Due Date
-              </TableCell>
-              <TableCell
-                style={{
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  padding: "16px",
-                }}
-                width="200"
-              >
-                Time in Current Stage
-              </TableCell>
-              <TableCell
-                // style={{
-                //   fontSize: "12px",
-                //   fontWeight: "bold",
-                //   padding: "16px",
-                // }}
-                // width="100"
-                style={{
-                  position: "sticky",
-                  right: 0, // Stick to the right side
-                  zIndex: 2, // Ensure it appears above other elements
-                  background: "#fff",
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  padding: "16px",
-                }}
-                width="100"
-              >
-                Settings
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {paginatedChats.map((row) => {
-              const isSelected = selected.indexOf(row.id) !== -1;
-              return (
-                <TableRow
-                  key={row.id}
-                  hover
-                  onClick={() => handleSelect(row.id)}
-                  role="checkbox"
-                  tabIndex={-1}
-                  selected={isSelected}
-                  style={{
-                    cursor: "pointer",
-                    transition: "background-color 0.3s ease",
-                    "&:hover": {
-                      backgroundColor: "#f4f4f4", // Add hover effect
-                    },
-                  }}
-                >
+        {/* Render action panel when items are selected */}
+        {selected.length > 0 && (
+          <Box
+            sx={{
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
+            <MdOutlineArchive />
+            <Typography
+              sx={{ fontSize: "15px", fontWeight: "bold" }}
+              onClick={handleArchive}
+            >
+              Archive
+            </Typography>
+          </Box>
+        )}
+      </Box>
+
+      {loading ? (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {" "}
+          <CircularProgress style={{ fontSize: "300px", color: "blue" }} />
+        </Box>
+      ) : (
+        <Box>
+          <Box >
+            <FilterDropdown onFilterChange={handleFilterChange} />
+          </Box>
+          <TableContainer component={Paper}>
+            <Table style={{ tableLayout: "fixed", width: "100%" }}>
+              <TableHead>
+                <TableRow>
                   <TableCell
                     padding="checkbox"
                     style={{
@@ -2088,180 +1858,354 @@ const Example = ({ charLimit = 4000 }) => {
                       left: 0,
                       zIndex: 1,
                       background: "#fff",
-                      fontSize: "12px",
+                      fontSize: "2px", // Set a professional font size
+                      fontWeight: "bold",
                       textAlign: "center",
-                      padding: "4px 8px",
-                      lineHeight: "1",
-                      // padding: "2px", // Adjust padding for better spacing
                     }}
                   >
-                    <Checkbox checked={isSelected} />
+                    <Checkbox
+                      checked={selected.length === jobData.length}
+                      onChange={() => {
+                        if (selected.length === jobData.length) {
+                          setSelected([]);
+                        } else {
+                          const allSelected = jobData.map((item) => item.id);
+                          setSelected(allSelected);
+                        }
+                      }}
+                    />
                   </TableCell>
                   <TableCell
                     style={{
+                      cursor: "pointer",
                       position: "sticky",
                       left: 50,
                       zIndex: 1,
                       background: "#fff",
                       fontSize: "12px",
-                      fontWeight: "normal",
-                      // padding: "12px 16px", // Add padding for better spacing
+                      fontWeight: "bold",
+                      padding: "16px", // Add more padding for better spacing
                     }}
+                    width="200"
                   >
-                    <span
-                      style={{ cursor: "pointer", color: "#3f51b5" }}
-                      // onClick={() => handleClick(row.id)}
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent row click action when clicking on name
-                        handleClick(row.id);
-                      }}
-                    >
-                      {row.Name}
-                    </span>
+                    Name
                   </TableCell>
                   <TableCell
                     style={{
                       fontSize: "12px",
-                      padding: "4px 8px",
-                      lineHeight: "1",
+                      fontWeight: "bold",
+                      padding: "16px",
                     }}
+                    width="100"
                   >
-                    {row.JobAssignee}
+                    Job Assignee
                   </TableCell>
                   <TableCell
                     style={{
                       fontSize: "12px",
-                      padding: "4px 8px",
-                      lineHeight: "1",
+                      fontWeight: "bold",
+                      padding: "16px",
                     }}
+                    width="100"
+                    height="60"
                   >
-                    {row.Pipeline}
+                    Pipeline
                   </TableCell>
                   <TableCell
                     style={{
                       fontSize: "12px",
-                      padding: "4px 8px",
-                      lineHeight: "1",
+                      fontWeight: "bold",
+                      padding: "16px",
                     }}
+                    width="100"
                   >
-                    {row.Stage}
+                    Stage
                   </TableCell>
                   <TableCell
                     style={{
                       fontSize: "12px",
-                      padding: "4px 8px",
-                      lineHeight: "1",
+                      fontWeight: "bold",
+                      padding: "16px",
                     }}
+                    width="100"
                   >
-                    {row.Account}
+                    Account
                   </TableCell>
                   <TableCell
                     style={{
                       fontSize: "12px",
-                      padding: "4px 8px",
-                      lineHeight: "1",
+                      fontWeight: "bold",
+                      padding: "16px",
                     }}
+                    width="200"
                   >
-                    {row.clientfacingstatus?.statusName && (
-                      <span
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "8px",
-                        }}
-                      >
-                        <GoDotFill
-                          style={{
-                            color: row.clientfacingstatus.statusColor,
-                            fontSize: "20px",
-                          }}
-                        />
-                        {row.clientfacingstatus.statusName}
-                      </span>
-                    )}
+                    Client-Facing Status
                   </TableCell>
                   <TableCell
                     style={{
                       fontSize: "12px",
-                      padding: "4px 8px",
-                      lineHeight: "1",
+                      fontWeight: "bold",
+                      padding: "16px",
                     }}
+                    width="200"
                   >
-                    {row.StartDate}
+                    Priority
                   </TableCell>
                   <TableCell
                     style={{
                       fontSize: "12px",
-                      padding: "4px 8px",
-                      lineHeight: "1",
+                      fontWeight: "bold",
+                      padding: "16px",
                     }}
+                    width="100"
                   >
-                    {row.DueDate}
+                    Start Date
                   </TableCell>
                   <TableCell
                     style={{
                       fontSize: "12px",
-                      padding: "4px 8px",
-                      lineHeight: "1",
+                      fontWeight: "bold",
+                      padding: "16px",
                     }}
+                    width="100"
                   >
-                    {row.updatedAt}
+                    Due Date
                   </TableCell>
                   <TableCell
-                    // style={{
-                    //   fontSize: "12px",
-                    //   padding: "4px 8px",
-                    //   lineHeight: "1",
-                    // }}
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "bold",
+                      padding: "16px",
+                    }}
+                    width="200"
+                  >
+                    Time in Current Stage
+                  </TableCell>
+                  <TableCell
                     style={{
                       position: "sticky",
                       right: 0, // Stick to the right side
-                      zIndex: 1, // Keep it above the table content
+                      zIndex: 2, // Ensure it appears above other elements
                       background: "#fff",
                       fontSize: "12px",
-                      padding: "4px 8px",
-                      lineHeight: "1",
+                      fontWeight: "bold",
+                      padding: "16px",
                     }}
+                    width="100"
                   >
-                    <IconButton
-                      onClick={(event) => handleMenuClick(event, row.id)}
-                    >
-                      <MoreVertIcon />
-                    </IconButton>
-                    <Menu
-                      anchorEl={anchorEl}
-                      open={Boolean(anchorEl && selectedJob === row.id)}
-                      onClose={handleClose}
-                    >
-                      {/* <MenuItem onClick={handleEditClick}>
-                          {isActiveTrue ? "Archive" : "Make Active"}
-                        </MenuItem> */}
-                      <MenuItem onClick={() => handleSubmit(row.id)}>
-                        Archive
-                      </MenuItem>
-
-                      <MenuItem onClick={handleDelete}>Delete</MenuItem>
-                    </Menu>
+                    Settings
                   </TableCell>
                 </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TablePagination
-      rowsPerPageOptions={[30, 40, 50, 60, 100]}
-      component="div"
-      count={jobData.length}
-      rowsPerPage={rowsPerPage}
-      page={page}
-      onPageChange={handleChangePage}
-      onRowsPerPageChange={handleChangeRowsPerPage}
-    />
-    </Box>
-  )}
+              </TableHead>
+              <TableBody>
+                {paginatedChats.map((row) => {
+                  const isSelected = selected.indexOf(row.id) !== -1;
+                  return (
+                    <TableRow
+                      key={row.id}
+                      hover
+                      onClick={() => handleSelect(row.id)}
+                      role="checkbox"
+                      tabIndex={-1}
+                      selected={isSelected}
+                      style={{
+                        cursor: "pointer",
+                        transition: "background-color 0.3s ease",
+                        "&:hover": {
+                          backgroundColor: "#f4f4f4", // Add hover effect
+                        },
+                      }}
+                    >
+                      <TableCell
+                        padding="checkbox"
+                        style={{
+                          position: "sticky",
+                          left: 0,
+                          zIndex: 1,
+                          background: "#fff",
+                          fontSize: "12px",
+                          textAlign: "center",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                          // padding: "2px", // Adjust padding for better spacing
+                        }}
+                      >
+                        <Checkbox checked={isSelected} />
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          position: "sticky",
+                          left: 50,
+                          zIndex: 1,
+                          background: "#fff",
+                          fontSize: "12px",
+                          fontWeight: "normal",
+                          // padding: "12px 16px", // Add padding for better spacing
+                        }}
+                      >
+                        <span
+                          style={{ cursor: "pointer", color: "#3f51b5" }}
+                          // onClick={() => handleClick(row.id)}
+                          onClick={(e) => {
+                            e.stopPropagation(); // Prevent row click action when clicking on name
+                            handleClick(row.id);
+                          }}
+                        >
+                          {row.Name}
+                        </span>
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}
+                      >
+                        {row.JobAssignee}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}
+                      >
+                        {row.Pipeline}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}
+                      >
+                        {row.Stage}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}
+                      >
+                        {row.Account}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}
+                      >
+                        {row.clientfacingstatus?.statusName && (
+                          <span
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "8px",
+                            }}
+                          >
+                            <GoDotFill
+                              style={{
+                                color: row.clientfacingstatus.statusColor,
+                                fontSize: "20px",
+                              }}
+                            />
+                            {row.clientfacingstatus.statusName}
+                          </span>
+                        )}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}
+                      >
+                        <Box sx={getPriorityStyle(row.Priority)}>
+    {row.Priority}
+  </Box>
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}
+                      >
+                        {row.StartDate}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}
+                      >
+                        {row.DueDate}
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}
+                      >
+                        {row.updatedAt}
+                      </TableCell>
+                      <TableCell
+                        // style={{
+                        //   fontSize: "12px",
+                        //   padding: "4px 8px",
+                        //   lineHeight: "1",
+                        // }}
+                        style={{
+                          position: "sticky",
+                          right: 0, // Stick to the right side
+                          zIndex: 1, // Keep it above the table content
+                          background: "#fff",
+                          fontSize: "12px",
+                          padding: "4px 8px",
+                          lineHeight: "1",
+                        }}
+                      >
+                        <IconButton
+                          onClick={(event) => handleMenuClick(event, row.id)}
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+                        <Menu
+                          anchorEl={anchorEl}
+                          open={Boolean(anchorEl && selectedJob === row.id)}
+                          onClose={handleClose}
+                        >
+                          {/* <MenuItem onClick={handleEditClick}>
+                          {isActiveTrue ? "Archive" : "Make Active"}
+                        </MenuItem> */}
+                          <MenuItem onClick={() => handleSubmit(row.id)}>
+                            Archive
+                          </MenuItem>
 
-      
+                          <MenuItem onClick={handleDelete}>Delete</MenuItem>
+                        </Menu>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[30, 40, 50, 60, 100]}
+            component="div"
+            count={jobData.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Box>
+      )}
     </>
   );
 };

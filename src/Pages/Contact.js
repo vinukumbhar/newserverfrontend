@@ -43,6 +43,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { format } from "date-fns";
 const ContactTable = () => {
+  const storedData = JSON.parse(localStorage.getItem("teamMemberData"));
+  console.log("bhvh", storedData)
   const CONTACT_API = process.env.REACT_APP_CONTACTS_URL;
   const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
   const [contactData, setContactData] = useState([]);
@@ -52,7 +54,7 @@ const ContactTable = () => {
   const [selectedContact, setSelectedContact] = useState(null);
   const [tags, setTags] = useState([]);
   const isMobile = useMediaQuery("(max-width: 1000px)");
-  const [filterText, setFilterText] = useState("");
+  const [filterText, setFilterText] = useState({});
 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
 
@@ -166,18 +168,34 @@ const ContactTable = () => {
     }
 
     // Filter by text in name, email, or companyName
-    if (filterText) {
-      filtered = filtered.filter((contact) => {
-        const name = contact.name?.toLowerCase() || "";
-        const email = contact.email?.toLowerCase() || "";
-        const companyName = contact.companyName?.toLowerCase() || "";
-        return (
-          name.includes(filterText.toLowerCase()) ||
-          email.includes(filterText.toLowerCase()) ||
-          companyName.includes(filterText.toLowerCase())
-        );
-      });
-    }
+    // if (filterText) {
+    //   filtered = filtered.filter((contact) => {
+    //     const name = contact.name?.toLowerCase() || "";
+    //     const email = contact.email?.toLowerCase() || "";
+    //     const companyName = contact.companyName?.toLowerCase() || "";
+    //     return (
+    //       name.includes(filterText.toLowerCase()) ||
+    //       email.includes(filterText.toLowerCase()) ||
+    //       companyName.includes(filterText.toLowerCase())
+    //     );
+    //   });
+    // }
+    Object.entries(filterText).forEach(([filterKey, filterVal]) => {
+      if (filterVal) {
+        filtered = filtered.filter((contact) => {
+          const val = filterVal.toLowerCase();
+          const name = contact.name?.toLowerCase() || "";
+          const email = contact.email?.toLowerCase() || "";
+          const companyName = contact.companyName?.toLowerCase() || "";
+
+          return (
+            name.includes(val) ||
+            email.includes(val) ||
+            companyName.includes(val)
+          );
+        });
+      }
+    });
 
     // Filter by date
     if (dateFilter.option) {
@@ -194,26 +212,26 @@ const ContactTable = () => {
         return (!start || contactDate >= start) && (!end || contactDate <= end);
       });
     }
-// Filter by updated date
-if (updatedDateFilter.option) {
-  filtered = filtered.filter((contact) => {
-    const contactDate = new Date(contact.updatedAt);
-    const start = updatedDateFilter.startDate
-      ? new Date(updatedDateFilter.startDate)
-      : null;
-    const end = updatedDateFilter.endDate
-      ? new Date(updatedDateFilter.endDate)
-      : null;
+    // Filter by updated date
+    if (updatedDateFilter.option) {
+      filtered = filtered.filter((contact) => {
+        const contactDate = new Date(contact.updatedAt);
+        const start = updatedDateFilter.startDate
+          ? new Date(updatedDateFilter.startDate)
+          : null;
+        const end = updatedDateFilter.endDate
+          ? new Date(updatedDateFilter.endDate)
+          : null;
 
-    if (start) start.setHours(0, 0, 0, 0);
-    if (end) end.setHours(23, 59, 59, 999);
+        if (start) start.setHours(0, 0, 0, 0);
+        if (end) end.setHours(23, 59, 59, 999);
 
-    return (!start || contactDate >= start) && (!end || contactDate <= end);
-  });
-}
+        return (!start || contactDate >= start) && (!end || contactDate <= end);
+      });
+    }
 
     return filtered;
-  }, [sortedData, filterText, selectedTags, dateFilter,updatedDateFilter]);
+  }, [sortedData, filterText, selectedTags, dateFilter, updatedDateFilter]);
 
   // Pagination states
   const [page, setPage] = useState(0);
@@ -290,6 +308,7 @@ if (updatedDateFilter.option) {
   const handleClick = async (id) => {
     try {
       const url = `${CONTACT_API}/contacts/${id}`;
+      console.log("url", url)
       const response = await fetch(url);
       const data = await response.json();
       setSelectedContact(data.contact);
@@ -506,75 +525,75 @@ if (updatedDateFilter.option) {
     // });
   };
   // Handler for updated date option change
-const handleUpdatedDateOptionChange = (option) => {
-  let startDate = null;
-  let endDate = null;
-  // let displayText = "";
+  const handleUpdatedDateOptionChange = (option) => {
+    let startDate = null;
+    let endDate = null;
+    // let displayText = "";
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-  switch (option) {
-    case "today":
-      startDate = new Date();
-      endDate = new Date();
-      // displayText = "Today";
-      break;
-    case "lastWeek":
-      startDate = new Date();
-      startDate.setDate(today.getDate() - 7);
-      endDate = new Date();
-      // displayText = "Last 7 days";
-      break;
-    case "lastMonth":
-      startDate = new Date();
-      startDate.setMonth(today.getMonth() - 1);
-      endDate = new Date();
-      // displayText = "Last 30 days";
-      break;
-    case "lastQuarter":
-      startDate = new Date();
-      startDate.setMonth(today.getMonth() - 3);
-      endDate = new Date();
-      // displayText = "Last 90 days";
-      break;
-    case "lastYear":
-      startDate = new Date();
-      startDate.setFullYear(today.getFullYear() - 1);
-      endDate = new Date();
-      // displayText = "Last year";
-      break;
-   
+    switch (option) {
+      case "today":
+        startDate = new Date();
+        endDate = new Date();
+        // displayText = "Today";
+        break;
+      case "lastWeek":
+        startDate = new Date();
+        startDate.setDate(today.getDate() - 7);
+        endDate = new Date();
+        // displayText = "Last 7 days";
+        break;
+      case "lastMonth":
+        startDate = new Date();
+        startDate.setMonth(today.getMonth() - 1);
+        endDate = new Date();
+        // displayText = "Last 30 days";
+        break;
+      case "lastQuarter":
+        startDate = new Date();
+        startDate.setMonth(today.getMonth() - 3);
+        endDate = new Date();
+        // displayText = "Last 90 days";
+        break;
+      case "lastYear":
+        startDate = new Date();
+        startDate.setFullYear(today.getFullYear() - 1);
+        endDate = new Date();
+        // displayText = "Last year";
+        break;
+
       default:
         startDate = updatedDateFilter.startDate;
         endDate = updatedDateFilter.endDate;
-  }
+    }
 
-  // setUpdatedDateFilter({
-  //   option,
-  //   startDate,
-  //   endDate,
-  //   displayText,
-  // });
-  setUpdatedDateFilter({
-    option,
-    startDate,
-    endDate,
-    // Add formatted dates to display
-    displayText:
-      option === "custom"
-        ? "Custom Range"
-        : `${format(startDate, "MMM-dd-yyyy")} to ${format(endDate, "MMM-dd-yyyy")}`,
-  });
-};
+    // setUpdatedDateFilter({
+    //   option,
+    //   startDate,
+    //   endDate,
+    //   displayText,
+    // });
+    setUpdatedDateFilter({
+      option,
+      startDate,
+      endDate,
+      // Add formatted dates to display
+      displayText:
+        option === "custom"
+          ? "Custom Range"
+          : `${format(startDate, "MMM-dd-yyyy")} to ${format(endDate, "MMM-dd-yyyy")}`,
+    });
+  };
 
-// Handler for updated date change
-const handleUpdatedDateChange = (type, date) => {
-  setUpdatedDateFilter((prev) => ({
-    ...prev,
-    [type]: date,
-  }));
-};
+  // Handler for updated date change
+  const handleUpdatedDateChange = (type, date) => {
+    setUpdatedDateFilter((prev) => ({
+      ...prev,
+      [type]: date,
+    }));
+  };
   const handleDateChange = (type, value) => {
     setDateFilter((prev) => ({
       ...prev,
@@ -582,38 +601,27 @@ const handleUpdatedDateChange = (type, date) => {
       option: "custom",
     }));
   };
-// Clear filter handler should be updated to handle updatedAt
-const clearFilter = (filter) => {
-  if (filter === "createdAt") {
-    setDateFilter({
-      option: null,
-      startDate: null,
-      endDate: null,
-    });
-  } else if (filter === "updatedAt") {
-    setUpdatedDateFilter({
-      option: null,
-      startDate: null,
-      endDate: null,
-    });
-  } else {
-    setFilterText("");
-  }
-  setSelectedFilters(selectedFilters.filter((f) => f !== filter));
-  if (filter === "tags") setSelectedTags([]);
-};
-  // const clearFilter = (filter) => {
-  //   if (filter === "createdAt") {
-  //     setDateFilter({
-  //       option: null,
-  //       startDate: null,
-  //       endDate: null,
-  //     });
-  //   }
-    
-  //   setSelectedFilters(selectedFilters.filter((f) => f !== filter));
-  //   setFilterText("");
-  // };
+  // Clear filter handler should be updated to handle updatedAt
+  const clearFilter = (filter) => {
+    if (filter === "createdAt") {
+      setDateFilter({
+        option: null,
+        startDate: null,
+        endDate: null,
+      });
+    } else if (filter === "updatedAt") {
+      setUpdatedDateFilter({
+        option: null,
+        startDate: null,
+        endDate: null,
+      });
+    } else {
+      setFilterText("");
+    }
+    setSelectedFilters(selectedFilters.filter((f) => f !== filter));
+    if (filter === "tags") setSelectedTags([]);
+  };
+
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -832,7 +840,7 @@ const clearFilter = (filter) => {
             <MenuItem onClick={() => handleFilterOptionClick("createdAt")}>
               Date Created
             </MenuItem>
-           
+
             <MenuItem onClick={() => handleFilterOptionClick("updatedAt")}>
               Date Updated
             </MenuItem>
@@ -932,8 +940,7 @@ const clearFilter = (filter) => {
                     })}
                   </Select>
                 </FormControl>
-              ) : 
-              filter === "createdAt" ? (
+              ) : filter === "createdAt" ? (
                 <Box display="flex" alignItems="center" gap={2}>
                   <Typography>Date Created</Typography>
                   <FormControl sx={{ minWidth: 120, mr: 1 }}>
@@ -995,7 +1002,9 @@ const clearFilter = (filter) => {
                   <FormControl sx={{ minWidth: 120, mr: 1 }}>
                     <Select
                       value={updatedDateFilter.option || ""}
-                      onChange={(e) => handleUpdatedDateOptionChange(e.target.value)}
+                      onChange={(e) =>
+                        handleUpdatedDateOptionChange(e.target.value)
+                      }
                       displayEmpty
                       size="small"
                     >
@@ -1050,8 +1059,15 @@ const clearFilter = (filter) => {
                   label={`Search by ${filter}`}
                   variant="outlined"
                   size="small"
-                  value={filterText}
-                  onChange={(e) => setFilterText(e.target.value)}
+                  // value={filterText}
+                  // onChange={(e) => setFilterText(e.target.value)}
+                  onChange={(e) =>
+                    setFilterText((prev) => ({
+                      ...prev,
+                      [filter]: e.target.value,
+                    }))
+                  }
+                  value={filterText[filter] || ""}
                   sx={{ width: "200px" }}
                 />
               )}
@@ -1064,7 +1080,11 @@ const clearFilter = (filter) => {
         <Box display="flex" alignItems="center" mb={2}>
           {/* Only show delete button when contacts are selected */}
           {selectedContacts.length > 0 && (
-            <IconButton onClick={handleDeleteSelected} sx={{ color: "red" }}>
+            <IconButton
+              onClick={handleDeleteSelected}
+              sx={{ color: "red" }}
+               disabled={storedData?.teammember?.manageContacts === false}
+            >
               <DeleteIcon />
             </IconButton>
           )}
@@ -1199,7 +1219,7 @@ const clearFilter = (filter) => {
                       onChange={(e) => handleCheckboxChange(e, contact.id)}
                     />
                   </TableCell>
-                  <TableCell
+                  {/* <TableCell
                     style={{
                       cursor: "pointer",
                       color: "#3f51b5",
@@ -1213,9 +1233,58 @@ const clearFilter = (filter) => {
                     }}
                     // sx={{ }}
                     onClick={() => handleClick(contact.id)}
+                     disabled={!storedData?.teammember?.manageContacts}
                   >
                     {contact.name}
-                  </TableCell>
+                  </TableCell> */}
+
+                  {/* <TableCell
+                    style={{
+                      cursor: storedData?.teammember?.manageContacts
+                        ? "pointer"
+                        : "not-allowed",
+                      color: storedData?.teammember?.manageContacts
+                        ? "#3f51b5"
+                        : "gray",
+                      left: 50,
+                      zIndex: 1,
+                      background: "#fff",
+                      fontSize: "12px",
+                      fontWeight: "normal",
+                    }}
+                    onClick={() => {
+                      if (storedData?.teammember?.manageContacts) {
+                        handleClick(contact.id);
+                      }
+                    }}
+                  >
+                    {contact.name}
+                  </TableCell> */}
+<TableCell
+  style={{
+    cursor:
+      storedData?.teammember?.manageContacts === false
+        ? "not-allowed"
+        : "pointer",
+    color:
+      storedData?.teammember?.manageContacts === false
+        ? "gray"
+        : "#3f51b5",
+    left: 50,
+    zIndex: 1,
+    background: "#fff",
+    fontSize: "12px",
+    fontWeight: "normal",
+  }}
+  onClick={() => {
+    if (storedData?.teammember?.manageContacts !== false) {
+      handleClick(contact.id);
+    }
+  }}
+>
+  {contact.name}
+</TableCell>
+
                   <TableCell
                     style={{
                       fontSize: "12px",
@@ -1304,6 +1373,7 @@ const clearFilter = (filter) => {
                     <IconButton
                       onClick={() => handleDelete(contact.id)}
                       sx={{ color: "red" }}
+                     disabled={storedData?.teammember?.manageContacts === false}
                     >
                       <DeleteIcon />
                     </IconButton>

@@ -31,7 +31,7 @@ const ContactForm = ({ onContactUpdated, selectedContact, handleClose, isSmallSc
   const [tagsNew, setTagsNew] = useState([]);
   const [tags, setTags] = useState([]);
   const [contactId, setContactId] = useState(null); // Added state for contact ID
-  const [combinedTagsValues, setCombinedTagsValues] = useState();
+  const [combinedTagsValues, setCombinedTagsValues] = useState(null);
   useEffect(() => {
     if (selectedContact) {
       console.log(selectedContact);
@@ -94,15 +94,23 @@ const ContactForm = ({ onContactUpdated, selectedContact, handleClose, isSmallSc
       // );
 
       const flatPhoneNumbers = selectedContact.phoneNumbers?.flat() || [];
+// setPhoneNumbers(
+//   flatPhoneNumbers.map((phoneObj, index) => ({
+//     id: Date.now() + Math.random(), // Improved unique ID generation
+//     phone: String(phoneObj.phone), // Access the phone property correctly
+//     isPrimary: false, // Set accordingly
+//   }))
+// );
 setPhoneNumbers(
-  flatPhoneNumbers.map((phoneObj, index) => ({
-    id: Date.now() + Math.random(), // Improved unique ID generation
-    phone: String(phoneObj.phone), // Access the phone property correctly
-    isPrimary: false, // Set accordingly
+  flatPhoneNumbers.map((phoneStr) => ({
+    id: Date.now() + Math.random(),
+    phone: phoneStr.startsWith("+") ? phoneStr : `+1${phoneStr}`, // add country code if missing
+    isPrimary: false,
   }))
 );
 
-      console.log(flatPhoneNumbers)
+
+      console.log("phone numbers",flatPhoneNumbers)
 
       // const flatTags = selectedContact.tags?.[0] || [];
     
@@ -112,17 +120,19 @@ setPhoneNumbers(
       // setCombinedTagsValues(flatTags.map((tag) => tag._id));
 
       console.log("Tags:", selectedContact.tags);
-      const tags = selectedContact.tags[0]; // Since data is nested inside an array
-
+      const tags = selectedContact.tags; // Since data is nested inside an array
+      console.log("Tags with IDs:", tags);
       const tagList = tags.map(tag => ({
         value: tag._id,
         label: tag.tagName,
         color: tag.tagColour, 
       }));
       setTagsNew(tagList)
+
+
       const selectedTagsValues = tagList.map((option) => option.value);
       setCombinedTagsValues(selectedTagsValues);
-      console.log("Tags with IDs:", tagList);
+      // console.log("Tags with IDs:", tagList);
       
     }
   }, [selectedContact]);

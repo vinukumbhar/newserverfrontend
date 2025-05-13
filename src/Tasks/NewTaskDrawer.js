@@ -667,7 +667,7 @@ console.log(subtaskData)
     enddate: DueDateNew,
     subtasks: subtaskData,
   });
-
+console.log("rew",raw)
   const requestOptions = {
     method: isEditMode ? "PATCH" : "POST",
     headers: myHeaders,
@@ -682,7 +682,7 @@ console.log(subtaskData)
   fetch(url, requestOptions)
     .then((response) => response.json())
     .then((result) => {
-      console.log(result);
+      console.log("jaja",result);
       toast.success(isEditMode ? "Task Updated successfully" : "Task Created successfully");
       onClose();
       

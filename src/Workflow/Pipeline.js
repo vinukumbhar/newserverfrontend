@@ -564,7 +564,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
         method: "GET",
         redirect: "follow",
       };
-      const url = `${PROPOSAL_API}/Workflow/proposalesandels/proposalesandels/${automationTemp}`;
+      const url = `${PROPOSAL_API}/workflow/proposalesandels/proposalesandels/${automationTemp}`;
       try {
         const response = await fetch(url, requestOptions); // Fetch the data
         const result = await response.json(); // Parse the JSON response
@@ -3015,7 +3015,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                 </FormControl>
               </Box>
               <Box mt={2} mr={2.5}>
-                <InputLabel sx={{ color: "black" }}>Task Assignee</InputLabel>
+                <InputLabel sx={{ color: "black" }}>Job Assignee</InputLabel>
                 {/* <Autocomplete
                   multiple
                   sx={{ background: "#fff", mt: 1 }}

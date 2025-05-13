@@ -515,7 +515,7 @@ const PipelineTemp = () => {
   }, []);
   const fetchChatTemplates = async () => {
     try {
-      const url = `${CHAT_API}/Workflow/chats/chattemplate`;
+      const url = `${CHAT_API}/workflow/chats/chattemplate`;
       const response = await fetch(url);
       const data = await response.json();
       setAddChatTemplates(data.chatTemplate);

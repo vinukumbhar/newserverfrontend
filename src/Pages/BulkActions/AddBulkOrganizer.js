@@ -79,6 +79,9 @@ const AddBulkOrganizer = ({ selectedAccounts, onClose }) => {
   // const [sections, setSections] = useState([]);
   const [sections, setSections] = useState([]);
   const [organizerName, setOrganizerName] = useState("");
+const handleOrganizerNameChange = (e) => {
+  setOrganizerName(e.target.value);
+};
 
   const fetchOrganizerTemplateDataByTempId = async (selectedOrganizerTempid) => {
     try {
@@ -498,6 +501,7 @@ const AddBulkOrganizer = ({ selectedAccounts, onClose }) => {
           fullWidth
           value={organizerName || ""} // Replace 'someField' with the field you want to display/edit
           placeholder="Organizer Name"
+           onChange={handleOrganizerNameChange}
           size="small"
         />
       </Box>

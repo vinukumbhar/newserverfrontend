@@ -4,7 +4,6 @@
 
 // const Priority = ({ onPriorityChange, selectedPriority }) => {
 
-
 //   const options = [
 //     { value: "Urgent", label: "Urgent", color: "#0E0402" },
 //     { value: "High", label: "High", color: "#fe676e" },
@@ -68,17 +67,16 @@
 //         onChange={handleChange}
 //         styles={colorStyles}
 //         sx={{ width: '100%', marginTop: '20px' }}
-       
+
 //         size="small"
-        
+
 //         value={options.find(option => option.value === selectedPriority)}
 //         isSearchable // Enable search
 //         isClearable
 //       />
 //       </Box>
-      
-//     </Box>
 
+//     </Box>
 
 //   );
 // };
@@ -86,10 +84,16 @@
 // export default Priority;
 
 import React from "react";
-import { Box, MenuItem, Select, FormControl, InputLabel, Chip } from "@mui/material";
+import {
+  Box,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Chip,
+} from "@mui/material";
 
 const Priority = ({ onPriorityChange, selectedPriority }) => {
-  
   const options = [
     { value: "Urgent", label: "Urgent", color: "#0E0402" },
     { value: "High", label: "High", color: "#fe676e" },
@@ -110,31 +114,30 @@ const Priority = ({ onPriorityChange, selectedPriority }) => {
         width: "auto",
       },
     },
-  }
+  };
   const calculateWidth = (label) => {
     const textWidth = label.length * 9;
     return Math.min(textWidth, 220);
   };
   return (
     <Box>
-      <InputLabel sx={{color:'black',mb:2}}>Priority</InputLabel>
+      <InputLabel sx={{ color: "black", mb: 2 }}>Priority</InputLabel>
       <FormControl fullWidth>
-        
         <Select
-        size="small"
-
+          size="small"
           value={selectedPriority || ""}
           onChange={handleChange}
           displayEmpty
           renderValue={(selected) => {
-           
-            const selectedOption = options.find(option => option.value === selected);
+            const selectedOption = options.find(
+              (option) => option.value === selected
+            );
             return selectedOption ? (
-              <Chip 
-                label={selectedOption.label} 
-                sx={{ 
-                  backgroundColor: selectedOption.color, 
-                  color: "#fff", 
+              <Chip
+                label={selectedOption.label}
+                sx={{
+                  backgroundColor: selectedOption.color,
+                  color: "#fff",
                   fontWeight: 500,
                   fontSize: "10px",
                   borderRadius: "16px",
@@ -152,12 +155,12 @@ const Priority = ({ onPriorityChange, selectedPriority }) => {
             ) : null;
           }}
           MenuProps={MenuProps}
-                            sx={{
-                              borderRadius: "10px",
-                              "& .MuiOutlinedInput-root": {
-                                borderRadius: "10px",
-                              },
-                            }}
+          sx={{
+            borderRadius: "10px",
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "10px",
+            },
+          }}
         >
           {options.map((option) => (
             <MenuItem
@@ -166,19 +169,19 @@ const Priority = ({ onPriorityChange, selectedPriority }) => {
               sx={{
                 backgroundColor: option.color,
                 color: "#fff",
-                                    fontSize: "10px",
-                                    borderRadius: "10px",
-                                    margin: "5px",
-                                    textAlign: "center",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    padding: "4px 9px",
-                                    whiteSpace: "nowrap", 
-                                    width: `${calculateWidth(option.label)}px`,
-                                    "&:hover": {
-                                      backgroundColor: option.color,
-                                      color: "#fff",
-                                    },
+                fontSize: "10px",
+                borderRadius: "10px",
+                margin: "5px",
+                textAlign: "center",
+                display: "flex",
+                justifyContent: "center",
+                padding: "4px 9px",
+                whiteSpace: "nowrap",
+                width: `${calculateWidth(option.label)}px`,
+                "&:hover": {
+                  backgroundColor: option.color,
+                  color: "#fff",
+                },
               }}
             >
               {option.label}

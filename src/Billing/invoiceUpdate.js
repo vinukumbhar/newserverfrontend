@@ -1467,7 +1467,7 @@ const Invoices = ({ charLimit = 4000 }) => {
             {/* <Box >
                                 <MaterialReactTable columns={columns} table={table} />
                             </Box> */}
-            <Box sx={{ overflowX: "auto", width: "100%" }}>
+            <Box sx={{ overflowX: "auto", width: "100%" , border:'1px solid red', height:'300px'}}>
               <Table>
                 <TableHead>
                   <TableRow>

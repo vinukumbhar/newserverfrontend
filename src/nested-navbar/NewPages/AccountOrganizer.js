@@ -78,7 +78,9 @@ const AccountOrganizer = () => {
   // const [sections, setSections] = useState([]);
   const [sections, setSections] = useState([]);
   const [organizerName, setOrganizerName] = useState("");
-
+const handleOrganizerNameChange = (e) => {
+  setOrganizerName(e.target.value);
+};
   const fetchOrganizerTemplateDataByTempId = async (selectedOrganizerTempid) => {
     try {
       const url = `${ORGANIZER_TEMP_API}/workflow/organizers/organizertemplate/${selectedOrganizerTempid}`;
@@ -637,6 +639,7 @@ fetch(`${ORGANIZER_TEMP_API}/organizersendemail`, requestOptions)
           value={organizerName || ""} // Replace 'someField' with the field you want to display/edit
           placeholder="Organizer Name"
           size="small"
+             onChange={handleOrganizerNameChange}
         />
       </Box>
 

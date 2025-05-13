@@ -1205,7 +1205,7 @@ const ActiveMember = () => {
                       />
                     </Box>
 
-                    <Box sx={{ flexGrow: 1 }}>
+                    {/* <Box sx={{ flexGrow: 1 }}>
                       <Grid container spacing={2} columns={16}>
                         <Grid xs={8}>
                           <Box
@@ -1823,7 +1823,688 @@ const ActiveMember = () => {
                           </Box>
                         </Grid>
                       </Grid>
-                    </Box>
+                    </Box> */}
+                    <Box sx={{ p: 2 }}>
+                                                  <Grid container spacing={2} columns={16}>
+                                                    <Grid xs={8}>
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchPayments}
+                                                          
+                                                          checked={isCheckedPayments}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                             disabled
+                                                          className="react-switch"
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage payments
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchPipelines}
+                                                         
+                                                          checked={isCheckedPipelines}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage pipelines
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchTime}
+                                                          checked={isCheckedTimeEntries}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                             disabled
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage time entries
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchAccounts}
+                                                          checked={isCheckedAccounts}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage accounts
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchTags}
+                                                          
+                                                          checked={isCheckedTags}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage tags
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchOrganizers}
+                                                          checked={isCheckedOrganizers}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                           disabled
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage organizers
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchFirmBalance}
+                                                          checked={isCheckedFirmBalance}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                           disabled
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage firm balance
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchContacts}
+                                                          checked={isCheckedContacts}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage contacts
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchSite}
+                                                          checked={isCheckedSite}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                           disabled
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage site
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchServices}
+                                                         
+                                                          checked={isCheckedServices}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage services
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchFilterTemplates}
+                                                          checked={isCheckedFilterTemplates}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                           disabled
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage public filter templates
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchTemplates}
+                                                          
+                                                          checked={isCheckedTemplates}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage templates
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchMarketplace}
+                                                          checked={isCheckedMarketplace}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                           disabled
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage marketplace
+                                                        </p>
+                                                      </Box>
+                                                    </Grid>
+                                                    <Grid xs={8}>
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchInvoices}
+                                                          checked={isCheckedInvoices}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                           disabled
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage invoices
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchJobRecurrences}
+                                                          checked={isCheckedJobRecurrences}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                           disabled
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage job recurrences
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchRatesTimeEntries}
+                                                          checked={isCheckedRatesTimeEntries}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                           disabled
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage rates in time entries
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchAllAccounts}
+                                                          
+                                                          checked={isCheckedAllAccounts}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          View all accounts
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchCustomFields}
+                                                          checked={isCheckedCustomFields}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                           disabled
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage custome fields
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchTeammates}
+                                                          checked={isCheckedTeammates}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                           disabled
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage teammates
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchAllContacts}
+                                                         
+                                                          checked={isCheckedAllContacts}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          View all contacts
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchProposals}
+                                                         
+                                                          checked={isCheckedProposals}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage proposals
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchEmail}
+                                                          checked={isCheckedEmail}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                           disabled
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Mute emails
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchOrgnizerAnswers}
+                                                          checked={isCheckedOrgnizerAnswers}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                           disabled
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Edit orgnizer answers
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchDocuments}
+                                                          checked={isCheckedDocuments}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                           disabled
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage documents
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchTranscripts}
+                                                          checked={isCheckedTranscripts}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                           disabled
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          Manage IRS Transcripts
+                                                        </p>
+                                                      </Box>
+                    
+                                                      <Box
+                                                        style={{
+                                                          display: "flex",
+                                                          gap: "10px",
+                                                          marginBottom: "10px",
+                                                          alignItems: "center",
+                                                        }}
+                                                      >
+                                                        <Switch
+                                                          onChange={handleSwitchViewReporting}
+                                                          checked={isCheckedViewReporting}
+                                                          onColor="#3A91F5"
+                                                          onHandleColor="#FFF"
+                                                          handleDiameter={10}
+                                                          uncheckedIcon={false}
+                                                          checkedIcon={false}
+                                                          height={20}
+                                                          width={32}
+                                                          className="react-switch"
+                                                           disabled
+                                                        />
+                                                        <p style={{ color: "black" }}>
+                                                          View reporting
+                                                        </p>
+                                                      </Box>
+                                                    </Grid>
+                                                  </Grid>
+                                                </Box>
                   </Box>
                 )}
               </Box>

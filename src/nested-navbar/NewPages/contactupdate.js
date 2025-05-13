@@ -33,7 +33,7 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
   const [tagsNew, setTagsNew] = useState([]);
   const [tags, setTags] = useState([]);
   const [contactId, setContactId] = useState(null); // Added state for contact ID
-  const [combinedTagsValues, setCombinedTagsValues] = useState();
+  const [combinedTagsValues, setCombinedTagsValues] = useState(null);
 
   console.log(selectedContact);
   useEffect(() => {
@@ -58,13 +58,21 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
       setContactId(selectedContact._id || null); // Set contact ID
       
       const flatPhoneNumbers = selectedContact.phoneNumbers?.flat(2) || []; // Flatten to ensure no nested arrays
+      // setPhoneNumbers(
+      //   flatPhoneNumbers.map((phoneObj) => ({
+      //     id: Date.now() + Math.random(), // Improved unique ID generation
+      //     phone: String(phoneObj.phone), // Access the phone property correctly
+      //     isPrimary: false, // Set based on your logic
+      //   }))
+      // );
+
       setPhoneNumbers(
-        flatPhoneNumbers.map((phoneObj) => ({
-          id: Date.now() + Math.random(), // Improved unique ID generation
-          phone: String(phoneObj.phone), // Access the phone property correctly
-          isPrimary: false, // Set based on your logic
-        }))
-      );
+  flatPhoneNumbers.map((phoneStr) => ({
+    id: Date.now() + Math.random(),
+    phone: phoneStr.startsWith("+") ? phoneStr : `+1${phoneStr}`, // add country code if missing
+    isPrimary: false,
+  }))
+);
 
       // const flatTags = selectedContact.tags?.[0] || [];
       // setTagsNew(
@@ -86,13 +94,26 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
       const flatTags = selectedContact.tags?.[0] || [];
     
     // Store only tag IDs in `tagsNew` as `<Select>` requires values, not objects
-    setTagsNew(flatTags.map((tag) => tag._id));
+    // setTagsNew(flatTags.map((tag) => tag._id));
     
-    setCombinedTagsValues(flatTags.map((tag) => tag._id));
-      getaccountbycontactid(selectedContact._id);
-      // Set combinedTagsValues to match the tags in the contact
-      setCombinedTagsValues(flatTags.map((tag) => tag._id));
-      console.log("Tags:", selectedContact.tags);
+    // setCombinedTagsValues(flatTags.map((tag) => tag._id));
+    //   getaccountbycontactid(selectedContact._id);
+    //   // Set combinedTagsValues to match the tags in the contact
+    //   setCombinedTagsValues(flatTags.map((tag) => tag._id));
+    //   console.log("Tags:", selectedContact.tags);
+     console.log("Tags:", selectedContact.tags);
+      const tags = selectedContact.tags; // Since data is nested inside an array
+      // console.log("Tags with IDs:", tags);
+      const tagList = tags.map(tag => ({
+        value: tag._id,
+        label: tag.tagName,
+        color: tag.tagColour, 
+      }));
+      setTagsNew(tagList)
+
+
+      const selectedTagsValues = tagList.map((option) => option.value);
+      setCombinedTagsValues(selectedTagsValues);
     }
   }, [selectedContact]);
 

@@ -1140,13 +1140,7 @@ const handleCloseLoginDetials=()=>{
                                   >
                                     <Switch
                                       onChange={handleSwitchPayments}
-                                      // onChange={(checked) => {
-                                      //   handleSwitchPayments(checked);
-                                      //   updateSidebarData(
-                                      //     "Manage payments",
-                                      //     checked
-                                      //   );
-                                      // }}
+                                      
                                       checked={isCheckedPayments}
                                       onColor="#3A91F5"
                                       onHandleColor="#FFF"
@@ -1155,6 +1149,7 @@ const handleCloseLoginDetials=()=>{
                                       checkedIcon={false}
                                       height={20}
                                       width={32}
+                                         disabled
                                       className="react-switch"
                                     />
                                     <p style={{ color: "black" }}>
@@ -1172,13 +1167,7 @@ const handleCloseLoginDetials=()=>{
                                   >
                                     <Switch
                                       onChange={handleSwitchPipelines}
-                                      // onChange={(checked) => {
-                                      //   handleSwitchPipelines(checked);
-                                      //   updateSidebarData(
-                                      //     "Pipeline Templates",
-                                      //     checked
-                                      //   );
-                                      // }}
+                                     
                                       checked={isCheckedPipelines}
                                       onColor="#3A91F5"
                                       onHandleColor="#FFF"
@@ -1213,6 +1202,7 @@ const handleCloseLoginDetials=()=>{
                                       height={20}
                                       width={32}
                                       className="react-switch"
+                                         disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage time entries
@@ -1254,13 +1244,7 @@ const handleCloseLoginDetials=()=>{
                                   >
                                     <Switch
                                       onChange={handleSwitchTags}
-                                      // onChange={(checked) => {
-                                      //   handleSwitchTags(checked);
-                                      //   updateSidebarData(
-                                      //     "Tags",
-                                      //     checked
-                                      //   );
-                                      // }}
+                                      
                                       checked={isCheckedTags}
                                       onColor="#3A91F5"
                                       onHandleColor="#FFF"
@@ -1295,6 +1279,7 @@ const handleCloseLoginDetials=()=>{
                                       height={20}
                                       width={32}
                                       className="react-switch"
+                                       disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage organizers
@@ -1320,6 +1305,7 @@ const handleCloseLoginDetials=()=>{
                                       height={20}
                                       width={32}
                                       className="react-switch"
+                                       disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage firm balance
@@ -1370,6 +1356,7 @@ const handleCloseLoginDetials=()=>{
                                       height={20}
                                       width={32}
                                       className="react-switch"
+                                       disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage site
@@ -1386,13 +1373,7 @@ const handleCloseLoginDetials=()=>{
                                   >
                                     <Switch
                                       onChange={handleSwitchServices}
-                                      // onChange={(checked) => {
-                                      //   handleSwitchServices(checked);
-                                      //   updateSidebarData(
-                                      //     "Tags",
-                                      //     checked
-                                      //   );
-                                      // }}
+                                     
                                       checked={isCheckedServices}
                                       onColor="#3A91F5"
                                       onHandleColor="#FFF"
@@ -1427,6 +1408,7 @@ const handleCloseLoginDetials=()=>{
                                       height={20}
                                       width={32}
                                       className="react-switch"
+                                       disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage public filter templates
@@ -1443,10 +1425,7 @@ const handleCloseLoginDetials=()=>{
                                   >
                                     <Switch
                                       onChange={handleSwitchTemplates}
-                                      // onChange={(checked) => {
-                                      //   handleSwitchTemplates(checked);
-                                      //   updateSidebarData("Templates", checked);
-                                      // }}
+                                      
                                       checked={isCheckedTemplates}
                                       onColor="#3A91F5"
                                       onHandleColor="#FFF"
@@ -1481,6 +1460,7 @@ const handleCloseLoginDetials=()=>{
                                       height={20}
                                       width={32}
                                       className="react-switch"
+                                       disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage marketplace
@@ -1507,6 +1487,7 @@ const handleCloseLoginDetials=()=>{
                                       height={20}
                                       width={32}
                                       className="react-switch"
+                                       disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage invoices
@@ -1532,6 +1513,7 @@ const handleCloseLoginDetials=()=>{
                                       height={20}
                                       width={32}
                                       className="react-switch"
+                                       disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage job recurrences
@@ -1557,6 +1539,7 @@ const handleCloseLoginDetials=()=>{
                                       height={20}
                                       width={32}
                                       className="react-switch"
+                                       disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage rates in time entries
@@ -1573,13 +1556,7 @@ const handleCloseLoginDetials=()=>{
                                   >
                                     <Switch
                                       onChange={handleSwitchAllAccounts}
-                                      // onChange={(checked) => {
-                                      //   handleSwitchAllAccounts(checked);
-                                      //   updateSidebarData(
-                                      //     "Invoices",
-                                      //     checked
-                                      //   );
-                                      // }}
+                                      
                                       checked={isCheckedAllAccounts}
                                       onColor="#3A91F5"
                                       onHandleColor="#FFF"
@@ -1614,6 +1591,7 @@ const handleCloseLoginDetials=()=>{
                                       height={20}
                                       width={32}
                                       className="react-switch"
+                                       disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage custome fields
@@ -1639,6 +1617,7 @@ const handleCloseLoginDetials=()=>{
                                       height={20}
                                       width={32}
                                       className="react-switch"
+                                       disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage teammates
@@ -1655,13 +1634,7 @@ const handleCloseLoginDetials=()=>{
                                   >
                                     <Switch
                                       onChange={handleSwitchAllContacts}
-                                      // onChange={(checked) => {
-                                      //   handleSwitchAllContacts(checked);
-                                      //   updateSidebarData(
-                                      //     "Contacts",
-                                      //     checked
-                                      //   );
-                                      // }}
+                                     
                                       checked={isCheckedAllContacts}
                                       onColor="#3A91F5"
                                       onHandleColor="#FFF"
@@ -1687,13 +1660,7 @@ const handleCloseLoginDetials=()=>{
                                   >
                                     <Switch
                                       onChange={handleSwitchProposals}
-                                      // onChange={(checked) => {
-                                      //   handleSwitchProposals(checked);
-                                      //   updateSidebarData(
-                                      //     "Proposal&Els",
-                                      //     checked
-                                      //   );
-                                      // }}
+                                     
                                       checked={isCheckedProposals}
                                       onColor="#3A91F5"
                                       onHandleColor="#FFF"
@@ -1728,6 +1695,7 @@ const handleCloseLoginDetials=()=>{
                                       height={20}
                                       width={32}
                                       className="react-switch"
+                                       disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Mute emails
@@ -1753,6 +1721,7 @@ const handleCloseLoginDetials=()=>{
                                       height={20}
                                       width={32}
                                       className="react-switch"
+                                       disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Edit orgnizer answers
@@ -1778,6 +1747,7 @@ const handleCloseLoginDetials=()=>{
                                       height={20}
                                       width={32}
                                       className="react-switch"
+                                       disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage documents
@@ -1803,6 +1773,7 @@ const handleCloseLoginDetials=()=>{
                                       height={20}
                                       width={32}
                                       className="react-switch"
+                                       disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage IRS Transcripts
@@ -1828,6 +1799,7 @@ const handleCloseLoginDetials=()=>{
                                       height={20}
                                       width={32}
                                       className="react-switch"
+                                       disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       View reporting

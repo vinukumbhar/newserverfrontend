@@ -862,6 +862,7 @@ console.log(result.chatTemplate)
     const newDescription = {
       message: description,
       fromwhome: "Admin",
+       senderid: loginUserId,
     };
     setAllDescriptions((prevDescriptions) => [
       ...prevDescriptions,
@@ -1037,86 +1038,94 @@ console.log(result.chatTemplate)
   console.log(adminChatClientsTask);
 
   ///for resend client task
-  // const resendClientTask = () => {
-  //   const myHeaders = new Headers();
-  //   myHeaders.append("Content-Type", "application/json");
-  //   const raw = JSON.stringify({
-  //     chatId: chatId,
-  //     newTask: adminChatClientsTask.flat()
-  //   });
-  //   console.log(raw);
-
-  //   const requestOptions = {
-  //     method: "POST",
-  //     headers: myHeaders,
-  //     body: raw,
-  //     redirect: "follow"
-  //   };
-
-  //   fetch(`${CHATTOCLIENT_API}/chats/chatsaccountwise/addclienttask`, requestOptions)
-  //     .then((response) => response.json())
-  //     .then((result) => {
-  //       console.log(result);
-  //       const taskMessages = adminChatClientsTask
-  //       .flat()
-  //       .map(task => `• ${task.text}`)
-  //       .join("\n"); // newline-separated bullets
-
-  //       // const taskMessages = adminChatClientsTask.flat().map(task => task.text).join(", ");
-  //       const description = `${taskMessages}`;
-  //       console.log(description)
-
-  //       updateAdminChatDescription(description)
-
-  //     })
-  //     .catch((error) => console.error(error));
-  // };
-
   const resendClientTask = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-
-    // Filter out checked tasks
-    const uncheckedTasks = adminChatClientsTask
-      .flat()
-      .filter((task) => task.checked !== "true");
-
     const raw = JSON.stringify({
       chatId: chatId,
-      newTask: uncheckedTasks,
+      newTask: adminChatClientsTask.flat()
     });
-
     console.log(raw);
 
     const requestOptions = {
       method: "POST",
       headers: myHeaders,
       body: raw,
-      redirect: "follow",
+      redirect: "follow"
     };
 
-    fetch(
-      `${CHATTOCLIENT_API}/chats/chatsaccountwise/addclienttask`,
-      requestOptions
-    )
+    fetch(`${CHATTOCLIENT_API}/chats/chatsaccountwise/addclienttask`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
+        // const taskMessages = adminChatClientsTask
+        // .flat()
+        // .map(task => `• ${task.text}`)
+        // .join("\n"); // newline-separated bullets
 
-        const taskMessages =
-          `created client tasks <br/>` +
-          uncheckedTasks
-            // .map(task => `• ${task.text}`)
-            // .join("\n");
-            .map((task) => `• <s>${task.text}</s>`)
-            .join("<br>");
-        const description = `${taskMessages}`;
-        console.log(description);
+        // // const taskMessages = adminChatClientsTask.flat().map(task => task.text).join(", ");
+        // const description = `${taskMessages}`;
+        const taskMessages = adminChatClientsTask
+  .flat()
+  .filter(task => !task.checked) // Only include unchecked tasks
+  .map(task => `• ${task.text}`)
+  .join("\n");
 
-        updateAdminChatDescription(description);
+const description = `${taskMessages}`;
+
+        console.log("task descriptions",description)
+
+        updateAdminChatDescription(description)
+
       })
       .catch((error) => console.error(error));
   };
+
+  // const resendClientTask = () => {
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Content-Type", "application/json");
+
+  //   // Filter out checked tasks
+  //   const uncheckedTasks = adminChatClientsTask
+  //     .flat()
+  //     .filter((task) => task.checked !== "true");
+
+  //   const raw = JSON.stringify({
+  //     chatId: chatId,
+  //     newTask: uncheckedTasks,
+  //   });
+
+  //   console.log(raw);
+
+  //   const requestOptions = {
+  //     method: "POST",
+  //     headers: myHeaders,
+  //     body: raw,
+  //     redirect: "follow",
+  //   };
+
+  //   fetch(
+  //     `${CHATTOCLIENT_API}/chats/chatsaccountwise/addclienttask`,
+  //     requestOptions
+  //   )
+  //     .then((response) => response.json())
+  //     .then((result) => {
+  //       console.log(result);
+
+  //       const taskMessages =
+  //         `created client tasks <br/>` +
+  //         uncheckedTasks
+  //           // .map(task => `• ${task.text}`)
+  //           // .join("\n");
+  //           .map((task) => `• <s>${task.text}</s>`)
+  //           .join("<br>");
+  //       const description = `${taskMessages}`;
+  //       console.log(description);
+
+  //       updateAdminChatDescription(description);
+  //     })
+  //     .catch((error) => console.error(error));
+  // };
 
   const handleTaskTextChange = (groupIndex, taskIndex, newText) => {
     const updatedTasks = [...adminChatClientsTask];
@@ -2160,7 +2169,7 @@ console.log(result.chatTemplate)
                 // onClick={sendSaveChatMail}
                 onClick={saveChat}
               >
-                Save
+                Save chat
               </Button>
               <Button
                 onClick={handleClose}

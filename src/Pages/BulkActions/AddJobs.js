@@ -916,7 +916,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
         method: "GET",
         redirect: "follow",
       };
-      const url = `${PROPOSAL_API}/Workflow/proposalesandels/proposalesandels/${automationTemp}`;
+      const url = `${PROPOSAL_API}/workflow/proposalesandels/proposalesandels/${automationTemp}`;
       try {
         const response = await fetch(url, requestOptions); // Fetch the data
         const result = await response.json(); // Parse the JSON response

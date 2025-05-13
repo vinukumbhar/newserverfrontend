@@ -53,6 +53,7 @@ import Accountupdate from "./accountupdate";
 import ChevronDownIcon from "@mui/icons-material/ExpandMore";
 import { toast } from "react-toastify";
 const Info = () => {
+  const storedData = JSON.parse(localStorage.getItem("teamMemberData"));
   const theme = useTheme();
   const isMobile = useMediaQuery("(max-width: 1000px)");
   const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
@@ -741,6 +742,7 @@ const Info = () => {
         <IconButton 
           sx={{ color: 'text.secondary' }} 
           onClick={() => setIsNewDrawerOpen(true)}
+             disabled={storedData?.teammember?.manageAccounts === false}
         >
           <MdEdit /> Edit
         </IconButton>

@@ -9,7 +9,12 @@ import {
   Collapse,
   Typography,
   Drawer,
-  Button,Dialog, DialogTitle, DialogContent, DialogActions,TextField
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
 } from "@mui/material";
 import {
   ChevronLeft,
@@ -38,7 +43,7 @@ import { toast } from "react-toastify";
 import { AiOutlineLogout } from "react-icons/ai";
 import { LoginContext } from "../Sidebar/Context/Context";
 import { useLocation } from "react-router-dom";
-import TaskForm from "../Tasks/AccountTask"
+import TaskForm from "../Tasks/AccountTask";
 import { IoMoonOutline } from "react-icons/io5";
 import { MdOutlineWbSunny } from "react-icons/md";
 import { VscColorMode } from "react-icons/vsc";
@@ -51,10 +56,10 @@ import Stack from "@mui/material/Stack";
 import SearchComponent from "./Search";
 // import Badge from "@mui/material/Badge";
 import Avatar from "@mui/material/Avatar";
-import ClientSelectionDialog from "../Billing/ClientSelectionDialog"
+import ClientSelectionDialog from "../Billing/ClientSelectionDialog";
 import { faL } from "@fortawesome/free-solid-svg-icons";
-import OrganizerDialog from "../Pages/Organizers/ClientSelectionDialog"
-import ChatForm from "../Pages/ChatForm"
+import OrganizerDialog from "../Pages/Organizers/ClientSelectionDialog";
+import ChatForm from "../Pages/ChatForm";
 import JobDrawer from "../Jobs/JobDrawer";
 function Sidebar() {
   const StyledBadge = styled(Badge)(({ theme }) => ({
@@ -167,7 +172,7 @@ function Sidebar() {
               item.submenu
             ) {
               item.submenu = item.submenu.filter(
-                (subItem) => subItem.label !== "Teams & plans"
+                (subItem) => subItem.label !== "Teams & Plans"
               );
             }
             if (
@@ -244,15 +249,35 @@ function Sidebar() {
             //     : item
             // );teammember
 
-
             NewSidebarData = NewSidebarData.map((item) => {
-              if (item.label === "Account" && !teamMemberData.teammember.manageAccounts) {
+              if (
+                item.label === "Account" &&
+                !teamMemberData.teammember.manageAccounts
+              ) {
                 return { ...item, restricted: true };
               }
-              if (item.label === "Contact" && !teamMemberData.teammember.manageContacts) {
+              if (
+                item.label === "Contact" &&
+                !teamMemberData.teammember.manageContacts
+              ) {
                 return { ...item, restricted: true };
               }
-              if (item.label === "Jobs" && !teamMemberData.teammember.managePipelines) {
+              if (
+                item.label === "Jobs" &&
+                !teamMemberData.teammember.managePipelines
+              ) {
+                return { ...item, restricted: true };
+              }
+              if (
+                item.label === "Organizer" &&
+                !teamMemberData.teammember.manageOrganizers
+              ) {
+                return { ...item, restricted: true };
+              }
+if (
+                item.label === "Invoice" &&
+                !teamMemberData.teammember.manageInvoices
+              ) {
                 return { ...item, restricted: true };
               }
               return item;
@@ -319,7 +344,7 @@ function Sidebar() {
 
   const handleDrawerClose = () => {
     setIsDrawerOpen(false);
-    setIsOrganizerDialogOpen(false)
+    setIsOrganizerDialogOpen(false);
   };
 
   const handleNewDrawerClose = () => {
@@ -340,19 +365,24 @@ function Sidebar() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isOrganizerDialogOpen, setIsOrganizerDialogOpen] = useState(false);
   const handleNewItemClick = (label) => {
-    console.log("menu", label)
-    if (label === "Account" || label === "Contact" || label === "Task" || label === "Chat" || label === "Jobs") {
+    console.log("menu", label);
+    if (
+      label === "Account" ||
+      label === "Contact" ||
+      label === "Task" ||
+      label === "Chat" ||
+      label === "Jobs"
+    ) {
       setRightDrawerContent(label);
       setIsRightDrawerOpen(true);
-    } 
+    }
     // else if (label === "Jobs") {
     //   setIsRightDrawerOpen(false);
     //   setIsDrawerOpen(false);
-    // } 
+    // }
     else if (label === "Invoice") {
       setIsDialogOpen(true);
-    }
-    else if (label === "Organizer") {
+    } else if (label === "Organizer") {
       setIsOrganizerDialogOpen(true);
     }
   };
@@ -566,10 +596,10 @@ function Sidebar() {
       .toUpperCase();
   };
   const [selectedAccount, setSelectedAccount] = useState(null);
-  const [invoiceDrawerOpen,setInvoiceDrawerOpen] = useState(false)
+  const [invoiceDrawerOpen, setInvoiceDrawerOpen] = useState(false);
   const handleSelectAccount = (account) => {
     setSelectedAccount(account);
-    console.log("selected account data", account)
+    console.log("selected account data", account);
     setInvoiceDrawerOpen(true); // Open right drawer when an account is selected
     setIsDialogOpen(false); // Close the client selection dialog
   };
@@ -1085,10 +1115,7 @@ function Sidebar() {
         </Box>
       </aside>
       <main className="main">
-        <Box
-          component="main"
-         
-        >
+        <Box component="main">
           <Outlet />
         </Box>
       </main>
@@ -1265,15 +1292,25 @@ function Sidebar() {
           )}
 
           {rightDrawerContent === "Jobs" && (
-            <JobDrawer  handleNewDrawerClose={handleNewDrawerClose}
-              handleDrawerClose={handleDrawerClose}/>
+            <JobDrawer
+              handleNewDrawerClose={handleNewDrawerClose}
+              handleDrawerClose={handleDrawerClose}
+            />
           )}
         </Box>
       </Drawer>
 
-       <ClientSelectionDialog open={isDialogOpen} onClose={() => setIsDialogOpen(false)} handleDrawerClose={handleDrawerClose}/>
-   
-   <OrganizerDialog open={isOrganizerDialogOpen} onClose={() => setIsOrganizerDialogOpen(false)} handleDrawerClose={handleDrawerClose}/>
+      <ClientSelectionDialog
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        handleDrawerClose={handleDrawerClose}
+      />
+
+      <OrganizerDialog
+        open={isOrganizerDialogOpen}
+        onClose={() => setIsOrganizerDialogOpen(false)}
+        handleDrawerClose={handleDrawerClose}
+      />
     </div>
   );
 }

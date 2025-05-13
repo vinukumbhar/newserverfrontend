@@ -229,7 +229,7 @@ const FixedColumnTable = () => {
   //     setLoading(false);
   //   }
   // };
-
+ const storedData = JSON.parse(localStorage.getItem("teamMemberData"));
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -1283,7 +1283,7 @@ const FixedColumnTable = () => {
                 {/* </Button> */}
               </Box>
               <Box>
-                {/* Render action panel when items are selected */}
+               
                 {selected.length > 0 && (
                   <div
                     data-test="clients-bulk-actions-panel"
@@ -1301,6 +1301,8 @@ const FixedColumnTable = () => {
                       variant="text"
                       startIcon={<ListIcon />}
                       onClick={handleAssignOrganizer}
+                      // disabled={!storedData?.teammember?.manageOrganizers}
+                      disabled={storedData?.teammember?.manageOrganizers === false}
                     >
                       Send Organizer
                     </Button>
@@ -1308,6 +1310,8 @@ const FixedColumnTable = () => {
                       variant="text"
                       startIcon={<ListIcon />}
                       onClick={handleAddJob}
+                      // disabled={!storedData?.teammember?.managePipelines}
+                          disabled={storedData?.teammember?.managePipelines === false}
                     >
                       Add Job
                     </Button>
@@ -1315,6 +1319,8 @@ const FixedColumnTable = () => {
                       variant="text"
                       startIcon={<PersonIcon />}
                       onClick={handleManageTeam}
+                      // disabled={!storedData?.teammember?.assignTeamMates}
+                      disabled={storedData?.teammember?.assignTeamMates === false}
                     >
                       Manage Team
                     </Button>
@@ -1355,7 +1361,10 @@ const FixedColumnTable = () => {
                         horizontal: "left",
                       }}
                     >
-                      <MenuItem onClick={handleArchiveAccount}>
+                      <MenuItem onClick={handleArchiveAccount} 
+                      // disabled={!storedData?.teammember?.manageAccounts}
+                       disabled={storedData?.teammember?.manageAccounts === false}
+                      >
                         Archive Account
                       </MenuItem>
                       <MenuItem onClick={handleEditLoginNotifyEmailSync}>

@@ -649,7 +649,7 @@ const AddJobs = ({
         method: "GET",
         redirect: "follow",
       };
-      const url = `${PROPOSAL_API}/Workflow/proposalesandels/proposalesandels/${automationTemp}`;
+      const url = `${PROPOSAL_API}/workflow/proposalesandels/proposalesandels/${automationTemp}`;
       try {
         const response = await fetch(url, requestOptions); // Fetch the data
         const result = await response.json(); // Parse the JSON response
@@ -1676,7 +1676,7 @@ const AddJobs = ({
           headers: myHeaders,
           body: JSON.stringify(jobData),
         });
-    
+    console.log("jdf", JSON.stringify(jobData))
         if (!response.ok) {
           const error = await response.json();
           throw new Error(`Failed to create job for account ${accountId}: ${error.message}`);

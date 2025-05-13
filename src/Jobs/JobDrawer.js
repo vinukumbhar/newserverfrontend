@@ -808,7 +808,7 @@ console.log("accountId from cookies:", accountId);
         method: "GET",
         redirect: "follow",
       };
-      const url = `${PROPOSAL_API}/Workflow/proposalesandels/proposalesandels/${automationTemp}`;
+      const url = `${PROPOSAL_API}/workflow/proposalesandels/proposalesandels/${automationTemp}`;
       try {
         const response = await fetch(url, requestOptions); // Fetch the data
         const result = await response.json(); // Parse the JSON response
@@ -1490,6 +1490,7 @@ console.log("accountId from cookies:", accountId);
           );
         } else {
           toast.success("Job created successfully");
+          handleDrawerClose()
           navigate("/jobs/activejob");
         }
         setDrawerOpen(false);
@@ -1985,7 +1986,7 @@ console.log("accountId from cookies:", accountId);
               />
             </Box>
             <Box mt={2} mr={2.5}>
-              <label className="job-input-label">Job Assignees</label>
+              <label className="job-input-label" >Job Assignees</label>
 
               <MultiSelectDropdown
                 value={selectedUser}
@@ -2329,6 +2330,7 @@ console.log("accountId from cookies:", accountId);
         </Button>
         <Button
           variant="outlined"
+          onClick={handleClose}
           sx={{
             borderColor: "var(--color-border-cancel-btn)", // Normal background
             color: "var(--color-save-btn)",

@@ -436,7 +436,9 @@ const Invoices = ({ charLimit = 4000 }) => {
 
   const fetchAccountData = async () => {
     try {
-      const response = await fetch( `${ACCOUNT_API}/accounts/account/accountdetailslist/true`);
+      const response = await fetch(
+        `${ACCOUNT_API}/accounts/account/accountdetailslist/true`
+      );
       const data = await response.json();
       setaccountdata(data.accountlist);
     } catch (error) {
@@ -655,9 +657,9 @@ const Invoices = ({ charLimit = 4000 }) => {
         total: totalAmount,
       },
       active: "true",
-      paidAmount:"0",
-      invoiceStatus:"Pending",
-      balanceDueAmount:"",
+      paidAmount: "0",
+      invoiceStatus: "Pending",
+      balanceDueAmount: "",
     });
 
     // console.log(raw)
@@ -685,6 +687,9 @@ const Invoices = ({ charLimit = 4000 }) => {
   };
 
   const [billingInvoice, setBillingInvoice] = useState([]);
+    const handleAccountDash = (_id, data) => {
+    navigate(`/clients/accounts/accountsdash/overview/${data}`);
+  };
   const fetchInvoiceData = async () => {
     try {
       const url = `${INVOICE_NEW}/workflow/invoices/invoice`;
@@ -1182,8 +1187,7 @@ const Invoices = ({ charLimit = 4000 }) => {
       </Button>
       {/* <MaterialReactTable columns={columns} table={table} /> */}
       <Box sx={{ marginTop: 3 }}>
-
-      <TableContainer component={Paper} sx={{ overflow: "visible" }}>
+        {/* <TableContainer component={Paper} sx={{ overflow: "visible" }}>
 
         <Table style={{ width: "100%" }}>
           <TableHead>
@@ -1245,14 +1249,14 @@ const Invoices = ({ charLimit = 4000 }) => {
                             textAlign: "start",
                           }}
                         >
-                          {/* <Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>Publice to Marketplace</Typography> */}
+                          
                           <Typography
                             sx={{ fontSize: "12px", fontWeight: "bold" }}
                             onClick={() => handleEdit(row._id)}
                           >
                             Edit
                           </Typography>
-                          {/* <Typography sx={{ fontSize: '12px', fontWeight: 'bold' }} onClick={() => handleDuplicateTemplate(row._id)}>Duplicate</Typography> */}
+                          
                           <Typography
                             sx={{
                               fontSize: "12px",
@@ -1272,8 +1276,209 @@ const Invoices = ({ charLimit = 4000 }) => {
             })}
           </TableBody>
         </Table>
-      </TableContainer>
+      </TableContainer> */}
 
+        <TableContainer component={Paper} sx={{ overflow: "visible" }}>
+          <Table sx={{ width: "100%" }}>
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px",
+                  }}
+                  width="250"
+                >
+                  Client
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px",
+                  }}
+                  width="100"
+                >
+                  Invoice #
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px",
+                  }}
+                  width="100"
+                >
+                  Status
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px",
+                  }}
+                  width="100"
+                >
+                  Posted
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px",
+                  }}
+                  width="100"
+                >
+                  Total
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px",
+                  }}
+                  width="100"
+                >
+                  Amount Paid
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px",
+                  }}
+                  width="100"
+                >
+                  Balance due
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px",
+                  }}
+                  width="100"
+                >
+                  Last Paid
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px",
+                  }}
+                  width="250"
+                >
+                  Description
+                </TableCell>
+                <TableCell
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "16px",
+                  }}
+                  width="100"
+                >
+                  Settings
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {billingInvoice.map((row) => {
+                return (
+                  <TableRow key={row._id}>
+                    <TableCell style={{
+                      fontSize: "12px",
+                      padding: "4px 8px",
+                      lineHeight: "1",
+                      cursor: "pointer",
+                      color: "#3f51b5",
+                    }}
+                    onClick={() =>
+                      handleAccountDash(row._id, row.account._id)
+                    }
+                    >{row.account.accountName}</TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                        fontWeight: "normal",
+                        cursor: "pointer",
+                        color: "#3f51b5",
+                      }}
+                      onClick={() => handleEdit(row._id)}
+                    >
+                      {row.invoicenumber}
+                    </TableCell>
+
+                    <TableCell>{row.invoiceStatus}</TableCell>
+                    <TableCell>{new Intl.DateTimeFormat("en-GB", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                  }).format(new Date(row.createdAt))}</TableCell>
+                    <TableCell>${row.summary.total}</TableCell>
+                    <TableCell>${row.paidAmount}</TableCell>
+                    <TableCell>${row.summary.total - row.paidAmount}</TableCell>
+                    <TableCell></TableCell>
+                    <TableCell>{row.description}</TableCell>
+                    <TableCell
+                      style={{
+                        fontSize: "12px",
+                        padding: "4px 8px",
+                        lineHeight: "1",
+                      }}
+                    >
+                      <IconButton
+                        onClick={() => toggleMenu(row._id)}
+                        style={{ color: "#2c59fa" }}
+                      >
+                        <CiMenuKebab style={{ fontSize: "25px" }} />
+                        {openMenuId === row._id && (
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              zIndex: 1,
+                              backgroundColor: "#fff",
+                              boxShadow: 1,
+                              borderRadius: 1,
+                              p: 1,
+                              left: "20px",
+
+                              m: 2,
+                              top: "10px",
+                              textAlign: "start",
+                            }}
+                          >
+                            <Typography
+                              sx={{ fontSize: "12px", fontWeight: "bold" }}
+                              onClick={() => handleEdit(row._id)}
+                            >
+                              Edit
+                            </Typography>
+
+                            <Typography
+                              sx={{
+                                fontSize: "12px",
+                                color: "red",
+                                fontWeight: "bold",
+                              }}
+                              onClick={() => handleDelete(row._id)}
+                            >
+                              Delete
+                            </Typography>
+                          </Box>
+                        )}
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Box>
       <Drawer
         anchor="right"

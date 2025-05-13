@@ -312,7 +312,7 @@ const MultiSelectDropdown = ({
           cursor: "pointer",
           bgcolor: "background.paper",
           width: "100%",
-          mt: 2,
+          // mt: 2,
           minHeight: "20px"
         }}
         onClick={handleClick}
