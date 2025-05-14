@@ -542,7 +542,7 @@ export default function Editor({ initialContent, onChange }) {
           "&:hover": { backgroundColor: "var(--color-save-hover-btn)" },
           borderRadius: "15px",
           mb: 1,
-          mt:10
+          mt:12
         }}
       >
         Insert Shortcode

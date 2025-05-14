@@ -900,6 +900,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
       email, // Use the provided email
       password: password, // Replace with a dynamic password logic if needed
       role: "Client",
+      
     });
 
     const requestOptions = {

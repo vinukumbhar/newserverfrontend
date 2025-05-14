@@ -71,11 +71,19 @@ const Info = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [contactEmail, setContactEmail] = useState("");
   const [contact, setContact] = useState(null);
-    const [personalMessage, setPersonalMessage] = useState("");
+  const [personalMessage, setPersonalMessage] = useState("");
+  const [openRemoveDialog, setOpenRemoveDialog] = useState(false);
   const handleSwitchChange = (contactData) => {
-    // setContactEmail(email);  // Set the email when the switch is checked
-    setContact(contactData);  
-    setOpenDialog(true);      // Open the dialog
+    setContact(contactData);
+    console.log("contscts", contactData);
+    // setOpenDialog(true);      // Open the dialog
+    if (contactData.login) {
+      // If login is true, show the REMOVE confirmation dialog
+      setOpenRemoveDialog(true);
+    } else {
+      // If login is false, show the ADD portal access dialog
+      setOpenDialog(true);
+    }
   };
   const handleCloseDialog = () => {
     setOpenDialog(false); // Close dialog
@@ -111,39 +119,109 @@ const Info = () => {
   //     .catch((error) => console.error(error));
   // };
 
-  const handleSave = () => {
-    if (contact) {
-      console.log("contact",contact)
-      const { _id, email, firstName, middleName, lastName } = contact;
-      newUser(data, email, firstName, middleName, lastName);
-      updateContacts(_id)
+  // const handleSave = () => {
+  //   if (contact) {
+  //     console.log("contact", contact);
+  //     const { _id, email, firstName, middleName, lastName } = contact;
+  //     newUser(data, email, firstName, middleName, lastName);
+  //     updateContacts(_id);
 
-      setOpenDialog(false); // Close the dialog after saving
+  //     setOpenDialog(false); // Close the dialog after saving
+  //   }
+  // };
+
+  const handleSave = async () => {
+    if (!contact) return;
+
+    const { _id, email, firstName, middleName, lastName } = contact;
+
+    try {
+      // Step 1: Check if user exists
+      const userRes = await axios.get(
+        `${LOGIN_API}/common/user/email/getuserbyemail/${email}`
+      );
+      const existingUser = userRes.data?.user?.[0];
+
+      if (existingUser && existingUser._id) {
+        console.log("nbhjb")
+        // Step 2A: User exists -> update active = true
+         await axios.patch(`${LOGIN_API}/common/user/${existingUser._id}`, {
+          active: true,
+        });
+        clientCreatedmail(email, "", existingUser._id);
+      } else {
+        // Step 2B: User doesn't exist -> create new user
+        newUser(data, email, firstName, middleName, lastName);
+      }
+
+      // Step 3: Update contact login = true
+      updateContacts(_id);
+    } catch (error) {
+      console.error("Error saving portal access:", error);
     }
+
+    setOpenDialog(false); // Close dialog
   };
-  const updateContacts =(_id)=>{
+
+  //  clientCreatedmail(email, "", result._id);
+
+  const handleConfirmRemoveAccess = async () => {
+    if (!contact) return;
+
+    try {
+      await axios.patch(`${CONTACT_API}/contacts/${contact._id}`, {
+        login: false,
+      });
+
+      // 2. Get user by email
+      const userRes = await axios.get(
+        `${LOGIN_API}/common/user/email/getuserbyemail/${contact.email}`
+      );
+      const user = userRes.data?.user?.[0];
+
+      if (user && user._id) {
+        // 3. Update user: set active to false
+        await axios.patch(`${LOGIN_API}/common/user/${user._id}`, {
+          active: false,
+        });
+      } else {
+        console.warn("User not found for email:", contact.email);
+      }
+
+      // Optionally refresh the list or contact data
+      fetchAccount();
+      fetchContacts();
+    } catch (err) {
+      console.error("Failed to remove access", err);
+    }
+
+    setOpenRemoveDialog(false);
+    setSelectedContact(null);
+  };
+
+  const updateContacts = (_id) => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    
+
     const raw = JSON.stringify({
-      "login": true
+      login: true,
     });
-    
+
     const requestOptions = {
       method: "PATCH",
       headers: myHeaders,
       body: raw,
-      redirect: "follow"
+      redirect: "follow",
     };
-    
+
     fetch(`${CONTACT_API}/contacts/${_id}`, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        console.log(result);
         fetchAccount();
       })
       .catch((error) => console.error(error));
-  }
+  };
   const handleMenuOpen = () => {
     setOpen(true);
   };
@@ -397,7 +475,7 @@ const Info = () => {
   const clientalldata = (userId, email, firstName, middleName, lastName) => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-
+    const password = `${firstName}@123`;
     const raw = JSON.stringify({
       email: email,
       firstName: firstName,
@@ -407,8 +485,8 @@ const Info = () => {
 
       // phoneNumber: phoneNumber,
       accountName: accName,
-      password: "Demo@123",
-      cpassword: "Demo@123",
+      password: password,
+      cpassword: password,
     });
 
     const requestOptions = {
@@ -464,11 +542,10 @@ const Info = () => {
     fetch(urlusersavedmail, requestOptions)
       .then((response) => response.json())
 
- 
       .catch((error) => console.error(error));
   };
   const newUser = (data, email, firstName, middleName, lastName) => {
-    console.log("acc",data)
+    console.log("acc", data);
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -725,29 +802,31 @@ const Info = () => {
               </Box>
             </CardContent> */}
             <CardContent>
-    {/* Header section */}
-    <Box sx={{
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      mb: 2
-    }}>
-      <Typography variant="h5" fontWeight="bold">
-        Account Details
-      </Typography>
-      <Box>
-        <IconButton sx={{ color: 'text.secondary' }}>
-          <BiArchiveOut />
-        </IconButton>
-        <IconButton 
-          sx={{ color: 'text.secondary' }} 
-          onClick={() => setIsNewDrawerOpen(true)}
-             disabled={storedData?.teammember?.manageAccounts === false}
-        >
-          <MdEdit /> Edit
-        </IconButton>
-      </Box>
-      <Drawer
+              {/* Header section */}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  mb: 2,
+                }}
+              >
+                <Typography variant="h5" fontWeight="bold">
+                  Account Details
+                </Typography>
+                <Box>
+                  <IconButton sx={{ color: "text.secondary" }}>
+                    <BiArchiveOut />
+                  </IconButton>
+                  <IconButton
+                    sx={{ color: "text.secondary" }}
+                    onClick={() => setIsNewDrawerOpen(true)}
+                    disabled={storedData?.teammember?.manageAccounts === false}
+                  >
+                    <MdEdit /> Edit
+                  </IconButton>
+                </Box>
+                <Drawer
                   anchor="right"
                   open={isNewDrawerOpen}
                   onClose={() => setIsNewDrawerOpen(false)}
@@ -767,153 +846,169 @@ const Info = () => {
                     }}
                   />
                 </Drawer>
-    </Box>
-    
-    <Divider sx={{ mb: 3 }} />
-    
-    {/* Profile section */}
-    <Box sx={{ 
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "space-between",
-      mb: 4
-    }}>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-        <LuUserCircle2 style={{ 
-          width: "60px", 
-          height: "60px",
-          color: '#757575'
-        }} />
-        <Box>
-          <Typography sx={{ 
-            fontWeight: "bold", 
-            fontSize: "20px",
-            lineHeight: 1.2
-          }}>
-            {accName}
-          </Typography>
-          <Typography sx={{ 
-            fontSize: "15px",
-            color: 'text.secondary'
-          }}>
-            {usertype}
-          </Typography>
-        </Box>
-      </Box>
-      <Button 
-        variant="outlined" 
-        sx={{
-          textTransform: 'none',
-          borderColor: 'divider',
-          color: 'text.primary',
-          '&:hover': {
-            borderColor: 'text.secondary'
-          }
-        }}
-      >
-        Log in as account (read-only)
-      </Button>
-    </Box>
-    
-    {/* Account Info section */}
-    <Box mt={3}>
-      <Typography 
-        fontWeight="bold" 
-        sx={{ mb: 2 }}
-      >
-        Account Info
-      </Typography>
-      
-      {/* Tags section */}
-      <Box sx={{
-        display: "flex",
-        alignItems: "flex-start",
-        gap: "20px",
-        mb: 3
-      }}>
-        <Typography sx={{ 
-          minWidth: '120px',
-          color: 'text.secondary'
-        }}>
-          Tags
-        </Typography>
-        <Box sx={{ 
-          display: "flex", 
-          gap: "10px",
-          flexWrap: 'wrap'
-        }}>
-          {tags.length > 0 ? (
-            tags.map((tag) => (
-              <Typography
-                key={tag._id}
-                sx={{
-                  backgroundColor: tag.tagColour ,
-                  color: "white",
-                  borderRadius: "60px",
-                  padding: "0.2rem 0.8rem",
-                  display: "flex",
-                  alignItems: "center",
-                  fontWeight: "bold",
-                  fontSize: "12px",
-                }}
-              >
-                {tag.tagName}
-              </Typography>
-            ))
-          ) : (
-            <Typography sx={{ color: 'text.secondary' }}>No tags</Typography>
-          )}
-        </Box>
-      </Box>
-      
-      {/* Team Members section */}
-      <Box sx={{
-        display: "flex",
-        alignItems: "flex-start",
-        gap: "20px",
-        mb: 2
-      }}>
-        <Typography sx={{ 
-          minWidth: '120px',
-          color: 'text.secondary'
-        }}>
-          Team Members
-        </Typography>
-        <Box sx={{ 
-          display: "flex", 
-          gap: "10px",
-          flexWrap: 'wrap'
-        }}>
-          {teams && teams.length > 0 ? (
-            teams.map((team, index) => (
-              <Typography
-                key={index}
-                sx={{
-                  backgroundColor: "#e0e0e0",
-                  color: "black",
-                  borderRadius: "60px",
-                  padding: "0.2rem 0.8rem",
-                  display: "flex",
-                  alignItems: "center",
-                  fontSize: "12px",
-                }}
-              >
-                {team.username || "Sample User"}
-              </Typography>
-            ))
-          ) : (
-            <Typography sx={{ color: 'text.secondary' }}>No team members</Typography>
-          )}
-        </Box>
-      </Box>
-      
-    
-     
-    </Box>
-  </CardContent>
+              </Box>
 
+              <Divider sx={{ mb: 3 }} />
+
+              {/* Profile section */}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  mb: 4,
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                  <LuUserCircle2
+                    style={{
+                      width: "60px",
+                      height: "60px",
+                      color: "#757575",
+                    }}
+                  />
+                  <Box>
+                    <Typography
+                      sx={{
+                        fontWeight: "bold",
+                        fontSize: "20px",
+                        lineHeight: 1.2,
+                      }}
+                    >
+                      {accName}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        fontSize: "15px",
+                        color: "text.secondary",
+                      }}
+                    >
+                      {usertype}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    textTransform: "none",
+                    borderColor: "divider",
+                    color: "text.primary",
+                    "&:hover": {
+                      borderColor: "text.secondary",
+                    },
+                  }}
+                >
+                  Log in as account (read-only)
+                </Button>
+              </Box>
+
+              {/* Account Info section */}
+              <Box mt={3}>
+                <Typography fontWeight="bold" sx={{ mb: 2 }}>
+                  Account Info
+                </Typography>
+
+                {/* Tags section */}
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "20px",
+                    mb: 3,
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      minWidth: "120px",
+                      color: "text.secondary",
+                    }}
+                  >
+                    Tags
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: "10px",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    {tags.length > 0 ? (
+                      tags.map((tag) => (
+                        <Typography
+                          key={tag._id}
+                          sx={{
+                            backgroundColor: tag.tagColour,
+                            color: "white",
+                            borderRadius: "60px",
+                            padding: "0.2rem 0.8rem",
+                            display: "flex",
+                            alignItems: "center",
+                            fontWeight: "bold",
+                            fontSize: "12px",
+                          }}
+                        >
+                          {tag.tagName}
+                        </Typography>
+                      ))
+                    ) : (
+                      <Typography sx={{ color: "text.secondary" }}>
+                        No tags
+                      </Typography>
+                    )}
+                  </Box>
+                </Box>
+
+                {/* Team Members section */}
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "20px",
+                    mb: 2,
+                  }}
+                >
+                  <Typography
+                    sx={{
+                      minWidth: "120px",
+                      color: "text.secondary",
+                    }}
+                  >
+                    Team Members
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: "10px",
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    {teams && teams.length > 0 ? (
+                      teams.map((team, index) => (
+                        <Typography
+                          key={index}
+                          sx={{
+                            backgroundColor: "#e0e0e0",
+                            color: "black",
+                            borderRadius: "60px",
+                            padding: "0.2rem 0.8rem",
+                            display: "flex",
+                            alignItems: "center",
+                            fontSize: "12px",
+                          }}
+                        >
+                          {team.username || "Sample User"}
+                        </Typography>
+                      ))
+                    ) : (
+                      <Typography sx={{ color: "text.secondary" }}>
+                        No team members
+                      </Typography>
+                    )}
+                  </Box>
+                </Box>
+              </Box>
+            </CardContent>
           </Card>
-         
         </Grid>
 
         <Grid item xs={12} sm={6}>
@@ -1166,16 +1261,20 @@ const Info = () => {
                               <TableCell>
                                 <Switch
                                   checked={login}
-                                  // onChange={() => handleSwitchChange(contact)}
-                                  // disabled={login}
-                                  disabled
+                                  onChange={() => handleSwitchChange(contact)}
                                 />
                               </TableCell>
                               <TableCell>
-                                <Switch checked={notify} disabled />
+                                <Switch
+                                  checked={notify}
+                                  // disabled
+                                />
                               </TableCell>
                               <TableCell>
-                                <Switch checked={emailSync} disabled />
+                                <Switch
+                                  checked={emailSync}
+                                  // disabled
+                                />
                               </TableCell>
                             </TableRow>
                           </React.Fragment>
@@ -1250,7 +1349,7 @@ const Info = () => {
                       </DialogActions>
                     </Dialog>
 
-                    {/* client Poratl Modal */}
+                    {/*add client Poratl Modal */}
                     <Dialog
                       open={openDialog}
                       onClose={handleCloseDialog}
@@ -1259,35 +1358,84 @@ const Info = () => {
                         style: { width: "800px" },
                       }}
                     >
-                      <DialogTitle >
-                        
-                          <Typography variant="h6">
-                            Add portal access
-                          </Typography>
-                          <Button onClick={handleCloseDialog} color="secondary">
-                            X
-                          </Button>
-                       
+                      <DialogTitle>
+                        <Typography variant="h6">Add portal access</Typography>
+                        <Button onClick={handleCloseDialog} color="secondary">
+                          X
+                        </Button>
                       </DialogTitle>
                       <DialogContent>
                         <p>
                           You are adding portal access for the following users:
                         </p>
                         <div>{contact?.email}</div>
-                         <TextField
-                                            label="Personal message"
-                                            variant="outlined"
-                                            fullWidth
-                                            value={personalMessage}
-                                            onChange={handleMessageChange}
-                                            // onChange={(e) => handleContactInputChange(index, e)}
-                                            sx={{ mt: 2 }}
-                                          />
+                        <TextField
+                          label="Personal message"
+                          variant="outlined"
+                          fullWidth
+                          value={personalMessage}
+                          onChange={handleMessageChange}
+                          // onChange={(e) => handleContactInputChange(index, e)}
+                          sx={{ mt: 2 }}
+                        />
                       </DialogContent>
                       <DialogActions>
-                        <Button color="primary" onClick={handleSave}>Save</Button>
+                        <Button color="primary" onClick={handleSave}>
+                          Save
+                        </Button>
                         <Button onClick={handleCloseDialog} color="primary">
                           Cancel
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
+                    {/* remove client access */}
+                    <Dialog
+                      open={openRemoveDialog}
+                      onClose={() => setOpenRemoveDialog(false)}
+                      aria-labelledby="remove-access-dialog-title"
+                      PaperProps={{
+                        style: { width: "600px" },
+                      }}
+                    >
+                      <DialogTitle id="remove-access-dialog-title">
+                        <Typography variant="h6">
+                          Remove Portal Access
+                        </Typography>
+                        <Button
+                          onClick={() => setOpenRemoveDialog(false)}
+                          color="secondary"
+                        >
+                          X
+                        </Button>
+                      </DialogTitle>
+                      <DialogContent>
+                        <Typography>
+                          You are removing portal access for{" "}
+                          <strong>{contact?.email}</strong> to{" "}
+                          <strong>{contact?.contactName}</strong>.
+                        </Typography>
+                        <Typography sx={{ mt: 2 }}>
+                          If you decide to enable login for this email in the
+                          future, they will be sent a new invite.
+                        </Typography>
+                        <Typography sx={{ mt: 2 }}>
+                          Are you sure you want to remove portal access for{" "}
+                          <strong>{contact?.email}</strong>?
+                        </Typography>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button
+                          onClick={() => setOpenRemoveDialog(false)}
+                          color="primary"
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={handleConfirmRemoveAccess}
+                          color="error"
+                          variant="contained"
+                        >
+                          Remove Access
                         </Button>
                       </DialogActions>
                     </Dialog>
