@@ -1,21 +1,33 @@
 import { Box, Button, Typography, Divider, Paper } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import NewChatDrawer from "./NewChatDrawer";
 import { useParams } from "react-router-dom";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import Grid from "@mui/material/Grid";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import ChatDetails from "./ChatDetails";
-
+import { toast } from "react-toastify";
 import axios from "axios";
+import { LoginContext } from "../../Sidebar/Context/Context";
 const Commuication = () => {
+  const { logindata } = useContext(LoginContext);
+  console.log("login data", logindata);
+  const [loginUserId, setLoginUserId] = useState();
+
+  useEffect(() => {
+    if (logindata?.user?.id) {
+      setLoginUserId(logindata.user.id);
+    }
+  }, [logindata]);
+
+  console.log("Login User ID:", loginUserId);
   const CHATTOCLIENT_API = process.env.REACT_APP_CHAT_API;
   const [isActiveTrue, setIsActiveTrue] = useState(true);
   const { data } = useParams();
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  
+
   const [chatList, setChatList] = useState([]);
 
   const [time, setTime] = useState();
@@ -40,7 +52,7 @@ const Commuication = () => {
             chat.description.forEach((message) => {
               console.log(message._id);
             });
-            
+
             setTime(chat.updatedAt);
           });
           // setIsSubmitted(true)
@@ -59,19 +71,19 @@ const Commuication = () => {
       day: "2-digit",
     })
     .replace(",", "");
-const [selectedChat, setSelectedChat] = useState(null);
+  const [selectedChat, setSelectedChat] = useState(null);
+  const [chatId, setChatId] = useState("");
   const handleShowChat = (chatId) => {
-     const chat = chatList.find((c) => c._id === chatId);
-  setSelectedChat(chat);
+    const chat = chatList.find((c) => c._id === chatId);
+    setSelectedChat(chat);
+    setChatId(chatId);
     updatechatStatus(chatId)
       .then(() => {
-    accountwiseChatlist(data, isActiveTrue);
-
+        accountwiseChatlist(data, isActiveTrue);
       })
       .catch((error) => {
         console.error("Error updating chat status:", error);
       });
-
   };
   const updatechatStatus = (chatId) => {
     return new Promise((resolve, reject) => {
@@ -100,6 +112,62 @@ const [selectedChat, setSelectedChat] = useState(null);
           reject(error); // Reject the promise if there's an error
         });
     });
+  };
+
+  const getsChatDetails = async () => {
+    try {
+      const url = `http://127.0.0.1/chats/chatsaccountwise/`;
+      const response = await fetch(url + chatId);
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      const data = await response.json();
+      console.log("get chat by id", data);
+      setSelectedChat(data.chat);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const updateChatDescription = (message = "", editorContent, replyTo) => {
+    console.log(replyTo);
+    const contentToSend = message.trim() || editorContent.trim();
+    if (!contentToSend) return;
+
+    const newDescription = {
+      message: contentToSend,
+      fromwhome: "Admin",
+      senderid: loginUserId,
+    };
+
+    if (replyTo) {
+      newDescription.replyTo = replyTo._id; // ✅ Use the message ID, not custom object
+    }
+
+    const raw = JSON.stringify({
+      newDescriptions: [newDescription],
+    });
+
+    fetch(
+      `http://127.0.0.1/chats/chatsaccountwise/chatupdatemessage/${chatId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: raw,
+      }
+    )
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to update");
+        return response.json();
+      })
+      .then(() => {
+        toast.success("Message sent");
+        accountwiseChatlist(data, isActiveTrue);
+        getsChatDetails();
+        
+      })
+      .catch(() => toast.error("Send failed"));
   };
   return (
     <Box mt={2}>
@@ -220,95 +288,102 @@ const [selectedChat, setSelectedChat] = useState(null);
       </Box> */}
 
       <Box
-  sx={{
-    width: "100%",
-    maxWidth: { sm: "100%", md: "1700px" },
-    height: "90vh",
-    display: "flex",
-    p: 1,
-    gap: 2,
-  }}
->
-  {/* Left Column: Chat List */}
-  <Box
-    sx={{
-      width: "30%",
-      height: "100%",
-      overflowY: "auto",
-      borderRight: "1px solid #ddd",
-      pr: 1,
-    }}
-  >
-    {chatList.length > 0 &&
-      chatList.map((chat, index) => (
-        <Box key={index}>
-          <Paper
-            sx={{ p: 1, cursor: "pointer" }}
-            onClick={() => handleShowChat(chat._id)}
-          >
-            <Box
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              gap={1.5}
-              mb={1}
-            >
-              <Box display="flex" alignItems="center" gap={1}>
-                <TelegramIcon
-                  sx={{
-                    color: chat.chatstatus ? "#007bff" : "green",
-                  }}
-                  fontSize="small"
-                />
-                <Typography variant="caption" color="text.secondary">
-                  Chat with {chat.accountid.accountName}
-                </Typography>
+        sx={{
+          width: "100%",
+          maxWidth: { sm: "100%", md: "1700px" },
+          height: "90vh",
+          display: "flex",
+          p: 1,
+          gap: 2,
+        }}
+      >
+        {/* Left Column: Chat List */}
+        <Box
+          sx={{
+            width: "30%",
+            height: "100%",
+            overflowY: "auto",
+            borderRight: "1px solid #ddd",
+            pr: 1,
+          }}
+        >
+          {chatList.length > 0 &&
+            chatList.map((chat, index) => (
+              <Box key={index}>
+                <Paper
+                  sx={{ p: 1, cursor: "pointer" }}
+                  onClick={() => handleShowChat(chat._id)}
+                >
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    gap={1.5}
+                    mb={1}
+                  >
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <TelegramIcon
+                        sx={{
+                          color: chat.chatstatus ? "#007bff" : "green",
+                        }}
+                        fontSize="small"
+                      />
+                      <Typography variant="caption" color="text.secondary">
+                        Chat with {chat.accountid.accountName}
+                      </Typography>
+                    </Box>
+                    {!chat.chatstatus && (
+                      <FiberManualRecordIcon
+                        fontSize="small"
+                        sx={{ color: "green" }}
+                      />
+                    )}
+                  </Box>
+                  <Typography variant="subtitle2" fontWeight={600} gutterBottom>
+                    {chat.chatsubject}
+                  </Typography>
+                  <Typography variant="caption" gutterBottom>
+                    {(() => {
+                      const cleanText =
+                        chat.description[0]?.message.replace(/<[^>]+>/g, "") ||
+                        "";
+                      const words = cleanText.split(/\s+/);
+                      return words.length > 35
+                        ? words.slice(0, 35).join(" ") + "..."
+                        : cleanText;
+                    })()}
+                  </Typography>
+                  <Box textAlign="right">
+                    <Typography variant="caption" color="text.secondary">
+                      {formattedTime}
+                    </Typography>
+                  </Box>
+                </Paper>
+                <Divider sx={{ my: 1 }} />
               </Box>
-              {!chat.chatstatus && (
-                <FiberManualRecordIcon fontSize="small" sx={{ color: "green" }} />
-              )}
-            </Box>
-            <Typography
-              variant="subtitle2"
-              fontWeight={600}
-              gutterBottom
-            >
-              {chat.chatsubject}
-            </Typography>
-            <Typography variant="caption" gutterBottom>
-              {(() => {
-                const cleanText =
-                  chat.description[0]?.message.replace(/<[^>]+>/g, "") || "";
-                const words = cleanText.split(/\s+/);
-                return words.length > 35
-                  ? words.slice(0, 35).join(" ") + "..."
-                  : cleanText;
-              })()}
-            </Typography>
-            <Box textAlign="right">
-              <Typography variant="caption" color="text.secondary">
-                {formattedTime}
-              </Typography>
-            </Box>
-          </Paper>
-          <Divider sx={{ my: 1 }} />
+            ))}
         </Box>
-      ))}
-  </Box>
 
-  {/* Right Column: Show selected chat */}
-  <Box sx={{ width: "70%", height: "100%", overflowY: "auto" }}>
-    {selectedChat ? (
-      <ChatDetails chat={selectedChat} />
-    ) : (
-      <Typography variant="body1" sx={{ mt: 2 }}>
-        Select a chat to view details
-      </Typography>
-    )}
-  </Box>
-</Box>
+        {/* Right Column: Show selected chat */}
+        <Box sx={{ width: "70%", height: "100%", overflowY: "auto" }}>
+          {selectedChat ? (
+            <ChatDetails
+              chat={selectedChat}
+              updateChatDescription={updateChatDescription}
+            />
+          ) : (
+            <Typography variant="body1" sx={{ mt: 2 }}>
+              Select a chat to view details
+            </Typography>
+          )}
+        </Box>
+      </Box>
 
-      <NewChatDrawer handleClose={handleClose} open={open} accountwiseChatlist={accountwiseChatlist}/>
+      <NewChatDrawer
+        handleClose={handleClose}
+        open={open}
+        accountwiseChatlist={accountwiseChatlist}
+      />
     </Box>
   );
 };

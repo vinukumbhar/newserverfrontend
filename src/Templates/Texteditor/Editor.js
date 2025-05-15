@@ -64,6 +64,7 @@ export default function Editor({ initialContent, onChange }) {
       sx={{height:'200px'}}
     >
       <ReactQuill
+      
         value={editorContent}
         onChange={handleChange}
         modules={modules}
