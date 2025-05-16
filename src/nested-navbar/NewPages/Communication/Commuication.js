@@ -3,13 +3,12 @@ import React, { useState, useEffect, useContext } from "react";
 import NewChatDrawer from "./NewChatDrawer";
 import { useParams } from "react-router-dom";
 import TelegramIcon from "@mui/icons-material/Telegram";
-import Grid from "@mui/material/Grid";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import ChatDetails from "./ChatDetails";
-import { toast } from "react-toastify";
 import axios from "axios";
-import { LoginContext } from "../../Sidebar/Context/Context";
+import { LoginContext } from "../../../Sidebar/Context/Context";
 const Commuication = () => {
+  
   const { logindata } = useContext(LoginContext);
   console.log("login data", logindata);
   const [loginUserId, setLoginUserId] = useState();
@@ -94,7 +93,7 @@ const Commuication = () => {
       let config = {
         method: "post",
         maxBodyLength: Infinity,
-        url: `http://127.0.0.1/chats/accountchat/updatestatus/${chatId}`,
+        url: `${CHATTOCLIENT_API}/chats/accountchat/updatestatus/${chatId}`,
         headers: {
           "Content-Type": "application/json",
         },
@@ -116,7 +115,7 @@ const Commuication = () => {
 
   const getsChatDetails = async () => {
     try {
-      const url = `http://127.0.0.1/chats/chatsaccountwise/`;
+      const url = `${CHATTOCLIENT_API}/chats/chatsaccountwise/`;
       const response = await fetch(url + chatId);
       if (!response.ok) {
         throw new Error("Failed to fetch data");
@@ -128,47 +127,7 @@ const Commuication = () => {
       console.error("Error fetching data:", error);
     }
   };
-  const updateChatDescription = (message = "", editorContent, replyTo) => {
-    console.log(replyTo);
-    const contentToSend = message.trim() || editorContent.trim();
-    if (!contentToSend) return;
 
-    const newDescription = {
-      message: contentToSend,
-      fromwhome: "Admin",
-      senderid: loginUserId,
-    };
-
-    if (replyTo) {
-      newDescription.replyTo = replyTo._id; // ✅ Use the message ID, not custom object
-    }
-
-    const raw = JSON.stringify({
-      newDescriptions: [newDescription],
-    });
-
-    fetch(
-      `http://127.0.0.1/chats/chatsaccountwise/chatupdatemessage/${chatId}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: raw,
-      }
-    )
-      .then((response) => {
-        if (!response.ok) throw new Error("Failed to update");
-        return response.json();
-      })
-      .then(() => {
-        toast.success("Message sent");
-        accountwiseChatlist(data, isActiveTrue);
-        getsChatDetails();
-        
-      })
-      .catch(() => toast.error("Send failed"));
-  };
   return (
     <Box mt={2}>
       <Box
@@ -195,98 +154,6 @@ const Commuication = () => {
         </Button>
       </Box>
 
-      {/* <Box
-        sx={{
-          width: "100%",
-          maxWidth: { sm: "100%", md: "1700px" },
-          flexGrow: 1,
-
-          height: "90vh",
-          p: 1,
-        }}
-      >
-        <Box>
-          {chatList.length > 0 &&
-            chatList.map((chat, index) => (
-              <Box>
-                <Paper
-                  key={index}
-                  sx={{ p: 1, cursor: "pointer" }}
-                  onClick={() => handleShowChat(chat._id)}
-                >
-                  <Box
-                    display="flex"
-                    alignItems="center"
-                    mb={1}
-                    gap={1.5}
-                    sx={{
-                      justifyContent: "space-between",
-                      flexDirection: "row",
-                    }}
-                  >
-                    <Box display="flex" alignItems="center" mb={1} gap={1.5}>
-                      <TelegramIcon
-                        sx={{
-                          color: chat.chatstatus ? "#007bff" : "green",
-                        }}
-                        fontSize="small"
-                      />
-                      <Typography
-                        variant="caption"
-                        sx={{ color: "text.secondary" }}
-                      >
-                        Chat with {chat.accountid.accountName}{" "}
-                      </Typography>
-                    </Box>
-
-                    <Box>
-                      {!chat.chatstatus && (
-                        <FiberManualRecordIcon
-                          fontSize="small"
-                          sx={{ color: "green" }}
-                        />
-                      )}
-                    </Box>
-                  </Box>
-                  <Box sx={{}}>
-                    <Typography
-                      component="h2"
-                      variant="subtitle2"
-                      gutterBottom
-                      sx={{ fontWeight: "600" }}
-                    >
-                      {chat.chatsubject}
-                    </Typography>
-                    <Typography component="h2" variant="caption" gutterBottom>
-                      {(() => {
-                        const cleanText =
-                          chat.description[0]?.message.replace(
-                            /<[^>]+>/g,
-                            ""
-                          ) || "";
-                        const words = cleanText.split(/\s+/);
-                        return words.length > 35
-                          ? words.slice(0, 35).join(" ") + "..."
-                          : cleanText;
-                      })()}
-                    </Typography>
-
-                    <Box textAlign="right">
-                      <Typography
-                        variant="caption"
-                        sx={{ color: "text.secondary" }}
-                      >
-                        {formattedTime}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Paper>
-                <Divider sx={{ mb: 1, mt: 1 }} />
-              </Box>
-            ))}
-        </Box>
-      </Box> */}
-
       <Box
         sx={{
           width: "100%",
@@ -297,7 +164,6 @@ const Commuication = () => {
           gap: 2,
         }}
       >
-        {/* Left Column: Chat List */}
         <Box
           sx={{
             width: "30%",
@@ -342,17 +208,45 @@ const Commuication = () => {
                   <Typography variant="subtitle2" fontWeight={600} gutterBottom>
                     {chat.chatsubject}
                   </Typography>
+
+                  {/* <Typography variant="caption" gutterBottom>
+                    {(() => {
+                      const messages = chat.description || [];
+                      const latestMessage = messages[messages.length - 1];
+
+                      if (!latestMessage) return "No messages yet";
+
+                      const cleanMessage =
+                        latestMessage.message?.replace(/<[^>]+>/g, "") || "";
+                      const senderName =
+                        latestMessage.senderid.username || "Unknown";
+
+                      return `${senderName}: ${cleanMessage.length > 35 ? cleanMessage.slice(0, 35) + "..." : cleanMessage}`;
+                    })()}
+                  </Typography> */}
                   <Typography variant="caption" gutterBottom>
                     {(() => {
-                      const cleanText =
-                        chat.description[0]?.message.replace(/<[^>]+>/g, "") ||
-                        "";
-                      const words = cleanText.split(/\s+/);
-                      return words.length > 35
-                        ? words.slice(0, 35).join(" ") + "..."
-                        : cleanText;
+                      const messages = chat.description || [];
+                      const latestMessage = messages[messages.length - 1];
+
+                      if (!latestMessage) return "No messages yet";
+
+                      const cleanMessage =
+                        latestMessage.message?.replace(/<[^>]+>/g, "") || "";
+
+                      const senderName =
+                       latestMessage.fromwhome === "Admin"
+                          ? "You"
+                          : latestMessage.senderid?.username || "";
+
+                      return `${senderName}: ${
+                        cleanMessage.length > 35
+                          ? cleanMessage.slice(0, 35) + "..."
+                          : cleanMessage
+                      }`;
                     })()}
                   </Typography>
+
                   <Box textAlign="right">
                     <Typography variant="caption" color="text.secondary">
                       {formattedTime}
@@ -364,12 +258,12 @@ const Commuication = () => {
             ))}
         </Box>
 
-        {/* Right Column: Show selected chat */}
         <Box sx={{ width: "70%", height: "100%", overflowY: "auto" }}>
           {selectedChat ? (
             <ChatDetails
               chat={selectedChat}
-              updateChatDescription={updateChatDescription}
+              getsChatDetails={getsChatDetails}
+              accountwiseChatlist={accountwiseChatlist}
             />
           ) : (
             <Typography variant="body1" sx={{ mt: 2 }}>

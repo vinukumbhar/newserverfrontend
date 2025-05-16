@@ -68,11 +68,11 @@ const ChatTemp = () => {
     );
   };
   
-  const [subtasks, setSubtasks] = useState([{ id: '1', text: '', }]);
+  const [subtasks, setSubtasks] = useState([]);
 
   const handleAddSubtask = () => {
     const newId = String(subtasks.length + 1);
-    setSubtasks([...subtasks, { id: newId, text: "" }]);
+    setSubtasks([...subtasks, { id: newId, text: "" ,checked:false}]);
   };
 
   // const handleInputChange = (id, value) => {

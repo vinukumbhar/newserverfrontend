@@ -22,16 +22,16 @@ import { PiDotsSixVerticalBold } from "react-icons/pi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import React, { useState, useEffect, useContext, useRef } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import AccountMultiSelectDropdown from "../../Templates/AccountMultiSelectDropdown";
+import AccountMultiSelectDropdown from "../../../Templates/AccountMultiSelectDropdown";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditorShortcodes from "../../Templates/Texteditor/EditorShortcodes";
-import { LoginContext } from "../../Sidebar/Context/Context";
+import EditorShortcodes from "../../../Templates/Texteditor/EditorShortcodes";
+import { LoginContext } from "../../../Sidebar/Context/Context";
 import { toast } from "react-toastify";
-const NewChatDrawer = ({ open, handleClose,accountwiseChatlist }) => {
+const NewChatDrawer = ({ open, handleClose, accountwiseChatlist }) => {
   const CHATTOCLIENT_API = process.env.REACT_APP_CHAT_API;
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { logindata } = useContext(LoginContext);
-  console.log("login data", logindata);
+
   const [loginUserId, setLoginUserId] = useState();
 
   useEffect(() => {
@@ -79,9 +79,7 @@ const NewChatDrawer = ({ open, handleClose,accountwiseChatlist }) => {
   const [noOfReminder, setNoOfReminder] = useState(1);
   const [daysuntilNextReminder, setDaysuntilNextReminder] = useState("3");
   const [from, setFrom] = useState();
-  const [subtasks, setSubtasks] = useState([
-    { id: "1", text: "", checked: "" },
-  ]);
+  const [subtasks, setSubtasks] = useState([]);
   const handleDragEnd = (result) => {
     if (!result.destination) return;
     const newSubtasks = Array.from(subtasks);
@@ -130,7 +128,7 @@ const NewChatDrawer = ({ open, handleClose,accountwiseChatlist }) => {
         const response = await fetch(url);
         const result = await response.json();
         const chatTemplate = result.chatTemplate;
-
+        console.log("result", chatTemplate);
         setAbsoluteDates(chatTemplate.sendreminderstoclient);
         setTemplateName(chatTemplate.templatename);
         setInputText(chatTemplate.chatsubject);
@@ -139,7 +137,7 @@ const NewChatDrawer = ({ open, handleClose,accountwiseChatlist }) => {
         setNoOfReminder(chatTemplate.numberofreminders);
         setFrom(chatTemplate.from.username);
         setSubtasks(
-          chatTemplate.clienttasks.flat().map((task) => ({
+          chatTemplate.clienttasks.map((task) => ({
             id: task.id,
             text: task.text,
             checked: task.checked,
@@ -421,28 +419,32 @@ const NewChatDrawer = ({ open, handleClose,accountwiseChatlist }) => {
         toast.success("New Chat created successfully");
         // sendSaveChatMail(result.newChats._id)
         setIsSubmitted(true);
-        accountwiseChatlist()
+        accountwiseChatlist();
         // accountwiseChatlist(data, isActiveTrue);
         handleClose();
-ClearFileds()
-        
+        ClearFileds();
       })
       .catch((error) => {
         console.error("Fetch error: ", error.message);
         toast.error("Failed to create new chat. Please try again.");
       });
   };
-const ClearFileds=()=>{
+  const ClearFileds = () => {
     setselectedTemp("");
-    setInputText("")
-     setSelectedShortcut("")
-     setDescription();
-     setDaysuntilNextReminder("")
-     setNoOfReminder("")
-     setCheckedSubtasks([])
-     setAbsoluteDates(false)
-     setSubtasks([])
-}
+    setInputText("");
+    setSelectedShortcut("");
+    setDescription();
+    setDaysuntilNextReminder("");
+    setNoOfReminder("");
+    setCheckedSubtasks([]);
+    setAbsoluteDates(false);
+    setSubtasks([]);
+  };
+
+  const handleCloseDrawer = ()=>{
+    handleClose()
+    ClearFileds()
+  }
   return (
     <Drawer
       anchor="right"
@@ -686,7 +688,7 @@ const ClearFileds=()=>{
                 >
                   {(subtasks.length > 0
                     ? subtasks
-                    : [{ id: "default", text: "" }]
+                    : []
                   ).map((subtask, index) => (
                     <Draggable
                       key={subtask.id}
@@ -773,7 +775,7 @@ const ClearFileds=()=>{
             Save chat
           </Button>
           <Button
-            onClick={handleClose}
+            onClick={handleCloseDrawer}
             variant="outlined"
             sx={{
               borderColor: "var(--color-border-cancel-btn)", // Normal background

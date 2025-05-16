@@ -50,7 +50,7 @@ import AccountCompletedTasks from "./nested-navbar/workflow-nav/CompletedTasks.j
 import Info from "./nested-navbar/NewPages/Info";
 import Proposals from "./nested-navbar/NewPages/Proposals";
 import DashDocs from "./nested-navbar/NewPages/Docs";
-import Communication from "./nested-navbar/NewPages/Commuication";
+import Communication from "./nested-navbar/NewPages/Communication/Commuication.js";
 import Organizers from "./nested-navbar/NewPages/Organizers";
 import AccountInvoice from "./nested-navbar/NewPages/Invoices.js";
 import Email from "./nested-navbar/NewPages/Email";

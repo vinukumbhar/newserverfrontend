@@ -8,7 +8,7 @@ import Quill from 'quill';
 import 'quill-emoji';
 
 Quill.register('modules/emoji', require('quill-emoji'));
-export default function Editor({ initialContent, onChange, }) {
+export default function Editor({ initialContent, onChange,value }) {
   const [editorContent, setEditorContent] = useState(initialContent);
 
   
@@ -61,11 +61,11 @@ export default function Editor({ initialContent, onChange, }) {
 
   return (
     <Box
-      sx={{height:'200px'}}
+      sx={{height:'250px'}}
     >
       <ReactQuill
-      
-        value={editorContent}
+        // value={editorContent}
+        value={value}
         onChange={handleChange}
         modules={modules}
         formats={formats}
@@ -75,5 +75,6 @@ export default function Editor({ initialContent, onChange, }) {
     </Box>
   );
 }
+
 
 
