@@ -67,10 +67,10 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
   const [absoluteDate, setAbsoluteDates] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [dueDate, setDueDate] = useState(null);
-  const [startsin, setstartsin] = useState("");
+  const [startsin, setstartsin] = useState(0);
   const [startsInDuration, setStartsInDuration] = useState("Days");
   const [dueinduration, setdueinduration] = useState("Days");
-  const [duein, setduein] = useState("");
+  const [duein, setduein] = useState(0);
 
   const dayOptions = [
     { label: "Days", value: "Days" },
@@ -2691,7 +2691,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                         size="small"
                         margin="normal"
                         fullWidth
-                        defaultValue={0}
+                   
                         placeholder="0"
                         sx={{ ml: 1, backgroundColor: "#fff" }}
                         value={startsin}
@@ -2738,7 +2738,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                         size="small"
                         margin="normal"
                         fullWidth
-                        defaultValue={0}
+                     
                         sx={{ ml: 1.5, backgroundColor: "#fff" }}
                         value={duein}
                         placeholder="0"

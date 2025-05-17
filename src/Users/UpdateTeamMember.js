@@ -691,7 +691,7 @@ const handleCloseLoginDetials=()=>{
     <Box sx={{ padding: 3 }}>
       <Box display={"flex"} alignItems={"center"} mb={1} gap={2}>
         <ArrowBackIcon sx={{ color: "#1976d3", fontSize: 50 }} />
-        <Typography variant="h4">Update Team Member</Typography>
+        <Typography variant="h4">Update Team Member s</Typography>
       </Box>
 
       <Divider />
@@ -768,7 +768,11 @@ const handleCloseLoginDetials=()=>{
                   <TextField
                     margin="normal"
                     value={phonenumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
+                     onChange={(e) => {
+    const onlyNums = e.target.value.replace(/\D/g, ''); // Remove non-digits
+    setPhoneNumber(onlyNums);
+  }}
+                    // onChange={(e) => setPhoneNumber(e.target.value)}
                     placeholder="Phone Number"
                     fullWidth
                     size="small"

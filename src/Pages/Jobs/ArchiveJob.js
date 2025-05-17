@@ -589,7 +589,7 @@ const Example = ({ charLimit = 4000 }) => {
         // console.log(result.updatedAccount); // Log the result
         // setAccountId(result.updatedAccount._id);
         toast.success("Job updated successfully"); // Display success toast
-        navigate("/workflow/jobs/activejob");
+        navigate("/jobs/activejob");
       })
       .catch((error) => {
         console.error(error); // Log the error

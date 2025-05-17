@@ -692,7 +692,7 @@ const Example = ({ charLimit = 4000 }) => {
         handleClose();
 
         toast.success("Job updated successfully"); // Display success toast
-        navigate("/workflow/jobs/archivedjob");
+        navigate("/jobs/archivedjob");
       })
       .catch((error) => {
         console.error(error); // Log the error

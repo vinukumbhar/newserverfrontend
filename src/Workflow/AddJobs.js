@@ -167,10 +167,10 @@ const AddJobs = ({
   const [absoluteDate, setAbsoluteDates] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [dueDate, setDueDate] = useState(null);
-  const [startsin, setstartsin] = useState("");
+  const [startsin, setstartsin] = useState(0);
   const [startsInDuration, setStartsInDuration] = useState(null);
   const [dueinduration, setdueinduration] = useState("");
-  const [duein, setduein] = useState("");
+  const [duein, setduein] = useState(0);
   const [jobTemp, setJobTemp] = useState([]);
   const [selectedtemp, setselectedTemp] = useState();
   const [clientFacingStatus, setClientFacingStatus] = useState(false);
@@ -2253,7 +2253,7 @@ const AddJobs = ({
                   size="small"
                   margin="normal"
                   fullWidth
-                  defaultValue={0}
+                  
                   sx={{ ml: 1, backgroundColor: "#fff" }}
                   value={startsin}
                   onChange={(e) => setstartsin(e.target.value)}
@@ -2299,7 +2299,7 @@ const AddJobs = ({
                   size="small"
                   margin="normal"
                   fullWidth
-                  defaultValue={0}
+                  
                   sx={{ ml: 1.5, backgroundColor: "#fff" }}
                   value={duein}
                   onChange={(e) => setduein(e.target.value)}

@@ -47,8 +47,8 @@ const JobDrawer = ({
   charLimit = 4000,
 }) => {
   
- const accountId = Cookies.get('accountId');
-console.log("accountId from cookies:", accountId);
+
+
   const { logindata } = useContext(LoginContext);
   const [loginuserid, setLoginUserId] = useState("");
 
@@ -72,10 +72,10 @@ console.log("accountId from cookies:", accountId);
   const [absoluteDate, setAbsoluteDates] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [dueDate, setDueDate] = useState(null);
-  const [startsin, setstartsin] = useState("");
+  const [startsin, setstartsin] = useState(0);
   const [startsInDuration, setStartsInDuration] = useState("Days");
   const [dueinduration, setdueinduration] = useState("Days");
-  const [duein, setduein] = useState("");
+  const [duein, setduein] = useState(0);
 
   const dayOptions = [
     { label: "Days", value: "Days" },
@@ -117,12 +117,26 @@ console.log("accountId from cookies:", accountId);
 
   const handleAccountChange = (newSelectedAcc) => {
     setSelectedaccount(newSelectedAcc);
-    console.log(newSelectedAcc);
+    
     const selectedValues = newSelectedAcc.map((option) => option.value);
     setCombinedaccountValues(selectedValues);
-    console.log(selectedValues);
+   
   };
-  const [searchTerm, setSearchTerm] = useState("");
+   useEffect(() => {
+      fetchAccountData();
+      // fetchAccountDatas("data");
+    }, []);
+  
+    const fetchAccountData = async () => {
+      try {
+        const response = await fetch(`${ACCOUNT_API}/accounts/accountdetails`);
+        const data = await response.json();
+        setaccountdata(data.accounts);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
 
   const [userData, setUserData] = useState([]);
   useEffect(() => {
@@ -140,20 +154,20 @@ console.log("accountId from cookies:", accountId);
     }
   };
 
-  const foundUser = userData.find((user) =>
-    user.username.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  console.log(foundUser);
+  // const foundUser = userData.find((user) =>
+  //   user.username.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
+
   const [selectedUser, setSelectedUser] = useState([]);
   const [combinedAssigneesValues, setCombinedAssigneesValues] = useState([]);
 
   const [combinedValues, setCombinedValues] = useState();
   const handleUserChange = (newSelectedUsers) => {
     setSelectedUser(newSelectedUsers);
-    console.log(newSelectedUsers);
+  
     const selectedValues = newSelectedUsers.map((option) => option.value);
     setCombinedValues(selectedValues);
-    console.log(selectedValues);
+   
   };
 
   const assigneesoptions = userData.map((user) => ({
@@ -198,8 +212,8 @@ console.log("accountId from cookies:", accountId);
         setAbsoluteDates(template.absolutedates);
         setStartDate(template.absolutedates ? dayjs(template.startdate) : null);
         setDueDate(template.absolutedates ? dayjs(template.enddate) : null);
-        setstartsin(template.startsin); // You might need to adjust this
-        setduein(template.duein); // You might need to adjust this
+        setstartsin(template.startsin || 0); // You might need to adjust this
+        setduein(template.duein || 0); // You might need to adjust this
         setStartsInDuration(template.startsinduration);
         setdueinduration(template.dueinduration);
         setClientFacingStatus(template.showinclientportal);
@@ -327,7 +341,7 @@ console.log("accountId from cookies:", accountId);
       headers: myHeaders,
       data: JSON.stringify(data),
     };
-
+console.log("job creation", data)
     axios
       .request(config)
       .then((response) => {
@@ -635,7 +649,7 @@ console.log("accountId from cookies:", accountId);
       const url = `${TAGS_API}/tags/`;
       const response = await fetch(url);
       const data = await response.json();
-      console.log("tags dtata", data.tags);
+   
       setTags(data.tags);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -732,13 +746,18 @@ console.log("accountId from cookies:", accountId);
 
     // Get the tags for the selected accounts
     const accountTags = combinedaccountValues
+   
       .map((accountId) => {
+         console.log("combinedaccountValues",combinedaccountValues)
         const account = accountdata.find(
           (account) => account._id === accountId
         );
         return account ? account.tags || [] : []; // Assuming accounts have tags
       })
       .flat(); // Flattening array to get all tags
+console.log("hghg", accountTags)
+
+      
     const ACCOUNT_TASKS_API = process.env.REACT_APP_TASKS_API;
     const CHAT_API = process.env.REACT_APP_CHAT_TEMP_URL;
     const CHATTOCLIENT_API = process.env.REACT_APP_CHAT_API;
@@ -919,14 +938,14 @@ console.log("accountId from cookies:", accountId);
       fetch(url, requestOptions)
         .then((response) => response.json())
         .then((result) => {
-          console.log("jbhguhid", result);
+          // console.log("jbhguhid", result);
 
           // console.log(userData)
           setAdminUsername(result.username);
         });
     };
     useEffect(() => {
-      console.log("teammenber", loginuserid);
+      // console.log("teammenber", loginuserid);
       fetchLoginUserData(loginuserid);
     }, []);
     // sendChatToAccount
@@ -1494,6 +1513,8 @@ console.log("accountId from cookies:", accountId);
           navigate("/jobs/activejob");
         }
         setDrawerOpen(false);
+        handleNewDrawerClose()
+        handleDrawerClose()
         // handleDrawerClose();
         // fetchJobData();
       } catch (error) {
@@ -1536,7 +1557,7 @@ console.log("accountId from cookies:", accountId);
             headers: myHeaders,
             body: JSON.stringify(jobData),
           });
-
+console.log("jobs automation creatyion", jobData)
           if (!response.ok) {
             const error = await response.json();
             throw new Error(
@@ -1577,7 +1598,7 @@ console.log("accountId from cookies:", accountId);
         throw error;
       }
     };
-
+// console.log("combinedaccountValues",combinedaccountValues)
     return (
       <Box p={2}>
         <Typography variant="h6" sx={{ display: "flex", alignItems: "center" }}>
@@ -2070,7 +2091,7 @@ console.log("accountId from cookies:", accountId);
                     size="small"
                     margin="normal"
                     fullWidth
-                    defaultValue={0}
+                  
                     placeholder="0"
                     sx={{ ml: 1, backgroundColor: "#fff" }}
                     value={startsin}
@@ -2117,7 +2138,7 @@ console.log("accountId from cookies:", accountId);
                     size="small"
                     margin="normal"
                     fullWidth
-                    defaultValue={0}
+                  
                     sx={{ ml: 1.5, backgroundColor: "#fff" }}
                     value={duein}
                     placeholder="0"
