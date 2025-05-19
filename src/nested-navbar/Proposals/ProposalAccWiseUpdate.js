@@ -663,7 +663,7 @@ const MyStepperUpdateAcc = () => {
     // onupdateserviceandinvoiceSettings(serviceAndInvoiceData);
     updatesaveProposaltemp();
     setActiveStep(0);
-    navigate(`/accountsdash/proposals/${data}`);
+    navigate(`/clients/accounts/accountsdash/proposals/${data}`);
   };
 
   const updatesaveProposaltemp = () => {

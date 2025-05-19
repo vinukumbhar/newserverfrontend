@@ -308,33 +308,7 @@ const Example = ({ charLimit = 4000 }) => {
       }
 
       // Pipeline and stage filter - updated to match your data structure
-      // if (Object.keys(filters.pipelineStages).length > 0) {
-
-      //   console.log("jhsdgfsd",filters.pipelineStages)
-      //   // Check if job's pipeline matches any filtered pipeline
-      //   const pipelineMatch = Object.entries(filters.pipelineStages).some(
-      //     ([pipelineName, stageNames]) => {
-      //       // Check if pipeline names match (case insensitive)
-      //       const jobPipeline = job.Pipeline || '';
-      //       const filterPipeline = pipelineName || '';
-
-      //       if (jobPipeline.toLowerCase() !== filterPipeline.toLowerCase()) {
-      //         return false;
-      //       }
-
-      //       // Check if any of the job's stages are in the filtered stages
-      //       const jobStages = Array.isArray(job.Stage) ? job.Stage : [job.Stage || ''];
-      //       return stageNames.some(name =>
-      //         jobStages.some(jobStage =>
-      //           jobStage.toLowerCase() === name.toLowerCase()
-      //         )
-      //       );
-      //     }
-      //   );
-
-      //   if (!pipelineMatch) return false;
-      // }
-
+    
       if (Object.keys(filters.pipelineStages).length > 0) {
         console.log(filters.pipelineStages);
         const pipelineMatch = Object.entries(filters.pipelineStages).some(
@@ -357,6 +331,7 @@ const Example = ({ charLimit = 4000 }) => {
         );
         console.log("jkhdfds", pipelineMatch);
         if (!pipelineMatch) return false;
+        
       }
       // Account name filter - with null/undefined check
       if (filters.accountName) {

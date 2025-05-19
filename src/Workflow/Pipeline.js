@@ -856,6 +856,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
           paymentterms: proposalesandelsData.paymentterms,
           paymentduedate: proposalesandelsData.paymentduedate,
           paymentamount: proposalesandelsData.paymentamount,
+             status:'Pending',
           active: true,
         }),
       };

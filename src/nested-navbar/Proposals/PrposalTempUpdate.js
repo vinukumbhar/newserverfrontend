@@ -741,6 +741,7 @@ const MyStepperUpdate = () => {
           introductiontext: introductionContent,
           termsandconditionsname: termsandconditionname,
           termsandconditions: termsContent,
+           status:'Pending',
           active: true,
         }),
       };
@@ -812,6 +813,7 @@ const MyStepperUpdate = () => {
             paymentterms: paymentterms,
             paymentduedate: paymentduedate,
             paymentamount: paymentamount,
+            status:'Pending',
             active: true,
           }),
         };
@@ -881,7 +883,7 @@ const MyStepperUpdate = () => {
 
             Addinvoiceoraskfordeposit: addInvoice,
             Additemizedserviceswithoutcreatinginvoices: addInvoiceitemized,
-
+  status:'Pending',
             active: true,
           }),
         };

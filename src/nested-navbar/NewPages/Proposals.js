@@ -1,10 +1,22 @@
 import React, { useState, useEffect, useMemo } from "react";
-import {
- Button, Typography, Box,TableContainer
-} from "@mui/material";
+import { Button, Typography, Box, TableContainer } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { useNavigate,useParams } from "react-router-dom";
-import { Chip, Paper, Divider, Menu, MenuItem, useMediaQuery, Table, TableHead, TableBody, TableRow, TableCell, Checkbox, IconButton } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  Chip,
+  Paper,
+  Divider,
+  Menu,
+  MenuItem,
+  useMediaQuery,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Checkbox,
+  IconButton,
+} from "@mui/material";
 import { toast } from "react-toastify";
 import { CiMenuKebab } from "react-icons/ci";
 
@@ -16,7 +28,7 @@ const Proposals = () => {
   const navigate = useNavigate();
 
   const handleCreateTemplateClick = () => {
-    navigate(`/clients/accounts/accountsdash/proposals/${data}/new`)
+    navigate(`/clients/accounts/accountsdash/proposals/${data}/new`);
   };
 
   const [tempIdget, setTempIdGet] = useState("");
@@ -27,8 +39,6 @@ const Proposals = () => {
     setTempIdGet(_id);
   };
 
- 
-
   //delete template
   const handleEdit = (_id) => {
     navigate(`/clients/accounts/accountsdash/proposals/${data}/update/` + _id);
@@ -37,12 +47,14 @@ const Proposals = () => {
   useEffect(() => {
     fetchPrprosalsAllData(data);
   }, []);
-  
+
   // Delete template
   const handleDelete = (_id) => {
     // Show a confirmation prompt
-    const isConfirmed = window.confirm("Are you sure you want to delete this Job template?");
-  
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this Job template?"
+    );
+
     // Proceed with deletion if confirmed
     if (isConfirmed) {
       const requestOptions = {
@@ -60,7 +72,7 @@ const Proposals = () => {
         .then((result) => {
           console.log(result);
           toast.success("Item deleted successfully");
-  
+
           // Fetch the updated data after deletion
           fetchPrprosalsAllData(data);
         })
@@ -78,7 +90,7 @@ const Proposals = () => {
         throw new Error("Failed to fetch proposal for printing");
       }
       const proposalData = await response.json();
-      console.log(proposalData)
+      console.log(proposalData);
       const printWindow = window.open("", "_blank");
       printWindow.document.write(`
         <html>
@@ -105,7 +117,7 @@ const Proposals = () => {
   const fetchPrprosalsAllData = async (data) => {
     try {
       const url = `${PROPOSAL_API}/proposalandels/proposalaccountwise/proposalbyaccount/${data}`;
-  
+
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error("Failed to fetch Proposals templates");
@@ -117,7 +129,7 @@ const Proposals = () => {
       console.error("Error fetching Proposals templates:", error);
     }
   };
-  
+
   //delete template
   // const handleDelete = (_id) => {
   //   // Show a confirmation prompt
@@ -139,9 +151,9 @@ const Proposals = () => {
   //       })
   //       .then((result) => {
   //         console.log(result);
-          
+
   //         toast.success("Item deleted successfully");
-         
+
   //       })
   //       .catch((error) => {
   //         console.error(error);
@@ -161,25 +173,28 @@ const Proposals = () => {
   //     const result = await response.json();
   //     console.log(result.proposalesandelsAccountwise)
   //     setProposalsTemplates(result.proposalesandelsAccountwise);
-    
+
   //   } catch (error) {
   //     console.error("Error fetching Proposals  templates:", error);
   //   }
   // };
 
- 
   return (
-
     <Box sx={{ mt: 2 }}>
-      <Button variant="contained" onClick={handleCreateTemplateClick} sx={{
-                backgroundColor: 'var(--color-save-btn)',  // Normal background
-               
-                '&:hover': {
-                  backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                },
-                mb:3,borderRadius:'15px'
-              }}>
-        New Proposals 
+      <Button
+        variant="contained"
+        onClick={handleCreateTemplateClick}
+        sx={{
+          backgroundColor: "var(--color-save-btn)", // Normal background
+
+          "&:hover": {
+            backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+          },
+          mb: 3,
+          borderRadius: "15px",
+        }}
+      >
+        New Proposals
       </Button>
       {/* <Paper>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -408,7 +423,7 @@ const Proposals = () => {
                     cursor: "pointer",
                   }}
                 >
-                  a
+                  {row.status}
                 </TableCell>
                 <TableCell
                   style={{
@@ -501,7 +516,6 @@ const Proposals = () => {
                         >
                           Delete
                         </Typography>
-                        
                       </Box>
                     )}
                   </IconButton>
@@ -512,9 +526,7 @@ const Proposals = () => {
         </Table>
       </TableContainer>
     </Box>
+  );
+};
 
-
-  )
-}
-
-export default Proposals
+export default Proposals;

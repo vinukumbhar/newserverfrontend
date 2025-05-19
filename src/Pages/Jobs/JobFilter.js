@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import {
   Button,
@@ -63,29 +62,31 @@ const FilterDropdown = ({ onFilterChange }) => {
     console.log(selectedValues);
   };
   const [clientStatus, setClientStatus] = useState([]);
-const [clientStatusOptions, setClientStatusOptions] = useState([]);
+  const [clientStatusOptions, setClientStatusOptions] = useState([]);
   const CLIENT_FACING_API = process.env.REACT_APP_CLIENT_FACING_URL;
-useEffect(() => {
-  const fetchClientFacingStatus = async () => {
-    try {
-      const response = await fetch( `${CLIENT_FACING_API}/workflow/clientfacingjobstatus/`);
-      const data = await response.json();
-      if (data?.clientFacingJobStatues) {
-        setClientStatusOptions(data.clientFacingJobStatues);
+  useEffect(() => {
+    const fetchClientFacingStatus = async () => {
+      try {
+        const response = await fetch(
+          `${CLIENT_FACING_API}/workflow/clientfacingjobstatus/`
+        );
+        const data = await response.json();
+        if (data?.clientFacingJobStatues) {
+          setClientStatusOptions(data.clientFacingJobStatues);
+        }
+      } catch (error) {
+        console.error("Failed to fetch client-facing statuses", error);
       }
-    } catch (error) {
-      console.error("Failed to fetch client-facing statuses", error);
-    }
-  };
+    };
 
-  fetchClientFacingStatus();
-}, []);
+    fetchClientFacingStatus();
+  }, []);
 
   const [pipelines, setPipelines] = useState([]);
   const [selectedStages, setSelectedStages] = useState({});
   const [stageAnchorEl, setStageAnchorEl] = useState(null);
   const [activePipeline, setActivePipeline] = useState(null);
-const PIPELINE_API = process.env.REACT_APP_PIPELINE_TEMP_URL;
+  const PIPELINE_API = process.env.REACT_APP_PIPELINE_TEMP_URL;
   useEffect(() => {
     const fetchPipelines = async () => {
       try {
@@ -106,9 +107,11 @@ const PIPELINE_API = process.env.REACT_APP_PIPELINE_TEMP_URL;
     setActivePipeline(pipeline);
     setStageAnchorEl(event.currentTarget);
   };
+
   // const handlePipelineCheckboxToggle = (pipeline) => {
   //   const stageNames = pipeline.stages.map((stage) => stage.name);
   //   const currentSelected = selectedStages[pipeline.pipelineName] || [];
+
   //   const allSelected = stageNames.every((name) =>
   //     currentSelected.includes(name)
   //   );
@@ -118,30 +121,57 @@ const PIPELINE_API = process.env.REACT_APP_PIPELINE_TEMP_URL;
   //     [pipeline.pipelineName]: allSelected ? [] : stageNames,
   //   }));
   // };
+
   const handlePipelineCheckboxToggle = (pipeline) => {
-    const stageNames = pipeline.stages.map((stage) => stage.name);
-    const currentSelected = selectedStages[pipeline.pipelineName] || [];
+  const stageNames = pipeline.stages.map((stage) => stage.name);
+  const currentSelected = selectedStages[pipeline.pipelineName] || [];
 
-    const allSelected = stageNames.every((name) =>
-      currentSelected.includes(name)
-    );
-
-    setSelectedStages((prev) => ({
+  if (currentSelected.length === stageNames.length) {
+    // If all stages are selected, remove the pipeline entirely
+    const newSelectedStages = { ...selectedStages };
+    delete newSelectedStages[pipeline.pipelineName];
+    setSelectedStages(newSelectedStages);
+  } else {
+    // Otherwise select all stages
+    setSelectedStages(prev => ({
       ...prev,
-      [pipeline.pipelineName]: allSelected ? [] : stageNames,
+      [pipeline.pipelineName]: stageNames
     }));
-  };
+  }
+};
+  // const handleStageToggle = (pipelineName, stageName) => {
+  //   setSelectedStages((prev) => {
+  //     const current = prev[pipelineName] || [];
+  //     const updated = current.includes(stageName)
+  //       ? current.filter((name) => name !== stageName)
+  //       : [...current, stageName];
 
+  //     return { ...prev, [pipelineName]: updated };
+  //   });
+  // };
   const handleStageToggle = (pipelineName, stageName) => {
-    setSelectedStages((prev) => {
-      const current = prev[pipelineName] || [];
-      const updated = current.includes(stageName)
-        ? current.filter((name) => name !== stageName)
-        : [...current, stageName];
+  setSelectedStages((prev) => {
+    const current = prev[pipelineName] || [];
+    let updated;
+    
+    if (current.includes(stageName)) {
+      // Remove the stage
+      updated = current.filter(name => name !== stageName);
+    } else {
+      // Add the stage
+      updated = [...current, stageName];
+    }
 
-      return { ...prev, [pipelineName]: updated };
-    });
-  };
+    // If no stages left for this pipeline, remove the pipeline entirely
+    if (updated.length === 0) {
+      const newState = { ...prev };
+      delete newState[pipelineName];
+      return newState;
+    }
+
+    return { ...prev, [pipelineName]: updated };
+  });
+};
 
   const [accountNameValue, setAccountNameValue] = useState("");
   const [priorityValue, setPriorityValue] = useState("");
@@ -168,7 +198,7 @@ const PIPELINE_API = process.env.REACT_APP_PIPELINE_TEMP_URL;
   // Add these new states
 
   return (
-    <Box >
+    <Box>
       <Box sx={{ display: "flex" }}>
         <Button
           onClick={handleClick}
@@ -182,7 +212,7 @@ const PIPELINE_API = process.env.REACT_APP_PIPELINE_TEMP_URL;
           }}
           endIcon={open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         >
-          + Filter
+          Filter
         </Button>
 
         <Menu
@@ -206,186 +236,185 @@ const PIPELINE_API = process.env.REACT_APP_PIPELINE_TEMP_URL;
         {/* Render selected filters */}
 
         {selectedFilters.length > 0 && (
-          <Box sx={{ mt: 2, display: "flex", flexWrap: "wrap", gap: 2 }}>
+          <Box
+            sx={{
+              mt: 2,
+              display: "flex",
+             
+              gap: 2,
+              maxHeight: "260px",
+              overflowY: "auto",
+            }}
+          >
             {selectedFilters.map((filter) => (
               <Box
                 key={filter}
                 sx={{
                   display: "flex",
-
-                  alignItems: "center",
-                  gap: 2,
-                  // border: "1px solid #ddd",
-                  // borderRadius: 2,
-                  // padding: 1.5,
-                  backgroundColor: "#f9f9f9",
-                  height: "150px",
-                  overflowY: "auto",
+                  flexDirection: "column",
+                  p: 2,
+                  minWidth: 240,
+                  borderRadius: 2,
+                  backgroundColor: "#ffffff",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                  position: "relative",
                 }}
               >
-                <Typography variant="subtitle2" sx={{ minWidth: 130 }}>
+                {/* Filter title */}
+                <Typography
+                  variant="subtitle2"
+                  fontWeight={600}
+                  color="text.primary"
+                  sx={{ mb: 1 }}
+                >
                   {filter}
                 </Typography>
 
-                <Box>
-                  {filter === "Job assignees" && (
-                    <Box width="180px">
-                      <MultiSelectDropdown
-                        value={selectedUser}
-                        onChange={handleUserChange}
-                        placeholder="Job Assignees"
-                      />
-                    </Box>
-                  )}
+                {/* Filter Inputs */}
+                {filter === "Job assignees" && (
+                  <MultiSelectDropdown
+                    value={selectedUser}
+                    onChange={handleUserChange}
+                    placeholder="Select assignees"
+                  />
+                )}
 
-                  {filter === "Account name" && (
-                    <TextField
-                      size="small"
-                      placeholder="Enter account name"
-                      sx={{ width: "180px" }}
-                      value={accountNameValue}
-                      onChange={(e) => setAccountNameValue(e.target.value)}
-                    />
-                  )}
+                {filter === "Account name" && (
+                  <TextField
+                    size="small"
+                    placeholder="Enter account name"
+                    value={accountNameValue}
+                    onChange={(e) => setAccountNameValue(e.target.value)}
+                  />
+                )}
 
-                  {/* {filter === "Client-facing status" && (
-                    <FormControl sx={{ width: 220 }} size="small">
-                      <Select
-                        multiple
-                        value={clientStatus}
-                        onChange={(e) => setClientStatus(e.target.value)}
-                        renderValue={(selected) => selected.join(", ")}
-                      >
-                        {["Planned", "On hold", "In progress", "Done"].map(
-                          (status) => (
-                            <MenuItem key={status} value={status}>
-                              <Checkbox
-                                checked={clientStatus.indexOf(status) > -1}
-                              />
-                              <ListItemText primary={status} />
-                            </MenuItem>
-                          )
-                        )}
-                      </Select>
-                    </FormControl>
-                  )} */}
-
-{filter === "Client-facing status" && (
-  <FormControl sx={{ width: 220 }} size="small">
-    <Select
-      multiple
-      value={clientStatus}
-      onChange={(e) => setClientStatus(e.target.value)}
-      renderValue={(selected) => selected.join(", ")}
-    >
-      {clientStatusOptions.map((status) => (
-        <MenuItem key={status._id} value={status.clientfacingName}>
-          <Checkbox checked={clientStatus.indexOf(status.clientfacingName) > -1} />
-          <ListItemText primary={status.clientfacingName} />
-        </MenuItem>
-      ))}
-    </Select>
-  </FormControl>
-)}
-
-                  {filter === "Pipeline and stage" && (
-                    <Box sx={{ mt: 2 }}>
-                      <Typography variant="subtitle2">
-                        Pipeline and stage
-                      </Typography>
-                      {pipelines.map((pipeline) => (
-                        <Box
-                          key={pipeline._id}
-                          sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            cursor: "pointer",
-                            justifyContent: "space-between",
-                            width: "220px",
-                            p: 1,
-                            border: "1px solid #ccc",
-                            borderRadius: 1,
-                            mt: 1,
-                            bgcolor: "#fff",
-                          }}
-                          onClick={(e) => handlePipelineClick(e, pipeline)}
+                {filter === "Client-facing status" && (
+                  <FormControl size="small" fullWidth>
+                    <Select
+                      multiple
+                      value={clientStatus}
+                      onChange={(e) => setClientStatus(e.target.value)}
+                      renderValue={(selected) => selected.join(", ")}
+                    >
+                      {clientStatusOptions.map((status) => (
+                        <MenuItem
+                          key={status._id}
+                          value={status.clientfacingName}
                         >
                           <Checkbox
-                            checked={
-                              pipeline.stages?.length &&
-                              selectedStages[pipeline.pipelineName]?.length ===
-                                pipeline.stages.length
-                            }
-                            onClick={(e) => {
-                              e.stopPropagation(); // prevent triggering the popover
-                              handlePipelineCheckboxToggle(pipeline);
-                            }}
+                            checked={clientStatus.includes(
+                              status.clientfacingName
+                            )}
                           />
-
-                          <Typography>{pipeline.pipelineName}</Typography>
-                          <Typography variant="caption">
-                            (
-                            {selectedStages[pipeline.pipelineName]?.length || 0}
-                            /{pipeline.stages?.length || 0})
-                          </Typography>
-                        </Box>
+                          <ListItemText primary={status.clientfacingName} />
+                        </MenuItem>
                       ))}
+                    </Select>
+                  </FormControl>
+                )}
 
-                      <Popover
-                        open={Boolean(stageAnchorEl)}
-                        anchorEl={stageAnchorEl}
-                        onClose={() => setStageAnchorEl(null)}
-                        anchorOrigin={{
-                          vertical: "bottom",
-                          horizontal: "right",
+
+                {filter === "Pipeline and stage" && (
+                  <Box sx={{ mt: 2 }}>
+                    {pipelines.map((pipeline) => (
+                      <Box
+                        key={pipeline._id}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          cursor: "pointer",
+                          justifyContent: "space-between",
+                          width: "220px",
+                          p: 1,
+                          mt: 1,
+                          bgcolor: "#fff",
                         }}
+                        onClick={(e) => handlePipelineClick(e, pipeline)}
                       >
-                        <Box sx={{ p: 2, minWidth: 200 }}>
-                          <Typography variant="subtitle2" gutterBottom>
-                            Pipeline stages
-                          </Typography>
-                          {activePipeline?.stages?.map((stage) => (
-                            <MenuItem
-                              key={stage._id}
-                              onClick={() =>
-                                handleStageToggle(
-                                  activePipeline.pipelineName,
-                                  stage.name
-                                )
-                              }
-                            >
-                              <Checkbox
-                                checked={
-                                  selectedStages[
-                                    activePipeline.pipelineName
-                                  ]?.includes(stage.name) || false
-                                }
-                              />
-                              <ListItemText primary={stage.name} />
-                            </MenuItem>
-                          ))}
-                        </Box>
-                      </Popover>
-                    </Box>
-                  )}
+                        <Checkbox
+                          checked={
+                            pipeline.stages?.length &&
+                            selectedStages[pipeline.pipelineName]?.length ===
+                              pipeline.stages.length
+                          }
+                          onClick={(e) => {
+                            e.stopPropagation(); // prevent triggering the popover
+                            handlePipelineCheckboxToggle(pipeline);
+                          }}
+                          size="small"
+                        />
 
-                  {filter === "Priority" && (
+                        <Typography sx={{ fontSize: "12px" }}>
+                          {pipeline.pipelineName}
+                        </Typography>
+                        <Typography variant="caption">
+                          ({selectedStages[pipeline.pipelineName]?.length || 0}/
+                          {pipeline.stages?.length || 0})
+                        </Typography>
+                      </Box>
+                    ))}
+
+                    <Popover
+                      open={Boolean(stageAnchorEl)}
+                      anchorEl={stageAnchorEl}
+                      onClose={() => setStageAnchorEl(null)}
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "right",
+                      }}
+                    >
+                      <Box sx={{ p: 2, minWidth: 200 }}>
+                        <Typography variant="subtitle2" gutterBottom>
+                          Pipeline stages
+                        </Typography>
+                        {activePipeline?.stages?.map((stage) => (
+                          <MenuItem
+                            key={stage._id}
+                            onClick={() =>
+                              handleStageToggle(
+                                activePipeline.pipelineName,
+                                stage.name
+                              )
+                            }
+                          >
+                            <Checkbox
+                              checked={
+                                selectedStages[
+                                  activePipeline.pipelineName
+                                ]?.includes(stage.name) || false
+                              }
+                              size="small"
+                            />
+                            <ListItemText
+                              primary={stage.name}
+                              sx={{ fontSize: "12px" }}
+                            />
+                          </MenuItem>
+                        ))}
+                      </Box>
+                    </Popover>
+                  </Box>
+                )}
+                {filter === "Priority" && (
+                  <FormControl size="small" fullWidth>
                     <Select
-                      fullWidth
-                      size="small"
                       value={priorityValue}
                       onChange={(e) => setPriorityValue(e.target.value)}
-                      sx={{ width: "180px" }}
                     >
                       <MenuItem value="">All</MenuItem>
                       <MenuItem value="High">High</MenuItem>
                       <MenuItem value="Medium">Medium</MenuItem>
                       <MenuItem value="Low">Low</MenuItem>
                     </Select>
-                  )}
-                </Box>
+                  </FormControl>
+                )}
 
-                <IconButton onClick={() => removeFilter(filter)} size="small">
+                {/* Remove Button */}
+                <IconButton
+                  onClick={() => removeFilter(filter)}
+                  size="small"
+                  sx={{ position: "absolute", top: 4, right: 4 }}
+                >
                   <CloseIcon fontSize="small" />
                 </IconButton>
               </Box>
