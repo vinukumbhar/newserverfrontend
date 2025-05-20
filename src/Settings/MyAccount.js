@@ -1394,7 +1394,11 @@ const [username,setUserName]= useState("")
                       <TextField
                         disabled={!isEditable}
                         value={phonenumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
+                         onChange={(e) => {
+    const onlyNums = e.target.value.replace(/\D/g, ''); // Remove non-digits
+    setPhoneNumber(onlyNums);
+  }}
+                        // onChange={(e) => setPhoneNumber(e.target.value)}
                         name="Phone Number"
                         sx={{ backgroundColor: "#fff" }}
                         size="small"

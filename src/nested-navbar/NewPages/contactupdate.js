@@ -57,20 +57,14 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
       setPostalCode(selectedContact.postalCode || "");
       setContactId(selectedContact._id || null); // Set contact ID
       
-      const flatPhoneNumbers = selectedContact.phoneNumbers?.flat(2) || []; // Flatten to ensure no nested arrays
-      // setPhoneNumbers(
-      //   flatPhoneNumbers.map((phoneObj) => ({
-      //     id: Date.now() + Math.random(), // Improved unique ID generation
-      //     phone: String(phoneObj.phone), // Access the phone property correctly
-      //     isPrimary: false, // Set based on your logic
-      //   }))
-      // );
+    const flatPhoneNumbers = selectedContact.phoneNumbers?.flat() || [];
 
-      setPhoneNumbers(
-  flatPhoneNumbers.map((phoneStr) => ({
+setPhoneNumbers(
+  flatPhoneNumbers.map((phoneObj) => ({
     id: Date.now() + Math.random(),
-    phone: phoneStr.startsWith("+") ? phoneStr : `+1${phoneStr}`, // add country code if missing
+    phone: phoneObj.phone.toString().startsWith("+") ? phoneObj.phone.toString() : `+${phoneObj.phone}`,
     isPrimary: false,
+    country: phoneObj.country?.toLowerCase() || "us",
   }))
 );
 
@@ -142,13 +136,37 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
     });
   };
 
-  const handlePhoneNumberChange = (id, phone) => {
-    setPhoneNumbers((prevPhoneNumbers) => prevPhoneNumbers.map((item) => (item.id === id ? { ...item, phone } : item)));
-  };
-
-  const handleAddPhoneNumber = () => {
-    setPhoneNumbers((prevPhoneNumbers) => [...prevPhoneNumbers, { id: Date.now(), phone: "", isPrimary: false }]);
-  };
+  // const handlePhoneNumberChange = (id, phone) => {
+  //   setPhoneNumbers((prevPhoneNumbers) => prevPhoneNumbers.map((item) => (item.id === id ? { ...item, phone } : item)));
+  // };
+   const handlePhoneNumberChange = (phoneValue, countryData, id) => {
+  setPhoneNumbers(prevPhoneNumbers =>
+    prevPhoneNumbers.map(item =>
+      item.id === id
+        ? {
+            ...item,
+            phone: phoneValue,
+            countryCode: countryData.dialCode, // Store country dial code
+            country: countryData.countryCode.toLowerCase() // Store country code (e.g., 'us')
+          }
+        : item
+    )
+  );
+};
+    const handleAddPhoneNumber = () => {
+  setPhoneNumbers(prevPhoneNumbers => [
+    ...prevPhoneNumbers,
+    { 
+      id: Date.now(), 
+      phone: "", 
+      country: "us", // Default country
+      isPrimary: false 
+    },
+  ]);
+};
+  // const handleAddPhoneNumber = () => {
+  //   setPhoneNumbers((prevPhoneNumbers) => [...prevPhoneNumbers, { id: Date.now(), phone: "", isPrimary: false }]);
+  // };
 
   const handleDeletePhoneNumber = (id) => {
     setPhoneNumbers((prevPhoneNumbers) => prevPhoneNumbers.filter((item) => item.id !== id));
@@ -254,6 +272,12 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
   }));
 
   const handleSave = async () => {
+    
+     const formattedPhoneNumbers = phoneNumbers.map(phone => ({
+    phone: phone.phone,
+    country: phone.country,
+   
+  }));
     const updatedContact = {
       firstName,
       middleName,
@@ -264,7 +288,7 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
       ssn,
       email,
       // phoneNumbers,
-      phoneNumbers: phoneNumbers.map((phone) => phone.phone),
+      phoneNumbers: formattedPhoneNumbers,
       country: selectedCountry,
       streetAddress,
       city,
@@ -482,23 +506,24 @@ const ContactUpdateForm = ({ onContactUpdated, selectedContact, handleClose, isS
           }}
         >
           {phone.isPrimary && <Chip label="Primary phone" color="primary" size="small" sx={{ position: "absolute", mt: -3 }} />}
-          <PhoneInput
-            country={"us"}
-            value={phone.phone}
-            onChange={(phoneValue) => handlePhoneNumberChange(phone.id, phoneValue)}
-            inputStyle={{
-              width: "100%",
-            }}
-            buttonStyle={{
-              borderTopLeftRadius: "8px",
-              borderBottomLeftRadius: "8px",
-            }}
-            containerStyle={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-            }}
-          />
+                     <PhoneInput
+  country={phone.country || "us"}
+  value={phone.phone}
+  // onChange={(phoneValue) => handlePhoneNumberChange(phone.id, phoneValue)}
+     onChange={(value, country) => handlePhoneNumberChange(value, country, phone.id)}
+  inputStyle={{
+    width: "100%",
+  }}
+  buttonStyle={{
+    borderTopLeftRadius: "8px",
+    borderBottomLeftRadius: "8px",
+  }}
+  containerStyle={{
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+  }}
+/>
           <AiOutlineDelete onClick={() => handleDeletePhoneNumber(phone.id)} style={{ cursor: "pointer", color: "red" }} />
         </Box>
       ))}

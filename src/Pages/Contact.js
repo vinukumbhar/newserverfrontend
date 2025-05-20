@@ -44,7 +44,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { format } from "date-fns";
 const ContactTable = () => {
   const storedData = JSON.parse(localStorage.getItem("teamMemberData"));
-  console.log("bhvh", storedData)
+  console.log("bhvh", storedData);
   const CONTACT_API = process.env.REACT_APP_CONTACTS_URL;
   const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
   const [contactData, setContactData] = useState([]);
@@ -267,6 +267,7 @@ const ContactTable = () => {
         `${CONTACT_API}/contacts/contactlist/list/`
       );
       setContactData(response.data.contactlist);
+      console.log("responce", response.data.contactlist);
     } catch (error) {
       console.error("API Error:", error);
     }
@@ -308,7 +309,7 @@ const ContactTable = () => {
   const handleClick = async (id) => {
     try {
       const url = `${CONTACT_API}/contacts/${id}`;
-      console.log("url", url)
+      console.log("url", url);
       const response = await fetch(url);
       const data = await response.json();
       setSelectedContact(data.contact);
@@ -1083,7 +1084,7 @@ const ContactTable = () => {
             <IconButton
               onClick={handleDeleteSelected}
               sx={{ color: "red" }}
-               disabled={storedData?.teammember?.manageContacts === false}
+              disabled={storedData?.teammember?.manageContacts === false}
             >
               <DeleteIcon />
             </IconButton>
@@ -1260,30 +1261,30 @@ const ContactTable = () => {
                   >
                     {contact.name}
                   </TableCell> */}
-<TableCell
-  style={{
-    cursor:
-      storedData?.teammember?.manageContacts === false
-        ? "not-allowed"
-        : "pointer",
-    color:
-      storedData?.teammember?.manageContacts === false
-        ? "gray"
-        : "#3f51b5",
-    left: 50,
-    zIndex: 1,
-    background: "#fff",
-    fontSize: "12px",
-    fontWeight: "normal",
-  }}
-  onClick={() => {
-    if (storedData?.teammember?.manageContacts !== false) {
-      handleClick(contact.id);
-    }
-  }}
->
-  {contact.name}
-</TableCell>
+                  <TableCell
+                    style={{
+                      cursor:
+                        storedData?.teammember?.manageContacts === false
+                          ? "not-allowed"
+                          : "pointer",
+                      color:
+                        storedData?.teammember?.manageContacts === false
+                          ? "gray"
+                          : "#3f51b5",
+                      left: 50,
+                      zIndex: 1,
+                      background: "#fff",
+                      fontSize: "12px",
+                      fontWeight: "normal",
+                    }}
+                    onClick={() => {
+                      if (storedData?.teammember?.manageContacts !== false) {
+                        handleClick(contact.id);
+                      }
+                    }}
+                  >
+                    {contact.name}
+                  </TableCell>
 
                   <TableCell
                     style={{
@@ -1294,10 +1295,25 @@ const ContactTable = () => {
                   >
                     {contact.email}
                   </TableCell>
-                  <TableCell>
-                    {contact.phoneNumbers.flat().map((phoneObj, index) => (
-                      <div key={index}>{phoneObj.phone || phoneObj}</div>
-                    ))}
+                  <TableCell
+                    style={{
+                      fontSize: "12px",
+                      padding: "4px 8px",
+                      lineHeight: "1",
+                    }}
+                  >
+                    {contact.phoneNumbers && contact.phoneNumbers.length > 0 ? (
+                      <div>
+                        {contact.phoneNumbers.map((phoneObj, index) => (
+                          <div key={phoneObj._id || index}>
+                            {/* {phoneObj.country === 'in' ? '+91 ' : phoneObj.country === 'us' ? '+1 ' : '+'} */}
+                            +{phoneObj.phone}
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      ""
+                    )}
                   </TableCell>
                   <TableCell
                     style={{
@@ -1373,7 +1389,9 @@ const ContactTable = () => {
                     <IconButton
                       onClick={() => handleDelete(contact.id)}
                       sx={{ color: "red" }}
-                     disabled={storedData?.teammember?.manageContacts === false}
+                      disabled={
+                        storedData?.teammember?.manageContacts === false
+                      }
                     >
                       <DeleteIcon />
                     </IconButton>

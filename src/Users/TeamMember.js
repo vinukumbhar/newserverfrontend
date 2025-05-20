@@ -933,7 +933,7 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
                               height={20}
                               width={32}
                               className="react-switch"
-                              disabled
+                              // disabled
                             />
                             <p style={{ color: "black" }}>Manage organizers</p>
                           </Box>

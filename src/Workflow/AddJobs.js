@@ -1006,6 +1006,7 @@ const AddJobs = ({
       const raw = JSON.stringify({
         accountid: automationAccountId,
         organizertemplateid: automationTemp,
+           organizerName: organizerData.organizerName,
         reminders: organizerData.reminders,
         noofreminders: organizerData.noOfReminder,
         daysuntilnextreminder: organizerData.daysuntilNextReminder,

@@ -776,29 +776,67 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
     setContacts(updatedContacts);
   };
 
-  const handleContactPhoneNumberChange = (index, phoneIndex, phoneValue) => {
-    setContacts((prevContacts) => {
-      const updatedContacts = [...prevContacts];
-      const contact = updatedContacts[index];
+  // const handleContactPhoneNumberChange = (index, phoneIndex, phoneValue) => {
+  //   setContacts((prevContacts) => {
+  //     const updatedContacts = [...prevContacts];
+  //     const contact = updatedContacts[index];
 
-      // Ensure the phoneNumbers array has enough elements
-      if (contact.phoneNumbers.length <= phoneIndex) {
-        contact.phoneNumbers = [
-          ...contact.phoneNumbers,
-          ...Array(phoneIndex + 1 - contact.phoneNumbers.length).fill({
-            phone: "",
-          }),
-        ];
-      }
+  //     // Ensure the phoneNumbers array has enough elements
+  //     if (contact.phoneNumbers.length <= phoneIndex) {
+  //       contact.phoneNumbers = [
+  //         ...contact.phoneNumbers,
+  //         ...Array(phoneIndex + 1 - contact.phoneNumbers.length).fill({
+  //           phone: "",
+  //         }),
+  //       ];
+  //     }
 
-      // Update the phone number
-      contact.phoneNumbers[phoneIndex] = {
-        ...contact.phoneNumbers[phoneIndex],
-        phone: phoneValue,
-      };
-      return updatedContacts;
-    });
-  };
+  //     // Update the phone number
+  //     contact.phoneNumbers[phoneIndex] = {
+  //       ...contact.phoneNumbers[phoneIndex],
+  //       phone: phoneValue,
+  //     };
+  //     return updatedContacts;
+  //   });
+  // };
+
+const handleContactPhoneNumberChange = (index, phoneIndex, phoneValue, countryData) => {
+  setContacts((prevContacts) => {
+    const updatedContacts = [...prevContacts];
+    const contact = { ...updatedContacts[index] }; // clone contact
+
+    let phoneNumbers = [...(contact.phoneNumbers || [])];
+
+    // Ensure phoneNumbers array is large enough
+    if (phoneNumbers.length <= phoneIndex) {
+      phoneNumbers = [
+        ...phoneNumbers,
+        ...Array(phoneIndex + 1 - phoneNumbers.length).fill({
+          phone: "",
+          countryCode: "",
+          country: "",
+        }),
+      ];
+    }
+
+    // Update the specific phone object
+    phoneNumbers[phoneIndex] = {
+      ...phoneNumbers[phoneIndex],
+      phone: phoneValue,
+      countryCode: countryData.dialCode,
+      country: countryData.countryCode.toLowerCase(),
+    };
+
+    // Set back into the contact and then into contacts
+    contact.phoneNumbers = phoneNumbers;
+    updatedContacts[index] = contact;
+
+    return updatedContacts;
+  });
+};
+
+
+
 
   // const handleContactAddressChange = (index, field, value) => {
   //   setContacts((prevContacts) => {
@@ -944,7 +982,7 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
   };
 
   const handlesubmitContact = () => {
-    console.log(contacts);
+    console.log("nghjg",contacts);
     //  const url =`${CONTACT_API}/contacts/`
 
     fetch(`${CONTACT_API}/contacts/`, {
@@ -3117,16 +3155,19 @@ const handleOpenModal = (id) => {
                               sx={{ position: "absolute", mt: -3 }}
                             />
                           )}
-                          <PhoneInput
+                          {/* <PhoneInput
                             country={"us"}
                             value={phone.phone}
-                            onChange={(phoneValue) =>
-                              handleContactPhoneNumberChange(
-                                index,
-                                phoneIndex,
-                                phoneValue
-                              )
-                            }
+                            // onChange={(phoneValue) =>
+                            //   handleContactPhoneNumberChange(
+                            //     index,
+                            //     phoneIndex,
+                            //     phoneValue
+                            //   )
+                            // }
+                            onChange={(value, country) =>
+    handleContactPhoneNumberChange(value, country, phone.id)
+  }
                             inputStyle={{
                               width: "100%",
                             }}
@@ -3139,7 +3180,25 @@ const handleOpenModal = (id) => {
                               alignItems: "center",
                               gap: "8px",
                             }}
-                          />
+                          /> */}
+                          <PhoneInput
+  country={phone.country || "us"}
+  value={phone.phone}
+  onChange={(value, country) =>
+    handleContactPhoneNumberChange(index, phoneIndex, value, country)
+  }
+  inputStyle={{ width: "100%" }}
+  buttonStyle={{
+    borderTopLeftRadius: "8px",
+    borderBottomLeftRadius: "8px",
+  }}
+  containerStyle={{
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+  }}
+/>
+
                           <AiOutlineDelete
                             onClick={() => handleDeletePhoneNumber(phoneIndex)}
                             style={{ cursor: "pointer", color: "red" }}

@@ -262,7 +262,7 @@ const ProposalsEls = () => {
                     cursor: "pointer",
                   }}
                 >
-                  a
+                  {row.status}
                 </TableCell>
                 <TableCell
                   style={{

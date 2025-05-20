@@ -28,7 +28,7 @@ import { toast } from "react-toastify";
 import { RxCross2 } from "react-icons/rx";
 const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
   const CONTACT_API = process.env.REACT_APP_CONTACTS_URL;
-  const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
+
 
   const navigate = useNavigate();
   const theme = useTheme();
@@ -47,7 +47,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
   const [note, setNote] = useState("");
   const [ssn, setSsn] = useState("");
   const [email, setEmail] = useState("");
-  const [country, setCountry] = useState("");
+
   const [streetAddress, setStreetAddress] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
@@ -68,35 +68,56 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
       .catch((error) => console.error("Error fetching country data:", error));
   }, []);
 
-  const handlePhoneNumberChange = (id, phone) => {
-    setPhoneNumbers((prevPhoneNumbers) =>
-      prevPhoneNumbers.map((item) =>
-        item.id === id ? { ...item, phone } : item
-      )
-    );
-  };
+  // const handlePhoneNumberChange = (id, phone) => {
+  //   console.log(id)
+  //   setPhoneNumbers((prevPhoneNumbers) =>
+  //     prevPhoneNumbers.map((item) =>
+  //       item.id === id ? { ...item, phone } : item
+  //     )
+  //   );
+  // };
+ const handlePhoneNumberChange = (phoneValue, countryData, id) => {
+  setPhoneNumbers(prevPhoneNumbers =>
+    prevPhoneNumbers.map(item =>
+      item.id === id
+        ? {
+            ...item,
+            phone: phoneValue,
+            countryCode: countryData.dialCode, // Store country dial code
+            country: countryData.countryCode.toLowerCase() // Store country code (e.g., 'us')
+          }
+        : item
+    )
+  );
+};
 
   // Update contactName when firstName, middleName, or lastName changes
   useEffect(() => {
     setContactName(`${firstName} ${middleName} ${lastName}`.trim());
   }, [firstName, middleName, lastName]);
 
+  // const handleAddPhoneNumber = () => {
+  //   setPhoneNumbers((prevPhoneNumbers) => [
+  //     ...prevPhoneNumbers,
+  //     { id: Date.now(), phone: "", isPrimary: false },
+  //   ]);
+  // };
   const handleAddPhoneNumber = () => {
-    setPhoneNumbers((prevPhoneNumbers) => [
-      ...prevPhoneNumbers,
-      { id: Date.now(), phone: "", isPrimary: false },
-    ]);
-  };
+  setPhoneNumbers(prevPhoneNumbers => [
+    ...prevPhoneNumbers,
+    { 
+      id: Date.now(), 
+      phone: "", 
+      country: "us", // Default country
+      isPrimary: false 
+    },
+  ]);
+};
 
   const handleDeletePhoneNumber = (id) => {
     setPhoneNumbers((prevPhoneNumbers) =>
       prevPhoneNumbers.filter((item) => item.id !== id)
     );
-  };
-
-  const handleCountryChange = (event) => {
-    setSelectedCountry(event.target.value);
-    setCountry(event.target.value);
   };
 
   const [firstNameError, setFirstNameError] = useState("");
@@ -136,7 +157,13 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
 
     handleNewDrawerClose();
     handleDrawerClose();
+  const formattedPhoneNumbers = phoneNumbers.map(phone => ({
+    phone: phone.phone,
+    country: phone.country,
+   
+  }));
 
+console.log("formattedPhoneNumbers",formattedPhoneNumbers)
     const raw = JSON.stringify([
       {
         firstName: firstName,
@@ -151,16 +178,13 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
         notify: false,
         emailSync: false,
         tags: combinedValues,
-        // country: {
-        //     name: "South Georgia",
-        //     code: "GS"
-        // },
+
         country: selectedCountry,
         streetAddress: streetAddress,
         city: city,
         state: state,
         postalCode: postalCode,
-        phoneNumbers: phoneNumbers.map((phone) => phone.phone),
+        phoneNumbers: formattedPhoneNumbers,
       },
     ]);
     console.log(raw);
@@ -185,9 +209,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
         // Handle success
         toast.success("Contact created successfully!");
         //console.log('Contact ID:', result);  // Log the contactId
-
         navigate("/clients/contacts");
-
         // Additional logic after successful creation if needed
       })
       .catch((error) => {
@@ -203,28 +225,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
   };
 
   const [selectedTags, setSelectedTags] = useState([]);
-  const [open, setOpen] = useState(false); // State to control menu visibility
-  // const handleTagChange = (event) => {
-  //   const selectedValues = event.target.value;
-  //   setSelectedTags(selectedValues);
 
-  //   // Send selectedValues array to your backend
-  //   console.log("Selected Values:", selectedValues);
-  //   // Assuming setCombinedValues is a function to send the values to your backend
-  //   setCombinedValues(selectedValues);
-  // };
-  // const handleTagChange = (event, newValue) => {
-  //   setSelectedTags(newValue.map((option) => option.value));
-
-  //   // Send selectedValues array to your backend
-  //   console.log(
-  //     "Selected Values:",
-  //     newValue.map((option) => option.value)
-  //   );
-  //   // Assuming setCombinedValues is a function to send the values to your backend
-  //   setCombinedValues(newValue.map((option) => option.value));
-  // };
-  
   //Tag FetchData ================
   const handleTagChange = (newSelectedTags) => {
     setSelectedTags(newSelectedTags);
@@ -233,71 +234,6 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
     setCombinedValues(selectedValues);
     console.log(selectedValues)
   };
-  const ITEM_HEIGHT = 48;
-  const ITEM_PADDING_TOP = 8;
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: "auto",
-      },
-    },
-  };
-  const [tags, setTags] = useState([]);
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const url = `${TAGS_API}/tags/`;
-
-      const response = await fetch(url);
-      const data = await response.json();
-      setTags(data.tags);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-  //  for tags
-  const calculateWidth = (tagName) => {
-    const baseWidth = 10; // base width for each tag
-    const charWidth = 8; // approximate width of each character
-    const padding = 5; // padding on either side
-    return baseWidth + charWidth * tagName.length + padding;
-  };
-
-  const options = tags.map((tag) => ({
-    value: tag._id,
-    label: tag.tagName,
-    colour: tag.tagColour,
-
-    customStyle: {
-      backgroundColor: tag.tagColour,
-      color: "#fff",
-      borderRadius: "10px",
-      alignItems: "center",
-      textAlign: "start",
-      // paddingLeft:'5px',
-      marginBottom: "5px",
-      //  marginLeft:'10px',
-      padding: "3px 10px",
-      fontSize: "10px",
-      width: `${calculateWidth(tag.tagName)}px`,
-      // margin: "7px",
-      cursor: "pointer",
-    },
-    customTagStyle: {
-      backgroundColor: tag.tagColour,
-      color: "#fff",
-      alignItems: "center",
-      textAlign: "center",
-      padding: "2px,8px",
-      fontSize: "15px",
-      cursor: "pointer",
-    },
-  }));
-
   return (
     <Box>
       <Box
@@ -319,7 +255,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
       </Box>
       <form
         style={{
-          // marginTop:'5px',
+       
           paddingRight: "3%",
           paddingLeft: "3%",
           height: "90vh",
@@ -327,14 +263,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
         }}
         className="contact-form"
       >
-        {/* <Typography
-          variant="h6"
-          gutterBottom
-          sx={{ ml: 1, fontWeight: "bold", mt: 2 }}
-        >
-          Contact info
-        </Typography> */}
-        {/* <Typography gutterBottom sx={{fontWeight:'bold',fontSize:'20px'}}>Contact info</Typography> */}
+   
         <Box
           sx={{
             display: "flex",
@@ -345,13 +274,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
           }}
         >
           <Box>
-            {/* <InputLabel sx={{ color: 'black' }}>First name</InputLabel> */}
-            {/* <InputLabel
-              sx={{ color: "black", display: "flex", alignItems: "center" }}
-            >
-              First Name
-              <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
-            </InputLabel> */}
+          
             <InputLabel
               sx={{
                 color: "black",
@@ -385,7 +308,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
            
           </Box>
           <Box>
-            {/* <InputLabel sx={{ color: "black" }}>Middle Name</InputLabel> */}
+         
             <InputLabel
               sx={{
                 color: "black",
@@ -396,7 +319,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
               Middle Name
             </InputLabel>
             <TextField
-              // margin="normal"
+           
               sx={{ mt: 1.5, backgroundColor: "#fff" }}
               fullWidth
               name="middleName"
@@ -407,12 +330,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
             />
           </Box>
           <Box>
-            {/* <InputLabel
-              sx={{ color: "black", display: "flex", alignItems: "center" }}
-            >
-              Last Name
-              <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
-            </InputLabel> */}
+          
             <InputLabel
               sx={{
                 color: "black",
@@ -423,18 +341,17 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
               Last Name
               <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
             </InputLabel>
-            {/* <InputLabel sx={{ color: 'black' }}>Last Name</InputLabel> */}
+            
 
             <TextField
               fullWidth
               name="lastName"
               value={lastName}
-              // onChange={(e) => setLastName(e.target.value)}
-              // margin="normal"
+            
               placeholder="Last name"
               size="small"
               sx={{ mt: 1.5, backgroundColor: "#fff" }}
-              // onChange={(e) => setFirstName(e.target.value)}
+             
               onChange={(e) => {
                 const value = e.target.value;
                 setLastName(value);
@@ -499,13 +416,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
           />
         </Box>
         <Box mt={1}>
-          {/* <InputLabel sx={{ color: 'black' }}>Email</InputLabel> */}
-          {/* <InputLabel
-            sx={{ color: "black", display: "flex", alignItems: "center" }}
-          >
-            Email
-            <Typography sx={{ color: "red", ml: 0.5 }}>*</Typography>
-          </InputLabel> */}
+          
           <InputLabel
             sx={{
               color: "black",
@@ -628,8 +539,8 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                 sx={{ position: "absolute", mt: -3 }}
               />
             )}
-            <PhoneInput
-              country={"us"}
+            {/* <PhoneInput
+           country={phone.country || "us"}
               value={phone.phone}
               onChange={(phoneValue) =>
                 handlePhoneNumberChange(phone.id, phoneValue)
@@ -646,7 +557,25 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
                 alignItems: "center",
                 gap: "8px",
               }}
-            />
+            /> */}
+            <PhoneInput
+  country={phone.country || "us"}
+  value={phone.phone}
+  // onChange={(phoneValue) => handlePhoneNumberChange(phone.id, phoneValue)}
+     onChange={(value, country) => handlePhoneNumberChange(value, country, phone.id)}
+  inputStyle={{
+    width: "100%",
+  }}
+  buttonStyle={{
+    borderTopLeftRadius: "8px",
+    borderBottomLeftRadius: "8px",
+  }}
+  containerStyle={{
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+  }}
+/>
             <AiOutlineDelete
               onClick={() => handleDeletePhoneNumber(phone.id)}
               style={{ cursor: "pointer", color: "red" }}
@@ -677,22 +606,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
         </Typography>
         <Box>
           <InputLabel sx={{ color: "black" }}>Country</InputLabel>
-          {/* <Select
-                        size='small'
-                        value={selectedCountry}
-                        onChange={handleCountryChange}
-                        sx={{
 
-                            width: '100%',
-                            marginTop: '8px'
-                        }}
-                    >
-                        {countries.map((country) => (
-                            <MenuItem key={country.code} value={country.code}>
-                                {country.name}
-                            </MenuItem>
-                        ))}
-                    </Select> */}
           <Autocomplete
             size="small"
             options={countries}
@@ -797,11 +711,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
             variant="contained"
             color="primary"
             onClick={sendingData}
-            // sx={{
-            //     mt: 2,
-            //     width: isSmallScreen ? '100%' : 'auto',
-            //     borderRadius: '10px',
-            // }}
+  
             sx={{
               backgroundColor: "var(--color-save-btn)", // Normal background
 
@@ -820,11 +730,7 @@ const ContactForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
             variant="outlined"
             color="primary"
             onClick={handleClose}
-            // sx={{
-            //     mt: 2,
-            //     width: isSmallScreen ? '100%' : 'auto',
-            //     borderRadius: '10px',
-            // }}
+           
             sx={{
               borderColor: "var(--color-border-cancel-btn)", // Normal background
               color: "var(--color-save-btn)",

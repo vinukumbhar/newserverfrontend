@@ -268,101 +268,202 @@ const handleCloseLoginDetials=()=>{
   //     });
   // };
 
+  // const handleUpdateTeamMember = () => {
+    
+  //     const myHeaders = new Headers();
+  //     myHeaders.append("Content-Type", "application/json");
+
+  //     const raw = JSON.stringify({
+  //       firstName: firstName,
+  //       middleName: middleName,
+  //       lastName: lastName,
+  //       role: selectedOption,
+  //       email: email,
+  //       managePayments: isCheckedPayments,
+  //       manageInvoices: isCheckedInvoices,
+  //       managePipelines: isCheckedPipelines,
+  //       manageJobRecurrence: isCheckedJobRecurrences,
+  //       manageTimeEntries: isCheckedTimeEntries,
+  //       manageRatesinTimeEntries: isCheckedRatesTimeEntries,
+  //       manageAccounts: isCheckedAccounts,
+  //       viewallAccounts: isCheckedAllAccounts,
+  //       manageTags: isCheckedTags,
+  //       manageCustomFields: isCheckedCustomFields,
+  //       manageOrganizers: isCheckedOrganizers,
+  //       assignTeamMates: isCheckedTeammates,
+  //       chargeFirmBalance: isCheckedFirmBalance,
+  //       viewAllContacts: isCheckedAllContacts,
+  //       manageContacts: isCheckedContacts,
+  //       manageProposals: isCheckedProposals,
+  //       manageSites: isCheckedSite,
+  //       manageEmails: isCheckedEmail,
+  //       manageServices: isCheckedServices,
+  //       editOrganizersAnswers: isCheckedOrgnizerAnswers,
+  //       managePublicFilterTemplates: isCheckedFilterTemplates,
+  //       manageDocuments: isCheckedDocuments,
+  //       manageTemplates: isCheckedTemplates,
+  //       manageIRSTranscripts: isCheckedTranscripts,
+  //       manageMarketPlace: isCheckedMarketplace,
+  //       viewReporting: isCheckedViewReporting,
+  //     });
+
+  //     const requestOptions = {
+  //       method: "PATCH",
+  //       headers: myHeaders,
+  //       body: raw,
+  //       redirect: "follow",
+  //     };
+
+  //     fetch(`${LOGIN_API}/admin/teammember/${id}`, requestOptions)
+  //       .then((response) => {
+  //                if (!response.ok) {
+  //                  toast.error("Failed to update team member");
+  //                }
+  //                return response.json();
+  //              })
+  //       .then((result) => {
+  //         if (result && result.teamMember && result.teamMember.userid) {
+  //           const userId = result.teamMember.userid;
+  //           const updatedUsername = `${firstName} ${middleName ? middleName + " " : ""}${lastName}`.trim();
+   
+  //           // Call function to update the username
+  //           updateUserUsername(userId, updatedUsername);
+  //         }
+  //       })
+
+  //       .catch((error) => console.error(error));
+  //   }
+  //   const updateUserUsername = (userId, username) => {
+  //     const myHeaders = new Headers();
+  //     myHeaders.append("Content-Type", "application/json");
+    
+  //     const raw = JSON.stringify({ username });
+    
+  //     const requestOptions = {
+  //       method: "PATCH",
+  //       headers: myHeaders,
+  //       body: raw,
+  //       redirect: "follow",
+  //     };
+    
+  //     fetch(`${LOGIN_API}/common/user/${userId}`, requestOptions)
+  //       .then((response) => {
+  //         if (!response.ok) {
+  //           throw new Error("Failed to update username");
+  //         }
+  //         return response.json();
+  //       })
+  //       .then((result) => {
+  //         console.log("Username updated:", result);
+  //          toast.success("Team member updated successfully");
+  //          handleNewDrawerClose();
+  //         })
+  //       .catch((error) => {
+  //         console.error(error);
+  //         toast.error("Failed to update username");
+  //       });
+  //   };
   const handleUpdateTeamMember = () => {
-    
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
 
-      const raw = JSON.stringify({
-        firstName: firstName,
-        middleName: middleName,
-        lastName: lastName,
-        role: selectedOption,
-        email: email,
-        managePayments: isCheckedPayments,
-        manageInvoices: isCheckedInvoices,
-        managePipelines: isCheckedPipelines,
-        manageJobRecurrence: isCheckedJobRecurrences,
-        manageTimeEntries: isCheckedTimeEntries,
-        manageRatesinTimeEntries: isCheckedRatesTimeEntries,
-        manageAccounts: isCheckedAccounts,
-        viewallAccounts: isCheckedAllAccounts,
-        manageTags: isCheckedTags,
-        manageCustomFields: isCheckedCustomFields,
-        manageOrganizers: isCheckedOrganizers,
-        assignTeamMates: isCheckedTeammates,
-        chargeFirmBalance: isCheckedFirmBalance,
-        viewAllContacts: isCheckedAllContacts,
-        manageContacts: isCheckedContacts,
-        manageProposals: isCheckedProposals,
-        manageSites: isCheckedSite,
-        manageEmails: isCheckedEmail,
-        manageServices: isCheckedServices,
-        editOrganizersAnswers: isCheckedOrgnizerAnswers,
-        managePublicFilterTemplates: isCheckedFilterTemplates,
-        manageDocuments: isCheckedDocuments,
-        manageTemplates: isCheckedTemplates,
-        manageIRSTranscripts: isCheckedTranscripts,
-        manageMarketPlace: isCheckedMarketplace,
-        viewReporting: isCheckedViewReporting,
-      });
+  const raw = JSON.stringify({
+    firstName: firstName,
+    middleName: middleName,
+    lastName: lastName,
+    role: selectedOption,
+    email: email,
+    managePayments: isCheckedPayments,
+    manageInvoices: isCheckedInvoices,
+    managePipelines: isCheckedPipelines,
+    manageJobRecurrence: isCheckedJobRecurrences,
+    manageTimeEntries: isCheckedTimeEntries,
+    manageRatesinTimeEntries: isCheckedRatesTimeEntries,
+    manageAccounts: isCheckedAccounts,
+    viewallAccounts: isCheckedAllAccounts,
+    manageTags: isCheckedTags,
+    manageCustomFields: isCheckedCustomFields,
+    manageOrganizers: isCheckedOrganizers,
+    assignTeamMates: isCheckedTeammates,
+    chargeFirmBalance: isCheckedFirmBalance,
+    viewAllContacts: isCheckedAllContacts,
+    manageContacts: isCheckedContacts,
+    manageProposals: isCheckedProposals,
+    manageSites: isCheckedSite,
+    manageEmails: isCheckedEmail,
+    manageServices: isCheckedServices,
+    editOrganizersAnswers: isCheckedOrgnizerAnswers,
+    managePublicFilterTemplates: isCheckedFilterTemplates,
+    manageDocuments: isCheckedDocuments,
+    manageTemplates: isCheckedTemplates,
+    manageIRSTranscripts: isCheckedTranscripts,
+    manageMarketPlace: isCheckedMarketplace,
+    viewReporting: isCheckedViewReporting,
+  });
 
-      const requestOptions = {
-        method: "PATCH",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow",
-      };
+  const requestOptions = {
+    method: "PATCH",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+  };
 
-      fetch(`${LOGIN_API}/admin/teammember/${id}`, requestOptions)
-        .then((response) => {
-                 if (!response.ok) {
-                   toast.error("Failed to update team member");
-                 }
-                 return response.json();
-               })
-        .then((result) => {
-          if (result && result.teamMember && result.teamMember.userid) {
-            const userId = result.teamMember.userid;
-            const updatedUsername = `${firstName} ${middleName ? middleName + " " : ""}${lastName}`.trim();
-    
-            // Call function to update the username
-            updateUserUsername(userId, updatedUsername);
-          }
-        })
+  fetch(`${LOGIN_API}/admin/teammember/${id}`, requestOptions)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to update team member");
+      }
+      return response.json();
+    })
+    .then((result) => {
+      if (result && result.teamMember && result.teamMember.userid) {
+        const userId = result.teamMember.userid;
+        const updatedUsername = `${firstName} ${middleName ? middleName + " " : ""}${lastName}`.trim();
+        return updateUserUsername(userId, updatedUsername);
+      }
+      return Promise.resolve(); // Resolve if no userid is present
+    })
+    .then(() => {
+      toast.success("Team member updated successfully");
+      handleNewDrawerClose();
+    })
+    .catch((error) => {
+      console.error(error);
+      toast.error(error.message || "Failed to update team member");
+    });
+};
 
-        .catch((error) => console.error(error));
-    }
-    const updateUserUsername = (userId, username) => {
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
-    
-      const raw = JSON.stringify({ username });
-    
-      const requestOptions = {
-        method: "PATCH",
-        headers: myHeaders,
-        body: raw,
-        redirect: "follow",
-      };
-    
-      fetch(`${LOGIN_API}/common/user/${userId}`, requestOptions)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Failed to update username");
-          }
-          return response.json();
-        })
-        .then((result) => {
-          console.log("Username updated:", result);
-           toast.success("Team member updated successfully");
-           handleNewDrawerClose();
-          })
-        .catch((error) => {
-          console.error(error);
-          toast.error("Failed to update username");
-        });
+const updateUserUsername = (userId, username) => {
+  return new Promise((resolve, reject) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+  
+    const raw = JSON.stringify({ username });
+  
+    const requestOptions = {
+      method: "PATCH",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
     };
+  
+    fetch(`${LOGIN_API}/common/user/${userId}`, requestOptions)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to update username");
+        }
+        return response.json();
+      })
+      .then((result) => {
+        console.log("Username updated:", result);
+        resolve(); // Resolve the promise
+      })
+      .catch((error) => {
+        console.error(error);
+        reject(error); // Reject the promise
+      });
+  });
+};
   const handleSaveButtonClick = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -691,7 +792,7 @@ const handleCloseLoginDetials=()=>{
     <Box sx={{ padding: 3 }}>
       <Box display={"flex"} alignItems={"center"} mb={1} gap={2}>
         <ArrowBackIcon sx={{ color: "#1976d3", fontSize: 50 }} />
-        <Typography variant="h4">Update Team Member s</Typography>
+        <Typography variant="h4">Update Team Member </Typography>
       </Box>
 
       <Divider />
@@ -990,7 +1091,7 @@ const handleCloseLoginDetials=()=>{
               justifyContent={"space-between"}
             >
               <Typography>
-                <b>Access rights</b>
+                <b>Access rights </b>
               </Typography>
               <IconButton>
                 <BorderColorIcon
@@ -1283,7 +1384,7 @@ const handleCloseLoginDetials=()=>{
                                       height={20}
                                       width={32}
                                       className="react-switch"
-                                       disabled
+                                      //  disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage organizers

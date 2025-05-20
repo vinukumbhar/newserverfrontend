@@ -412,34 +412,43 @@ const CreateInvoice = ({ charLimit = 4000, onClose }) => {
     setTaxTotal(tax);
     setTotalAmount((subtotal + tax).toFixed(2));
   };
+ useEffect(() => {
+    const calculateSummary = () => {
+      let subtotal = 0;
+      let taxableAmount = 0;
+
+      rows.forEach((row) => {
+        const amount = parseFloat(row.amount.replace("$", "")) || 0;
+        subtotal += amount;
+        if (row.tax) {
+          taxableAmount += amount;
+        }
+      });
+
+      const tax = taxableAmount * (taxRate / 100);
+      setSubtotal(subtotal);
+      setTaxTotal(tax);
+      setTotalAmount((subtotal + tax).toFixed(2));
+    };
+
+    calculateSummary();
+  }, [rows, taxRate]);
   // useEffect(() => {
   //   const calculateSubtotal = () => {
   //     let subtotal = 0;
+
   //     rows.forEach((row) => {
-  //       subtotal += parseFloat(row.amount.replace("$", "")) || 0;
+  //       if (row.tax) {
+  //         subtotal += parseFloat(row.amount.replace("$", "")) || 0;
+  //       }
+  //       // subtotal += parseFloat(row.amount.replace("$", "")) || 0;
   //     });
   //     console.log(subtotal);
   //     setSubtotal(subtotal);
   //     calculateTotal(subtotal, taxRate);
   //   };
   //   calculateSubtotal();
-  // }, [rows]);
-  useEffect(() => {
-    const calculateSubtotal = () => {
-      let subtotal = 0;
-
-      rows.forEach((row) => {
-        if (row.tax) {
-          subtotal += parseFloat(row.amount.replace("$", "")) || 0;
-        }
-        // subtotal += parseFloat(row.amount.replace("$", "")) || 0;
-      });
-      console.log(subtotal);
-      setSubtotal(subtotal);
-      calculateTotal(subtotal, taxRate);
-    };
-    calculateSubtotal();
-  }, [rows,taxRate]);
+  // }, [rows,taxRate]);
   const INVOICE_NEW = process.env.REACT_APP_INVOICES_URL;
   const lineItems = rows.map((item) => ({
     productorService: item.productName, // Assuming productName maps to productorService

@@ -415,22 +415,43 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
   //   };
   //   calculateSubtotal();
   // }, [rows]);
-  useEffect(() => {
-    const calculateSubtotal = () => {
-      let subtotal = 0;
+   useEffect(() => {
+      const calculateSummary = () => {
+        let subtotal = 0;
+        let taxableAmount = 0;
+  
+        rows.forEach((row) => {
+          const amount = parseFloat(row.amount.replace("$", "")) || 0;
+          subtotal += amount;
+          if (row.tax) {
+            taxableAmount += amount;
+          }
+        });
+  
+        const tax = taxableAmount * (taxRate / 100);
+        setSubtotal(subtotal);
+        setTaxTotal(tax);
+        setTotalAmount((subtotal + tax).toFixed(2));
+      };
+  
+      calculateSummary();
+    }, [rows, taxRate]);
+  // useEffect(() => {
+  //   const calculateSubtotal = () => {
+  //     let subtotal = 0;
 
-      rows.forEach((row) => {
-        if (row.tax) {
-          subtotal += parseFloat(row.amount.replace("$", "")) || 0;
-        }
-        // subtotal += parseFloat(row.amount.replace("$", "")) || 0;
-      });
-      console.log(subtotal);
-      setSubtotal(subtotal);
-      calculateTotal(subtotal, taxRate);
-    };
-    calculateSubtotal();
-  }, [rows,taxRate]);
+  //     rows.forEach((row) => {
+  //       if (row.tax) {
+  //         subtotal += parseFloat(row.amount.replace("$", "")) || 0;
+  //       }
+  //       // subtotal += parseFloat(row.amount.replace("$", "")) || 0;
+  //     });
+  //     console.log(subtotal);
+  //     setSubtotal(subtotal);
+  //     calculateTotal(subtotal, taxRate);
+  //   };
+  //   calculateSubtotal();
+  // }, [rows,taxRate]);
 
   const INVOICE_NEW = process.env.REACT_APP_INVOICES_URL;
   const lineItems = rows.map((item) => ({
@@ -1624,7 +1645,7 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
               </Button>
             </Box>
             <Typography>
-              Total:<strong> {totalAmount} </strong>
+              Total:<strong> ${totalAmount} </strong>
             </Typography>
           </Box>
         </Box>

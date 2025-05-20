@@ -440,7 +440,7 @@ useEffect(() => {
                       color: "#3f51b5",
                     }}
                   onClick={() => handleEdit(row._id)}>
-                    {row.organizertemplateid.organizerName}
+                    {row.organizerName}
                   </Typography>
                 </TableCell>
                 <TableCell style={{

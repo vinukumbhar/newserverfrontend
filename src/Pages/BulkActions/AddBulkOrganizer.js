@@ -376,6 +376,7 @@ const handleOrganizerNameChange = (e) => {
       const raw = JSON.stringify({
         accountid: accountId, // Send one account ID at a time
         organizertemplateid: selectedOrganizerTemplate,
+        organizerName: organizerName,
         reminders: reminder,
         noofreminders: noOfReminder,
         daysuntilnextreminder: daysuntilNextReminder,

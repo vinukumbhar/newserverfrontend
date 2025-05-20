@@ -894,6 +894,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
       const raw = JSON.stringify({
         accountid: automationAccountId,
         organizertemplateid: automationTemp,
+           organizerName: organizerData.organizerName,
         reminders: organizerData.reminders,
         noofreminders: organizerData.noOfReminder,
         daysuntilnextreminder: organizerData.daysuntilNextReminder,
@@ -2428,7 +2429,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
         pipeline: selectedPipeline.value,
         stageid: selectedstage.value,
         jobassignees: combinedValues,
-        priority: priority.value,
+         priority: priority,
         description: description,
         startdate: startDate,
         enddate: dueDate,
@@ -2453,6 +2454,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
         .then((result) => {
           // Handle success
           toast.success("Job  updated successfully");
+           handleSaveTags();
           // setIsDrawerOpen(false);
           fetchJobData();
         })

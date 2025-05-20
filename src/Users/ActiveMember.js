@@ -1976,7 +1976,7 @@ const ActiveMember = () => {
                                                           height={20}
                                                           width={32}
                                                           className="react-switch"
-                                                           disabled
+                                                          //  disabled
                                                         />
                                                         <p style={{ color: "black" }}>
                                                           Manage organizers

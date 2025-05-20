@@ -1,12 +1,29 @@
 import React, { useState, useEffect } from "react";
-import {OutlinedInput,  FormControl, Chip, Box, Button, InputLabel, MenuItem, Select, TextField, Typography, Autocomplete } from "@mui/material";
+import {
+  OutlinedInput,
+  FormControl,
+  Chip,
+  Box,
+  Button,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+  Autocomplete,
+} from "@mui/material";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import axios from "axios";
 import { AiOutlinePlusCircle, AiOutlineDelete } from "react-icons/ai";
 import { toast } from "react-toastify";
-import TagsMultiSelectDropDown from "../Templates/TagsMultiSelectDropDown.js"
-const ContactForm = ({ onContactUpdated, selectedContact, handleClose, isSmallScreen }) => {
+import TagsMultiSelectDropDown from "../Templates/TagsMultiSelectDropDown.js";
+const ContactForm = ({
+  onContactUpdated,
+  selectedContact,
+  handleClose,
+  isSmallScreen,
+}) => {
   const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
   const CONTACT_API = process.env.REACT_APP_CONTACTS_URL;
 
@@ -21,7 +38,10 @@ const ContactForm = ({ onContactUpdated, selectedContact, handleClose, isSmallSc
   const [email, setEmail] = useState("");
   const [phoneNumbers, setPhoneNumbers] = useState([]);
   // const [selectedCountry, setSelectedCountry] = useState('');
-  const [selectedCountry, setSelectedCountry] = useState({ name: "", code: "" });
+  const [selectedCountry, setSelectedCountry] = useState({
+    name: "",
+    code: "",
+  });
 
   const [streetAddress, setStreetAddress] = useState("");
   const [city, setCity] = useState("");
@@ -54,86 +74,41 @@ const ContactForm = ({ onContactUpdated, selectedContact, handleClose, isSmallSc
       setPostalCode(selectedContact.postalCode || "");
       setContactId(selectedContact._id || null); // Set contact ID
 
-      // const flatPhoneNumbers = selectedContact.phoneNumbers?.[0] || [];
-      // setPhoneNumbers(flatPhoneNumbers.map(phone => ({ id: Date.now(), phone, isPrimary: false })));
-
-      // const flatPhoneNumbers = (selectedContact.phoneNumbers && selectedContact.phoneNumbers[0]) || [];
-      // setPhoneNumbers(
-      //   flatPhoneNumbers.map((phone) => ({
-      //     id: Date.now(), // Using Date.now() is not ideal for IDs; consider a better unique ID generator
-      //     phone: phone.phone,
-      //     isPrimary: false, // Set according to your data logic
-      //   }))
-      // );
-      // Flatten phoneNumbers array
       // const flatPhoneNumbers = selectedContact.phoneNumbers?.flat() || [];
+    
       // setPhoneNumbers(
-      //   flatPhoneNumbers.map((phone) => ({
-      //     id: Date.now() + Math.random(), // Improved unique ID generation
-      //     phone,
-      //     isPrimary: false, // Set based on your logic
+      //   flatPhoneNumbers.map((phoneStr) => ({
+      //     id: Date.now() + Math.random(),
+      //     phone: phoneStr.startsWith("+") ? phoneStr : `+1${phoneStr}`, // add country code if missing
+      //     isPrimary: false,
       //   }))
       // );
+const flatPhoneNumbers = selectedContact.phoneNumbers?.flat() || [];
 
-      // const flatPhoneNumbers = selectedContact.phoneNumbers?.flat() || [];
-      // setPhoneNumbers(
-      //   flatPhoneNumbers.map((phone) => ({
-      //     id: Date.now() + Math.random(), // Improved unique ID generation
-      //     phone: String(phone), // Ensure phone is a string
-      //     isPrimary: false, // Set based on your logic
-      //   }))
-      // );
-
-      // const flatPhoneNumbers = selectedContact.phoneNumbers?.flat(2) || []; // Flatten to ensure no nested arrays
-      // setPhoneNumbers(
-      //   flatPhoneNumbers.map((phoneObj) => ({
-      //     id: Date.now() + Math.random(), // Improved unique ID generation
-      //     phone: String(phoneObj.phone), // Access the phone property correctly
-      //     isPrimary: false, // Set based on your logic
-      //   }))
-      // );
-
-      const flatPhoneNumbers = selectedContact.phoneNumbers?.flat() || [];
-// setPhoneNumbers(
-//   flatPhoneNumbers.map((phoneObj, index) => ({
-//     id: Date.now() + Math.random(), // Improved unique ID generation
-//     phone: String(phoneObj.phone), // Access the phone property correctly
-//     isPrimary: false, // Set accordingly
-//   }))
-// );
 setPhoneNumbers(
-  flatPhoneNumbers.map((phoneStr) => ({
+  flatPhoneNumbers.map((phoneObj) => ({
     id: Date.now() + Math.random(),
-    phone: phoneStr.startsWith("+") ? phoneStr : `+1${phoneStr}`, // add country code if missing
+    phone: phoneObj.phone.toString().startsWith("+") ? phoneObj.phone.toString() : `+${phoneObj.phone}`,
     isPrimary: false,
+    country: phoneObj.country?.toLowerCase() || "us",
   }))
 );
 
+      console.log("phone numbers", flatPhoneNumbers);
 
-      console.log("phone numbers",flatPhoneNumbers)
 
-      // const flatTags = selectedContact.tags?.[0] || [];
-    
-      // // Store only tag IDs in `tagsNew` as `<Select>` requires values, not objects
-      // setTagsNew(flatTags.map((tag) => tag._id));
-      
-      // setCombinedTagsValues(flatTags.map((tag) => tag._id));
-
-      console.log("Tags:", selectedContact.tags);
       const tags = selectedContact.tags; // Since data is nested inside an array
       console.log("Tags with IDs:", tags);
-      const tagList = tags.map(tag => ({
+      const tagList = tags.map((tag) => ({
         value: tag._id,
         label: tag.tagName,
-        color: tag.tagColour, 
+        color: tag.tagColour,
       }));
-      setTagsNew(tagList)
-
+      setTagsNew(tagList);
 
       const selectedTagsValues = tagList.map((option) => option.value);
       setCombinedTagsValues(selectedTagsValues);
       // console.log("Tags with IDs:", tagList);
-      
     }
   }, [selectedContact]);
 
@@ -150,14 +125,13 @@ setPhoneNumbers(
       })
       .catch((error) => console.error("Error fetching country data:", error));
   }, []);
-  // const handleCountryChange = (event) => {
-  //     setSelectedCountry(event.target.value);
-  //     // setCountry(event.target.value);
-  // };
+
 
   const handleCountryChange = (event) => {
     const selectedCode = event.target.value;
-    const selectedCountryObj = countries.find((country) => country.code === selectedCode);
+    const selectedCountryObj = countries.find(
+      (country) => country.code === selectedCode
+    );
 
     // Set the selected country as an object with name and code
     setSelectedCountry({
@@ -166,87 +140,69 @@ setPhoneNumbers(
     });
   };
 
-  const handlePhoneNumberChange = (id, phone) => {
-    setPhoneNumbers((prevPhoneNumbers) => prevPhoneNumbers.map((item) => (item.id === id ? { ...item, phone } : item)));
-  };
+  // const handlePhoneNumberChange = (id, phone) => {
+  //   console.log("phone",phone)
+  //   setPhoneNumbers((prevPhoneNumbers) =>
+  //     prevPhoneNumbers.map((item) =>
+  //       item.id === id ? { ...item, phone } : item
+  //     )
+  //   );
+  // };
 
-  const handleAddPhoneNumber = () => {
-    setPhoneNumbers((prevPhoneNumbers) => [...prevPhoneNumbers, { id: Date.now(), phone: "", isPrimary: false }]);
-  };
+   const handlePhoneNumberChange = (phoneValue, countryData, id) => {
+  setPhoneNumbers(prevPhoneNumbers =>
+    prevPhoneNumbers.map(item =>
+      item.id === id
+        ? {
+            ...item,
+            phone: phoneValue,
+            countryCode: countryData.dialCode, // Store country dial code
+            country: countryData.countryCode.toLowerCase() // Store country code (e.g., 'us')
+          }
+        : item
+    )
+  );
+};
+  // const handleAddPhoneNumber = () => {
+  //   setPhoneNumbers((prevPhoneNumbers) => [
+  //     ...prevPhoneNumbers,
+  //     { id: Date.now(), phone: "", isPrimary: false },
+  //   ]);
+  // };
+    const handleAddPhoneNumber = () => {
+  setPhoneNumbers(prevPhoneNumbers => [
+    ...prevPhoneNumbers,
+    { 
+      id: Date.now(), 
+      phone: "", 
+      country: "us", // Default country
+      isPrimary: false 
+    },
+  ]);
+};
 
   const handleDeletePhoneNumber = (id) => {
-    setPhoneNumbers((prevPhoneNumbers) => prevPhoneNumbers.filter((item) => item.id !== id));
+    setPhoneNumbers((prevPhoneNumbers) =>
+      prevPhoneNumbers.filter((item) => item.id !== id)
+    );
   };
-
-  // const handleTagChange = (event, newValue) => {
-  //   // setTagsNew(newValue);
-  //   // const selectedTagsValues = newValue.map((option) => option.value);
-  //   // setCombinedValues(selectedTagsValues);
-  //   setTagsNew(newValue);
-  //   // Map selected options to their values and send as an array
-  //   const selectedTagsValues = newValue.map((option) => option.value);
-  //   // console.log(selectedTagsValues);
-  //   setCombinedTagsValues(selectedTagsValues);
-  // };
 
   const handleTagChange = (newSelectedTags) => {
     setTagsNew(newSelectedTags);
-    console.log(newSelectedTags)
+    console.log(newSelectedTags);
     const selectedValues = newSelectedTags.map((option) => option.value);
     setCombinedTagsValues(selectedValues);
-    console.log(selectedValues)
+    console.log(selectedValues);
   };
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const handleSave = async () => {
 
-  const fetchData = async () => {
-    try {
-      const url = `${TAGS_API}/tags/`;
-      const response = await fetch(url);
-      const data = await response.json();
-      setTags(data.tags);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const calculateWidth = (tagName) => {
-    const baseWidth = 10;
-    const charWidth = 8;
-    const padding = 10;
-    return baseWidth + charWidth * tagName.length + padding;
-  };
-
-  const tagsOptions = tags.map((tag) => ({
-    value: tag._id,
-    label: tag.tagName,
-    colour: tag.tagColour,
-    customStyle: {
-      backgroundColor: tag.tagColour,
-      color: "#fff",
-      borderRadius: "8px",
-      alignItems: "center",
-      textAlign: "center",
-      marginBottom: "5px",
-      padding: "2px,8px",
-      fontSize: "10px",
-      width: `${calculateWidth(tag.tagName)}px`,
-      margin: "7px",
-      cursor: "pointer",
-    },
-    customTagStyle: {
-      backgroundColor: tag.tagColour,
-      color: "#fff",
-      alignItems: "center",
-      textAlign: "center",
-      padding: "2px,8px",
-      fontSize: "15px",
-      cursor: "pointer",
-    },
+     const formattedPhoneNumbers = phoneNumbers.map(phone => ({
+    phone: phone.phone,
+    country: phone.country,
+   
   }));
 
-  const handleSave = async () => {
+console.log("formattedPhoneNumbers",formattedPhoneNumbers)
     const updatedContact = {
       firstName,
       middleName,
@@ -257,7 +213,7 @@ setPhoneNumbers(
       ssn,
       email,
       // phoneNumbers,
-      phoneNumbers: phoneNumbers.map((phone) => phone.phone),
+      phoneNumbers: formattedPhoneNumbers,
       country: selectedCountry,
       streetAddress,
       city,
@@ -293,71 +249,139 @@ setPhoneNumbers(
   };
 
   return (
-    <form style={{ paddingRight: "3%", paddingLeft: "3%", height: "90vh", overflowY: "auto" }} className="contact-form">
+    <form
+      style={{
+        paddingRight: "3%",
+        paddingLeft: "3%",
+        height: "90vh",
+        overflowY: "auto",
+      }}
+      className="contact-form"
+    >
       {/* <Typography variant="h6" gutterBottom sx={{ ml: 1, fontWeight: "bold", mt: 2 }}>
         Contact info
       </Typography> */}
-      <Box sx={{ display: "flex", flexDirection: isSmallScreen ? "column" : "row", gap: isSmallScreen ? 2 : 5, padding: "1px 5px 0 2px",mt:1 }}>
-        <Box >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: isSmallScreen ? "column" : "row",
+          gap: isSmallScreen ? 2 : 5,
+          padding: "1px 5px 0 2px",
+          mt: 1,
+        }}
+      >
+        <Box>
           {/* <InputLabel sx={{ color: "black" }}>First name</InputLabel> */}
-          <InputLabel sx={{ color: "black",}}>First name</InputLabel>
-          <TextField margin="normal" fullWidth name="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} placeholder="First Name" size="small" />
+          <InputLabel sx={{ color: "black" }}>First name</InputLabel>
+          <TextField
+            margin="normal"
+            fullWidth
+            name="firstName"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            placeholder="First Name"
+            size="small"
+          />
         </Box>
         <Box>
           <InputLabel sx={{ color: "black" }}>Middle Name</InputLabel>
-          <TextField margin="normal" fullWidth name="middleName" value={middleName} onChange={(e) => setMiddleName(e.target.value)} placeholder="Middle Name" size="small" />
+          <TextField
+            margin="normal"
+            fullWidth
+            name="middleName"
+            value={middleName}
+            onChange={(e) => setMiddleName(e.target.value)}
+            placeholder="Middle Name"
+            size="small"
+          />
         </Box>
         <Box>
           <InputLabel sx={{ color: "black" }}>Last Name</InputLabel>
-          <TextField fullWidth name="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} margin="normal" placeholder="Last name" size="small" />
+          <TextField
+            fullWidth
+            name="lastName"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            margin="normal"
+            placeholder="Last name"
+            size="small"
+          />
         </Box>
       </Box>
       <Box mt={1}>
         <InputLabel sx={{ color: "black" }}>Contact Name</InputLabel>
-        <TextField name="contactName" value={contactName} onChange={(e) => setContactName(e.target.value)} fullWidth placeholder="Contact Name" margin="normal" size="small" />
+        <TextField
+          name="contactName"
+          value={contactName}
+          onChange={(e) => setContactName(e.target.value)}
+          fullWidth
+          placeholder="Contact Name"
+          margin="normal"
+          size="small"
+        />
       </Box>
       <Box mt={1}>
         <InputLabel sx={{ color: "black" }}>Company Name</InputLabel>
-        <TextField fullWidth name="companyName" value={companyName} onChange={(e) => setCompanyName(e.target.value)} margin="normal" placeholder="Company Name" size="small" />
+        <TextField
+          fullWidth
+          name="companyName"
+          value={companyName}
+          onChange={(e) => setCompanyName(e.target.value)}
+          margin="normal"
+          placeholder="Company Name"
+          size="small"
+        />
       </Box>
       <Box mt={1}>
         <InputLabel sx={{ color: "black" }}>Note</InputLabel>
-        <TextField fullWidth name="note" value={note} onChange={(e) => setNote(e.target.value)} margin="normal" placeholder="Note" size="small" />
+        <TextField
+          fullWidth
+          name="note"
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          margin="normal"
+          placeholder="Note"
+          size="small"
+        />
       </Box>
       <Box mt={1}>
         <InputLabel sx={{ color: "black" }}>SSN</InputLabel>
-        <TextField fullWidth name="ssn" value={ssn} onChange={(e) => setSsn(e.target.value)} margin="normal" placeholder="SSN" size="small" />
+        <TextField
+          fullWidth
+          name="ssn"
+          value={ssn}
+          onChange={(e) => setSsn(e.target.value)}
+          margin="normal"
+          placeholder="SSN"
+          size="small"
+        />
       </Box>
       <Box mt={1}>
         <InputLabel sx={{ color: "black" }}>Email</InputLabel>
-        <TextField fullWidth name="email" value={email} onChange={(e) => setEmail(e.target.value)} margin="normal" placeholder="Email" size="small" />
+        <TextField
+          fullWidth
+          name="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          margin="normal"
+          placeholder="Email"
+          size="small"
+        />
       </Box>
       <Box mt={1}>
-        {/* <InputLabel sx={{ color: "black" }}>Tags</InputLabel>
-        <Autocomplete
-          multiple
-          size="small"
-          id="tags-outlined"
-          options={options}
-          getOptionLabel={(option) => option.label}
+
+        <InputLabel sx={{ color: "black", mb: 1 }}>Tags</InputLabel>
+        <TagsMultiSelectDropDown
           value={tagsNew}
           onChange={handleTagChange}
-          renderTags={(selected, getTagProps) => selected.map((option, index) => <Chip key={option.value} label={option.label} style={option.customTagStyle} {...getTagProps({ index })} />)}
-          renderInput={(params) => <TextField {...params} variant="outlined" placeholder="Tags" sx={{ width: "100%", marginTop: "8px" }} />}
-          renderOption={(props, option) => (
-            <Box component="li" {...props} style={option.customStyle}>
-              {option.label}
-            </Box>
-          )}
-        /> */}
-         <InputLabel sx={{ color: "black", mb: 1 }}>Tags</InputLabel>
-         <TagsMultiSelectDropDown 
-  value={tagsNew}
-  onChange={handleTagChange}
-  placeholder="Tags"
-/>
+          placeholder="Tags"
+        />
       </Box>
-      <Typography variant="h6" gutterBottom sx={{ ml: 1, fontWeight: "bold", mt: 3 }}>
+      <Typography
+        variant="h6"
+        gutterBottom
+        sx={{ ml: 1, fontWeight: "bold", mt: 3 }}
+      >
         Phone Numbers
       </Typography>
       {phoneNumbers.map((phone) => (
@@ -372,25 +396,37 @@ setPhoneNumbers(
             mb: 2,
           }}
         >
-          {phone.isPrimary && <Chip label="Primary phone" color="primary" size="small" sx={{ position: "absolute", mt: -3 }} />}
-          <PhoneInput
-            country={"us"}
-            value={phone.phone}
-            onChange={(phoneValue) => handlePhoneNumberChange(phone.id, phoneValue)}
-            inputStyle={{
-              width: "100%",
-            }}
-            buttonStyle={{
-              borderTopLeftRadius: "8px",
-              borderBottomLeftRadius: "8px",
-            }}
-            containerStyle={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-            }}
+          {phone.isPrimary && (
+            <Chip
+              label="Primary phone"
+              color="primary"
+              size="small"
+              sx={{ position: "absolute", mt: -3 }}
+            />
+          )}
+        
+             <PhoneInput
+  country={phone.country || "us"}
+  value={phone.phone}
+  // onChange={(phoneValue) => handlePhoneNumberChange(phone.id, phoneValue)}
+     onChange={(value, country) => handlePhoneNumberChange(value, country, phone.id)}
+  inputStyle={{
+    width: "100%",
+  }}
+  buttonStyle={{
+    borderTopLeftRadius: "8px",
+    borderBottomLeftRadius: "8px",
+  }}
+  containerStyle={{
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+  }}
+/>
+          <AiOutlineDelete
+            onClick={() => handleDeletePhoneNumber(phone.id)}
+            style={{ cursor: "pointer", color: "red" }}
           />
-          <AiOutlineDelete onClick={() => handleDeletePhoneNumber(phone.id)} style={{ cursor: "pointer", color: "red" }} />
         </Box>
       ))}
       <Box
@@ -408,7 +444,11 @@ setPhoneNumbers(
         <AiOutlinePlusCircle style={{ marginTop: "20px" }} />
         <p>Add phone number</p>
       </Box>
-      <Typography variant="h6" gutterBottom sx={{ ml: 1, fontWeight: "bold", mt: 3 }}>
+      <Typography
+        variant="h6"
+        gutterBottom
+        sx={{ ml: 1, fontWeight: "bold", mt: 3 }}
+      >
         Address
       </Typography>
       <Box mt={1}>
@@ -431,20 +471,60 @@ setPhoneNumbers(
       </Box>
       <Box mt={2}>
         <InputLabel sx={{ color: "black" }}>Street Address</InputLabel>
-        <TextField fullWidth name="streetAddress" value={streetAddress} onChange={(e) => setStreetAddress(e.target.value)} margin="normal" placeholder="Street Address" size="small" />
+        <TextField
+          fullWidth
+          name="streetAddress"
+          value={streetAddress}
+          onChange={(e) => setStreetAddress(e.target.value)}
+          margin="normal"
+          placeholder="Street Address"
+          size="small"
+        />
       </Box>
-      <Box sx={{ display: "flex", flexDirection: isSmallScreen ? "column" : "row", gap: isSmallScreen ? 2 : 5, padding: "1px 5px 0 1px" ,mt:1}}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: isSmallScreen ? "column" : "row",
+          gap: isSmallScreen ? 2 : 5,
+          padding: "1px 5px 0 1px",
+          mt: 1,
+        }}
+      >
         <Box>
           <InputLabel sx={{ color: "black" }}>City</InputLabel>
-          <TextField fullWidth name="city" value={city} onChange={(e) => setCity(e.target.value)} margin="normal" placeholder="City" size="small" />
+          <TextField
+            fullWidth
+            name="city"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            margin="normal"
+            placeholder="City"
+            size="small"
+          />
         </Box>
         <Box>
           <InputLabel sx={{ color: "black" }}>State</InputLabel>
-          <TextField fullWidth name="state" value={state} onChange={(e) => setState(e.target.value)} margin="normal" placeholder="State" size="small" />
+          <TextField
+            fullWidth
+            name="state"
+            value={state}
+            onChange={(e) => setState(e.target.value)}
+            margin="normal"
+            placeholder="State"
+            size="small"
+          />
         </Box>
         <Box>
           <InputLabel sx={{ color: "black" }}>Postal Code</InputLabel>
-          <TextField fullWidth name="postalCode" value={postalCode} onChange={(e) => setPostalCode(e.target.value)} margin="normal" placeholder="Postal Code" size="small" />
+          <TextField
+            fullWidth
+            name="postalCode"
+            value={postalCode}
+            onChange={(e) => setPostalCode(e.target.value)}
+            margin="normal"
+            placeholder="Postal Code"
+            size="small"
+          />
         </Box>
       </Box>
       <Box sx={{ mt: 2, mb: 2 }}>
@@ -452,26 +532,33 @@ setPhoneNumbers(
           variant="contained"
           onClick={handleSave} // Attach the save handler
           sx={{
-            backgroundColor: 'var(--color-save-btn)',  // Normal background
-           
-            '&:hover': {
-              backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+            backgroundColor: "var(--color-save-btn)", // Normal background
+
+            "&:hover": {
+              backgroundColor: "var(--color-save-hover-btn)", // Hover background color
             },
-           width:'80px',borderRadius:'15px'
+            width: "80px",
+            borderRadius: "15px",
           }}
         >
           Save
         </Button>
-        <Button variant="outlined" onClick={handleClose}  sx={{
-                    borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                   color:'var(--color-save-btn)',
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      color:'#fff',
-                      border:"none"
-                    },
-                    width:'80px',borderRadius:'15px',ml:2
-                  }}>
+        <Button
+          variant="outlined"
+          onClick={handleClose}
+          sx={{
+            borderColor: "var(--color-border-cancel-btn)", // Normal background
+            color: "var(--color-save-btn)",
+            "&:hover": {
+              backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+              color: "#fff",
+              border: "none",
+            },
+            width: "80px",
+            borderRadius: "15px",
+            ml: 2,
+          }}
+        >
           Cancel
         </Button>
       </Box>

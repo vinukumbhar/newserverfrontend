@@ -440,6 +440,7 @@ const handleOrganizerNameChange = (e) => {
     const raw = JSON.stringify({
       accountid: data,
       organizertemplateid: selectedOrganizerTemplate,
+      organizerName: organizerName,
       reminders: reminder,
       noofreminders: noOfReminder,
       daysuntilnextreminder: daysuntilNextReminder,
