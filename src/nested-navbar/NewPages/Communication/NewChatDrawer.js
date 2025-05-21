@@ -27,7 +27,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditorShortcodes from "../../../Templates/Texteditor/EditorShortcodes";
 import { LoginContext } from "../../../Sidebar/Context/Context";
 import { toast } from "react-toastify";
-const NewChatDrawer = ({ open, handleClose, accountwiseChatlist }) => {
+const NewChatDrawer = ({ open, handleClose, accountwiseChatlist, data,isActiveTrue }) => {
   const CHATTOCLIENT_API = process.env.REACT_APP_CHAT_API;
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { logindata } = useContext(LoginContext);
@@ -419,7 +419,7 @@ const NewChatDrawer = ({ open, handleClose, accountwiseChatlist }) => {
         toast.success("New Chat created successfully");
         // sendSaveChatMail(result.newChats._id)
         setIsSubmitted(true);
-        accountwiseChatlist();
+       accountwiseChatlist(data, isActiveTrue);
         // accountwiseChatlist(data, isActiveTrue);
         handleClose();
         ClearFileds();

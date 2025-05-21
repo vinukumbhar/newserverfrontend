@@ -298,17 +298,40 @@ const OrganizersTempUpdate = () => {
     ));
   };
 
+  // const handleDuplicateSection = (sectionId) => {
+  //   const sectionToDuplicate = sections.find(section => section.id === sectionId);
+  //   if (sectionToDuplicate) {
+  //     const duplicatedSection = {
+  //       ...sectionToDuplicate,
+  //       text: `${sectionToDuplicate.text} (Copy)`,
+  //       id: Date.now(), // Assign a new ID for the duplicated section
+  //     };
+  //     setSections([...sections, duplicatedSection]);
+  //   }
+  // };
   const handleDuplicateSection = (sectionId) => {
-    const sectionToDuplicate = sections.find(section => section.id === sectionId);
-    if (sectionToDuplicate) {
-      const duplicatedSection = {
-        ...sectionToDuplicate,
-        text: `${sectionToDuplicate.text} (Copy)`,
-        id: Date.now(), // Assign a new ID for the duplicated section
-      };
-      setSections([...sections, duplicatedSection]);
-    }
-  };
+  const sectionToDuplicate = sections.find(section => section.id === sectionId);
+  
+  if (sectionToDuplicate) {
+    const newSectionId = Date.now(); // Or use a UUID generator for better uniqueness
+
+    const duplicatedFormElements = sectionToDuplicate.formElements.map(element => ({
+      ...element,
+      id: Date.now() + Math.floor(Math.random() * 1000), // Ensure unique ID
+      sectionid: newSectionId,
+    }));
+
+    const duplicatedSection = {
+      ...sectionToDuplicate,
+      id: newSectionId,
+      text: `${sectionToDuplicate.text} (Copy)`,
+      formElements: duplicatedFormElements,
+    };
+
+    setSections([...sections, duplicatedSection]);
+  }
+};
+
   const saveOrganizerTemp = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -728,43 +751,7 @@ const shouldShowSection = (section) => {
 };
 
 
-  // const getVisibleSections = () => {
-  //     return sections.filter(shouldShowSection);
-  // };
   
-  
-  // const shouldShowSection = (section) => {
-  //   const settings = section.sectionSettings;
-  
-  //   // If the section isn't conditional, show it by default
-  //   if (!settings?.conditional) return true;
-  
-  //   const conditions = settings?.conditions || [];
-  
-  //   // Check if every condition is satisfied
-  //   return conditions.every((condition) => {
-  //       const { question, answer } = condition;
-  
-  //       if (question && answer) {
-  //           const radioAnswer = radioValues[question];
-  //           const checkboxAnswer = checkboxValues[question];
-  //           const dropdownAnswer = selectedDropdownValue;
-  
-  //           // For radio buttons
-  //           if (radioAnswer === answer) return true;
-  
-  //           // For checkboxes: check if the condition answer is in the selected checkbox values
-  //           if (checkboxAnswer && checkboxAnswer[answer]) return true;
-  
-  //           // For dropdowns: check if the condition answer matches the selected dropdown value
-  //           if (dropdownAnswer === answer) return true;
-  //       }
-  
-  //       // If a condition is not satisfied, return false
-  //       return false;
-  //   });
-  // };
-
   
   const getVisibleSections = () => sections.filter(shouldShowSection);
 

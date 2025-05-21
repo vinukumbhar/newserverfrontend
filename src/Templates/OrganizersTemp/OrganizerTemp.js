@@ -227,17 +227,40 @@ const OrganizersTemp = () => {
         : section
     ));
   };
+  // const handleDuplicateSection = (sectionId) => {
+  //   const sectionToDuplicate = sections.find(section => section.id === sectionId);
+  //   if (sectionToDuplicate) {
+  //     const duplicatedSection = {
+  //       ...sectionToDuplicate,
+  //       text: `${sectionToDuplicate.text} (Copy)`,
+  //       id: Date.now(), // Assign a new ID for the duplicated section
+  //     };
+  //     setSections([...sections, duplicatedSection]);
+  //   }
+  // };
   const handleDuplicateSection = (sectionId) => {
-    const sectionToDuplicate = sections.find(section => section.id === sectionId);
-    if (sectionToDuplicate) {
-      const duplicatedSection = {
-        ...sectionToDuplicate,
-        text: `${sectionToDuplicate.text} (Copy)`,
-        id: Date.now(), // Assign a new ID for the duplicated section
-      };
-      setSections([...sections, duplicatedSection]);
-    }
-  };
+  const sectionToDuplicate = sections.find(section => section.id === sectionId);
+  
+  if (sectionToDuplicate) {
+    const newSectionId = Date.now(); // Or use a UUID generator for better uniqueness
+
+    const duplicatedFormElements = sectionToDuplicate.formElements.map(element => ({
+      ...element,
+      id: Date.now() + Math.floor(Math.random() * 1000), // Ensure unique ID
+      sectionid: newSectionId,
+    }));
+
+    const duplicatedSection = {
+      ...sectionToDuplicate,
+      id: newSectionId,
+      text: `${sectionToDuplicate.text} (Copy)`,
+      formElements: duplicatedFormElements,
+    };
+
+    setSections([...sections, duplicatedSection]);
+  }
+};
+
   const [showOrganizerTemplateForm, setShowOrganizerTemplateForm] = useState(false);
 
   const handleCreateInvoiceClick = () => {

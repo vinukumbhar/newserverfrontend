@@ -394,7 +394,6 @@
 
 // export default Commuication;
 
-
 import {
   Box,
   Button,
@@ -511,7 +510,9 @@ const Commuication = () => {
   const isChatSelected = (chatId) => selectedChatIds.includes(chatId);
 
   const handleBulkDelete = async () => {
-    const isConfirmed = window.confirm("Are you sure you want to delete the selected chats?");
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete the selected chats?"
+    );
     if (isConfirmed) {
       try {
         await Promise.all(
@@ -564,70 +565,7 @@ const Commuication = () => {
         <Box display="flex" alignItems="center" gap={3}>
           <Typography variant="h5">Chats & tasks</Typography>
 
-
-<ToggleButtonGroup
-  value={isActiveTrue}
-  exclusive
-  onChange={(e, newValue) => {
-    if (newValue !== null) {
-      setSelectedChat(null);
-      setIsActiveTrue(newValue);
-    }
-  }}
-  size="small"
-  sx={{
-    display: "flex",
-    alignItems: "center",
-    backgroundColor: "#EBF0F5",
-    borderRadius: "12px",
-    padding: "6px",
-    width: "max-content",
-  }}
->
-  <ToggleButton
-    value={true}
-    sx={{
-      padding: "8px 16px",
-      borderRadius: "10px",
-      fontSize: "15px",
-      fontWeight: isActiveTrue === true ? "bold" : "normal",
-      color: isActiveTrue === true ? "var(--color-save-btn)" : "#333",
-      backgroundColor: isActiveTrue === true ? "#fff" : "transparent",
-      textTransform: "none",
-      transition: "all 0.3s ease",
-      "&.Mui-selected": {
-        backgroundColor: "#fff !important",
-        fontWeight: "bold",
-        color: "var(--color-save-btn)",
-      },
-    }}
-  >
-    Active
-  </ToggleButton>
-
-  <ToggleButton
-    value={false}
-    sx={{
-      padding: "8px 16px",
-      borderRadius: "10px",
-      fontSize: "15px",
-      fontWeight: isActiveTrue === false ? "bold" : "normal",
-      color: isActiveTrue === false ? "var(--color-save-btn)" : "#333",
-      backgroundColor: isActiveTrue === false ? "#fff" : "transparent",
-      textTransform: "none",
-      transition: "all 0.3s ease",
-      "&.Mui-selected": {
-        backgroundColor: "#fff !important",
-        fontWeight: "bold",
-        color: "var(--color-save-btn)",
-      },
-    }}
-  >
-    Archived
-  </ToggleButton>
-</ToggleButtonGroup>
-
-          {/* <ToggleButtonGroup
+          <ToggleButtonGroup
             value={isActiveTrue}
             exclusive
             onChange={(e, newValue) => {
@@ -637,10 +575,61 @@ const Commuication = () => {
               }
             }}
             size="small"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              backgroundColor: "#EBF0F5",
+              borderRadius: "12px",
+              padding: "6px",
+              width: "max-content",
+            }}
           >
-            <ToggleButton value={true}>Active</ToggleButton>
-            <ToggleButton value={false}>Archived</ToggleButton>
-          </ToggleButtonGroup> */}
+            <ToggleButton
+              value={true}
+              sx={{
+                padding: "8px 16px",
+                borderRadius: "10px",
+                fontSize: "15px",
+                fontWeight: isActiveTrue === true ? "bold" : "normal",
+                color: isActiveTrue === true ? "var(--color-save-btn)" : "#333",
+                backgroundColor: isActiveTrue === true ? "#fff" : "transparent",
+                textTransform: "none",
+                transition: "all 0.3s ease",
+                "&.Mui-selected": {
+                  backgroundColor: "#fff !important",
+                  fontWeight: "bold",
+                  color: "var(--color-save-btn)",
+                },
+              }}
+            >
+              Active
+            </ToggleButton>
+
+            <ToggleButton
+              value={false}
+              sx={{
+                padding: "8px 16px",
+                borderRadius: "10px",
+                fontSize: "15px",
+                fontWeight: isActiveTrue === false ? "bold" : "normal",
+                color:
+                  isActiveTrue === false ? "var(--color-save-btn)" : "#333",
+                backgroundColor:
+                  isActiveTrue === false ? "#fff" : "transparent",
+                textTransform: "none",
+                transition: "all 0.3s ease",
+                "&.Mui-selected": {
+                  backgroundColor: "#fff !important",
+                  fontWeight: "bold",
+                  color: "var(--color-save-btn)",
+                },
+              }}
+            >
+              Archived
+            </ToggleButton>
+          </ToggleButtonGroup>
+
+
 
           {selectedChatIds.length > 0 && (
             <Box sx={{ display: "flex", gap: 2 }}>
@@ -648,7 +637,7 @@ const Commuication = () => {
                 display="flex"
                 alignItems="center"
                 gap={1}
-                sx={{ cursor: "pointer" , color:'red'}}
+                sx={{ cursor: "pointer", color: "red" }}
                 onClick={handleBulkDelete}
               >
                 <Delete />
@@ -685,11 +674,20 @@ const Commuication = () => {
 
       <Box display="flex" height="90vh" gap={2} p={1}>
         {/* Chat list */}
-        <Box width="30%" height="100%" overflow="auto" pr={1} borderRight="1px solid #ddd">
+        <Box
+          width="30%"
+          height="100%"
+          overflow="auto"
+          pr={1}
+          borderRight="1px solid #ddd"
+        >
           {chatList.length > 0 ? (
             chatList.map((chat, index) => (
               <Box key={index}>
-                <Paper sx={{ p: 1, cursor: "pointer" }} onClick={() => handleShowChat(chat._id)}>
+                <Paper
+                  sx={{ p: 1, cursor: "pointer" }}
+                  onClick={() => handleShowChat(chat._id)}
+                >
                   <Box
                     display="flex"
                     alignItems="center"
@@ -712,7 +710,10 @@ const Commuication = () => {
                       </Typography>
                     </Box>
                     {!chat.chatstatus && (
-                      <FiberManualRecordIcon fontSize="small" sx={{ color: "green" }} />
+                      <FiberManualRecordIcon
+                        fontSize="small"
+                        sx={{ color: "green" }}
+                      />
                     )}
                   </Box>
 
@@ -726,7 +727,8 @@ const Commuication = () => {
                       const latest = messages[messages.length - 1];
                       if (!latest) return "No messages yet";
 
-                      const clean = latest.message?.replace(/<[^>]+>/g, "") || "";
+                      const clean =
+                        latest.message?.replace(/<[^>]+>/g, "") || "";
                       const sender =
                         latest.fromwhome === "Admin"
                           ? "You"
@@ -757,21 +759,14 @@ const Commuication = () => {
         {/* Chat details */}
         <Box width="70%" height="100%" overflow="auto">
           {selectedChat ? (
-            // <ChatDetails
-            //   chat={selectedChat}
-            //   getsChatDetails={getsChatDetails}
-            //   accountwiseChatlist={accountwiseChatlist}
-            //   onChatAction={() => setSelectedChat(null)}
-            // />
             <ChatDetails
-  chat={selectedChat}
-  getsChatDetails={getsChatDetails}
-  accountwiseChatlist={accountwiseChatlist}
-  data={data}
-  isActiveTrue={isActiveTrue}
-  onChatAction={() => setSelectedChat(null)}
-/>
-
+              chat={selectedChat}
+              getsChatDetails={getsChatDetails}
+              accountwiseChatlist={accountwiseChatlist}
+              data={data}
+              isActiveTrue={isActiveTrue}
+              onChatAction={() => setSelectedChat(null)}
+            />
           ) : (
             <Typography variant="body1" mt={2}>
               Select a chat to view details
@@ -784,6 +779,8 @@ const Commuication = () => {
         handleClose={handleClose}
         open={open}
         accountwiseChatlist={accountwiseChatlist}
+         data={data}
+              isActiveTrue={isActiveTrue}
       />
     </Box>
   );

@@ -230,19 +230,40 @@ const Invoice = ({ charLimit = 4000, serviceandinvoiceSettings, serviceandinvoic
     setTotalAmount((subtotal + tax).toFixed(2));
   };
 
-  useEffect(() => {
-    const calculateSubtotal = () => {
-      let subtotal = 0;
+  // useEffect(() => {
+  //   const calculateSubtotal = () => {
+  //     let subtotal = 0;
 
-      rows.forEach((row) => {
-        subtotal += parseFloat(row.amount.replace("$", "")) || 0;
-      });
-      console.log(subtotal);
-      setSubtotal(subtotal);
-      calculateTotal(subtotal, taxRate);
-    };
-    calculateSubtotal();
-  }, [rows]);
+  //     rows.forEach((row) => {
+  //       subtotal += parseFloat(row.amount.replace("$", "")) || 0;
+  //     });
+  //     console.log(subtotal);
+  //     setSubtotal(subtotal);
+  //     calculateTotal(subtotal, taxRate);
+  //   };
+  //   calculateSubtotal();
+  // }, [rows]);
+   useEffect(() => {
+      const calculateSummary = () => {
+        let subtotal = 0;
+        let taxableAmount = 0;
+  
+        rows.forEach((row) => {
+          const amount = parseFloat(row.amount.replace("$", "")) || 0;
+          subtotal += amount;
+          if (row.tax) {
+            taxableAmount += amount;
+          }
+        });
+  
+        const tax = taxableAmount * (taxRate / 100);
+        setSubtotal(subtotal);
+        setTaxTotal(tax);
+        setTotalAmount((subtotal + tax).toFixed(2));
+      };
+  
+      calculateSummary();
+    }, [rows, taxRate]);
 
   // const options = ['Option 1', 'Option 2', 'Option 3', 'Option 4'];
   const invoiceissueoptions = ["on acceptance", "specific date"];

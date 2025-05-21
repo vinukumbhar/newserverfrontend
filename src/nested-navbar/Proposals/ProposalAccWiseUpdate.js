@@ -1590,13 +1590,13 @@ const MyStepperUpdateAcc = () => {
                   </Grid>
                 )}
               </Box>
-
+</FormControl>
               <Box mt={2}>
                 <Box display={"flex"} alignItems={"center"}>
                   <Box>
-                    <FormControlLabel control={<Switch checked={stepsVisibility.Reminders} onChange={handleSwitchChange("Reminders")} />} label="Custom message in email" />
+                    <FormControlLabel control={<Switch checked={stepsVisibility.Reminders} onChange={handleSwitchChange("Reminders")} />} label="Reminders" />
                   </Box>
-                  <Typography variant="h6">Reminders</Typography>
+                  
                 </Box>
                 {stepsVisibility.Reminders && (
                   <Box mb={3}>
@@ -1623,7 +1623,7 @@ const MyStepperUpdateAcc = () => {
                   </Box>
                 )}
               </Box>
-            </FormControl>
+            
           </Box>
         );
       case steps.indexOf("Introduction"):
