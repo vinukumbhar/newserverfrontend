@@ -58,9 +58,7 @@ const CreateOrganizerUpdate = ({ OrganizerData, onClose }) => {
         );
         console.log("fdfd", selectedOrganizer);
         setOrganizerTemp(selectedOrganizer);
-        // setSelectedAccounts(selectedOrganizer.accountid.accountName)
-        // setSelectedOrganizerTemplate(selectedOrganizer.organizertemplateid.organizerName)
-        // setOrganizerName(selectedOrganizer.organizertemplateid.organizerName);
+        
         setSections(selectedOrganizer.sections);
         // Loop through the sections and form elements to log text and textvalue
         selectedOrganizer.sections.forEach((section) => {
@@ -92,7 +90,7 @@ const CreateOrganizerUpdate = ({ OrganizerData, onClose }) => {
   };
   return (
     <Box>
-      {sections.length > 0 ? (
+      {/* {sections.length > 0 ? (
         sections.map((section) => (
           <Box key={section.id} sx={{ marginBottom: 2 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -133,7 +131,7 @@ const CreateOrganizerUpdate = ({ OrganizerData, onClose }) => {
                             : formElement.text}
                         </TableCell>
                         <TableCell>
-                          {/* {formElement.type === "Text Editor" ? (
+                          {formElement.type === "Text Editor" ? (
                             <Box
                               sx={{ cursor: "pointer", color: "blue" }}
                               onClick={() => handleOpenDrawer(formElement.text)} // Pass content to Drawer
@@ -142,17 +140,80 @@ const CreateOrganizerUpdate = ({ OrganizerData, onClose }) => {
                             </Box>
                           ) : (
                             formElement.textvalue || "N/A"
-                          )} */}
-
-                          {formElement.type === "Radio Buttons" ||
-                          formElement.type === "Checkboxes" ||
-                          formElement.type === "Dropdown"
-                            ? formElement.options
-                                .filter((option) => option.selected)
-                                .map((option) => option.text)
-                                .join(", ") || "N/A"
-                            : formElement.textvalue || "N/A"}
+                          )}
                         </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
+          </Box>
+        ))
+      ) : (
+        <Typography variant="body1">Loading sections...</Typography>
+      )} */}
+      {sections.length > 0 ? (
+        sections.map((section) => (
+          <Box key={section.id} sx={{ marginBottom: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography
+                sx={{ flexGrow: 1, cursor: 'pointer' }}
+                onClick={() => handleToggleSection(section.id)}
+              >
+                {section.name}
+                
+              </Typography>
+<Typography component="span" sx={{ fontWeight: 'normal', fontSize: '0.9rem', color: 'gray', ml: 1 }}>
+      ({section.formElements.filter(el => el.textvalue ).length} / {section.formElements.length})
+    </Typography>
+              <IconButton onClick={() => handleToggleSection(section.id)}>
+                {expandedSection === section.id ? <ExpandLess /> : <ExpandMore />}
+              </IconButton>
+            </Box>
+
+            {expandedSection === section.id && (
+              <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label="form elements table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell><strong>Question</strong></TableCell>
+                      <TableCell><strong>Answer</strong></TableCell>
+                      {/* <TableCell><strong>CRM</strong></TableCell>
+                      <TableCell><strong>Reviewed</strong></TableCell> */}
+                    </TableRow>
+                  </TableHead>
+
+                  <TableBody>
+                    {section.formElements.map((formElement) => (
+                      <TableRow key={formElement.id}>
+                        <TableCell>
+                          {formElement.type === 'Text Editor'
+                            ? 'Text Block'
+                            : formElement.text}
+                        </TableCell>
+                        <TableCell>
+                          {formElement.type === 'Text Editor' ? (
+                            <Box
+                              sx={{ cursor: 'pointer', color: 'blue' }}
+                              onClick={() => handleOpenDrawer(formElement.text)}
+                            >
+                              Display
+                            </Box>
+                          ) : (
+                            formElement.textvalue || ''
+                          )}
+                        </TableCell>
+                        {/* <TableCell>
+                          <Checkbox
+                           
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Checkbox
+                           
+                          />
+                        </TableCell> */}
                       </TableRow>
                     ))}
                   </TableBody>

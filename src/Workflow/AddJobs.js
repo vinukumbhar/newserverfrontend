@@ -1011,6 +1011,7 @@ const AddJobs = ({
         noofreminders: organizerData.noOfReminder,
         daysuntilnextreminder: organizerData.daysuntilNextReminder,
         sections: organizerData.sections,
+        status: "Pending",
         active: true,
       });
       const requestOptions = {

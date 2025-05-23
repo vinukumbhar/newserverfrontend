@@ -899,6 +899,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
         noofreminders: organizerData.noOfReminder,
         daysuntilnextreminder: organizerData.daysuntilNextReminder,
         sections: organizerData.sections,
+        status: "Pending",
         active: true,
       });
       const requestOptions = {

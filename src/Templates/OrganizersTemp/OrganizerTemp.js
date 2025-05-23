@@ -631,295 +631,310 @@ const OrganizersTemp = () => {
   const [checkboxValues, setCheckboxValues] = useState({});
   const [answeredElements, setAnsweredElements] = useState({});
 
-  const handleRadioChange = (value, elementText) => {
+  // const handleRadioChange = (value, elementText) => {
+  //   setRadioValues((prevValues) => ({
+  //     ...prevValues,
+  //     [elementText]: value,
+  //   }));
+  //   setAnsweredElements((prevAnswered) => ({
+  //     ...prevAnswered,
+  //     [elementText]: true,
+  //   }));
+  // };
+  const handleRadioChange = (value, elementText, sectionId) => {
+    const key = `${sectionId}_${elementText}`;
     setRadioValues((prevValues) => ({
       ...prevValues,
-      [elementText]: value,
+      [key]: value,
     }));
     setAnsweredElements((prevAnswered) => ({
       ...prevAnswered,
-      [elementText]: true,
+      [key]: true,
     }));
   };
-
-  const handleCheckboxChange = (value, elementText) => {
+  const handleCheckboxChange = (value, elementText, sectionId) => {
+    const key = `${sectionId}_${elementText}`;
     setCheckboxValues((prevValues) => ({
       ...prevValues,
-      [elementText]: {
-        ...prevValues[elementText],
-        [value]: !prevValues[elementText]?.[value],
+      [key]: {
+        ...prevValues[key],
+        [value]: !prevValues[key]?.[value],
       },
     }));
     setAnsweredElements((prevAnswered) => ({
       ...prevAnswered,
-      [elementText]: true,
+      [key]: true,
     }));
   };
-
-  const [selectedValue, setSelectedValue] = useState(null);
-  const handleChange = (event, elementText) => {
-    setSelectedValue(event.target.value);
+  // const handleCheckboxChange = (value, elementText) => {
+  //   setCheckboxValues((prevValues) => ({
+  //     ...prevValues,
+  //     [elementText]: {
+  //       ...prevValues[elementText],
+  //       [value]: !prevValues[elementText]?.[value],
+  //     },
+  //   }));
+  //   setAnsweredElements((prevAnswered) => ({
+  //     ...prevAnswered,
+  //     [elementText]: true,
+  //   }));
+  // };
+const [selectedYesNoValues, setSelectedYesNoValues] = useState({});
+  const handleYesNoChange = (value, elementText, sectionId) => {
+    const key = `${sectionId}_${elementText}`;
+    setSelectedYesNoValues((prevValues) => ({
+      ...prevValues,
+      [key]: value,
+    }));
     setAnsweredElements((prevAnswered) => ({
       ...prevAnswered,
-      [elementText]: true,
+      [key]: true,
     }));
   };
+  // const [selectedValue, setSelectedValue] = useState(null);
+  // const handleChange = (event, elementText) => {
+  //   setSelectedValue(event.target.value);
+  //   setAnsweredElements((prevAnswered) => ({
+  //     ...prevAnswered,
+  //     [elementText]: true,
+  //   }));
+  // };
 
   const [inputValues, setInputValues] = useState({});
-  const handleInputChange = (event, elementText) => {
+  // const handleInputChange = (event, elementText) => {
+  //   const { value } = event.target;
+  //   setInputValues((prevValues) => ({
+  //     ...prevValues,
+  //     [elementText]: value,
+  //   }));
+  //   setAnsweredElements((prevAnswered) => ({
+  //     ...prevAnswered,
+  //     [elementText]: true,
+  //   }));
+  // };
+ const handleInputChange = (event, elementText, sectionId) => {
+    const key = `${sectionId}_${elementText}`;
     const { value } = event.target;
     setInputValues((prevValues) => ({
       ...prevValues,
-      [elementText]: value,
+      [key]: value,
     }));
     setAnsweredElements((prevAnswered) => ({
       ...prevAnswered,
-      [elementText]: true,
+      [key]: true,
     }));
   };
-
-  const [selectedDropdownValue, setSelectedDropdownValue] = useState('');
-  const handleDropdownValueChange = (event, elementText) => {
-    setSelectedDropdownValue(event.target.value);
+  const [selectedDropdownValues, setSelectedDropdownValues] = useState({});
+  // const handleDropdownValueChange = (event, elementText) => {
+  //   setSelectedDropdownValue(event.target.value);
+  //   setAnsweredElements((prevAnswered) => ({
+  //     ...prevAnswered,
+  //     [elementText]: true,
+  //   }));
+  // };
+ const handleDropdownValueChange = (event, elementText, sectionId) => {
+    const key = `${sectionId}_${elementText}`;
+    setSelectedDropdownValues((prevValues) => ({
+      ...prevValues,
+      [key]: event.target.value,
+    }));
     setAnsweredElements((prevAnswered) => ({
       ...prevAnswered,
-      [elementText]: true,
+      [key]: true,
     }));
   };
-
   const stripHtmlTags = (html) => {
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = html;
     return tempDiv.innerText || tempDiv.textContent || '';
   };
 
+
+
+
   // const shouldShowElement = (element) => {
-  //   if (!element.questionsectionsettings?.conditional) return true;
+  //   const settings = element.questionsectionsettings;
 
-  //   const condition = element.questionsectionsettings?.conditions?.[0];
-  //   // if (condition && condition.question && condition.answer) {
-  //   //   return condition.answer === radioValues[condition.question];
-  //   // }
-  //   if (condition && condition.question && condition.answer) {
-  //     // return condition.answer === radioValues[condition.question];
-  //      // Check radio values
-  //      if (radioValues[condition.question] === condition.answer) {
-  //       return true;
+  //   // If the element isn't conditional, show it by default
+  //   if (!settings?.conditional) return true;
+
+  //   const conditions = settings?.conditions || [];
+
+  //   // Check if all conditions are satisfied
+  //   for (const condition of conditions) {
+  //     const { question, answer } = condition;
+
+  //     if (question && answer) {
+  //       const radioAnswer = radioValues[question];
+  //       const checkboxAnswer = checkboxValues[question];
+  //       const dropdownAnswer = selectedDropdownValue;
+
+  //       // For radio buttons
+  //       if (radioAnswer !== undefined && radioAnswer === answer) {
+  //         continue;
+  //       }
+
+  //       // For checkboxes: check if the condition answer is in the selected checkbox values
+  //       if (checkboxAnswer && checkboxAnswer[answer]) {
+  //         continue;
+  //       }
+
+  //       // For dropdowns: check if the condition answer matches the selected dropdown value
+  //       if (dropdownAnswer !== undefined && dropdownAnswer === answer) {
+  //         continue;
+  //       }
+
+  //       // If any condition is not satisfied, hide the element
+  //       return false;
+  //     }
   //   }
 
-  //   // Check checkbox values
-  //   if (checkboxValues[condition.question] === condition.answer) {
-  //       return true;
-  //   }
-
-  //   // Check dropdown value
-  //   if (selectedDropdownValue === condition.answer) {
-  //       return true;
-  //   }
-
-  //   // If none match, return false
-  //   // return false;
-  //   }
+  //   // All conditions are satisfied, show the element
   //   return true;
   // };
-
-
-  //   const shouldShowElement = (element) => {
-  //     if (!element.questionsectionsettings?.conditional) return true;
-
-  //     const condition = element.questionsectionsettings?.conditions?.[0];
-
-  //     if (condition && condition.question && condition.answer) {
-  //         const radioAnswer = radioValues[condition.question];
-  //         const checkboxAnswer = checkboxValues[condition.question];
-  //         const dropdownAnswer = selectedDropdownValue;
-
-  //         // For radio buttons
-  //         if (radioAnswer !== undefined && condition.answer === radioAnswer) {
-  //             return true;
-  //         }
-
-  //         // For checkboxes: check if the condition answer is in the selected checkbox values
-  //         if (checkboxAnswer && checkboxAnswer[condition.answer]) {
-  //             return true;
-  //         }
-
-  //         // For dropdowns: check if the condition answer matches the selected dropdown value
-  //         if (dropdownAnswer !== undefined && condition.answer === dropdownAnswer) {
-  //             return true;
-  //         }
-
-  //         return false;
-  //     }
-  //     return true;
-  // };
-
-
-
-  const shouldShowElement = (element) => {
+const shouldShowElement = (element, sectionId) => {
     const settings = element.questionsectionsettings;
-
-    // If the element isn't conditional, show it by default
     if (!settings?.conditional) return true;
-
     const conditions = settings?.conditions || [];
 
-    // Check if all conditions are satisfied
     for (const condition of conditions) {
       const { question, answer } = condition;
+      if (!question || !answer) continue;
 
-      if (question && answer) {
-        const radioAnswer = radioValues[question];
-        const checkboxAnswer = checkboxValues[question];
-        const dropdownAnswer = selectedDropdownValue;
+      // Check all possible sections for the answer
+      let conditionMet = false;
 
-        // For radio buttons
-        if (radioAnswer !== undefined && radioAnswer === answer) {
-          continue;
+      // Check radio values
+      for (const key in radioValues) {
+        if (key.endsWith(`_${question}`) && radioValues[key] === answer) {
+          conditionMet = true;
+          break;
         }
-
-        // For checkboxes: check if the condition answer is in the selected checkbox values
-        if (checkboxAnswer && checkboxAnswer[answer]) {
-          continue;
-        }
-
-        // For dropdowns: check if the condition answer matches the selected dropdown value
-        if (dropdownAnswer !== undefined && dropdownAnswer === answer) {
-          continue;
-        }
-
-        // If any condition is not satisfied, hide the element
-        return false;
       }
+      if (conditionMet) continue;
+
+      // Check checkbox values
+      for (const key in checkboxValues) {
+        if (key.endsWith(`_${question}`) && checkboxValues[key]?.[answer]) {
+          conditionMet = true;
+          break;
+        }
+      }
+      if (conditionMet) continue;
+
+      // Check dropdown values
+      for (const key in selectedDropdownValues) {
+        if (
+          key.endsWith(`_${question}`) &&
+          selectedDropdownValues[key] === answer
+        ) {
+          conditionMet = true;
+          break;
+        }
+      }
+      if (conditionMet) continue;
+      // Check Yes/No values
+      for (const key in selectedYesNoValues) {
+        if (
+          key.endsWith(`_${question}`) &&
+          selectedYesNoValues[key] === answer
+        ) {
+          conditionMet = true;
+          break;
+        }
+      }
+      if (conditionMet) continue;
+      // If we get here, no condition was met
+      return false;
     }
 
-    // All conditions are satisfied, show the element
     return true;
   };
-
 
   const totalElements = sections[activeStep]?.formElements.length || 0;
   const answeredCount = sections[activeStep]?.formElements.filter(
     (element) => answeredElements[element.text]
   ).length || 0;
 
-  // Check whether to display the section
-  // const shouldShowSection = (sections) => {
-  //   if (!sections.sectionsettings?.conditional) return true;
-
-  //   const condition = sections.sectionsettings?.conditions?.[0];
-  //   if (condition && condition.question && condition.answer) {
-  //     // return condition.answer === radioValues[condition.question];
-  //      // Check radio values
-  //      if (radioValues[condition.question] === condition.answer) {
-  //       return true;
-  //   }
-
-  //   // Check checkbox values
-  //   if (checkboxValues[condition.question] === condition.answer) {
-  //       return true;
-  //   }
-
-  //   // Check dropdown value
-  //   if (selectedDropdownValue === condition.answer) {
-  //       return true;
-  //   }
-
-  //   // If none match, return false
-  //   // return false;
-  //   }
-  //   return true;
-  // };
-  //   const shouldShowSection = (section) => {
-  //     if (!section.sectionsettings?.conditional) return true;
-
-  //     const condition = section.sectionsettings?.conditions?.[0];
-  //     if (condition && condition.question && condition.answer) {
-  //         const radioAnswer = radioValues[condition.question];
-  //         const checkboxAnswer = checkboxValues[condition.question];
-  //         const dropdownAnswer = selectedDropdownValue;
-
-  //         // For radio buttons
-  //         if (radioAnswer !== undefined && condition.answer === radioAnswer) {
-  //             return true;
-  //         }
-
-  //         // For checkboxes: check if the condition answer is in the selected checkbox values
-  //         if (checkboxAnswer && checkboxAnswer[condition.answer]) {
-  //             return true;
-  //         }
-
-  //         // For dropdowns: check if the condition answer matches the selected dropdown value
-  //         if (dropdownAnswer !== undefined && condition.answer === dropdownAnswer) {
-  //             return true;
-  //         }
-
-  //         return false;
-  //     }
-
-  //     return true;
-  // };
-
   // const shouldShowSection = (section) => {
   //   const settings = section.sectionSettings;
 
+  //   // If the section isn't conditional, show it by default
   //   if (!settings?.conditional) return true;
 
   //   const conditions = settings?.conditions || [];
 
-  //   // Show the section if any condition is satisfied
-  //   return conditions.some((condition) => {
-  //       const { question, answer } = condition;
+  //   // Check if every condition is satisfied
+  //   return conditions.every((condition) => {
+  //     const { question, answer } = condition;
 
-  //       if (question && answer) {
-  //           const radioAnswer = radioValues[question];
-  //           const checkboxAnswer = checkboxValues[question];
-  //           const dropdownAnswer = selectedDropdownValue;
+  //     if (question && answer) {
+  //       const radioAnswer = radioValues[question];
+  //       const checkboxAnswer = checkboxValues[question];
+  //       const dropdownAnswer = selectedDropdownValue;
 
-  //           if (radioAnswer === answer) return true;
-  //           if (checkboxAnswer && checkboxAnswer[answer]) return true;
-  //           if (dropdownAnswer === answer) return true;
-  //       }
+  //       // For radio buttons
+  //       if (radioAnswer === answer) return true;
 
-  //       return false;
+  //       // For checkboxes: check if the condition answer is in the selected checkbox values
+  //       if (checkboxAnswer && checkboxAnswer[answer]) return true;
+
+  //       // For dropdowns: check if the condition answer matches the selected dropdown value
+  //       if (dropdownAnswer === answer) return true;
+  //     }
+
+  //     // If a condition is not satisfied, return false
+  //     return false;
   //   });
   // };
-  const shouldShowSection = (section) => {
-    const settings = section.sectionSettings;
 
-    // If the section isn't conditional, show it by default
-    if (!settings?.conditional) return true;
+const shouldShowSection = (section) => {
+    if (!section.sectionsettings?.conditional) return true;
+    const conditions = section.sectionsettings.conditions || [];
 
-    const conditions = settings?.conditions || [];
-
-    // Check if every condition is satisfied
     return conditions.every((condition) => {
-      const { question, answer } = condition;
+      if (!condition.question || !condition.answer) return false;
 
-      if (question && answer) {
-        const radioAnswer = radioValues[question];
-        const checkboxAnswer = checkboxValues[question];
-        const dropdownAnswer = selectedDropdownValue;
-
-        // For radio buttons
-        if (radioAnswer === answer) return true;
-
-        // For checkboxes: check if the condition answer is in the selected checkbox values
-        if (checkboxAnswer && checkboxAnswer[answer]) return true;
-
-        // For dropdowns: check if the condition answer matches the selected dropdown value
-        if (dropdownAnswer === answer) return true;
+      // Check all possible sections for the answer
+      for (const key in radioValues) {
+        if (
+          key.endsWith(`_${condition.question}`) &&
+          radioValues[key] === condition.answer
+        ) {
+          return true;
+        }
       }
 
-      // If a condition is not satisfied, return false
+      for (const key in checkboxValues) {
+        if (
+          key.endsWith(`_${condition.question}`) &&
+          checkboxValues[key]?.[condition.answer]
+        ) {
+          return true;
+        }
+      }
+
+      for (const key in selectedDropdownValues) {
+        if (
+          key.endsWith(`_${condition.question}`) &&
+          selectedDropdownValues[key] === condition.answer
+        ) {
+          return true;
+        }
+      }
+      // Check Yes/No values
+      for (const key in selectedYesNoValues) {
+        if (
+          key.endsWith(`_${condition.question}`) &&
+          selectedYesNoValues[key] === condition.answer
+        ) {
+          return true;
+        }
+      }
       return false;
     });
   };
 
-
-  // const getVisibleSections = () => {
-  //     return sections.filter(shouldShowSection);
-  // };
   const getVisibleSections = () => sections.filter(shouldShowSection);
 
   const visibleSections = getVisibleSections();
@@ -1449,16 +1464,30 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                         onChange={handleDropdownChange}
                         size="small"
                       >
-                        {/* {sections.map((section, index) => (
-                            <MenuItem key={index} value={index}>
-                                {section.text} ({answeredCount}/{totalElements})
-                            </MenuItem>
-                        ))} */}
-                        {visibleSections.map((section, index) => (
+                        
+                        {/* {visibleSections.map((section, index) => (
                           <MenuItem key={index} value={index}>
                             {section.text} ({answeredCount}/{totalElements})
                           </MenuItem>
-                        ))}
+                        ))} */}
+                        {visibleSections.map((section, index) => {
+                                              // Calculate answered elements count for this specific section
+                                              const answeredCount = section.formElements.reduce(
+                                                (count, element) => {
+                                                  const key = `${section.id}_${element.text}`;
+                                                  return count + (answeredElements[key] ? 1 : 0);
+                                                },
+                                                0
+                                              );
+                        
+                                              const totalElements = section.formElements.length;
+                        
+                                              return (
+                                                <MenuItem key={section.id} value={index}>
+                                                  {section.text} ({answeredCount}/{totalElements})
+                                                </MenuItem>
+                                              );
+                                            })}
                       </Select>
                     </FormControl>
 
@@ -1466,12 +1495,9 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                       <LinearProgress variant="determinate" value={(activeStep + 1) / totalSteps * 100} />
                     </Box>
 
-                    {/* {sections
-                    .filter(shouldShowSection) // Filter sections based on conditions
-                    .map((section, sectionIndex) => (
-                        sectionIndex === activeStep && ( */}
+                  
                     <Box sx={{ pl: 20, pr: 20 }}>
-                      {visibleSections.map((section, sectionIndex) => (
+                      {/* {visibleSections.map((section, sectionIndex) => (
                         sectionIndex === activeStep && (
                           <Box key={section.text}>
                             {section.formElements.map((element) => (
@@ -1669,17 +1695,11 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                                       />
                                     </Box>
                                   )}
-                                  {/* File Upload */}
+                                 
                                   {element.type === "File Upload" && (
                                     <Box>
                                       <Typography fontSize='18px' mb={1} mt={2}>{element.text}</Typography>
-                                      {/* <Tooltip title="Unavailable in preview mode" placement="top">
-                                                        <Box sx={{ position: 'relative', display: 'inline-block' }}>
-                                                            <Button variant="contained" color="primary" disabled>
-                                                                Upload
-                                                            </Button>
-                                                        </Box>
-                                                    </Tooltip> */}
+                                      
                                       <Tooltip title="Unavailable in preview mode" placement="top">
                                         <Box sx={{ position: 'relative', width: '100%' }}>
                                           <TextField
@@ -1711,8 +1731,393 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                             ))}
                           </Box>
                         )
-                      ))}
+                      ))} */}
 
+
+ {visibleSections.map(
+                    (section, sectionIndex) =>
+                      sectionIndex === activeStep && (
+                        <Box key={section.id}>
+                          {section.formElements.map(
+                            (element) =>
+                              shouldShowElement(element, section.id) && (
+                                <Box key={`${section.id}_${element.id}`}>
+                                  {/* Text Editor */}
+                                  {element.type === "Text Editor" && (
+                                    <Box mt={2} mb={2}>
+                                      <Typography>
+                                        {stripHtmlTags(element.text)}
+                                      </Typography>
+                                    </Box>
+                                  )}
+
+                                  {/* Free Entry or Email */}
+                                  {(element.type === "Free Entry" ||
+                                    element.type === "Email") && (
+                                    <Box>
+                                      <Typography fontSize="18px" mb={1} mt={1}>
+                                        {element.text}
+                                      </Typography>
+                                      <TextField
+                                        variant="outlined"
+                                        size="small"
+                                        multiline
+                                        fullWidth
+                                        placeholder={`${element.type} Answer`}
+                                        inputProps={{
+                                          type:
+                                            element.type === "Free Entry"
+                                              ? "text"
+                                              : element.type.toLowerCase(),
+                                        }}
+                                        maxRows={8}
+                                        style={{ display: "block" }}
+                                        value={
+                                          inputValues[
+                                            `${section.id}_${element.text}`
+                                          ] || ""
+                                        }
+                                        onChange={(e) =>
+                                          handleInputChange(
+                                            e,
+                                            element.text,
+                                            section.id
+                                          )
+                                        }
+                                      />
+                                    </Box>
+                                  )}
+
+                                  {/* Number */}
+                                  {element.type === "Number" && (
+                                    <Box>
+                                      <Typography fontSize="18px" mb={1} mt={1}>
+                                        {element.text}
+                                      </Typography>
+                                      <TextField
+                                        variant="outlined"
+                                        size="small"
+                                        multiline
+                                        fullWidth
+                                        placeholder={`${element.type} Answer`}
+                                        inputProps={{
+                                          type: "text",
+                                          inputMode: "numeric",
+                                          pattern: "[0-9]*",
+                                        }}
+                                        maxRows={8}
+                                        style={{
+                                          display: "block",
+                                          marginTop: "15px",
+                                        }}
+                                        value={
+                                          inputValues[
+                                            `${section.id}_${element.text}`
+                                          ] || ""
+                                        }
+                                        onChange={(e) => {
+                                          const numericValue =
+                                            e.target.value.replace(/\D/g, "");
+                                          handleInputChange(
+                                            { target: { value: numericValue } },
+                                            element.text,
+                                            section.id
+                                          );
+                                        }}
+                                      />
+                                    </Box>
+                                  )}
+
+                                  {/* Radio Buttons */}
+                                  {element.type === "Radio Buttons" && (
+                                    <Box>
+                                      <Typography fontSize="18px" mb={1} mt={1}>
+                                        {element.text}
+                                      </Typography>
+                                      <Box
+                                        sx={{
+                                          display: "flex",
+                                          gap: 1,
+                                          flexWrap: "wrap",
+                                        }}
+                                      >
+                                        {element.options.map((option) => (
+                                          <Button
+                                            key={option.text}
+                                            variant={
+                                              radioValues[
+                                                `${section.id}_${element.text}`
+                                              ] === option.text
+                                                ? "contained"
+                                                : "outlined"
+                                            }
+                                            onClick={() =>
+                                              handleRadioChange(
+                                                option.text,
+                                                element.text,
+                                                section.id
+                                              )
+                                            }
+                                            sx={{
+                                              borderRadius: "15px",
+                                              ...(radioValues[
+                                                `${section.id}_${element.text}`
+                                              ] === option.text
+                                                ? {
+                                                    backgroundColor:
+                                                      "var(--color-save-btn)",
+                                                    "&:hover": {
+                                                      backgroundColor:
+                                                        "var(--color-save-hover-btn)",
+                                                    },
+                                                  }
+                                                : {
+                                                    borderColor:
+                                                      "var(--color-border-cancel-btn)",
+                                                    color:
+                                                      "var(--color-save-btn)",
+                                                    "&:hover": {
+                                                      backgroundColor:
+                                                        "var(--color-save-hover-btn)",
+                                                      color: "#fff",
+                                                      border: "none",
+                                                    },
+                                                  }),
+                                            }}
+                                          >
+                                            {option.text}
+                                          </Button>
+                                        ))}
+                                      </Box>
+                                    </Box>
+                                  )}
+
+                                  {/* Checkboxes */}
+                                  {element.type === "Checkboxes" && (
+                                    <Box>
+                                      <Typography fontSize="18px">
+                                        {element.text}
+                                      </Typography>
+                                      <Box
+                                        sx={{
+                                          display: "flex",
+                                          gap: 1,
+                                          flexWrap: "wrap",
+                                        }}
+                                      >
+                                        {element.options.map((option) => (
+                                          <Button
+                                            key={option.text}
+                                            variant={
+                                              checkboxValues[
+                                                `${section.id}_${element.text}`
+                                              ]?.[option.text]
+                                                ? "contained"
+                                                : "outlined"
+                                            }
+                                            onClick={() =>
+                                              handleCheckboxChange(
+                                                option.text,
+                                                element.text,
+                                                section.id
+                                              )
+                                            }
+                                            sx={{
+                                              borderRadius: "15px",
+                                              ...(checkboxValues[
+                                                `${section.id}_${element.text}`
+                                              ]?.[option.text]
+                                                ? {
+                                                    backgroundColor:
+                                                      "var(--color-save-btn)",
+                                                    "&:hover": {
+                                                      backgroundColor:
+                                                        "var(--color-save-hover-btn)",
+                                                    },
+                                                  }
+                                                : {
+                                                    borderColor:
+                                                      "var(--color-border-cancel-btn)",
+                                                    color:
+                                                      "var(--color-save-btn)",
+                                                    "&:hover": {
+                                                      backgroundColor:
+                                                        "var(--color-save-hover-btn)",
+                                                      color: "#fff",
+                                                      border: "none",
+                                                    },
+                                                  }),
+                                            }}
+                                          >
+                                            {option.text}
+                                          </Button>
+                                        ))}
+                                      </Box>
+                                    </Box>
+                                  )}
+
+                                  {/* Yes/No */}
+                                  {element.type === "Yes/No" && (
+                                    <Box>
+                                      <Typography fontSize="18px">
+                                        {element.text}
+                                      </Typography>
+                                      <Box sx={{ display: "flex", gap: 1 }}>
+                                        {element.options.map((option) => (
+                                          <Button
+                                            key={option.text}
+                                            variant={
+                                              selectedYesNoValues[
+                                                `${section.id}_${element.text}`
+                                              ] === option.text
+                                                ? "contained"
+                                                : "outlined"
+                                            }
+                                            onClick={() =>
+                                              handleYesNoChange(
+                                                option.text,
+                                                element.text,
+                                                section.id
+                                              )
+                                            }
+                                            sx={{
+                                              borderRadius: "15px",
+                                              ...(selectedYesNoValues[
+                                                `${section.id}_${element.text}`
+                                              ] === option.text
+                                                ? {
+                                                    backgroundColor:
+                                                      "var(--color-save-btn)",
+                                                    "&:hover": {
+                                                      backgroundColor:
+                                                        "var(--color-save-hover-btn)",
+                                                    },
+                                                  }
+                                                : {
+                                                    borderColor:
+                                                      "var(--color-border-cancel-btn)",
+                                                    color:
+                                                      "var(--color-save-btn)",
+                                                    "&:hover": {
+                                                      backgroundColor:
+                                                        "var(--color-save-hover-btn)",
+                                                      color: "#fff",
+                                                      border: "none",
+                                                    },
+                                                  }),
+                                            }}
+                                          >
+                                            {option.text}
+                                          </Button>
+                                        ))}
+                                      </Box>
+                                    </Box>
+                                  )}
+
+                                  {/* Dropdown */}
+                                  {element.type === "Dropdown" && (
+                                    <Box>
+                                      <Typography fontSize="18px">
+                                        {element.text}
+                                      </Typography>
+                                      <FormControl fullWidth>
+                                        <Select
+                                          value={
+                                            selectedDropdownValues[
+                                              `${section.id}_${element.text}`
+                                            ] || ""
+                                          }
+                                          onChange={(event) =>
+                                            handleDropdownValueChange(
+                                              event,
+                                              element.text,
+                                              section.id
+                                            )
+                                          }
+                                          size="small"
+                                        >
+                                          {element.options.map((option) => (
+                                            <MenuItem
+                                              key={option.text}
+                                              value={option.text}
+                                            >
+                                              {option.text}
+                                            </MenuItem>
+                                          ))}
+                                        </Select>
+                                      </FormControl>
+                                    </Box>
+                                  )}
+
+                                  {/* Date */}
+                                  {element.type === "Date" && (
+                                    <Box>
+                                      <Typography fontSize="18px">
+                                        {element.text}
+                                      </Typography>
+                                      <DatePicker
+                                        format="DD/MM/YYYY"
+                                        sx={{
+                                          width: "100%",
+                                          backgroundColor: "#fff",
+                                        }}
+                                        selected={startDate}
+                                        onChange={handleStartDateChange}
+                                        renderInput={(params) => (
+                                          <TextField {...params} size="small" />
+                                        )}
+                                        onOpen={() =>
+                                          setAnsweredElements(
+                                            (prevAnswered) => ({
+                                              ...prevAnswered,
+                                              [`${section.id}_${element.text}`]: true,
+                                            })
+                                          )
+                                        }
+                                      />
+                                    </Box>
+                                  )}
+
+                                  {/* File Upload */}
+                                  {element.type === "File Upload" && (
+                                    <Box>
+                                      <Typography fontSize="18px" mb={1} mt={2}>
+                                        {element.text}
+                                      </Typography>
+                                      <Tooltip
+                                        title="Unavailable in preview mode"
+                                        placement="top"
+                                      >
+                                        <Box
+                                          sx={{
+                                            position: "relative",
+                                            width: "100%",
+                                          }}
+                                        >
+                                          <TextField
+                                            variant="outlined"
+                                            size="small"
+                                            fullWidth
+                                            disabled
+                                            placeholder="Add Document"
+                                            sx={{
+                                              cursor: "not-allowed",
+                                              "& .MuiInputBase-input": {
+                                                pointerEvents: "none",
+                                                cursor: "not-allowed",
+                                              },
+                                            }}
+                                          />
+                                        </Box>
+                                      </Tooltip>
+                                    </Box>
+                                  )}
+                                </Box>
+                              )
+                          )}
+                        </Box>
+                      )
+                  )}
                       <Box mt={3} display='flex' gap={3} alignItems='center'>
                         <Button disabled={activeStep === 0} onClick={handleBack} variant='contained' sx={{
                 backgroundColor: 'var(--color-save-btn)',  // Normal background

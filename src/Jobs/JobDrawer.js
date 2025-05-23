@@ -1172,6 +1172,7 @@ console.log("hghg", accountTags)
         noofreminders: organizerData.noOfReminder,
         daysuntilnextreminder: organizerData.daysuntilNextReminder,
         sections: organizerData.sections,
+        status: "Pending",
         active: true,
       });
       const requestOptions = {
