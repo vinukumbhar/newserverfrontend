@@ -784,12 +784,8 @@ fetch(`${ORGANIZER_TEMP_API}/organizersendemail`, requestOptions)
                 </Typography>
 
                 <FormControl fullWidth sx={{ marginBottom: "10px", marginTop: "10px" }}>
-                  <Select value={activeStep} onChange={handleDropdownChange} size="small">
-                    {/* {visibleSections.map((section, index) => (
-                      <MenuItem key={index} value={index}>
-                        {section.text} ({answeredCount}/{totalElements})
-                      </MenuItem>
-                    ))} */}
+                  {/* <Select value={activeStep} onChange={handleDropdownChange} size="small">
+                   
                     {visibleSections.map((section, index) => {
                                                                   // Calculate answered elements count for this specific section
                                                                   const answeredCount = section.formElements.reduce(
@@ -808,7 +804,34 @@ fetch(`${ORGANIZER_TEMP_API}/organizersendemail`, requestOptions)
                                                                     </MenuItem>
                                                                   );
                                                                 })}
-                  </Select>
+                  </Select> */}
+                  <Select
+  value={activeStep}
+  onChange={handleDropdownChange}
+  size="small"
+>
+  {visibleSections.map((section, index) => {
+    // Filter form elements that are actually visible
+    const visibleElements = section.formElements.filter((el) =>
+      shouldShowElement(el, section.id)
+    );
+
+    // Count answered visible elements
+    const answeredCount = visibleElements.reduce((count, element) => {
+      const key = `${section.id}_${element.text}`;
+      return count + (answeredElements[key] ? 1 : 0);
+    }, 0);
+
+    const totalVisibleElements = visibleElements.length;
+
+    return (
+      <MenuItem key={section.id} value={index}>
+        {section.text} ({answeredCount}/{totalVisibleElements})
+      </MenuItem>
+    );
+  })}
+</Select>
+
                 </FormControl>
 
                 <Box mt={2} mb={2}>

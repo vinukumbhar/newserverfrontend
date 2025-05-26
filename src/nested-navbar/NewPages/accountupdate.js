@@ -1,6 +1,36 @@
-import {OutlinedInput, Box, ListItem, Chip, Grid, Typography, Divider, Button, Autocomplete, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControlLabel, FormControl, InputLabel, RadioGroup, Radio, TextField, IconButton, Switch } from "@mui/material";
+import {
+  OutlinedInput,
+  Box,
+  ListItem,
+  Chip,
+  Grid,
+  Typography,
+  Divider,
+  Button,
+  Autocomplete,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  FormControlLabel,
+  FormControl,
+  InputLabel,
+  RadioGroup,
+  Radio,
+  TextField,
+  IconButton,
+  Switch,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { useTheme, useMediaQuery, Menu, MenuItem, Select, Drawer } from "@mui/material";
+import {
+  useTheme,
+  useMediaQuery,
+  Menu,
+  MenuItem,
+  Select,
+  Drawer,
+} from "@mui/material";
 import { RxCross2 } from "react-icons/rx";
 import { AiOutlinePlusCircle, AiOutlineDelete } from "react-icons/ai";
 import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
@@ -17,8 +47,8 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useNavigate } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
 import ContactUpdateForm from "./contactupdate";
-import MultiSelectDropdown from "../../Templates/MultiSelectDropdown"
-import TagsMultiSelectDropDown from "../../Templates/TagsMultiSelectDropDown"
+import MultiSelectDropdown from "../../Templates/MultiSelectDropdown";
+import TagsMultiSelectDropDown from "../../Templates/TagsMultiSelectDropDown";
 const Accountupdate = ({ onClose, selectedAccount }) => {
   const theme = useTheme();
   const USER_API = process.env.REACT_APP_USER_URL;
@@ -86,7 +116,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
       // const url = "http://68.251.138.236:8000/common/users/roles?roles=TeamMember,Admin"
       const response = await fetch(url);
       const data = await response.json();
-      console.log("teammember",data)
+      console.log("teammember", data);
       setUserData(data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -129,18 +159,18 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
 
   const handleContactTagChange = (index) => (event) => {
     const selectedValues = event.target.value;
-  
+
     setContacts((prevContacts) => {
       const updatedContacts = [...prevContacts];
       updatedContacts[index].tags = selectedValues;
       return updatedContacts;
     });
-  
+
     console.log("Selected Tags for contact", index, ":", selectedValues);
-  
+
     setCombinedValues(selectedValues);
   };
-  
+
   const tagsoptions = tags.map((tag) => ({
     value: tag._id,
     label: tag.tagName,
@@ -169,33 +199,32 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
     },
   }));
 
+  // folder templates
+  const API_KEY = process.env.REACT_APP_FOLDER_URL;
+  const [folderTemplates, setFolderTemplates] = useState([]);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
 
-    // folder templates
-    const API_KEY = process.env.REACT_APP_FOLDER_URL;
-    const [folderTemplates, setFolderTemplates] = useState([]);
-    const [selectedTemplate, setSelectedTemplate] = useState(null);
-  
-    useEffect(() => {
-      fetchFolderData();
-    }, []);
-  
-    const fetchFolderData = async () => {
-      try {
-        const url = `${API_KEY}/foldertemp/folder`;
-        const response = await fetch(url);
-        const data = await response.json();
-        setFolderTemplates(data.folderTemplates);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    const handleSelectTemplate = (selectedOptions) => {
-      setSelectedTemplate(selectedOptions);
-    };
-    const optionfolder = folderTemplates.map((folderTemplates) => ({
-      value: folderTemplates._id,
-      label: folderTemplates.templatename,
-    }));
+  useEffect(() => {
+    fetchFolderData();
+  }, []);
+
+  const fetchFolderData = async () => {
+    try {
+      const url = `${API_KEY}/foldertemp/folder`;
+      const response = await fetch(url);
+      const data = await response.json();
+      setFolderTemplates(data.folderTemplates);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const handleSelectTemplate = (selectedOptions) => {
+    setSelectedTemplate(selectedOptions);
+  };
+  const optionfolder = folderTemplates.map((folderTemplates) => ({
+    value: folderTemplates._id,
+    label: folderTemplates.templatename,
+  }));
   const [countries, setCountries] = useState([]);
   useEffect(() => {
     axios
@@ -233,44 +262,52 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
   //     return updatedContacts;
   //   });
   // };
-  
-  const handleContactPhoneNumberChange = (index, phoneIndex, phoneValue, countryData) => {
-  setContacts((prevContacts) => {
-    const updatedContacts = [...prevContacts];
-    const contact = { ...updatedContacts[index] }; // clone contact
 
-    let phoneNumbers = [...(contact.phoneNumbers || [])];
+  const handleContactPhoneNumberChange = (
+    index,
+    phoneIndex,
+    phoneValue,
+    countryData
+  ) => {
+    setContacts((prevContacts) => {
+      const updatedContacts = [...prevContacts];
+      const contact = { ...updatedContacts[index] }; // clone contact
 
-    // Ensure phoneNumbers array is large enough
-    if (phoneNumbers.length <= phoneIndex) {
-      phoneNumbers = [
-        ...phoneNumbers,
-        ...Array(phoneIndex + 1 - phoneNumbers.length).fill({
-          phone: "",
-          countryCode: "",
-          country: "",
-        }),
-      ];
-    }
+      let phoneNumbers = [...(contact.phoneNumbers || [])];
 
-    // Update the specific phone object
-    phoneNumbers[phoneIndex] = {
-      ...phoneNumbers[phoneIndex],
-      phone: phoneValue,
-      countryCode: countryData.dialCode,
-      country: countryData.countryCode.toLowerCase(),
-    };
+      // Ensure phoneNumbers array is large enough
+      if (phoneNumbers.length <= phoneIndex) {
+        phoneNumbers = [
+          ...phoneNumbers,
+          ...Array(phoneIndex + 1 - phoneNumbers.length).fill({
+            phone: "",
+            countryCode: "",
+            country: "",
+          }),
+        ];
+      }
 
-    // Set back into the contact and then into contacts
-    contact.phoneNumbers = phoneNumbers;
-    updatedContacts[index] = contact;
+      // Update the specific phone object
+      phoneNumbers[phoneIndex] = {
+        ...phoneNumbers[phoneIndex],
+        phone: phoneValue,
+        countryCode: countryData.dialCode,
+        country: countryData.countryCode.toLowerCase(),
+      };
 
-    return updatedContacts;
-  });
-};
-  
+      // Set back into the contact and then into contacts
+      contact.phoneNumbers = phoneNumbers;
+      updatedContacts[index] = contact;
+
+      return updatedContacts;
+    });
+  };
+
   const handleContactAddPhoneNumber = () => {
-    setPhoneNumbers((prevPhoneNumbers) => [...prevPhoneNumbers, { id: Date.now(), phone: "", isPrimary: false }]);
+    setPhoneNumbers((prevPhoneNumbers) => [
+      ...prevPhoneNumbers,
+      { id: Date.now(), phone: "", isPrimary: false },
+    ]);
   };
 
   const handleContactAddressChange = (index, field, value) => {
@@ -297,13 +334,39 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
   console.log(contacts);
 
   const addNewContact = () => {
-    setContacts([...contacts, { firstName: "", middleName: "", lastName: "", contactName: "", companyName: "", note: "", ssn: "", email: "", login: "false", notify: "false", emailSync: "false", tags: [], phoneNumbers: [], country: "", streetAddress: "", city: "", state: "", postalCode: "", accountid: AccountId }]);
+    setContacts([
+      ...contacts,
+      {
+        firstName: "",
+        middleName: "",
+        lastName: "",
+        contactName: "",
+        companyName: "",
+        note: "",
+        ssn: "",
+        email: "",
+        login: "false",
+        notify: "false",
+        emailSync: "false",
+        tags: [],
+        phoneNumbers: [],
+        country: "",
+        streetAddress: "",
+        city: "",
+        state: "",
+        postalCode: "",
+        accountid: AccountId,
+      },
+    ]);
     setContactCount(contactCount + 1);
   };
 
   const handleContactSwitchChange = (index, fieldName, checked) => {
     const updatedContacts = [...contacts];
-    updatedContacts[index] = { ...updatedContacts[index], [fieldName]: checked ? "true" : "false" };
+    updatedContacts[index] = {
+      ...updatedContacts[index],
+      [fieldName]: checked ? "true" : "false",
+    };
     setContacts(updatedContacts);
   };
 
@@ -323,17 +386,20 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
   // };
   const handleUserChange = (newSelectedUsers) => {
     setSelectedUser(newSelectedUsers);
-    console.log(newSelectedUsers)
+    console.log(newSelectedUsers);
     const selectedValues = newSelectedUsers.map((option) => option.value);
     setCombinedTeamMemberValues(selectedValues);
-    console.log(selectedValues)
+    console.log(selectedValues);
   };
   //Account Data Integration
   const [accountName, setaccountName] = useState("");
   const [companyname, setcompanyname] = useState("");
   const [combinedTagsValues, setCombinedTagsValues] = useState();
   const [tagsNew, setTagsNew] = useState([]);
-  const [selectedCountry, setSelectedCountry] = useState({ name: "", code: "" });
+  const [selectedCountry, setSelectedCountry] = useState({
+    name: "",
+    code: "",
+  });
   const [streetAddress, setStreetAddress] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
@@ -342,45 +408,51 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
   // handleAccountTagChange
   const handleAccountTagChange = (newSelectedTags) => {
     setTagsNew(newSelectedTags);
-    console.log(newSelectedTags)
+    console.log(newSelectedTags);
     const selectedValues = newSelectedTags.map((option) => option.value);
     setCombinedTagsValues(selectedValues);
-    console.log(selectedValues)
+    console.log(selectedValues);
   };
   useEffect(() => {
     if (selectedAccount) {
-      console.log("edit account",selectedAccount);
-      console.log("edit contact",selectedAccount.contacts);
+      console.log("edit account", selectedAccount);
+      console.log("edit contact", selectedAccount.contacts);
       console.log(selectedAccount._id);
       setAccountType(selectedAccount.clientType);
       setaccountName(selectedAccount.accountName);
-      setAccountcontact(selectedAccount.contacts)
+      setAccountcontact(selectedAccount.contacts);
+         setSelectedCountry({
+          name: selectedAccount.country?.name || "", // Use name field or an empty string
+          code: selectedAccount.country?.code || "", // Use code field or an empty string
+        })
+       setStreetAddress(selectedAccount.streetAddress || "");
+        setCity(selectedAccount.city || "");
+        setState(selectedAccount.state || "");
+        setPostalCode(selectedAccount.postalCode || "");
       // setContacts(selectedAccount.contacts)
       // Safely check if companyAddress exists before accessing its properties
-      if (selectedAccount.companyAddress) {
-        setcompanyname(selectedAccount.companyAddress.companyName);
-        setSelectedCountry({
-          name: selectedAccount.companyAddress.country?.name || "", // Use name field or an empty string
-          code: selectedAccount.companyAddress.country?.code || "", // Use code field or an empty string
-        });
-        setStreetAddress(selectedAccount.companyAddress.streetAddress || "");
-        setCity(selectedAccount.companyAddress.city || "");
-        setState(selectedAccount.companyAddress.state || "");
-        setPostalCode(selectedAccount.companyAddress.postalCode || "");
-       
-      } else {
-        // Reset to empty or default values if companyAddress is undefined
-        setcompanyname("");
-        setSelectedCountry({ name: "", code: "" });
-        setStreetAddress("");
-        setCity("");
-        setState("");
-        setPostalCode("");
-      }
-      
+      // if (selectedAccount.companyAddress) {
+      //   setcompanyname(selectedAccount.companyAddress.companyName);
+        // setSelectedCountry({
+        //   name: selectedAccount.companyAddress.country?.name || "", // Use name field or an empty string
+        //   code: selectedAccount.companyAddress.country?.code || "", // Use code field or an empty string
+        // });
+      //   setStreetAddress(selectedAccount.companyAddress.streetAddress || "");
+      //   setCity(selectedAccount.companyAddress.city || "");
+      //   setState(selectedAccount.companyAddress.state || "");
+      //   setPostalCode(selectedAccount.companyAddress.postalCode || "");
+      // } else {
+      //   // Reset to empty or default values if companyAddress is undefined
+      //   setcompanyname("");
+      //   setSelectedCountry({ name: "", code: "" });
+      //   setStreetAddress("");
+      //   setCity("");
+      //   setState("");
+      //   setPostalCode("");
+      // }
+
       // setFolderTemplates(selectedAccount.foldertemplate || null )
 
-     
       fetchaccountdatabyid(selectedAccount._id);
 
       // Map Team Members
@@ -394,10 +466,22 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
       }));
 
       // Set selected team members in state
-      setSelectedUser(mappedTeamMembers.filter((member) => selectedAccount.teamMember.some((selected) => selected._id === member.value)));
+      setSelectedUser(
+        mappedTeamMembers.filter((member) =>
+          selectedAccount.teamMember.some(
+            (selected) => selected._id === member.value
+          )
+        )
+      );
 
       setCombinedTeamMemberValues(
-        mappedTeamMembers.filter((member) => selectedAccount.teamMember.some((selected) => selected._id === member.value)).map((member) => member.value) // Extract only the 'value' (ID) here
+        mappedTeamMembers
+          .filter((member) =>
+            selectedAccount.teamMember.some(
+              (selected) => selected._id === member.value
+            )
+          )
+          .map((member) => member.value) // Extract only the 'value' (ID) here
       );
 
       // Map Tags
@@ -421,23 +505,24 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
       setTagsNew(mappedTags);
       setCombinedTagsValues(mappedTags.map((tag) => tag.value)); // Assuming combinedTagsValues holds the selected tag IDs
 
-
       // Set Folder Templates (similar to how team members are handled)
-    const folderTemplateData = selectedAccount.foldertemplate
-    ? {
-        value: selectedAccount.foldertemplate._id,
-        label: selectedAccount.foldertemplate.templatename,
-      }
-    : null;
+      const folderTemplateData = selectedAccount.foldertemplate
+        ? {
+            value: selectedAccount.foldertemplate._id,
+            label: selectedAccount.foldertemplate.templatename,
+          }
+        : null;
 
-    setSelectedTemplate(folderTemplateData);
-    console.log("folders",folderTemplateData)
+      setSelectedTemplate(folderTemplateData);
+      console.log("folders", folderTemplateData);
     }
   }, [selectedAccount]);
 
   const handleCountryChange = (event) => {
     const selectedCode = event.target.value;
-    const selectedCountryObj = countries.find((country) => country.code === selectedCode);
+    const selectedCountryObj = countries.find(
+      (country) => country.code === selectedCode
+    );
 
     setSelectedCountry({
       name: selectedCountryObj.name,
@@ -447,7 +532,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
   const [folderTempId, setFolderTempId] = useState();
   // create account
 
-  console.log(accountcontact)
+  console.log(accountcontact);
 
   const handleSubmit = () => {
     const myHeaders = new Headers();
@@ -458,8 +543,13 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
         clientType: accountType,
         accountName: accountName,
         tags: combinedTagsValues || [],
-        teamMember: combinedTeamMemberValues|| [],
-        foldertemplate: selectedTemplate?.value || null, 
+        teamMember: combinedTeamMemberValues || [],
+        foldertemplate: selectedTemplate?.value || null,
+        country: selectedCountry || "",
+        streetAddress: streetAddress || "",
+        state: state || "",
+        city: city || "",
+        postalCode: postalCode || "",
       });
       console.log(raw);
       const requestOptions = {
@@ -555,10 +645,9 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
 
     const raw = JSON.stringify({
       accountId: accountId,
-       foldertempId: foldertempId || null,
-
+      foldertempId: foldertempId || null,
     });
-   
+
     const requestOptions = {
       method: "POST",
       headers: myHeaders,
@@ -577,7 +666,9 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
 
   const handleExpandClick = (contactId) => {
     // Toggle between expanding and collapsing the selected contact
-    setExpandedContact((prevExpanded) => (prevExpanded === contactId ? null : contactId));
+    setExpandedContact((prevExpanded) =>
+      prevExpanded === contactId ? null : contactId
+    );
   };
 
   const [selectedContact, setSelectedContact] = useState(null);
@@ -628,18 +719,20 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
       .then((result) => {
         console.log(result);
         // setAccountDatabyid(result.account);
-       setAccountcontact(result.account.contacts);
+        setAccountcontact(result.account.contacts);
       })
       .catch((error) => console.error(error));
   };
 
   const handleContactUpdated = () => {
     // fetchContacts(); // Refetch contacts when updated
-    fetchAccountDataById(selectedAccount._id); 
+    fetchAccountDataById(selectedAccount._id);
   };
   const fetchContacts = async () => {
     try {
-      const response = await axios.get(`${CONTACT_API}/contacts/contactlist/list/`);
+      const response = await axios.get(
+        `${CONTACT_API}/contacts/contactlist/list/`
+      );
       setContactData(response.data.contactlist);
     } catch (error) {
       console.error("API Error:", error);
@@ -651,10 +744,13 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
       method: "DELETE",
       redirect: "follow",
     };
-    fetch(`${ACCOUNT_API}/accounts/accountdetails/removecontactfromaccount/${selectedAccount._id}/${contactId}`, requestOptions)
+    fetch(
+      `${ACCOUNT_API}/accounts/accountdetails/removecontactfromaccount/${selectedAccount._id}/${contactId}`,
+      requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
-        console.log(result)
+        console.log(result);
         handleContactUpdated();
       })
       .catch((error) => console.error(error));
@@ -712,7 +808,10 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
       redirect: "follow",
     };
 
-    fetch(`${ACCOUNT_API}/accounts/accountdetails/${selectedAccount._id}`, requestOptions)
+    fetch(
+      `${ACCOUNT_API}/accounts/accountdetails/${selectedAccount._id}`,
+      requestOptions
+    )
       .then((response) => response.text())
       .then((result) => {
         console.log(result);
@@ -729,7 +828,8 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
     const firstName = updatedContacts[index].firstName || "";
     const middleName = updatedContacts[index].middleName || "";
     const lastName = updatedContacts[index].lastName || "";
-    updatedContacts[index].contactName = `${firstName} ${middleName} ${lastName}`.trim();
+    updatedContacts[index].contactName =
+      `${firstName} ${middleName} ${lastName}`.trim();
 
     setContacts(updatedContacts);
   };
@@ -750,7 +850,10 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
       redirect: "follow",
     };
 
-    fetch(`${ACCOUNT_API}/accounts/accountdetails/getAccountbyIdAll/${accountid}`, requestOptions)
+    fetch(
+      `${ACCOUNT_API}/accounts/accountdetails/getAccountbyIdAll/${accountid}`,
+      requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
@@ -764,13 +867,16 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
   };
 
   useEffect(() => {
-    setFilteredContacts(contactData.filter((contact) => contact.name.toLowerCase().includes(searchQuery.toLowerCase())));
+    setFilteredContacts(
+      contactData.filter((contact) =>
+        contact.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
   }, [searchQuery, contactData]);
 
   const handleContactName = () => {};
 
   const handleLinkAccounts = () => {
-
     linkContactstoAccount(selectedContacts);
   };
   console.log(selectedContacts);
@@ -778,7 +884,9 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
   const linkContactstoAccount = (selectedContacts) => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    const existingContactIds = accountDatabyid.contacts.map((contact) => contact._id);
+    const existingContactIds = accountDatabyid.contacts.map(
+      (contact) => contact._id
+    );
     // Combine existing contact IDs with the new ones
     const combinedContacts = [...existingContactIds, ...selectedContacts];
     console.log(combinedContacts);
@@ -792,14 +900,17 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
       body: raw,
       redirect: "follow",
     };
-    fetch(`${ACCOUNT_API}/accounts/accountdetails/${accountDatabyid._id}`, requestOptions)
+    fetch(
+      `${ACCOUNT_API}/accounts/accountdetails/${accountDatabyid._id}`,
+      requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
         // handleCloseDrawerofAddContact();
         handleDialogClose();
         toast.success("contact added successfully");
-        onClose()
+        onClose();
         fetchContacts();
       })
       .catch((error) => console.error(error));
@@ -811,20 +922,42 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
   };
   return (
     <Box>
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 2, borderBottom: "1px solid grey" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          p: 2,
+          borderBottom: "1px solid grey",
+        }}
+      >
         <Typography variant="h6">Edit account</Typography>
         <RxCross2 style={{ cursor: "pointer" }} onClick={onClose} />
       </Box>
       <Box className="account-form" sx={{ height: "90vh", overflowY: "auto" }}>
         <Box>
-          <FormControl sx={{ width: "100%", display: "flex", alignItems: "center" }}>
-            <RadioGroup row aria-labelledby="main-radio-buttons-group-label" name="main-radio-buttons-group" value={selectedOption} onChange={handleOptionChange}>
+          <FormControl
+            sx={{ width: "100%", display: "flex", alignItems: "center" }}
+          >
+            <RadioGroup
+              row
+              aria-labelledby="main-radio-buttons-group-label"
+              name="main-radio-buttons-group"
+              value={selectedOption}
+              onChange={handleOptionChange}
+            >
               <Box className="account-contact-info">
                 {activeStep === "Contact Info" ? (
                   <>
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                       <Box
-                        sx={{ display: "flex", alignItems: "center", mr: 2, gap: 2, cursor: "pointer" }}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          mr: 2,
+                          gap: 2,
+                          cursor: "pointer",
+                        }}
                         onClick={() => {
                           handleOptionChange(null, "Account Info");
                         }}
@@ -834,14 +967,33 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                       </Box>
 
                       <ArrowForwardIosRoundedIcon />
-                      <FormControlLabel value="Contact Info" control={<Radio checked />} label="Contact Info" sx={{ ml: 2 }} />
+                      <FormControlLabel
+                        value="Contact Info"
+                        control={<Radio checked />}
+                        label="Contact Info"
+                        sx={{ ml: 2 }}
+                      />
                     </Box>
                   </>
                 ) : (
                   <>
-                    <FormControlLabel value="Account Info" control={<Radio checked={selectedOption === "Account Info"} />} label="Account Info" sx={{ mb: 2 }} />
+                    <FormControlLabel
+                      value="Account Info"
+                      control={
+                        <Radio checked={selectedOption === "Account Info"} />
+                      }
+                      label="Account Info"
+                      sx={{ mb: 2 }}
+                    />
                     <ArrowForwardIosRoundedIcon />
-                    <FormControlLabel value="Contact Info" control={<Radio checked={selectedOption === "Contact Info"} />} label="Contact Info" sx={{ mb: 2, ml: 2 }} />
+                    <FormControlLabel
+                      value="Contact Info"
+                      control={
+                        <Radio checked={selectedOption === "Contact Info"} />
+                      }
+                      label="Contact Info"
+                      sx={{ mb: 2, ml: 2 }}
+                    />
                   </>
                 )}
               </Box>
@@ -856,16 +1008,38 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                 </Box>
                 {/* Account Type Radio Buttons */}
                 <FormControl>
-                  <RadioGroup row aria-labelledby="account-type-radio-buttons-group-label" name="account-type-radio-buttons-group" value={accountType} onChange={handleAccountTypeChange}>
-                    <FormControlLabel value="Individual" control={<Radio />} label="Individual" />
-                    <FormControlLabel value="Company" control={<Radio />} label="Company" />
+                  <RadioGroup
+                    row
+                    aria-labelledby="account-type-radio-buttons-group-label"
+                    name="account-type-radio-buttons-group"
+                    value={accountType}
+                    onChange={handleAccountTypeChange}
+                  >
+                    <FormControlLabel
+                      value="Individual"
+                      control={<Radio />}
+                      label="Individual"
+                    />
+                    <FormControlLabel
+                      value="Company"
+                      control={<Radio />}
+                      label="Company"
+                    />
                   </RadioGroup>
                 </FormControl>
 
                 {/* Account Info for Individual Type */}
                 {/* {accountType === 'Individ/ual' && ( */}
                 <Box>
-                  <Box className="account-Type-options" sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                  <Box
+                    className="account-Type-options"
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      mb: 1,
+                    }}
+                  >
                     <h3>Account Info</h3>
 
                     {/* Help and More Options Icons */}
@@ -875,12 +1049,30 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                     </Box>
                   </Box>
                   <Box>
-                    <InputLabel sx={{ color: "black" }}>Account Name</InputLabel>
-                    <TextField size="small" fullWidth placeholder="Account Name" margin="normal" value={accountName} onChange={(e) => setaccountName(e.target.value)} />
+                    <InputLabel sx={{ color: "black" }}>
+                      Account Name
+                    </InputLabel>
+                    <TextField
+                      size="small"
+                      fullWidth
+                      placeholder="Account Name"
+                      margin="normal"
+                      value={accountName}
+                      onChange={(e) => setaccountName(e.target.value)}
+                    />
                   </Box>
                   <Box>
-                    <InputLabel sx={{ color: "black" }}>Company Name</InputLabel>
-                    <TextField size="small" fullWidth placeholder="Company Name" margin="normal" value={companyname} onChange={(e) => setcompanyname(e.target.value)} />
+                    <InputLabel sx={{ color: "black" }}>
+                      Company Name
+                    </InputLabel>
+                    <TextField
+                      size="small"
+                      fullWidth
+                      placeholder="Company Name"
+                      margin="normal"
+                      value={companyname}
+                      onChange={(e) => setcompanyname(e.target.value)}
+                    />
                   </Box>
                   <Box mr={2}>
                     {/* <InputLabel sx={{ color: "black" }}>Tags</InputLabel>
@@ -900,13 +1092,14 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                         </Box>
                       )}
                     /> */}
-                    <InputLabel sx={{ color: "black", mb: 1 }}>accounts Tags</InputLabel>
-                    <TagsMultiSelectDropDown 
-  value={tagsNew}
-  onChange={handleAccountTagChange}
-  placeholder="Tags"
-/>
-
+                    <InputLabel sx={{ color: "black", mb: 1 }}>
+                      accounts Tags
+                    </InputLabel>
+                    <TagsMultiSelectDropDown
+                      value={tagsNew}
+                      onChange={handleAccountTagChange}
+                      placeholder="Tags"
+                    />
                   </Box>
                   <Box mt={2} mr={2.5}>
                     <InputLabel sx={{ color: "black" }}>Team Member</InputLabel>
@@ -921,47 +1114,46 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                       renderInput={(params) => <TextField {...params} variant="outlined" placeholder="Assignees" />}
                       isOptionEqualToValue={(option, value) => option.value === value.value}
                     /> */}
-                     <MultiSelectDropdown 
-                                            value={selectedUser}
-                                            onChange={handleUserChange}
-                                            placeholder="Assignees"
-                                          />
+                    <MultiSelectDropdown
+                      value={selectedUser}
+                      onChange={handleUserChange}
+                      placeholder="Assignees"
+                    />
                   </Box>
                   <Box mt={2}>
-                                        <Typography>Folder Template</Typography>
-                                        <Autocomplete
-                                        
-                                         options={optionfolder}
-                                          getOptionLabel={(option) => option.label}
-                                          value={selectedTemplate}
-                                          onChange={(event, newValue) =>
-                                            handleSelectTemplate(newValue)
-                                          }
-                                          isOptionEqualToValue={(option, value) =>
-                                            option.value === value.value
-                                          }
-                                          renderOption={(props, option) => (
-                                            <Box
-                                              component="li"
-                                              {...props}
-                                              sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
-                                            >
-                                              {option.label}
-                                            </Box>
-                                          )}
-                                          renderInput={(params) => (
-                                            <TextField
-                                              {...params}
-                                              sx={{ backgroundColor: "#fff" }}
-                                              placeholder="select folder template"
-                                              variant="outlined"
-                                              size="small"
-                                            />
-                                          )}
-                                          sx={{ width: "100%", marginTop: "8px" }}
-                                          clearOnEscape // Enable clearable functionality
-                                        />
-                                      </Box>
+                    <Typography>Folder Template</Typography>
+                    <Autocomplete
+                      options={optionfolder}
+                      getOptionLabel={(option) => option.label}
+                      value={selectedTemplate}
+                      onChange={(event, newValue) =>
+                        handleSelectTemplate(newValue)
+                      }
+                      isOptionEqualToValue={(option, value) =>
+                        option.value === value.value
+                      }
+                      renderOption={(props, option) => (
+                        <Box
+                          component="li"
+                          {...props}
+                          sx={{ cursor: "pointer", margin: "5px 10px" }} // Add cursor pointer style
+                        >
+                          {option.label}
+                        </Box>
+                      )}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          sx={{ backgroundColor: "#fff" }}
+                          placeholder="select folder template"
+                          variant="outlined"
+                          size="small"
+                        />
+                      )}
+                      sx={{ width: "100%", marginTop: "8px" }}
+                      clearOnEscape // Enable clearable functionality
+                    />
+                  </Box>
                   <Box>
                     <Typography>
                       <h3>Company address</h3>
@@ -970,7 +1162,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                   <Box>
                     <InputLabel sx={{ color: "black" }}>Country</InputLabel>
                     <Select
-                     size="small"
+                      size="small"
                       value={selectedCountry.code}
                       onChange={handleCountryChange}
                       sx={{
@@ -986,13 +1178,15 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                     </Select>
                   </Box>
                   <Box>
-                    <InputLabel sx={{ color: "black", mt: 2 }}>Street address</InputLabel>
+                    <InputLabel sx={{ color: "black", mt: 2 }}>
+                      Street address
+                    </InputLabel>
                     <TextField
                       placeholder="Street address"
                       value={streetAddress}
                       onChange={(e) => setStreetAddress(e.target.value)}
                       // onChange={(e) => SetCStreetAddress(e.target.value)}
-                     size="small"
+                      size="small"
                       fullWidth
                       margin="normal"
                     />
@@ -1007,10 +1201,20 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                   >
                     <Box>
                       <InputLabel sx={{ color: "black" }}>City</InputLabel>
-                      <TextField fullWidth margin="normal" name="city" value={city} onChange={(e) => setCity(e.target.value)} placeholder="City" size="small"/>
+                      <TextField
+                        fullWidth
+                        margin="normal"
+                        name="city"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        placeholder="City"
+                        size="small"
+                      />
                     </Box>
                     <Box>
-                      <InputLabel sx={{ color: "black" }}>State/Province</InputLabel>
+                      <InputLabel sx={{ color: "black" }}>
+                        State/Province
+                      </InputLabel>
                       <TextField
                         margin="normal"
                         name="state"
@@ -1023,7 +1227,9 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                       />
                     </Box>
                     <Box>
-                      <InputLabel sx={{ color: "black" }}>ZIP/Postal Code</InputLabel>
+                      <InputLabel sx={{ color: "black" }}>
+                        ZIP/Postal Code
+                      </InputLabel>
 
                       <TextField
                         margin="normal"
@@ -1045,12 +1251,13 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                   color="primary"
                   // sx={{ borderRadius: "10px", mt: 3 }}
                   sx={{
-                    backgroundColor: 'var(--color-save-btn)',  // Normal background
-                   
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                    backgroundColor: "var(--color-save-btn)", // Normal background
+
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                     },
-                   mt:3,borderRadius:'15px'
+                    mt: 3,
+                    borderRadius: "15px",
                   }}
                   onClick={() => {
                     handleOptionChange(null, "Contact Info");
@@ -1068,32 +1275,66 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
           <>
             <Box className="create_new_contactform-container">
               <Box className="create_new_contactform-container">
-                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
                   <h3 style={{ marginLeft: "20px" }}>Contacts</h3>
-                  <Box onClick={handleClickOpen} sx={{ color: "#1976d3", display: "flex", alignItems: "center", justifyContent: "space-between", gap: "5px" }}>
+                  <Box
+                    onClick={handleClickOpen}
+                    sx={{
+                      color: "#1976d3",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "5px",
+                    }}
+                  >
                     <AddCircleOutlineIcon />
                     <Typography>Link existing contact</Typography>
                   </Box>
                 </Box>
 
                 <Box>
-                 { console.log(accountcontact)}
+                  {console.log(accountcontact)}
                   {accountcontact.map((contact) => (
                     <Box key={contact._id} sx={{ padding: 2 }}>
                       {/* Header Section - Always Visible */}
-                      <Grid container alignItems="center" justifyContent="space-between">
+                      <Grid
+                        container
+                        alignItems="center"
+                        justifyContent="space-between"
+                      >
                         <Grid item xs="auto">
-                          <Button variant="text" sx={{ padding: 0, minWidth: "auto", marginRight: 1 }} onClick={() => handleExpandClick(contact._id)}>
+                          <Button
+                            variant="text"
+                            sx={{
+                              padding: 0,
+                              minWidth: "auto",
+                              marginRight: 1,
+                            }}
+                            onClick={() => handleExpandClick(contact._id)}
+                          >
                             <ExpandMoreIcon />
                           </Button>
                         </Grid>
                         <Grid item xs>
                           <Typography variant="h6" textAlign="left">
-                            {contact.firstName} {contact.middleName} {contact.lastName}
+                            {contact.firstName} {contact.middleName}{" "}
+                            {contact.lastName}
                           </Typography>
                         </Grid>
                         <Grid item xs="auto">
-                          <IconButton aria-label="more options" size="small" onClick={(e) => handleMenuClick(e, contact._id, contactName)}>
+                          <IconButton
+                            aria-label="more options"
+                            size="small"
+                            onClick={(e) =>
+                              handleMenuClick(e, contact._id, contactName)
+                            }
+                          >
                             <MoreVertIcon />
                           </IconButton>
                         </Grid>
@@ -1105,14 +1346,21 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                         open={menuOpen} // Use derived state here
                         onClose={handleMenuClose}
                       >
-                        <MenuItem onClick={handleEditDescription}>Edit Existing Contact</MenuItem>
+                        <MenuItem onClick={handleEditDescription}>
+                          Edit Existing Contact
+                        </MenuItem>
                         <MenuItem onClick={handleUnlink}>Unlink</MenuItem>
                       </Menu>
 
                       {/* Show Company Name, Email, and Toggles Always */}
                       <Box sx={{ marginY: 2, marginLeft: 4 }}>
                         {/* Company Name */}
-                        <Typography variant="subtitle2" color="textSecondary" gutterBottom textAlign="left">
+                        <Typography
+                          variant="subtitle2"
+                          color="textSecondary"
+                          gutterBottom
+                          textAlign="left"
+                        >
                           Company Name
                         </Typography>
                         <Typography variant="body2" textAlign="left">
@@ -1120,15 +1368,35 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                         </Typography>
 
                         {/* Email */}
-                        <Typography variant="body2" color="textSecondary" textAlign="left" sx={{ marginTop: 1 }}>
+                        <Typography
+                          variant="body2"
+                          color="textSecondary"
+                          textAlign="left"
+                          sx={{ marginTop: 1 }}
+                        >
                           {contact.email}
                         </Typography>
 
                         {/* Toggle Switches */}
                         <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
-                          <FormControlLabel control={<Switch checked={contact.login} readOnly />} label="Login" />
-                          <FormControlLabel control={<Switch checked={contact.notify} disabled />} label="Notify" />
-                          <FormControlLabel control={<Switch checked={contact.emailSync} readOnly />} label="Email Sync" />
+                          <FormControlLabel
+                            control={
+                              <Switch checked={contact.login} readOnly />
+                            }
+                            label="Login"
+                          />
+                          <FormControlLabel
+                            control={
+                              <Switch checked={contact.notify} disabled />
+                            }
+                            label="Notify"
+                          />
+                          <FormControlLabel
+                            control={
+                              <Switch checked={contact.emailSync} readOnly />
+                            }
+                            label="Email Sync"
+                          />
                         </Box>
                       </Box>
 
@@ -1138,7 +1406,12 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                           {/* Additional Details */}
                           {/* Note Section */}
                           <Box sx={{ marginTop: 2 }}>
-                            <Typography variant="subtitle2" color="textSecondary" gutterBottom textAlign="left">
+                            <Typography
+                              variant="subtitle2"
+                              color="textSecondary"
+                              gutterBottom
+                              textAlign="left"
+                            >
                               Note
                             </Typography>
                             <Typography variant="body2" textAlign="left">
@@ -1148,7 +1421,12 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
 
                           {/* SSN Section */}
                           <Box sx={{ marginTop: 2 }}>
-                            <Typography variant="subtitle2" color="textSecondary" gutterBottom textAlign="left">
+                            <Typography
+                              variant="subtitle2"
+                              color="textSecondary"
+                              gutterBottom
+                              textAlign="left"
+                            >
                               SSN
                             </Typography>
                             <Typography variant="body2" textAlign="left">
@@ -1162,7 +1440,12 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                               Address
                             </Typography>
                             <Box sx={{ marginY: 1 }}>
-                              <Typography variant="subtitle2" color="textSecondary" gutterBottom textAlign="left">
+                              <Typography
+                                variant="subtitle2"
+                                color="textSecondary"
+                                gutterBottom
+                                textAlign="left"
+                              >
                                 Country
                               </Typography>
                               <Typography variant="body2" textAlign="left">
@@ -1170,7 +1453,12 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                               </Typography>
                             </Box>
                             <Box>
-                              <Typography variant="subtitle2" color="textSecondary" gutterBottom textAlign="left">
+                              <Typography
+                                variant="subtitle2"
+                                color="textSecondary"
+                                gutterBottom
+                                textAlign="left"
+                              >
                                 Street Address
                               </Typography>
                               <Typography variant="body2" textAlign="left">
@@ -1179,7 +1467,12 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                             </Box>
                             <Grid container spacing={0}>
                               <Grid item xs={4}>
-                                <Typography variant="subtitle2" color="textSecondary" gutterBottom textAlign="left">
+                                <Typography
+                                  variant="subtitle2"
+                                  color="textSecondary"
+                                  gutterBottom
+                                  textAlign="left"
+                                >
                                   City
                                 </Typography>
                                 <Typography variant="body2" textAlign="left">
@@ -1187,7 +1480,12 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                                 </Typography>
                               </Grid>
                               <Grid item xs={4}>
-                                <Typography variant="subtitle2" color="textSecondary" gutterBottom textAlign="left">
+                                <Typography
+                                  variant="subtitle2"
+                                  color="textSecondary"
+                                  gutterBottom
+                                  textAlign="left"
+                                >
                                   State / Province
                                 </Typography>
                                 <Typography variant="body2" textAlign="left">
@@ -1195,7 +1493,12 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                                 </Typography>
                               </Grid>
                               <Grid item xs={4}>
-                                <Typography variant="subtitle2" color="textSecondary" gutterBottom textAlign="left">
+                                <Typography
+                                  variant="subtitle2"
+                                  color="textSecondary"
+                                  gutterBottom
+                                  textAlign="left"
+                                >
                                   ZIP / Postal Code
                                 </Typography>
                                 <Typography variant="body2" textAlign="left">
@@ -1212,7 +1515,12 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                                 Linked Accounts
                               </Typography>
                               <Box>
-                                <Typography variant="subtitle2" color="textSecondary" gutterBottom textAlign="left">
+                                <Typography
+                                  variant="subtitle2"
+                                  color="textSecondary"
+                                  gutterBottom
+                                  textAlign="left"
+                                >
                                   Linked accounts
                                 </Typography>
                                 {contact.tags.map((tag, index) => (
@@ -1220,13 +1528,18 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                                     key={index}
                                     sx={{
                                       display: "inline-block",
-                                      backgroundColor: tag.tagColour || "#f0f0f0",
+                                      backgroundColor:
+                                        tag.tagColour || "#f0f0f0",
                                       borderRadius: "20px",
                                       padding: "4px 12px",
                                       margin: "4px",
                                     }}
                                   >
-                                    <Typography variant="body2" component="span" textAlign="left">
+                                    <Typography
+                                      variant="body2"
+                                      component="span"
+                                      textAlign="left"
+                                    >
                                       {selectedAccount.accountName}
                                     </Typography>
                                   </Box>
@@ -1240,8 +1553,21 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                   ))}
                 </Box>
 
-                <Drawer anchor="right" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)} sx={{ width: 600 }}>
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px", ml: 1 }}>
+                <Drawer
+                  anchor="right"
+                  open={isDrawerOpen}
+                  onClose={() => setIsDrawerOpen(false)}
+                  sx={{ width: 600 }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "20px",
+                      ml: 1,
+                    }}
+                  >
                     <Typography sx={{ fontWeight: "bold" }} variant="h6">
                       Edit Contact
                     </Typography>
@@ -1273,10 +1599,16 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                   <DialogTitle>Search for a Contact</DialogTitle>
                   <Divider />
                   <DialogContent>
-                    <DialogContentText>Search for an existing contact by entering their name, phone number, or email. If the contact is not in your CRM, click "Cancel" and create one on the previous page.</DialogContentText>
+                    <DialogContentText>
+                      Search for an existing contact by entering their name,
+                      phone number, or email. If the contact is not in your CRM,
+                      click "Cancel" and create one on the previous page.
+                    </DialogContentText>
 
                     <Box mt={5}>
-                      <InputLabel sx={{ color: "black" }}>Serch for contact</InputLabel>
+                      <InputLabel sx={{ color: "black" }}>
+                        Serch for contact
+                      </InputLabel>
                       {/* <TextField
                         margin="normal"
                         fullWidth
@@ -1314,31 +1646,42 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                         )}
                         fullWidth
                         disableClearable // Prevents clearing the input by clicking the clear button
-                        value={filteredContacts.filter((contact) => selectedContacts.includes(contact.id))} // Control the selected value
+                        value={filteredContacts.filter((contact) =>
+                          selectedContacts.includes(contact.id)
+                        )} // Control the selected value
                       />
                     </Box>
                   </DialogContent>
                   <DialogActions>
-                    <Button variant="contained" onClick={handleLinkAccounts} sx={{
-                backgroundColor: 'var(--color-save-btn)',  // Normal background
-               
-                '&:hover': {
-                  backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                },
-               width:'80px',borderRadius:'15px'
-              }}>
+                    <Button
+                      variant="contained"
+                      onClick={handleLinkAccounts}
+                      sx={{
+                        backgroundColor: "var(--color-save-btn)", // Normal background
+
+                        "&:hover": {
+                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        },
+                        width: "80px",
+                        borderRadius: "15px",
+                      }}
+                    >
                       Add
                     </Button>
-                    <Button onClick={handleDialogClose} variant="outlined" sx={{
-                    borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                   color:'var(--color-save-btn)',
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      color:'#fff',
-                      border:"none"
-                    },
-                    borderRadius:'15px'
-                  }}>
+                    <Button
+                      onClick={handleDialogClose}
+                      variant="outlined"
+                      sx={{
+                        borderColor: "var(--color-border-cancel-btn)", // Normal background
+                        color: "var(--color-save-btn)",
+                        "&:hover": {
+                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          color: "#fff",
+                          border: "none",
+                        },
+                        borderRadius: "15px",
+                      }}
+                    >
                       Cancel        
                     </Button>
                   </DialogActions>
@@ -1346,7 +1689,17 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
               </Box>
 
               {contacts.map((contact, index) => (
-                <Box style={{ border: "1px solid #e2e8f0", margin: "15px", borderRadius: "8px", height: "55vh", overflowY: "auto", padding: "15px" }} className="create_new_contactform">
+                <Box
+                  style={{
+                    border: "1px solid #e2e8f0",
+                    margin: "15px",
+                    borderRadius: "8px",
+                    height: "55vh",
+                    overflowY: "auto",
+                    padding: "15px",
+                  }}
+                  className="create_new_contactform"
+                >
                   <Typography variant="h6" gutterBottom sx={{ ml: 1 }}>
                     Contact {index + 1}
                   </Typography>
@@ -1361,43 +1714,156 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                         }}
                       >
                         <Box>
-                          <InputLabel sx={{ color: "black" }}>First Name</InputLabel>
-                          <TextField margin="normal" fullWidth name="firstName" placeholder="First Name" size="small" onChange={(e) => handleContactInputChange(index, e)} />
+                          <InputLabel sx={{ color: "black" }}>
+                            First Name
+                          </InputLabel>
+                          <TextField
+                            margin="normal"
+                            fullWidth
+                            name="firstName"
+                            placeholder="First Name"
+                            size="small"
+                            onChange={(e) => handleContactInputChange(index, e)}
+                          />
                         </Box>
                         <Box>
-                          <InputLabel sx={{ color: "black" }}>Middle Name</InputLabel>
-                          <TextField margin="normal" fullWidth name="middleName" placeholder="Middle Name" size="small" onChange={(e) => handleContactInputChange(index, e)} />
+                          <InputLabel sx={{ color: "black" }}>
+                            Middle Name
+                          </InputLabel>
+                          <TextField
+                            margin="normal"
+                            fullWidth
+                            name="middleName"
+                            placeholder="Middle Name"
+                            size="small"
+                            onChange={(e) => handleContactInputChange(index, e)}
+                          />
                         </Box>
                         <Box>
-                          <InputLabel sx={{ color: "black" }}>Last Name</InputLabel>
-                          <TextField fullWidth name="lastName" margin="normal" placeholder="Last name" size="small" onChange={(e) => handleContactInputChange(index, e)} />
+                          <InputLabel sx={{ color: "black" }}>
+                            Last Name
+                          </InputLabel>
+                          <TextField
+                            fullWidth
+                            name="lastName"
+                            margin="normal"
+                            placeholder="Last name"
+                            size="small"
+                            onChange={(e) => handleContactInputChange(index, e)}
+                          />
                         </Box>
                       </Box>
                       <Box>
-                        <InputLabel sx={{ color: "black" }}>Contact Name</InputLabel>
-                        <TextField name="contactName" fullWidth placeholder="Contact Name" margin="normal" size="small" value={contact.contactName} onChange={(e) => handleContactInputChange(index, e)} />
+                        <InputLabel sx={{ color: "black" }}>
+                          Contact Name
+                        </InputLabel>
+                        <TextField
+                          name="contactName"
+                          fullWidth
+                          placeholder="Contact Name"
+                          margin="normal"
+                          size="small"
+                          value={contact.contactName}
+                          onChange={(e) => handleContactInputChange(index, e)}
+                        />
                       </Box>
                       <Box>
-                        <InputLabel sx={{ color: "black" }}>Company Name</InputLabel>
-                        <TextField fullWidth name="companyName" margin="normal" placeholder="Company Name" size="small" onChange={(e) => handleContactInputChange(index, e)} />
+                        <InputLabel sx={{ color: "black" }}>
+                          Company Name
+                        </InputLabel>
+                        <TextField
+                          fullWidth
+                          name="companyName"
+                          margin="normal"
+                          placeholder="Company Name"
+                          size="small"
+                          onChange={(e) => handleContactInputChange(index, e)}
+                        />
                       </Box>
                       <Box>
                         <InputLabel sx={{ color: "black" }}>Note</InputLabel>
-                        <TextField fullWidth multiline name="note" margin="normal" placeholder="Note" size="small" onChange={(e) => handleContactInputChange(index, e)} />
+                        <TextField
+                          fullWidth
+                          multiline
+                          name="note"
+                          margin="normal"
+                          placeholder="Note"
+                          size="small"
+                          onChange={(e) => handleContactInputChange(index, e)}
+                        />
                       </Box>
                       <Box>
                         <InputLabel sx={{ color: "black" }}>SSN</InputLabel>
-                        <TextField fullWidth name="ssn" margin="normal" placeholder="SSN" size="small" onChange={(e) => handleContactInputChange(index, e)} />
+                        <TextField
+                          fullWidth
+                          name="ssn"
+                          margin="normal"
+                          placeholder="SSN"
+                          size="small"
+                          onChange={(e) => handleContactInputChange(index, e)}
+                        />
                       </Box>
                       <Box>
                         <InputLabel sx={{ color: "black" }}>Email</InputLabel>
-                        <TextField fullWidth name="email" margin="normal" placeholder="Email" size="small" onChange={(e) => handleContactInputChange(index, e)} />
+                        <TextField
+                          fullWidth
+                          name="email"
+                          margin="normal"
+                          placeholder="Email"
+                          size="small"
+                          onChange={(e) => handleContactInputChange(index, e)}
+                        />
                       </Box>
                       {/* Switches for Login, Notify, and Email Sync */}
                       <Box sx={{ mt: 1 }}>
-                        <FormControlLabel control={<Switch checked={contact.login === "true"} onChange={(e) => handleContactSwitchChange(index, "login", e.target.checked)} color="primary" />} label="Login" />
-                        <FormControlLabel control={<Switch checked={contact.notify === "true"} onChange={(e) => handleContactSwitchChange(index, "notify", e.target.checked)} color="primary" />} label="Notify" />
-                        <FormControlLabel control={<Switch checked={contact.emailSync === "true"} onChange={(e) => handleContactSwitchChange(index, "emailSync", e.target.checked)} color="primary" />} label="Email Sync" />
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={contact.login === "true"}
+                              onChange={(e) =>
+                                handleContactSwitchChange(
+                                  index,
+                                  "login",
+                                  e.target.checked
+                                )
+                              }
+                              color="primary"
+                            />
+                          }
+                          label="Login"
+                        />
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={contact.notify === "true"}
+                              onChange={(e) =>
+                                handleContactSwitchChange(
+                                  index,
+                                  "notify",
+                                  e.target.checked
+                                )
+                              }
+                              color="primary"
+                            />
+                          }
+                          label="Notify"
+                        />
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={contact.emailSync === "true"}
+                              onChange={(e) =>
+                                handleContactSwitchChange(
+                                  index,
+                                  "emailSync",
+                                  e.target.checked
+                                )
+                              }
+                              color="primary"
+                            />
+                          }
+                          label="Email Sync"
+                        />
                       </Box>
 
                       <Box key={contact.id}>
@@ -1418,21 +1884,29 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                             </Box>
                           )}
                         /> */}
-                                              <InputLabel sx={{ color: "black", mb: 1 }}>Tags</InputLabel>
-                                 
-                                 <FormControl sx={{ width: "100%" }}>
+                        <InputLabel sx={{ color: "black", mb: 1 }}>
+                          Tags
+                        </InputLabel>
+
+                        <FormControl sx={{ width: "100%" }}>
                           <Select
                             multiple
                             multiline
                             size="small"
                             fullWidth
                             value={contact.tags || []}
-    onChange={(event) => handleContactTagChange(index)(event)}
+                            onChange={(event) =>
+                              handleContactTagChange(index)(event)
+                            }
                             input={<OutlinedInput />}
                             displayEmpty // Enables placeholder when no value is selected
                             renderValue={(selected) => {
                               if (selected.length === 0) {
-                                return <span style={{ color: "#aaa" }}>Select tags...</span>; // Placeholder
+                                return (
+                                  <span style={{ color: "#aaa" }}>
+                                    Select tags...
+                                  </span>
+                                ); // Placeholder
                               }
                               return (
                                 <Box
@@ -1445,7 +1919,9 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                                   }}
                                 >
                                   {selected.map((value) => {
-                                    const option = tagsoptions.find((opt) => opt.value === value);
+                                    const option = tagsoptions.find(
+                                      (opt) => opt.value === value
+                                    );
                                     return (
                                       <Chip
                                         key={value}
@@ -1458,7 +1934,8 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                                           borderRadius: "16px",
                                           height: "20px",
                                           cursor: "pointer",
-                                          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                                          boxShadow:
+                                            "0px 2px 4px rgba(0, 0, 0, 0.2)",
                                           "& .MuiChip-deleteIcon": {
                                             color: "#fff",
                                             opacity: 0.7,
@@ -1483,12 +1960,17 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                             {tagsoptions.map((option) => {
                               // const dynamicWidth = Math.min(option.label.length * 10, 150); // Adjust width dynamically
                               // Create a canvas element to measure the actual text width
-                          const canvas = document.createElement("canvas");
-                          const context = canvas.getContext("2d");
-                          context.font = "12px Arial"; // Match the font size/style of MenuItem
-                        
-                          const textWidth = context.measureText(option.label).width; // Get precise width
-                          const dynamicWidth = Math.min(textWidth + 16, 150); // Add padding & set max width
+                              const canvas = document.createElement("canvas");
+                              const context = canvas.getContext("2d");
+                              context.font = "12px Arial"; // Match the font size/style of MenuItem
+
+                              const textWidth = context.measureText(
+                                option.label
+                              ).width; // Get precise width
+                              const dynamicWidth = Math.min(
+                                textWidth + 16,
+                                150
+                              ); // Add padding & set max width
                               return (
                                 <MenuItem
                                   key={option.value}
@@ -1523,7 +2005,11 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                           </Select>
                         </FormControl>
                       </Box>
-                      <Typography variant="h6" gutterBottom sx={{ ml: 1, fontWeight: "bold", mt: 3 }}>
+                      <Typography
+                        variant="h6"
+                        gutterBottom
+                        sx={{ ml: 1, fontWeight: "bold", mt: 3 }}
+                      >
                         Phone Numbers
                       </Typography>
                       {phoneNumbers.map((phone, phoneIndex) => (
@@ -1538,7 +2024,14 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                             mb: 2,
                           }}
                         >
-                          {phone.isPrimary && <Chip label="Primary phone" color="primary" size="small" sx={{ position: "absolute", mt: -3 }} />}
+                          {phone.isPrimary && (
+                            <Chip
+                              label="Primary phone"
+                              color="primary"
+                              size="small"
+                              sx={{ position: "absolute", mt: -3 }}
+                            />
+                          )}
                           {/* <PhoneInput
                             country={"us"}
                             value={phone.phone}
@@ -1560,7 +2053,12 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                             country={phone.country || "us"}
                             value={phone.phone}
                             onChange={(value, country) =>
-                              handleContactPhoneNumberChange(index, phoneIndex, value, country)
+                              handleContactPhoneNumberChange(
+                                index,
+                                phoneIndex,
+                                value,
+                                country
+                              )
                             }
                             inputStyle={{ width: "100%" }}
                             buttonStyle={{
@@ -1573,7 +2071,10 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                               gap: "8px",
                             }}
                           />
-                          <AiOutlineDelete onClick={() => handleDeletePhoneNumber(phoneIndex)} style={{ cursor: "pointer", color: "red" }} />
+                          <AiOutlineDelete
+                            onClick={() => handleDeletePhoneNumber(phoneIndex)}
+                            style={{ cursor: "pointer", color: "red" }}
+                          />
                         </Box>
                       ))}
 
@@ -1593,14 +2094,20 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                         <p>Add phone number</p>
                       </Box>
 
-                      <Typography variant="h6" gutterBottom sx={{ ml: 1, fontWeight: "bold", mt: 3 }}>
+                      <Typography
+                        variant="h6"
+                        gutterBottom
+                        sx={{ ml: 1, fontWeight: "bold", mt: 3 }}
+                      >
                         Address
                       </Typography>
 
                       <Box key={contact.id}>
                         {/* Country Selection */}
                         <Box>
-                          <InputLabel sx={{ color: "black" }}>Country</InputLabel>
+                          <InputLabel sx={{ color: "black" }}>
+                            Country
+                          </InputLabel>
 
                           <Autocomplete
                             size="small"
@@ -1630,17 +2137,45 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                                   cursor: "pointer",
                                 }}
                               >
-                                <Typography sx={{ fontWeight: 500 }}>{option.name}</Typography>
-                                <Typography sx={{ fontSize: "0.9rem", color: "gray" }}>{option.code}</Typography>
+                                <Typography sx={{ fontWeight: 500 }}>
+                                  {option.name}
+                                </Typography>
+                                <Typography
+                                  sx={{ fontSize: "0.9rem", color: "gray" }}
+                                >
+                                  {option.code}
+                                </Typography>
                               </ListItem>
                             )}
-                            renderInput={(params) => <TextField {...params} placeholder="Country" variant="outlined" sx={{ marginTop: "8px", width: "100%" }} />}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                placeholder="Country"
+                                variant="outlined"
+                                sx={{ marginTop: "8px", width: "100%" }}
+                              />
+                            )}
                           />
                         </Box>
                       </Box>
                       <Box>
-                        <InputLabel sx={{ color: "black", mt: 2 }}>Street address</InputLabel>
-                        <TextField fullWidth name="streetAddress" margin="normal" placeholder="Street address" size="small" onChange={(e) => handleContactAddressChange(index, "streetAddress", e.target.value)} />
+                        <InputLabel sx={{ color: "black", mt: 2 }}>
+                          Street address
+                        </InputLabel>
+                        <TextField
+                          fullWidth
+                          name="streetAddress"
+                          margin="normal"
+                          placeholder="Street address"
+                          size="small"
+                          onChange={(e) =>
+                            handleContactAddressChange(
+                              index,
+                              "streetAddress",
+                              e.target.value
+                            )
+                          }
+                        />
                       </Box>
                       <Box
                         sx={{
@@ -1652,15 +2187,58 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                       >
                         <Box>
                           <InputLabel sx={{ color: "black" }}>City</InputLabel>
-                          <TextField fullWidth margin="normal" name="city" placeholder="City" size="small" onChange={(e) => handleContactAddressChange(index, "city", e.target.value)} />
+                          <TextField
+                            fullWidth
+                            margin="normal"
+                            name="city"
+                            placeholder="City"
+                            size="small"
+                            onChange={(e) =>
+                              handleContactAddressChange(
+                                index,
+                                "city",
+                                e.target.value
+                              )
+                            }
+                          />
                         </Box>
                         <Box>
-                          <InputLabel sx={{ color: "black" }}>State/Province</InputLabel>
-                          <TextField margin="normal" name="state" fullWidth placeholder="State/Province" size="small" onChange={(e) => handleContactAddressChange(index, "state", e.target.value)} />
+                          <InputLabel sx={{ color: "black" }}>
+                            State/Province
+                          </InputLabel>
+                          <TextField
+                            margin="normal"
+                            name="state"
+                            fullWidth
+                            placeholder="State/Province"
+                            size="small"
+                            onChange={(e) =>
+                              handleContactAddressChange(
+                                index,
+                                "state",
+                                e.target.value
+                              )
+                            }
+                          />
                         </Box>
                         <Box>
-                          <InputLabel sx={{ color: "black" }}>ZIP/Postal Code</InputLabel>
-                          <TextField margin="normal" fullWidth name="postalCode" placeholder="ZIP/Postal Code" size="small" onChange={(e) => handleContactAddressChange(index, "postalCode", e.target.value)} />
+                          <InputLabel sx={{ color: "black" }}>
+                            ZIP/Postal Code
+                          </InputLabel>
+                          <TextField
+                            margin="normal"
+                            fullWidth
+                            name="postalCode"
+                            placeholder="ZIP/Postal Code"
+                            size="small"
+                            onChange={(e) =>
+                              handleContactAddressChange(
+                                index,
+                                "postalCode",
+                                e.target.value
+                              )
+                            }
+                          />
                         </Box>
                       </Box>
                     </form>
@@ -1700,12 +2278,14 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                   //   borderRadius: "10px",
                   // }}
                   sx={{
-                    backgroundColor: 'var(--color-save-btn)',  // Normal background
-                   
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                    backgroundColor: "var(--color-save-btn)", // Normal background
+
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                     },
-                   width:'80px',borderRadius:'15px',ml:2
+                    width: "80px",
+                    borderRadius: "15px",
+                    ml: 2,
                   }}
                   onClick={() => {
                     handleOptionChange(null, "Account Info");
@@ -1723,12 +2303,13 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
                   //   borderRadius: "10px",
                   // }}
                   sx={{
-                    backgroundColor: 'var(--color-save-btn)',  // Normal background
-                   
-                    '&:hover': {
-                      backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+                    backgroundColor: "var(--color-save-btn)", // Normal background
+
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                     },
-                   width:'80px',borderRadius:'15px'
+                    width: "80px",
+                    borderRadius: "15px",
                   }}
                   onClick={handlesubmitContact}
                 >

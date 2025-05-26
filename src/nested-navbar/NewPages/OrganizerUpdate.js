@@ -29,9 +29,10 @@ import {
   Paper,
   LinearProgress,
   Tooltip,
+  Switch,
 } from "@mui/material"; // Make sure you have MUI installed
 import { ExpandMore, ExpandLess } from "@mui/icons-material";
-
+import axios from "axios";
 import { RxCross2 } from "react-icons/rx";
 const CreateOrganizerUpdate = ({ OrganizerData, onClose }) => {
   const ORGANIZER_TEMP_API = process.env.REACT_APP_ORGANIZER_TEMP_URL;
@@ -39,6 +40,8 @@ const CreateOrganizerUpdate = ({ OrganizerData, onClose }) => {
   const [expandedSection, setExpandedSection] = useState(null);
   const [organizerTemp, setOrganizerTemp] = useState(null);
   const [sections, setSections] = useState([]);
+  const [organizerId, setOrganizerId] = useState("");
+  const [showConditional, setShowConditional] = useState(false);
   useEffect(() => {
     fetchOrganizerOfAccount(data);
   }, []);
@@ -58,7 +61,7 @@ const CreateOrganizerUpdate = ({ OrganizerData, onClose }) => {
         );
         console.log("fdfd", selectedOrganizer);
         setOrganizerTemp(selectedOrganizer);
-        
+        setOrganizerId(selectedOrganizer._id);
         setSections(selectedOrganizer.sections);
         // Loop through the sections and form elements to log text and textvalue
         selectedOrganizer.sections.forEach((section) => {
@@ -88,17 +91,107 @@ const CreateOrganizerUpdate = ({ OrganizerData, onClose }) => {
   const handleCloseDrawer = () => {
     setDrawerOpen(false);
   };
+  const handleCheckboxChange = async (sectionId, formElementId, checked) => {
+    try {
+      // Call API to update backend
+      await axios.patch(
+        `${ORGANIZER_TEMP_API}/workflow/orgaccwise/${organizerId}/sections/${sectionId}/form-elements/${formElementId}`,
+        { active: checked }
+      );
+
+      // Update local state after successful backend update
+      const updatedSections = sections.map((section) => {
+        if (section.id === sectionId) {
+          return {
+            ...section,
+            formElements: section.formElements.map((el) => {
+              if (el.id === formElementId) {
+                return { ...el, active: checked };
+              }
+              return el;
+            }),
+          };
+        }
+        return section;
+      });
+
+      setSections(updatedSections);
+    } catch (error) {
+      console.error("Failed to update active status in backend:", error);
+      // Optionally show an error to the user
+    }
+  };
+  // Filter sections based on conditional settings and toggle state
+  const filteredSections = sections.filter((section) => {
+    // Show section if:
+    // 1. Conditional is false OR
+    // 2. Conditional is true AND showConditional is true
+    return !section.sectionsettings?.conditional || showConditional;
+  });
   return (
     <Box>
-      {/* {sections.length > 0 ? (
-        sections.map((section) => (
+      <FormControlLabel
+        control={
+          <Switch
+            checked={showConditional}
+            onChange={(e) => setShowConditional(e.target.checked)}
+          />
+        }
+        label="Show Hidden Questions"
+        sx={{ mb: 2 }}
+      />
+      {filteredSections.length > 0 ? (
+        filteredSections.map((section) => (
           <Box key={section.id} sx={{ marginBottom: 2 }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <Typography
-                sx={{ flexGrow: 1 }}
+                sx={{ flexGrow: 1, cursor: "pointer" }}
                 onClick={() => handleToggleSection(section.id)}
               >
-                {section.name}
+                {/* {section.text} */}
+                {section.text}{" "}
+                {section.sectionsettings?.conditional && showConditional && (
+                  <Typography
+                    component="span"
+                    sx={{
+                      fontStyle: "italic",
+                      color: "gray",
+                      fontSize: "0.85rem",
+                    }}
+                  >
+                    (Hidden Section)
+                  </Typography>
+                )}
+              </Typography>
+              <Typography
+                component="span"
+                sx={{
+                  fontWeight: "normal",
+                  fontSize: "0.9rem",
+                  color: "gray",
+                  ml: 1,
+                }}
+              >
+                {/* ({section.formElements.filter((el) => el.textvalue).length} /{" "}
+                {section.formElements.length}) */}
+                (
+                {
+                  section.formElements.filter(
+                    (el) =>
+                      el.textvalue &&
+                      (!el.questionsectionsettings?.conditional ||
+                        showConditional)
+                  ).length
+                }{" "}
+                /{" "}
+                {
+                  section.formElements.filter(
+                    (el) =>
+                      !el.questionsectionsettings?.conditional ||
+                      showConditional
+                  ).length
+                }
+                )
               </Typography>
               <IconButton onClick={() => handleToggleSection(section.id)}>
                 {expandedSection === section.id ? (
@@ -108,22 +201,27 @@ const CreateOrganizerUpdate = ({ OrganizerData, onClose }) => {
                 )}
               </IconButton>
             </Box>
+
             {expandedSection === section.id && (
               <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="form elements table">
                   <TableHead>
                     <TableRow>
                       <TableCell>
-                        <strong>Questions</strong>
+                        <strong>Question</strong>
                       </TableCell>
-                      <TableCell align="left">
+                      <TableCell>
                         <strong>Answer</strong>
+                      </TableCell>
+
+                      <TableCell>
+                        <strong>Reviewed</strong>
                       </TableCell>
                     </TableRow>
                   </TableHead>
 
                   <TableBody>
-                    {section.formElements.map((formElement) => (
+                    {/* {section.formElements.map((formElement) => (
                       <TableRow key={formElement.id}>
                         <TableCell>
                           {formElement.type === "Text Editor"
@@ -134,88 +232,74 @@ const CreateOrganizerUpdate = ({ OrganizerData, onClose }) => {
                           {formElement.type === "Text Editor" ? (
                             <Box
                               sx={{ cursor: "pointer", color: "blue" }}
-                              onClick={() => handleOpenDrawer(formElement.text)} // Pass content to Drawer
-                            >
-                              Display
-                            </Box>
-                          ) : (
-                            formElement.textvalue || "N/A"
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            )}
-          </Box>
-        ))
-      ) : (
-        <Typography variant="body1">Loading sections...</Typography>
-      )} */}
-      {sections.length > 0 ? (
-        sections.map((section) => (
-          <Box key={section.id} sx={{ marginBottom: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Typography
-                sx={{ flexGrow: 1, cursor: 'pointer' }}
-                onClick={() => handleToggleSection(section.id)}
-              >
-                {section.name}
-                
-              </Typography>
-<Typography component="span" sx={{ fontWeight: 'normal', fontSize: '0.9rem', color: 'gray', ml: 1 }}>
-      ({section.formElements.filter(el => el.textvalue ).length} / {section.formElements.length})
-    </Typography>
-              <IconButton onClick={() => handleToggleSection(section.id)}>
-                {expandedSection === section.id ? <ExpandLess /> : <ExpandMore />}
-              </IconButton>
-            </Box>
-
-            {expandedSection === section.id && (
-              <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="form elements table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell><strong>Question</strong></TableCell>
-                      <TableCell><strong>Answer</strong></TableCell>
-                      {/* <TableCell><strong>CRM</strong></TableCell>
-                      <TableCell><strong>Reviewed</strong></TableCell> */}
-                    </TableRow>
-                  </TableHead>
-
-                  <TableBody>
-                    {section.formElements.map((formElement) => (
-                      <TableRow key={formElement.id}>
-                        <TableCell>
-                          {formElement.type === 'Text Editor'
-                            ? 'Text Block'
-                            : formElement.text}
-                        </TableCell>
-                        <TableCell>
-                          {formElement.type === 'Text Editor' ? (
-                            <Box
-                              sx={{ cursor: 'pointer', color: 'blue' }}
                               onClick={() => handleOpenDrawer(formElement.text)}
                             >
                               Display
                             </Box>
                           ) : (
-                            formElement.textvalue || ''
+                            formElement.textvalue || ""
                           )}
                         </TableCell>
-                        {/* <TableCell>
-                          <Checkbox
-                           
-                          />
-                        </TableCell>
+
                         <TableCell>
-                          <Checkbox
-                           
-                          />
-                        </TableCell> */}
+                          {formElement.type !== "Text Editor" && (
+                            <Checkbox
+                              checked={formElement.active || false}
+                              onChange={(e) =>
+                                handleCheckboxChange(
+                                  section.id,
+                                  formElement.id,
+                                  e.target.checked
+                                )
+                              }
+                            />
+                          )}
+                        </TableCell>
                       </TableRow>
-                    ))}
+                    ))} */}
+                    {section.formElements
+                      .filter(
+                        (formElement) =>
+                          !formElement.questionsectionsettings?.conditional ||
+                          showConditional
+                      )
+                      .map((formElement) => (
+                        <TableRow key={formElement.id}>
+                          <TableCell>
+                            {formElement.type === "Text Editor"
+                              ? "Text Block"
+                              : formElement.text}
+                          </TableCell>
+                          <TableCell>
+                            {formElement.type === "Text Editor" ? (
+                              <Box
+                                sx={{ cursor: "pointer", color: "blue" }}
+                                onClick={() =>
+                                  handleOpenDrawer(formElement.text)
+                                }
+                              >
+                                Display
+                              </Box>
+                            ) : (
+                              formElement.textvalue || ""
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {formElement.type !== "Text Editor" && (
+                              <Checkbox
+                                checked={formElement.active || false}
+                                onChange={(e) =>
+                                  handleCheckboxChange(
+                                    section.id,
+                                    formElement.id,
+                                    e.target.checked
+                                  )
+                                }
+                              />
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -225,6 +309,8 @@ const CreateOrganizerUpdate = ({ OrganizerData, onClose }) => {
       ) : (
         <Typography variant="body1">Loading sections...</Typography>
       )}
+
+      <Button onClick={onClose}>Back</Button>
       {/* Drawer Component */}
       <Drawer anchor="right" open={drawerOpen} onClose={handleCloseDrawer}>
         <Box sx={{ width: 600, padding: 2 }}>
