@@ -36,9 +36,8 @@ const Section = ({
   onDuplicate,
   onSaveFormData,
   onSaveSectionData,
-  
 }) => {
- console.log("selected section",section)
+  console.log("selected section", section);
   const [text, setText] = useState(section.text);
   const [formElements, setFormElements] = useState(section.formElements || []);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
@@ -81,11 +80,10 @@ const Section = ({
       // conditions: conditionButton ? questionAnswers : [], // assuming questionAnswers is an array of {question, answer} objects
     };
 
-    
     if (onSaveSectionData) {
       onSaveSectionData(sectionsettings);
       console.log("Section Settings:", sectionsettings);
-      setSectionConditionBadge(sectionsettings.conditional)
+      setSectionConditionBadge(sectionsettings.conditional);
       // console.log(sectionsettings.conditional)
       toggleDrawer(false);
       setRepeateButton(false);
@@ -166,7 +164,7 @@ const Section = ({
           : element
       );
       setFormElements(updatedFormElements); // Update form elements in state
-console.log("updated",updatedFormElements)
+      console.log("updated", updatedFormElements);
       // Clear form and close drawer
       clearForm();
       setQueDrawerOpen(false);
@@ -187,15 +185,14 @@ console.log("updated",updatedFormElements)
       );
       setDescriptionText(questionsectionsettings?.description || "");
       setMode(questionsectionsettings?.mode || "Any");
-    
 
       const conditions = questionsectionsettings?.conditions || [];
       const questions = conditions.map((cond) => cond.question || null);
       const answers = conditions.map((cond) => cond.answer || null);
-  console.log("que",questions)
-  console.log("ans",answers)
-  console.log("conditions",conditions);
-  setQuestionAnswers(conditions); 
+      console.log("que", questions);
+      console.log("ans", answers);
+      console.log("conditions", conditions);
+      setQuestionAnswers(conditions);
       setSelectedQuestions(questions);
       setSelectedAnswers(answers);
     }
@@ -212,10 +209,8 @@ console.log("updated",updatedFormElements)
   };
   const handleAddQuestionAnswer = () => {
     setQuestionAnswers([...questionAnswers, { question: "", answer: "" }]);
-   
   };
-  
-  
+
   const handleAddSectionQuestionAnswer = () => {
     setSectionQuestionAnswers([
       ...sectionQuestionAnswers,
@@ -250,26 +245,25 @@ console.log("updated",updatedFormElements)
   //  setSelectedSection(section);
 
   const [selectedSectionData, setSelectedSectionData] = useState(null);
-  
+
   // const handleSectionSettingsClick = () => {
   //   setSelectedSectionData(section);
-  //   setSelectedSectionId(section.id); 
+  //   setSelectedSectionId(section.id);
   //   if (section && section.sectionSettings) {
   //     console.log("sections",section.sectionSettings)
-   
+
   //       // Open the drawer with the updated data
   //       toggleDrawer(true); // Open the drawer
   //     // Set the selected section data before opening the drawer
   //    // Store the ID of the section to open
-  
-  //     // Set the section settings 
+
+  //     // Set the section settings
   //     setRepeateButton(section.sectionSettings.sectionRepeatingMode || false);
   //     setRepeatButtonName(section.sectionSettings.buttonName || "Repeat Section");
   //     setConditionButton(section.sectionSettings.conditional || false);
   //     setSectionMode(section.sectionSettings.sectionMode || "Any");
   //     setSectionQuestionAnswers(section.sectionSettings.conditions || []);
-  
-    
+
   //     console.log("Selected single Section Data:", section);
   //   } else {
   //     // Handle case where sectionSettings is not available
@@ -277,16 +271,16 @@ console.log("updated",updatedFormElements)
   //     toggleDrawer(true); // Optionally close the drawer if sectionSettings is missing
   //   }
   // };
-  
+
   // useEffect(() => {
   //   if (isDrawerOpen && selectedSectionData) {
   //     console.log("Drawer opened with section data:", selectedSectionData);
   //   }
   // }, [isDrawerOpen, selectedSectionData]);
   //  Update the badge state when updatedSection changes
-useEffect(() => {
-  setSectionConditionBadge(section?.sectionsettings?.conditional);
-}, [section]);
+  useEffect(() => {
+    setSectionConditionBadge(section?.sectionsettings?.conditional);
+  }, [section]);
   const handleSectionSettingsClick = () => {
     const updatedSection = sections.find((sec) => sec.id === section.id);
     console.log("Latest Section Data:", updatedSection); // Check if settings are updated
@@ -294,26 +288,29 @@ useEffect(() => {
     if (updatedSection && updatedSection.sectionsettings) {
       setSelectedSectionData(updatedSection);
       setSelectedSectionId(updatedSection.id);
-      setRepeateButton(updatedSection.sectionsettings.sectionRepeatingMode || false);
-      setRepeatButtonName(updatedSection.sectionsettings.buttonName || "Repeat Section");
+      setRepeateButton(
+        updatedSection.sectionsettings.sectionRepeatingMode || false
+      );
+      setRepeatButtonName(
+        updatedSection.sectionsettings.buttonName || "Repeat Section"
+      );
       setConditionButton(updatedSection.sectionsettings.conditional || false);
       // setSectionConditionBadge(updatedSection.sectionsettings.conditional)
       setSectionMode(updatedSection.sectionsettings.sectionMode || "Any");
       // setSectionQuestionAnswers(updatedSection.sectionsettings.conditions || []);
-     // Extract conditions
-    const conditions = updatedSection.sectionsettings.conditions || [];
-    setSectionQuestionAnswers(conditions); // Store full condition objects
+      // Extract conditions
+      const conditions = updatedSection.sectionsettings.conditions || [];
+      setSectionQuestionAnswers(conditions); // Store full condition objects
 
-    // Extract questions and answers from conditions
-    const questions = conditions.map((cond) => cond.question || null);
-    const answers = conditions.map((cond) => cond.answer || null);
+      // Extract questions and answers from conditions
+      const questions = conditions.map((cond) => cond.question || null);
+      const answers = conditions.map((cond) => cond.answer || null);
 
-    setSelectedSectionQuestions(questions);
-    setSelectedSectionAnswers(answers);
-      
+      setSelectedSectionQuestions(questions);
+      setSelectedSectionAnswers(answers);
     }
   };
-  
+
   const toggleDrawer = (open) => {
     setDrawerOpen(open);
   };
@@ -616,14 +613,18 @@ useEffect(() => {
               </IconButton>
             </Box>
           ))}
-        <Button variant="contained" onClick={() => handleAddOption(element.id)}  sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      },
-                      borderRadius:'15px', 
-                    }}>
+        <Button
+          variant="contained"
+          onClick={() => handleAddOption(element.id)}
+          sx={{
+            backgroundColor: "var(--color-save-btn)", // Normal background
+
+            "&:hover": {
+              backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+            },
+            borderRadius: "15px",
+          }}
+        >
           Add Option
         </Button>
       </Box>
@@ -656,24 +657,24 @@ useEffect(() => {
                   handleElementTextChange(element.id, e.target.value)
                 }
               />
-                           {element.questionsectionsettings?.conditional && (
-  <Box
-  style={{
-    backgroundColor: "green",
-    color: "white",
-    borderRadius: "10px",
-    padding: "4px 8px",
-    fontSize: "12px",
-    marginLeft: "8px",
-  }}
-  >
-    Conditional
-  </Box>
-)}
+              {element.questionsectionsettings?.conditional && (
+                <Box
+                  style={{
+                    backgroundColor: "green",
+                    color: "white",
+                    borderRadius: "10px",
+                    padding: "4px 8px",
+                    fontSize: "12px",
+                    marginLeft: "8px",
+                  }}
+                >
+                  Conditional
+                </Box>
+              )}
               <IconButton onClick={() => handleSettingsClick(element.id)}>
                 <IoSettingsOutline />
               </IconButton>
- 
+
               <IconButton onClick={() => handleDeleteFormElement(element.id)}>
                 <RiDeleteBinLine />
               </IconButton>
@@ -708,19 +709,19 @@ useEffect(() => {
                 <IoSettingsOutline />
               </IconButton>
               {element.questionsectionsettings?.conditional && (
-  <span
-    style={{
-      backgroundColor: "green",
-      color: "white",
-      borderRadius: "10px",
-      padding: "4px 8px",
-      fontSize: "12px",
-      marginLeft: "8px",
-    }}
-  >
-    Conditional
-  </span>
-)}
+                <span
+                  style={{
+                    backgroundColor: "green",
+                    color: "white",
+                    borderRadius: "10px",
+                    padding: "4px 8px",
+                    fontSize: "12px",
+                    marginLeft: "8px",
+                  }}
+                >
+                  Conditional
+                </span>
+              )}
               <IconButton onClick={() => handleDeleteFormElement(element.id)}>
                 <RiDeleteBinLine />
               </IconButton>
@@ -755,19 +756,19 @@ useEffect(() => {
                 <IoSettingsOutline />
               </IconButton>
               {element.questionsectionsettings?.conditional && (
-  <span
-    style={{
-      backgroundColor: "green",
-      color: "white",
-      borderRadius: "10px",
-      padding: "4px 8px",
-      fontSize: "12px",
-      marginLeft: "8px",
-    }}
-  >
-    Conditional
-  </span>
-)}
+                <span
+                  style={{
+                    backgroundColor: "green",
+                    color: "white",
+                    borderRadius: "10px",
+                    padding: "4px 8px",
+                    fontSize: "12px",
+                    marginLeft: "8px",
+                  }}
+                >
+                  Conditional
+                </span>
+              )}
               <IconButton onClick={() => handleDeleteFormElement(element.id)}>
                 <RiDeleteBinLine />
               </IconButton>
@@ -802,19 +803,19 @@ useEffect(() => {
                 <IoSettingsOutline />
               </IconButton>
               {element.questionsectionsettings?.conditional && (
-  <span
-    style={{
-      backgroundColor: "green",
-      color: "white",
-      borderRadius: "10px",
-      padding: "4px 8px",
-      fontSize: "12px",
-      marginLeft: "8px",
-    }}
-  >
-    Conditional
-  </span>
-)}
+                <span
+                  style={{
+                    backgroundColor: "green",
+                    color: "white",
+                    borderRadius: "10px",
+                    padding: "4px 8px",
+                    fontSize: "12px",
+                    marginLeft: "8px",
+                  }}
+                >
+                  Conditional
+                </span>
+              )}
               <IconButton onClick={() => handleDeleteFormElement(element.id)}>
                 <RiDeleteBinLine />
               </IconButton>
@@ -843,19 +844,19 @@ useEffect(() => {
                 <IoSettingsOutline />
               </IconButton>
               {element.questionsectionsettings?.conditional && (
-  <span
-    style={{
-      backgroundColor: "green",
-      color: "white",
-      borderRadius: "10px",
-      padding: "4px 8px",
-      fontSize: "12px",
-      marginLeft: "8px",
-    }}
-  >
-    Conditional
-  </span>
-)}
+                <span
+                  style={{
+                    backgroundColor: "green",
+                    color: "white",
+                    borderRadius: "10px",
+                    padding: "4px 8px",
+                    fontSize: "12px",
+                    marginLeft: "8px",
+                  }}
+                >
+                  Conditional
+                </span>
+              )}
               <IconButton onClick={() => handleDeleteFormElement(element.id)}>
                 <RiDeleteBinLine />
               </IconButton>
@@ -885,19 +886,19 @@ useEffect(() => {
                 <IoSettingsOutline />
               </IconButton>
               {element.questionsectionsettings?.conditional && (
-  <span
-    style={{
-      backgroundColor: "green",
-      color: "white",
-      borderRadius: "10px",
-      padding: "4px 8px",
-      fontSize: "12px",
-      marginLeft: "8px",
-    }}
-  >
-    Conditional
-  </span>
-)}
+                <span
+                  style={{
+                    backgroundColor: "green",
+                    color: "white",
+                    borderRadius: "10px",
+                    padding: "4px 8px",
+                    fontSize: "12px",
+                    marginLeft: "8px",
+                  }}
+                >
+                  Conditional
+                </span>
+              )}
               <IconButton onClick={() => handleDeleteFormElement(element.id)}>
                 <RiDeleteBinLine />
               </IconButton>
@@ -926,19 +927,19 @@ useEffect(() => {
                 <IoSettingsOutline />
               </IconButton>
               {element.questionsectionsettings?.conditional && (
-  <span
-    style={{
-      backgroundColor: "green",
-      color: "white",
-      borderRadius: "10px",
-      padding: "4px 8px",
-      fontSize: "12px",
-      marginLeft: "8px",
-    }}
-  >
-    Conditional
-  </span>
-)}
+                <span
+                  style={{
+                    backgroundColor: "green",
+                    color: "white",
+                    borderRadius: "10px",
+                    padding: "4px 8px",
+                    fontSize: "12px",
+                    marginLeft: "8px",
+                  }}
+                >
+                  Conditional
+                </span>
+              )}
               <IconButton onClick={() => handleDeleteFormElement(element.id)}>
                 <RiDeleteBinLine />
               </IconButton>
@@ -968,19 +969,19 @@ useEffect(() => {
                 <IoSettingsOutline />
               </IconButton>
               {element.questionsectionsettings?.conditional && (
-  <span
-    style={{
-      backgroundColor: "green",
-      color: "white",
-      borderRadius: "10px",
-      padding: "4px 8px",
-      fontSize: "12px",
-      marginLeft: "8px",
-    }}
-  >
-    Conditional
-  </span>
-)}
+                <span
+                  style={{
+                    backgroundColor: "green",
+                    color: "white",
+                    borderRadius: "10px",
+                    padding: "4px 8px",
+                    fontSize: "12px",
+                    marginLeft: "8px",
+                  }}
+                >
+                  Conditional
+                </span>
+              )}
               <IconButton onClick={() => handleDeleteFormElement(element.id)}>
                 <RiDeleteBinLine />
               </IconButton>
@@ -1010,19 +1011,19 @@ useEffect(() => {
                 <IoSettingsOutline />
               </IconButton>
               {element.questionsectionsettings?.conditional && (
-  <span
-    style={{
-      backgroundColor: "green",
-      color: "white",
-      borderRadius: "10px",
-      padding: "4px 8px",
-      fontSize: "12px",
-      marginLeft: "8px",
-    }}
-  >
-    Conditional
-  </span>
-)}
+                <span
+                  style={{
+                    backgroundColor: "green",
+                    color: "white",
+                    borderRadius: "10px",
+                    padding: "4px 8px",
+                    fontSize: "12px",
+                    marginLeft: "8px",
+                  }}
+                >
+                  Conditional
+                </span>
+              )}
               <IconButton onClick={() => handleDeleteFormElement(element.id)}>
                 <RiDeleteBinLine />
               </IconButton>
@@ -1133,37 +1134,39 @@ useEffect(() => {
   useEffect(() => {
     if (selectedElement) {
       const { questionsectionsettings } = selectedElement;
-  
+
       setRequiredButton(questionsectionsettings?.required || false);
       setPrefilledButton(questionsectionsettings?.prefilled || false);
       setQueConditionButton(questionsectionsettings?.conditional || false);
-      setDescriptionButton(questionsectionsettings?.descriptionEnabled || false);
+      setDescriptionButton(
+        questionsectionsettings?.descriptionEnabled || false
+      );
       setDescriptionText(questionsectionsettings?.description || "");
       setMode(questionsectionsettings?.mode || "Any");
-  
+
       const conditions = questionsectionsettings?.conditions || [];
       setQuestionAnswers(conditions);
-  
+
       const questions = conditions.map((cond) => cond.question || null);
       const answers = conditions.map((cond) => cond.answer || null);
-  
+
       setSelectedQuestions(questions);
       setSelectedAnswers(answers);
     }
   }, [selectedElement]);
-  
+
   // Handle section settings question and answer in a similar way
   // useEffect(() => {
   //   if (sectionQuestionAnswers && sectionQuestionAnswers.length > 0) {
   //     const questions = sectionQuestionAnswers.map((q) => q.question || null);
   //     const answers = sectionQuestionAnswers.map((a) => a.answer || null);
-  
+
   //     setSelectedSectionQuestions(questions);
   //     setSelectedSectionAnswers(answers);
   //     setSectionQuestionAnswers(sectionQuestionAnswers); // Ensure the state is updated similarly
   //   }
   // }, [sectionQuestionAnswers]);
-  
+
   return (
     <Box
       sx={{
@@ -1191,22 +1194,22 @@ useEffect(() => {
           onChange={handleTextChange}
           placeholder="Section text"
         />
-                  {/* {section.sectionsettings?.conditional && ( */}
-                  {sectionConditionBadge && (
-    <Box
-    style={{
-      backgroundColor: "green",
-      color: "white",
-      borderRadius: "10px",
-      padding: "4px 8px",
-      fontSize: "12px",
-      marginLeft: "8px",
-    }}
-    >
-      Conditional
-    </Box>
-  )}
-  
+        {/* {section.sectionsettings?.conditional && ( */}
+        {sectionConditionBadge && (
+          <Box
+            style={{
+              backgroundColor: "green",
+              color: "white",
+              borderRadius: "10px",
+              padding: "4px 8px",
+              fontSize: "12px",
+              marginLeft: "8px",
+            }}
+          >
+            Conditional
+          </Box>
+        )}
+
         <Box
           sx={{
             display: "flex",
@@ -1218,7 +1221,6 @@ useEffect(() => {
             <HiOutlineDuplicate />
           </IconButton>
 
-        
           <IconButton onClick={handleSectionSettingsClick}>
             <IoSettingsOutline />
           </IconButton>
@@ -1260,12 +1262,12 @@ useEffect(() => {
           variant="contained"
           onClick={(event) => setAnchorEl(event.currentTarget)}
           sx={{
-            backgroundColor: 'var(--color-save-btn)',  // Normal background
-           
-            '&:hover': {
-              backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
+            backgroundColor: "var(--color-save-btn)", // Normal background
+
+            "&:hover": {
+              backgroundColor: "var(--color-save-hover-btn)", // Hover background color
             },
-            borderRadius:'15px', 
+            borderRadius: "15px",
           }}
         >
           Questions
@@ -1274,14 +1276,14 @@ useEffect(() => {
           variant="outlined"
           onClick={() => handleAddFormElement("Text Editor")}
           sx={{
-            borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-           color:'var(--color-save-btn)',
-            '&:hover': {
-              backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-              color:'#fff',
-              border:"none"
+            borderColor: "var(--color-border-cancel-btn)", // Normal background
+            color: "var(--color-save-btn)",
+            "&:hover": {
+              backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+              color: "#fff",
+              border: "none",
             },
-            borderRadius:'15px'
+            borderRadius: "15px",
           }}
         >
           Text Block
@@ -1491,26 +1493,36 @@ useEffect(() => {
             )}
 
             <Box sx={{ display: "flex", alighItems: "center", gap: 3, mt: 2 }}>
-              <Button variant="contained" onClick={handleSectionSave} sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      },
-                      borderRadius:'15px', width:'80px'
-                    }}>
+              <Button
+                variant="contained"
+                onClick={handleSectionSave}
+                sx={{
+                  backgroundColor: "var(--color-save-btn)", // Normal background
+
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                  },
+                  borderRadius: "15px",
+                  width: "80px",
+                }}
+              >
                 Save
               </Button>
-              <Button variant="outlined" onClick={() => toggleDrawer(false)} sx={{
-                  borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                 color:'var(--color-save-btn)',
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                    color:'#fff',
-                    border:"none"
+              <Button
+                variant="outlined"
+                onClick={() => toggleDrawer(false)}
+                sx={{
+                  borderColor: "var(--color-border-cancel-btn)", // Normal background
+                  color: "var(--color-save-btn)",
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                    color: "#fff",
+                    border: "none",
                   },
-                  width:'80px',borderRadius:'15px'
-                }}>
+                  width: "80px",
+                  borderRadius: "15px",
+                }}
+              >
                 Cancel
               </Button>
             </Box>
@@ -1611,7 +1623,6 @@ useEffect(() => {
               <Divider />
               <p>Ask question only in certain scenarios</p>
               {queConditionButton && (
-             
                 <Box mb={3} mt={2}>
                   <Box
                     sx={{
@@ -1731,7 +1742,6 @@ useEffect(() => {
                   ))}
                 </Box>
               )}
-              
             </Paper>
             <Paper style={{ padding: "15px", marginTop: "20px" }}>
               <Box display={"flex"} alignItems={"center"} m={1}>
@@ -1769,28 +1779,34 @@ useEffect(() => {
               )}
             </Paper>
             <Box sx={{ display: "flex", alighItems: "center", gap: 3, mt: 2 }}>
-              <Button variant="contained" onClick={handleSave} sx={{
-                      backgroundColor: 'var(--color-save-btn)',  // Normal background
-                     
-                      '&:hover': {
-                        backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                      },
-                      borderRadius:'15px', width:'80px'
-                    }}>
+              <Button
+                variant="contained"
+                onClick={handleSave}
+                sx={{
+                  backgroundColor: "var(--color-save-btn)", // Normal background
+
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                  },
+                  borderRadius: "15px",
+                  width: "80px",
+                }}
+              >
                 Save
               </Button>
               <Button
                 variant="outlined"
                 onClick={() => setQueDrawerOpen(false)}
                 sx={{
-                  borderColor: 'var(--color-border-cancel-btn)',  // Normal background
-                 color:'var(--color-save-btn)',
-                  '&:hover': {
-                    backgroundColor: 'var(--color-save-hover-btn)',  // Hover background color
-                    color:'#fff',
-                    border:"none"
+                  borderColor: "var(--color-border-cancel-btn)", // Normal background
+                  color: "var(--color-save-btn)",
+                  "&:hover": {
+                    backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                    color: "#fff",
+                    border: "none",
                   },
-                  width:'80px',borderRadius:'15px'
+                  width: "80px",
+                  borderRadius: "15px",
                 }}
               >
                 Cancel
@@ -1805,25 +1821,8 @@ useEffect(() => {
 
 export default Section;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  {/* <IconButton
+{
+  /* <IconButton
             onClick={() => {
               // Ensure sections is defined and has at least one element
               if (sections && sections.length > 0 && sections[0].sectionsettings) {
@@ -1844,8 +1843,10 @@ export default Section;
             }}
           >
             <IoSettingsOutline />
-          </IconButton> */}
-          {/* <IconButton
+          </IconButton> */
+}
+{
+  /* <IconButton
       onClick={() => {
         // Ensure the current section is defined and has settings
         if (section && section.sectionsettings) {
@@ -1866,4 +1867,5 @@ export default Section;
       }}
     >
       <IoSettingsOutline />
-    </IconButton> */}
+    </IconButton> */
+}

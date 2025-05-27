@@ -64,7 +64,7 @@ const MyAccount = () => {
   const [newPasShow, setNewPassShow] = useState(false);
   const [passShow, setPassShow] = useState(false);
   const [cpassShow, setCPassShow] = useState(false);
-  const { logindata } = useContext(LoginContext);
+
   const [userdata, setuserdata] = useState();
   const [admindata, setadmindata] = useState();
   const [isEditable, setIsEditable] = useState(false);
@@ -79,9 +79,7 @@ const MyAccount = () => {
   const [cpassword, setCpassword] = useState("");
   const [signedtime, setSignedTime] = useState("");
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+
 
   const formatTimePeriod = (seconds) => {
     if (seconds < 3600) {
@@ -97,17 +95,26 @@ const MyAccount = () => {
 
   //******************* */
   // const { logindata } = useContext(LoginContext);
-  const [loginuserid, setLoginUserId] = useState("");
+    const { logindata } = useContext(LoginContext);
+  const [loginuserid, setLoginUserId] = useState();
 
   useEffect(() => {
-    if (logindata?.user?.id) {
-      // Check if logindata and user.id exist
-      setLoginUserId(logindata.user.id);
-    }
-  }, [logindata]);
+     if (logindata?.user?.id) {
+       setLoginUserId(logindata.user.id);
+     }
+   }, [logindata]);
+   // Fetch data after loginuserid is set
+useEffect(() => {
+  if (loginuserid) {
+    fetchData();
+  }
+}, [loginuserid]);
+
+  console.log("loginuseriid",loginuserid)
   const fetchData = async () => {
     try {
       const url = `${LOGIN_API}/common/user/${loginuserid}`;
+      console.log("jjj",url)
       const response = await fetch(url);
       const data = await response.json();
 
@@ -115,6 +122,7 @@ const MyAccount = () => {
       setSignedTime(formatTimePeriod(validTime));
 
       setuserdata(data);
+      console.log("dta", data)
       fetchAdminData(data.email);
 
       fetchNotificationData(loginuserid);
@@ -126,7 +134,7 @@ const [username,setUserName]= useState("")
   const fetchAdminData = async (email) => {
     try {
       const url = `${LOGIN_API}/admin/adminsignup/adminbyemail/${email}`;
-
+console.log("url",url)
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error("Failed to fetch email templates");

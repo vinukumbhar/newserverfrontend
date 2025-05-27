@@ -355,6 +355,9 @@ const ChatTempUpdate = () => {
     const [SubtaskSwitch, setSubtaskSwitch] = useState(false);
     const handleSubtaskSwitch = (checked) => {
         setSubtaskSwitch(checked);
+         if (checked && subtasks.length === 0) {
+    setSubtasks([{ id: '1', text: '', checked: false }]);
+  }
     };
 
     const savechat = async () => {
@@ -702,7 +705,7 @@ const ChatTempUpdate = () => {
                                                         {(provided) => (
                                                             <div className="subtask-input" {...provided.droppableProps} ref={provided.innerRef}>
 
-                                                                {(subtasks.length > 0 ? subtasks : [{ id: 'default', text: '' }]).map((subtask, index) => (
+                                                                {/* {(subtasks.length > 0 ? subtasks : [{ id: 'default', text: '' }]).map((subtask, index) => (
                                                                     <Draggable key={subtask.id} draggableId={subtask.id} index={index}>
                                                                         {(provided) => (
                                                                             <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
@@ -733,8 +736,36 @@ const ChatTempUpdate = () => {
                                                                             </div>
                                                                         )}
                                                                     </Draggable>
-                                                                ))}
-
+                                                                ))} */}
+{subtasks.map((subtask, index) => (
+  <Draggable key={subtask.id} draggableId={subtask.id} index={index}>
+    {(provided) => (
+      <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+        <Box display="flex" gap="30px" alignItems="center">
+          <Checkbox
+            checked={checkedSubtasks.includes(subtask.id)}
+            onChange={() => handleCheckboxChange(subtask.id, subtask.checked)}
+          />
+          <TextField
+            placeholder="Things To do"
+            value={subtask.text}
+            size="small"
+            margin="normal"
+            fullWidth
+            onChange={(e) => handleInputChange(subtask.id, e.target.value)}
+            variant="outlined"
+          />
+          <IconButton onClick={() => handleDeleteSubtask(subtask.id)}>
+            <RiDeleteBin6Line />
+          </IconButton>
+          <IconButton {...provided.dragHandleProps}>
+            <PiDotsSixVerticalBold />
+          </IconButton>
+        </Box>
+      </div>
+    )}
+  </Draggable>
+))}
                                                                 {provided.placeholder}
                                                                 <Box sx={{ cursor: 'pointer' }} onClick={handleAddSubtask} style={{ margin: "10px", color: "#1976d3" }}>
                                                                     <FiPlusCircle /> Add Subtasks
