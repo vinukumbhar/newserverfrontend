@@ -46,9 +46,6 @@ const JobDrawer = ({
   handleDrawerClose,
   charLimit = 4000,
 }) => {
-  
-
-
   const { logindata } = useContext(LoginContext);
   const [loginuserid, setLoginUserId] = useState("");
 
@@ -117,26 +114,24 @@ const JobDrawer = ({
 
   const handleAccountChange = (newSelectedAcc) => {
     setSelectedaccount(newSelectedAcc);
-    
+
     const selectedValues = newSelectedAcc.map((option) => option.value);
     setCombinedaccountValues(selectedValues);
-   
   };
-   useEffect(() => {
-      fetchAccountData();
-      // fetchAccountDatas("data");
-    }, []);
-  
-    const fetchAccountData = async () => {
-      try {
-        const response = await fetch(`${ACCOUNT_API}/accounts/accountdetails`);
-        const data = await response.json();
-        setaccountdata(data.accounts);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+  useEffect(() => {
+    fetchAccountData();
+    // fetchAccountDatas("data");
+  }, []);
 
+  const fetchAccountData = async () => {
+    try {
+      const response = await fetch(`${ACCOUNT_API}/accounts/accountdetails`);
+      const data = await response.json();
+      setaccountdata(data.accounts);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const [userData, setUserData] = useState([]);
   useEffect(() => {
@@ -164,10 +159,9 @@ const JobDrawer = ({
   const [combinedValues, setCombinedValues] = useState();
   const handleUserChange = (newSelectedUsers) => {
     setSelectedUser(newSelectedUsers);
-  
+
     const selectedValues = newSelectedUsers.map((option) => option.value);
     setCombinedValues(selectedValues);
-   
   };
 
   const assigneesoptions = userData.map((user) => ({
@@ -341,14 +335,14 @@ const JobDrawer = ({
       headers: myHeaders,
       data: JSON.stringify(data),
     };
-console.log("job creation", data)
+    console.log("job creation", data);
     axios
       .request(config)
       .then((response) => {
         console.log("Job created successfully");
         toast.success("Job created successfully");
-        handleClose()
-        handleDrawerClose()
+        handleClose();
+        handleDrawerClose();
         navigate("/jobs/activejob");
       })
       .catch((error) => {
@@ -649,7 +643,7 @@ console.log("job creation", data)
       const url = `${TAGS_API}/tags/`;
       const response = await fetch(url);
       const data = await response.json();
-   
+
       setTags(data.tags);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -746,18 +740,17 @@ console.log("job creation", data)
 
     // Get the tags for the selected accounts
     const accountTags = combinedaccountValues
-   
+
       .map((accountId) => {
-         console.log("combinedaccountValues",combinedaccountValues)
+        console.log("combinedaccountValues", combinedaccountValues);
         const account = accountdata.find(
           (account) => account._id === accountId
         );
         return account ? account.tags || [] : []; // Assuming accounts have tags
       })
       .flat(); // Flattening array to get all tags
-console.log("hghg", accountTags)
+    console.log("hghg", accountTags);
 
-      
     const ACCOUNT_TASKS_API = process.env.REACT_APP_TASKS_API;
     const CHAT_API = process.env.REACT_APP_CHAT_TEMP_URL;
     const CHATTOCLIENT_API = process.env.REACT_APP_CHAT_API;
@@ -972,6 +965,8 @@ console.log("hghg", accountTags)
         {
           message: chatData.description,
           fromwhome: "Admin",
+          senderid: loginuserid,
+          isRead: false,
         },
       ];
       // Dynamically prepare the payload from invoiceData
@@ -1511,12 +1506,12 @@ console.log("hghg", accountTags)
           );
         } else {
           toast.success("Job created successfully");
-          handleDrawerClose()
+          handleDrawerClose();
           navigate("/jobs/activejob");
         }
         setDrawerOpen(false);
-        handleNewDrawerClose()
-        handleDrawerClose()
+        handleNewDrawerClose();
+        handleDrawerClose();
         // handleDrawerClose();
         // fetchJobData();
       } catch (error) {
@@ -1559,7 +1554,7 @@ console.log("hghg", accountTags)
             headers: myHeaders,
             body: JSON.stringify(jobData),
           });
-console.log("jobs automation creatyion", jobData)
+          console.log("jobs automation creatyion", jobData);
           if (!response.ok) {
             const error = await response.json();
             throw new Error(
@@ -1600,7 +1595,7 @@ console.log("jobs automation creatyion", jobData)
         throw error;
       }
     };
-// console.log("combinedaccountValues",combinedaccountValues)
+    // console.log("combinedaccountValues",combinedaccountValues)
     return (
       <Box p={2}>
         <Typography variant="h6" sx={{ display: "flex", alignItems: "center" }}>
@@ -2009,7 +2004,7 @@ console.log("jobs automation creatyion", jobData)
               />
             </Box>
             <Box mt={2} mr={2.5}>
-              <label className="job-input-label" >Job Assignees</label>
+              <label className="job-input-label">Job Assignees</label>
 
               <MultiSelectDropdown
                 value={selectedUser}
@@ -2093,7 +2088,6 @@ console.log("jobs automation creatyion", jobData)
                     size="small"
                     margin="normal"
                     fullWidth
-                  
                     placeholder="0"
                     sx={{ ml: 1, backgroundColor: "#fff" }}
                     value={startsin}
@@ -2140,7 +2134,6 @@ console.log("jobs automation creatyion", jobData)
                     size="small"
                     margin="normal"
                     fullWidth
-                  
                     sx={{ ml: 1.5, backgroundColor: "#fff" }}
                     value={duein}
                     placeholder="0"

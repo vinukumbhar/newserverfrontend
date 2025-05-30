@@ -414,8 +414,9 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { LoginContext } from "../../../Sidebar/Context/Context";
 import { Archive, Delete } from "@mui/icons-material";
-
+import { useTheme } from "@mui/material/styles";
 const Commuication = () => {
+  const theme = useTheme();
   const { logindata } = useContext(LoginContext);
   const [loginUserId, setLoginUserId] = useState();
   const { data } = useParams();
@@ -459,7 +460,21 @@ const Commuication = () => {
       })
       .catch((error) => console.error("Error fetching chat list:", error));
   };
+  // Function to count unread admin messages
+const countUnreadAdminMessages = (chat) => {
+  if (!chat.description || !Array.isArray(chat.description)) return 0;
+  
+  const unreadCount = chat.description.reduce((count, message) => {
+    // Check if message is unread and from Admin
+    if (message.isRead === false && message.fromwhome === "client") {
+      return count + 1;
+    }
+    return count;
+  }, 0);
 
+  console.log(`Unread count for chat ${chat._id}:`, unreadCount);
+  return unreadCount;
+};
   const formattedTime = new Date(time)
     .toLocaleDateString("en-US", {
       month: "short",
@@ -467,26 +482,31 @@ const Commuication = () => {
     })
     .replace(",", "");
 
-  const handleShowChat = (chatId) => {
+  // const handleShowChat = (chatId) => {
+  //   const chat = chatList.find((c) => c._id === chatId);
+  //   setSelectedChat(chat);
+  //   setChatId(chatId);
+    
+  // };
+
+  const handleShowChat = async (chatId) => {
+  try {
+    // Mark as read
+    await axios.patch(`http://127.0.0.1/chats/mark-all-read/${chatId}/accounts/${data}/Admin`);
+    
+    // // Navigate to the chat
+    // navigate(`/updatechat/${chatId}`);
+    accountwiseChatlist(data, isActiveTrue);
+    // Update local state
     const chat = chatList.find((c) => c._id === chatId);
     setSelectedChat(chat);
     setChatId(chatId);
-    updatechatStatus(chatId)
-      .then(() => {
-        accountwiseChatlist(data, isActiveTrue);
-      })
-      .catch((error) => {
-        console.error("Error updating chat status:", error);
-      });
-  };
+    
+  } catch (error) {
+    console.error("Error marking message as read:", error);
+  }
+};
 
-  const updatechatStatus = (chatId) => {
-    return axios.post(
-      `${CHATTOCLIENT_API}/chats/accountchat/updatestatus/${chatId}`,
-      { chatstatus: true },
-      { headers: { "Content-Type": "application/json" } }
-    );
-  };
 
   const getsChatDetails = async () => {
     try {
@@ -682,7 +702,10 @@ const Commuication = () => {
           borderRight="1px solid #ddd"
         >
           {chatList.length > 0 ? (
-            chatList.map((chat, index) => (
+            chatList.map((chat, index) => {
+
+               const unreadCount = countUnreadAdminMessages(chat);
+                return (
               <Box key={index}>
                 <Paper
                   sx={{ p: 1, cursor: "pointer" }}
@@ -709,12 +732,27 @@ const Commuication = () => {
                         Chat with {chat.accountid?.accountName}
                       </Typography>
                     </Box>
-                    {!chat.chatstatus && (
-                      <FiberManualRecordIcon
-                        fontSize="small"
-                        sx={{ color: "green" }}
-                      />
-                    )}
+                    <Box display="flex" alignItems="center" gap={1}>
+                      {/* Show unread count badge if there are unread messages */}
+                      {unreadCount > 0 && (
+                        <Box
+                          sx={{
+                            backgroundColor: theme.palette.success.main,
+                            color: "white",
+                            borderRadius: "50%",
+                            width: 20,
+                            height: 20,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontSize: "0.75rem",
+                          }}
+                        >
+                          {unreadCount}
+                        </Box>
+                      )}
+                     
+                    </Box>
                   </Box>
 
                   <Typography variant="subtitle2" fontWeight={600}>
@@ -748,7 +786,8 @@ const Commuication = () => {
                 </Paper>
                 <Divider sx={{ my: 1 }} />
               </Box>
-            ))
+                )
+})
           ) : (
             <Typography variant="body2" color="text.secondary">
               No chats to display

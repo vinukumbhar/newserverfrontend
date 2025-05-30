@@ -79,8 +79,6 @@ const MyAccount = () => {
   const [cpassword, setCpassword] = useState("");
   const [signedtime, setSignedTime] = useState("");
 
-
-
   const formatTimePeriod = (seconds) => {
     if (seconds < 3600) {
       return `${Math.ceil(seconds / 60)} minutes`;
@@ -95,26 +93,26 @@ const MyAccount = () => {
 
   //******************* */
   // const { logindata } = useContext(LoginContext);
-    const { logindata } = useContext(LoginContext);
+  const { logindata } = useContext(LoginContext);
   const [loginuserid, setLoginUserId] = useState();
 
   useEffect(() => {
-     if (logindata?.user?.id) {
-       setLoginUserId(logindata.user.id);
-     }
-   }, [logindata]);
-   // Fetch data after loginuserid is set
-useEffect(() => {
-  if (loginuserid) {
-    fetchData();
-  }
-}, [loginuserid]);
+    if (logindata?.user?.id) {
+      setLoginUserId(logindata.user.id);
+    }
+  }, [logindata]);
+  // Fetch data after loginuserid is set
+  useEffect(() => {
+    if (loginuserid) {
+      fetchData();
+    }
+  }, [loginuserid]);
 
-  console.log("loginuseriid",loginuserid)
+  console.log("loginuseriid", loginuserid);
   const fetchData = async () => {
     try {
       const url = `${LOGIN_API}/common/user/${loginuserid}`;
-      console.log("jjj",url)
+      console.log("jjj", url);
       const response = await fetch(url);
       const data = await response.json();
 
@@ -122,7 +120,7 @@ useEffect(() => {
       setSignedTime(formatTimePeriod(validTime));
 
       setuserdata(data);
-      console.log("dta", data)
+      console.log("dta", data);
       fetchAdminData(data.email);
 
       fetchNotificationData(loginuserid);
@@ -130,11 +128,11 @@ useEffect(() => {
       console.error("Error fetching data:", error);
     }
   };
-const [username,setUserName]= useState("")
+  const [username, setUserName] = useState("");
   const fetchAdminData = async (email) => {
     try {
       const url = `${LOGIN_API}/admin/adminsignup/adminbyemail/${email}`;
-console.log("url",url)
+      console.log("url", url);
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error("Failed to fetch email templates");
@@ -147,7 +145,7 @@ console.log("url",url)
       setLastName(data.admin[0].lastName);
       setPhoneNumber(data.admin[0].phoneNumber);
       setEmail(data.admin[0].email);
-      setUserName(data.admin[0].firmName)
+      setUserName(data.admin[0].firmName);
       console.log(profilePicture);
     } catch (error) {
       console.error("Error fetching email templates:", error);
@@ -1186,16 +1184,16 @@ console.log("url",url)
     }
   };
   useEffect(() => {
-    fetchLastUploadedImage()
+    fetchLastUploadedImage();
   }, []);
-  
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
         setImage(reader.result); // Set the base64 image data
-        console.log("vinayak",reader.result)
+        console.log("vinayak", reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -1241,28 +1239,25 @@ console.log("url",url)
   //   }
   // };
 
-
-  
-  
   const handleSubmit = async (userId) => {
     if (!userId) {
       console.error("User ID is required!");
       return;
     }
-  
+
     if (croppedImage) {
       try {
         // Convert the blob URL to a Blob object
         const response = await fetch(croppedImage);
         const blob = await response.blob();
-  
+
         // Create a File object
         const file = new File([blob], `${userId}.jpg`, { type: blob.type });
-  
+
         // Prepare FormData
         const formData = new FormData();
         formData.append("image", file);
-  
+
         // Make POST request with userId in URL
         const result = await axios.post(
           `${LOGIN_API}/userprofilepic?userId=${userId}`,
@@ -1271,7 +1266,7 @@ console.log("url",url)
             headers: { "Content-Type": "multipart/form-data" },
           }
         );
-  
+
         console.log("Image uploaded successfully:", result.data);
       } catch (error) {
         console.error("Error uploading image:", error);
@@ -1280,7 +1275,6 @@ console.log("url",url)
       console.error("No cropped image to send!");
     }
   };
-  
 
   const getInitials = (name) => {
     if (!name) return "";
@@ -1306,20 +1300,20 @@ console.log("url",url)
                   anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                   variant="dot"
                 >
-                 <Avatar
-                      alt={username}
-                      src={croppedImage || ""}
-                      sx={{
-                        width: 40,
-                        height: 40,
-                        backgroundColor: "#f5f5f5",
-                        fontSize: "16px",
-                        fontWeight: "bold",
-                        color: "#555",
-                      }}
-                    >
-                      {!croppedImage && getInitials(username)}
-                    </Avatar>
+                  <Avatar
+                    alt={username}
+                    src={croppedImage || ""}
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      backgroundColor: "#f5f5f5",
+                      fontSize: "16px",
+                      fontWeight: "bold",
+                      color: "#555",
+                    }}
+                  >
+                    {!croppedImage && getInitials(username)}
+                  </Avatar>
                 </StyledBadge>
               </Box>
 
@@ -1402,10 +1396,10 @@ console.log("url",url)
                       <TextField
                         disabled={!isEditable}
                         value={phonenumber}
-                         onChange={(e) => {
-    const onlyNums = e.target.value.replace(/\D/g, ''); // Remove non-digits
-    setPhoneNumber(onlyNums);
-  }}
+                        onChange={(e) => {
+                          const onlyNums = e.target.value.replace(/\D/g, ""); // Remove non-digits
+                          setPhoneNumber(onlyNums);
+                        }}
                         // onChange={(e) => setPhoneNumber(e.target.value)}
                         name="Phone Number"
                         sx={{ backgroundColor: "#fff" }}
@@ -1639,7 +1633,7 @@ console.log("url",url)
                         // }}
                         sx={{
                           backgroundColor: "var(--color-save-btn)", // Normal background
-      
+
                           "&:hover": {
                             backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                           },

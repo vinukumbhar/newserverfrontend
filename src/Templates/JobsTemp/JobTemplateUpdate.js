@@ -698,7 +698,7 @@ const [selectedUser, setSelectedUser] = useState([]);
               <Box mt={2}>
                 <EditorShortcodes initialContent={JobDescriptionNew} onChange={handleEditorChange} />
               </Box>
-              <Box mt={2}>
+              <Box mt={5}>
                 <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"}>
                   <Typography variant="h6">Start and Due Date</Typography>
                   <Box className="absolutes-dates">

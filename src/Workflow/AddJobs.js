@@ -801,6 +801,8 @@ const AddJobs = ({
         {
           message: chatData.description,
           fromwhome: "Admin",
+            senderid: loginuserid,
+          isRead:false
         },
       ];
       // Dynamically prepare the payload from invoiceData

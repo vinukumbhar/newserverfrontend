@@ -1066,6 +1066,8 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                 {
                   message: chatData.description,
                   fromwhome: "Admin",
+                    senderid: loginuserid,
+          isRead:false
                 },
               ];
               // Dynamically prepare the payload from invoiceData

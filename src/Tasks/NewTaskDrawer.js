@@ -90,7 +90,7 @@ const NewTaskDrawer = ({ open, onClose, fetchTasksData, isEditMode, taskData,fet
     };
 
     fetch(
-      `${JOBS_API}/Workflow/jobs/accountjoblist/${accountId}`,
+      `${JOBS_API}/workflow/jobs/accountjoblist/${accountId}`,
       requestOptions
     )
       .then((response) => response.json())

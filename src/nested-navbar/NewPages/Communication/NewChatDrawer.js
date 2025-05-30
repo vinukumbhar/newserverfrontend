@@ -379,6 +379,8 @@ const NewChatDrawer = ({ open, handleClose, accountwiseChatlist, data,isActiveTr
         message: description,
         fromwhome: "Admin",
         senderid: loginUserId,
+       
+        isRead:false
       },
     ];
 
@@ -388,9 +390,9 @@ const NewChatDrawer = ({ open, handleClose, accountwiseChatlist, data,isActiveTr
       templatename: templateName,
       from: from,
       chatsubject: inputText + selectedShortcut,
-      // description: description,
+     
       description: messageData,
-      chatstatus: "false",
+      // chatstatus: "false",
       sendreminderstoclient: absoluteDate,
       daysuntilnextreminder: daysuntilNextReminder,
       numberofreminders: noOfReminder,

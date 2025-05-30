@@ -36,6 +36,8 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { FiPlusCircle } from "react-icons/fi";
 import { PiDotsSixVerticalBold } from "react-icons/pi";
 import { CircularProgress } from "@mui/material";
+import axios from "axios";
+import debounce from "lodash.debounce";
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table';
 const ChatTemp = () => {
   const navigate = useNavigate();
@@ -346,79 +348,137 @@ const ChatTemp = () => {
     setCheckedSubtasks([])
   }
   //**  save chat code */
-  const savechat = async () => {
-    if (!validateForm()) {
-      return; // Prevent form submission if validation fails
-    }
+//   const savechat = async () => {
+//     if (!validateForm()) {
+//       return; // Prevent form submission if validation fails
+//     }
     
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+//     const myHeaders = new Headers();
+//     myHeaders.append("Content-Type", "application/json");
 
-    const subtaskData = subtasks.map(({ id, text }) => ({
-      id,
-      text,
+//     const subtaskData = subtasks.map(({ id, text }) => ({
+//       id,
+//       text,
       
-checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks array
-    }));
+// checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks array
+//     }));
 
-    const raw = JSON.stringify({
-      templatename: templateName,
-      from: selecteduser.value,
-      chatsubject: inputText,
-      description: description,
-      sendreminderstoclient: absoluteDate,
-      daysuntilnextreminder: daysuntilNextReminder,
-      numberofreminders: noOfReminder,
-      clienttasks: subtaskData,
-      isclienttaskchecked:SubtaskSwitch,
-      active: "true"
-    });
+//     const raw = JSON.stringify({
+//       templatename: templateName,
+//       from: selecteduser.value,
+//       chatsubject: inputText,
+//       description: description,
+//       sendreminderstoclient: absoluteDate,
+//       daysuntilnextreminder: daysuntilNextReminder,
+//       numberofreminders: noOfReminder,
+//       clienttasks: subtaskData,
+//       isclienttaskchecked:SubtaskSwitch,
+//       active: "true"
+//     });
 
-    const requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: raw,
-      redirect: "follow"
-    };
-console.log(raw)
-    const url = `${CHAT_API}/workflow/chats/chattemplate`;
-    fetch(url, requestOptions)
-      .then((response) => {
+//     const requestOptions = {
+//       method: "POST",
+//       headers: myHeaders,
+//       body: raw,
+//       redirect: "follow"
+//     };
+// console.log(raw)
+//     const url = `${CHAT_API}/workflow/chats/chattemplate`;
+//     fetch(url, requestOptions)
+//       .then((response) => {
       
-        if (!response.ok) {
-          throw new Error(response.statusText);
-        }
-        return response.json();
-      })
-      .then((result) => {
-        console.log(result.message)
-        // toast.success("Invoice created successfully");
-        if (result && result.message === "ChatTemplate created successfully") {
+//         if (!response.ok) {
+//           throw new Error(response.statusText);
+//         }
+//         return response.json();
+//       })
+//       .then((result) => {
+//         console.log(result.message)
+//         // toast.success("Invoice created successfully");
+//         if (result && result.message === "ChatTemplate created successfully") {
         
-          toast.success("ChatTemplate created successfully");
-          handleClearTemplate();
-          fetchChatTemplates();
-          //  handleCloseChatTemp()
-          setShowForm(false);
-        } else {
-          toast.error(result.message || "Failed to create Chat Template");
-        }
-      })
-      .catch((error) => console.error(error));
-  }
-const saveSchat= async () => {
+//           toast.success("ChatTemplate created successfully");
+//           handleClearTemplate();
+//           fetchChatTemplates();
+//           //  handleCloseChatTemp()
+//           setShowForm(false);
+//         } else {
+//           toast.error(result.message || "Failed to create Chat Template");
+//         }
+//       })
+//       .catch((error) => console.error(error));
+//   }
+// const saveSchat= async () => {
+//   if (!validateForm()) {
+//     return; // Prevent form submission if validation fails
+//   }
+//   const myHeaders = new Headers();
+//   myHeaders.append("Content-Type", "application/json");
+
+//   const subtaskData = subtasks.map(({ id, text }) => ({
+//     id,
+//     text,
+    
+// checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks array
+//   }));
+//   const raw = JSON.stringify({
+//     templatename: templateName,
+//     from: selecteduser.value,
+//     chatsubject: inputText,
+//     description: description,
+//     sendreminderstoclient: absoluteDate,
+//     daysuntilnextreminder: daysuntilNextReminder,
+//     numberofreminders: noOfReminder,
+//     clienttasks: subtaskData,
+//       isclienttaskchecked:SubtaskSwitch,
+//     active: "true"
+//   });
+
+//   const requestOptions = {
+//     method: "POST",
+//     headers: myHeaders,
+//     body: raw,
+//     redirect: "follow"
+//   };
+
+//   const url = `${CHAT_API}/workflow/chats/chattemplate`;
+//   fetch(url, requestOptions)
+//     .then((response) => {
+//       console.log(response)
+//       if (!response.ok) {
+//         throw new Error(response.statusText);
+//       }
+//       return response.json();
+//     })
+//     .then((result) => {
+//       console.log(result.message)
+//       // toast.success("Invoice created successfully");
+//       if (result && result.message === "ChatTemplate created successfully") {
+      
+//         fetchChatTemplates();
+//         toast.success("ChatTemplate created successfully");
+       
+//       } else {
+//         toast.error(result.message || "Failed to create Chat Template");
+//       }
+//     })
+//     .catch((error) => console.error(error));
+// }
+
+const savechat = async () => {
   if (!validateForm()) {
     return; // Prevent form submission if validation fails
   }
+  
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
   const subtaskData = subtasks.map(({ id, text }) => ({
     id,
     text,
-    
-checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks array
+    checked: checkedSubtasks.includes(id),
   }));
+
   const raw = JSON.stringify({
     templatename: templateName,
     from: selecteduser.value,
@@ -428,7 +488,7 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
     daysuntilnextreminder: daysuntilNextReminder,
     numberofreminders: noOfReminder,
     clienttasks: subtaskData,
-      isclienttaskchecked:SubtaskSwitch,
+    isclienttaskchecked: SubtaskSwitch,
     active: "true"
   });
 
@@ -440,27 +500,85 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
   };
 
   const url = `${CHAT_API}/workflow/chats/chattemplate`;
-  fetch(url, requestOptions)
-    .then((response) => {
-      console.log(response)
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-      return response.json();
-    })
-    .then((result) => {
-      console.log(result.message)
-      // toast.success("Invoice created successfully");
-      if (result && result.message === "ChatTemplate created successfully") {
-      
-        fetchChatTemplates();
-        toast.success("ChatTemplate created successfully");
-       
-      } else {
-        toast.error(result.message || "Failed to create Chat Template");
-      }
-    })
-    .catch((error) => console.error(error));
+  
+  try {
+    const response = await fetch(url, requestOptions);
+    const result = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(result.message || "Failed to save Chat Template");
+    }
+
+    if (result.message === "ChatTemplate created successfully" || 
+        result.message === "ChatTemplate updated successfully") {
+      toast.success(result.message);
+      handleClearTemplate();
+      fetchChatTemplates();
+      setShowForm(false);
+    } else {
+      toast.error(result.message || "Unexpected response from server");
+    }
+  } catch (error) {
+    console.error(error);
+    toast.error(error.message || "Error saving Chat Template");
+  }
+}
+
+const saveSchat = async () => {
+  if (!validateForm()) {
+    return;
+  }
+  
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  const subtaskData = subtasks.map(({ id, text }) => ({
+    id,
+    text,
+    checked: checkedSubtasks.includes(id),
+  }));
+
+  const raw = JSON.stringify({
+    templatename: templateName,
+    from: selecteduser.value,
+    chatsubject: inputText,
+    description: description,
+    sendreminderstoclient: absoluteDate,
+    daysuntilnextreminder: daysuntilNextReminder,
+    numberofreminders: noOfReminder,
+    clienttasks: subtaskData,
+    isclienttaskchecked: SubtaskSwitch,
+    active: "true"
+  });
+console.log("chat raw", raw)
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow"
+  };
+
+  const url = `${CHAT_API}/workflow/chats/chattemplate`;
+  
+  try {
+    const response = await fetch(url, requestOptions);
+    const result = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(result.message || "Failed to save Chat Template");
+    }
+
+    if (result.message === "ChatTemplate created successfully" || 
+        result.message === "ChatTemplate updated successfully") {
+      toast.success(result.message);
+      fetchChatTemplates();
+    } else {
+      toast.error(result.message || "Unexpected response from server");
+    }
+  } catch (error) {
+    console.error(error);
+    toast.error(error.message || "Error saving Chat Template");
+  }
 }
   //Edit
   const handleEdit = (_id) => {
@@ -584,7 +702,34 @@ checked: checkedSubtasks.includes(id), // Check if ID is in the checkedSubtasks 
   const [selectedUserError, setSelectedUserError] = useState('');
   const [inputTextError, setInputTextError] = useState('');
 
+// Debounced function to check template name existence
+  const checkTemplateName = debounce(async (templatename) => {
+    if (!templatename.trim()) {
+      setTemplateNameError("");
+      return;
+    }
 
+    try {
+      const res = await axios.get(`${CHAT_API}/workflow/chats/check-templatename`, {
+        params: { templatename },
+      });
+
+      if (res.data.exists) {
+        setTemplateNameError("Template name already exists");
+      } else {
+        setTemplateNameError("");
+      }
+    } catch (err) {
+      console.error(err);
+      setTemplateNameError("Error checking template name");
+    }
+  }, 500); // 500ms delay
+
+  // Trigger name check on change
+  useEffect(() => {
+    checkTemplateName(templateName);
+    return checkTemplateName.cancel; // Cleanup debounce on unmount
+  }, [templateName]);
   const validateForm = () => {
     let isValid = true;
 

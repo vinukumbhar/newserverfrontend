@@ -582,10 +582,10 @@ const textFieldRef = useRef(null);
         enddate: dueDate,
         showinclientportal: clientFacingStatus,
         jobnameforclient: inputText,
-        clientfacingstatus: selectedJob.value,
+        clientfacingstatus: selectedJob?.value,
         clientfacingDescription: clientDescription,
       });
-
+console.log(raw)
       const requestOptions = {
         method: "POST",
         headers: myHeaders,
@@ -1116,10 +1116,10 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                 <Box mt={2}>
                   <Priority onPriorityChange={handlePriorityChange} selectedPriority={priority} />
                 </Box>
-                <Box mt={2}>
+                <Box mt={2} mb={3}>
                   <EditorShortcodes onChange={handleEditorChange} content={description} />
                 </Box>
-                <Box mt={2}>
+                <Box mt={5}>
                   <Box display={"flex"} alignItems={"center"} justifyContent={"space-between"}>
                     <Typography variant="h6" className="jobtemp-input-label">
                       Start and Due Date
