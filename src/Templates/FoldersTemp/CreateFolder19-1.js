@@ -233,7 +233,7 @@ export default function CreateFolder({
   }
 
   if (!structFolder) {
-    return <Box>Loading...</Box>;
+    return <Box></Box>;
   }
 
   return (

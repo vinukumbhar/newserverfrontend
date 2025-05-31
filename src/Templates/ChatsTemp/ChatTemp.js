@@ -703,32 +703,30 @@ console.log("chat raw", raw)
   const [inputTextError, setInputTextError] = useState('');
 
 // Debounced function to check template name existence
-  const checkTemplateName = debounce(async (templatename) => {
-    if (!templatename.trim()) {
-      setTemplateNameError("");
-      return;
-    }
-
+const checkTemplateName = async (name) => {
     try {
-      const res = await axios.get(`${CHAT_API}/workflow/chats/check-templatename`, {
-        params: { templatename },
+      const res = await axios.get(`${CHAT_API}/workflow/chats/check-name`, {
+        params: { name },
       });
-
       if (res.data.exists) {
-        setTemplateNameError("Template name already exists");
+        setTemplateNameError('Template name already exists');
       } else {
-        setTemplateNameError("");
+        setTemplateNameError('');
       }
     } catch (err) {
       console.error(err);
-      setTemplateNameError("Error checking template name");
+      setTemplateNameError('');
     }
-  }, 500); // 500ms delay
+  };
 
-  // Trigger name check on change
+ const debouncedCheck = debounce((name) => {
+    if (name.trim()) checkTemplateName(name);
+    else setTemplateNameError('');
+  }, 500);
+
   useEffect(() => {
-    checkTemplateName(templateName);
-    return checkTemplateName.cancel; // Cleanup debounce on unmount
+    debouncedCheck(templateName);
+    return debouncedCheck.cancel;
   }, [templateName]);
   const validateForm = () => {
     let isValid = true;

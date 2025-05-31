@@ -17,7 +17,8 @@ import ArrowBackRoundedIcon from "@mui/icons-material/ArrowBackRounded";
 import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 import CreatableSelect from "react-select/creatable";
 import Editor from "../Texteditor/Editor";
-
+import axios from "axios";
+import debounce from "lodash.debounce";
 const InvoiceTemp = () => {
   const INVOICE_API = process.env.REACT_APP_INVOICE_TEMP_URL;
   const SERVICE_API = process.env.REACT_APP_SERVICES_URL;
@@ -286,7 +287,7 @@ const InvoiceTemp = () => {
       })
       .then((result) => {
         console.log(result.message);
-        toast.success("Invoice created successfully");
+        toast.success("InvoiceTemplate created successfully");
 
         if (result && result.message === "InvoiceTemplate created successfully") {
           setShowForm(false);
@@ -1005,7 +1006,43 @@ const InvoiceTemp = () => {
     };
      // Compute paginated tasks
      const paginatedInvoices = invoiceTemplates.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-  return (
+  
+ const checkTemplateName = async (name) => {
+     try {
+       const res = await axios.get(`${INVOICE_API}/workflow/invoicetemp/check-name`, {
+         params: { name },
+       });
+       if (res.data.exists) {
+         setTemplatenameError('Template name already exists');
+       } else {
+         setTemplatenameError('');
+       }
+     } catch (err) {
+       console.error(err);
+       setTemplatenameError('');
+     }
+   };
+ 
+  // const debouncedCheck = debounce((name) => {
+  //    if (name.trim()) checkTemplateName(name);
+  //    else setTemplatenameError('');
+  //  }, 500);
+  const debouncedCheck = debounce((name) => {
+  if (typeof name === 'string' && name.trim()) {
+    checkTemplateName(name);
+  } else {
+    setTemplatenameError('');
+  }
+}, 500);
+
+ 
+   useEffect(() => {
+     debouncedCheck(templatename);
+     return debouncedCheck.cancel;
+   }, [templatename]);
+ 
+ 
+     return (
     <Box>
       {!showForm ? (
         <Box sx={{ mt: 2 }}>

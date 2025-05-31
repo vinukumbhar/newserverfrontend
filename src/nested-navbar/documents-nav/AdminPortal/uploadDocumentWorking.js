@@ -420,7 +420,7 @@ const UploadDocument = ({ open, onClose, file ,fetchUnSealedFolders,fetchAdminPr
   }
 
   if (!structFolder || !privateStructFolder) {
-    return <Box>Loading...</Box>;
+    return <Box></Box>;
   }
 
   return (

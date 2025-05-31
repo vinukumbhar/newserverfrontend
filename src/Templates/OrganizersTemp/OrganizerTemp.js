@@ -18,6 +18,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { IoClose } from "react-icons/io5";
+import axios from "axios";
+import debounce from "lodash.debounce";
 const OrganizersTemp = () => {
 
   const ORGANIZER_TEMP_API = process.env.REACT_APP_ORGANIZER_TEMP_URL;
@@ -993,6 +995,33 @@ const shouldShowSection = (section) => {
      const paginatedOrganizers = organizerTemplatesData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
   
   
+
+     // Debounced function to check template name existence
+     const checkTemplateName = async (name) => {
+         try {
+           const res = await axios.get(`${ORGANIZER_TEMP_API}/workflow/organizers/check-name`, {
+             params: { name },
+           });
+           if (res.data.exists) {
+             setTemplateNameError('Template name already exists');
+           } else {
+             setTemplateNameError('');
+           }
+         } catch (err) {
+           console.error(err);
+           setTemplateNameError('');
+         }
+       };
+     
+      const debouncedCheck = debounce((name) => {
+         if (name.trim()) checkTemplateName(name);
+         else setTemplateNameError('');
+       }, 500);
+     
+       useEffect(() => {
+         debouncedCheck(templateName);
+         return debouncedCheck.cancel;
+       }, [templateName]);
   
   return (
     <Box p={3}>

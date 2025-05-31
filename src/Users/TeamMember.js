@@ -498,12 +498,105 @@ const username = [firstName,middleName,lastName].filter(Boolean).join(" ")
         console.log(result);
         console.log(result._id);
         updateTeammemberUserid(result._id, teammemberuserid);
-      
+       insertNotificationAccess(result._id);
        
         // ******************required to send email************
         sendmail();
       })
 
+      .catch((error) => console.error(error));
+  };
+  const insertNotificationAccess = (userid) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      userId: userid,
+      notifications: [
+        {
+          notificationDescription: "Invoices",
+          inbox: false,
+          email: false,
+        },
+        {
+          notificationDescription: "Payments",
+          inbox: false,
+          email: false,
+        },
+        {
+          notificationDescription: "Organizers",
+          inbox: false,
+          email: false,
+        },
+        {
+          notificationDescription: "Uploads",
+          inbox: false,
+          email: false,
+        },
+        {
+          notificationDescription: "E-signatures",
+          inbox: false,
+          email: false,
+        },
+        {
+          notificationDescription: "Approvals",
+          inbox: false,
+          email: false,
+        },
+        {
+          notificationDescription: "Done uploading",
+          inbox: false,
+          email: false,
+        },
+        {
+          notificationDescription: "Tasks",
+          inbox: false,
+          email: false,
+        },
+        {
+          notificationDescription: "Messages",
+          inbox: false,
+          email: false,
+        },
+        {
+          notificationDescription: "New mail",
+          inbox: false,
+          email: false,
+        },
+        {
+          notificationDescription: "Proposals",
+          inbox: false,
+          email: false,
+        },
+        {
+          notificationDescription: "Jobs",
+          inbox: false,
+          email: false,
+        },
+        {
+          notificationDescription: "Mentions",
+          inbox: false,
+          email: false,
+        },
+        {
+          notificationDescription: "SMS",
+          inbox: false,
+          email: false,
+        },
+      ],
+      active: true,
+    });
+
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch(`${LOGIN_API}/admin/notification`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => console.log(result))
       .catch((error) => console.error(error));
   };
 

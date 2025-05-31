@@ -40,6 +40,8 @@ import DeleteIcon from "@mui/icons-material/Delete"; // For delete icon
 import { useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { CircularProgress } from "@mui/material";
+import debounce from "lodash.debounce";
+import axios from "axios";
 const EmailTemp = () => {
   const EMAIL_API = process.env.REACT_APP_EMAIL_TEMP_URL;
   const USER_API = process.env.REACT_APP_USER_URL;
@@ -741,6 +743,33 @@ const EmailTemp = () => {
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
+
+  // Debounced function to check template name existence
+  const checkTemplateName = async (name) => {
+      try {
+        const res = await axios.get(`${EMAIL_API}/workflow/check-name`, {
+          params: { name },
+        });
+        if (res.data.exists) {
+          setTemplateNameError('Template name already exists');
+        } else {
+          setTemplateNameError('');
+        }
+      } catch (err) {
+        console.error(err);
+        setTemplateNameError('');
+      }
+    };
+  
+   const debouncedCheck = debounce((name) => {
+      if (name.trim()) checkTemplateName(name);
+      else setTemplateNameError('');
+    }, 500);
+  
+    useEffect(() => {
+      debouncedCheck(templateName);
+      return debouncedCheck.cancel;
+    }, [templateName]);
   return (
     <Box>
       {!showForm ? (

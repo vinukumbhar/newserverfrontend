@@ -196,7 +196,7 @@ console.log("testing",templateId)
   }
 
   if (!structFolder) {
-    return <div>Loading...</div>;
+    return <div></div>;
   }
 
   const handleFileChange = async (e) => {

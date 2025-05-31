@@ -23,6 +23,8 @@ import { CircularProgress } from "@mui/material";
 import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 import { CiMenuKebab } from "react-icons/ci";
 import MultiSelectDropdown from "../MultiSelectDropdown"
+import axios from "axios";
+import debounce from "lodash.debounce";
 import EditCalendarRoundedIcon from "@mui/icons-material/EditCalendarRounded";
 dayjs.extend(customParseFormat);
 
@@ -812,7 +814,35 @@ console.log(raw)
     };
      // Compute paginated tasks
      const paginatedJobs = JobTemplates.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
-  return (
+  
+  const [templateNameError, setTemplateNameError] = useState('');
+  const checkTemplateName = async (name) => {
+    try {
+      const res = await axios.get(`${JOBS_API}/workflow/jobtemplate/check-name`, {
+        params: { name },
+      });
+      if (res.data.exists) {
+        setTemplateNameError('Template name already exists');
+      } else {
+        setTemplateNameError('');
+      }
+    } catch (err) {
+      console.error(err);
+      setTemplateNameError('');
+    }
+  };
+
+ const debouncedCheck = debounce((name) => {
+    if (name.trim()) checkTemplateName(name);
+    else setTemplateNameError('');
+  }, 500);
+
+  useEffect(() => {
+    debouncedCheck(templatename);
+    return debouncedCheck.cancel;
+  }, [templatename]);
+  
+     return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box>
         {!showForm ? (
@@ -968,14 +998,14 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                   <TextField
                     size="small"
                     fullWidth
-                    error={!!errors.templatename}
+                   error={!!templateNameError}
                     // helperText={errors.templatename}
                     placeholder="Template Name"
                     value={templatename}
                     onChange={(e) => settemplatename(e.target.value)}
                     sx={{ backgroundColor: "#fff", mt: 1 }}
                   />
-                  {!!errors.templatename && (
+                  {!!templateNameError && (
                     <Alert
                       sx={{
                         width: "96%",
@@ -996,7 +1026,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                       variant="filled"
                       severity="error"
                     >
-                      {errors.templatename}
+                     {templateNameError}
                     </Alert>
                   )}
                 </Box>

@@ -109,29 +109,79 @@ const MyAccount = () => {
   }, [loginuserid]);
 
   console.log("loginuseriid", loginuserid);
-  const fetchData = async () => {
-    try {
-      const url = `${LOGIN_API}/common/user/${loginuserid}`;
-      console.log("jjj", url);
-      const response = await fetch(url);
-      const data = await response.json();
+  // const fetchData = async () => {
+  //   try {
+  //     const url = `${LOGIN_API}/common/user/${loginuserid}`;
+  //     console.log("jjj", url);
+  //     const response = await fetch(url);
+  //     const data = await response.json();
 
-      const validTime = logindata.user.exp - logindata.user.iat;
-      setSignedTime(formatTimePeriod(validTime));
+  //     const validTime = logindata.user.exp - logindata.user.iat;
+  //     setSignedTime(formatTimePeriod(validTime));
 
-      setuserdata(data);
-      console.log("dta", data);
+  //     setuserdata(data);
+  //     console.log("dta", data);
+  //     fetchAdminData(data.email);
+
+  //     fetchNotificationData(loginuserid);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+ 
+ const fetchData = async () => {
+  try {
+    const url = `${LOGIN_API}/common/user/${loginuserid}`;
+    console.log("jjj", url);
+    const response = await fetch(url);
+    const data = await response.json();
+
+    const validTime = logindata.user.exp - logindata.user.iat;
+    setSignedTime(formatTimePeriod(validTime));
+
+    setuserdata(data);
+    console.log("dta", data);
+
+    if (data.role === "TeamMember") {
+     
+      fetchTeamMemberData(data.email)
+    } else {
       fetchAdminData(data.email);
-
-      fetchNotificationData(loginuserid);
-    } catch (error) {
-      console.error("Error fetching data:", error);
     }
-  };
+
+    fetchNotificationData(loginuserid);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+};
+
+ 
   const [username, setUserName] = useState("");
   const fetchAdminData = async (email) => {
     try {
       const url = `${LOGIN_API}/admin/adminsignup/adminbyemail/${email}`;
+      console.log("url", url);
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error("Failed to fetch email templates");
+      }
+      const data = await response.json();
+      console.log("admin", data);
+      setadmindata(data.admin[0]);
+      setFirstName(data.admin[0].firstName);
+      setMiddleName(data.admin[0].middleName);
+      setLastName(data.admin[0].lastName);
+      setPhoneNumber(data.admin[0].phoneNumber);
+      setEmail(data.admin[0].email);
+      setUserName(data.admin[0].firmName);
+      console.log(profilePicture);
+    } catch (error) {
+      console.error("Error fetching email templates:", error);
+    }
+  };
+  const fetchTeamMemberData = async (email) => {
+    try {
+      const url = `${LOGIN_API}/admin/teammember/teammemberbyemail/${email}`;
       console.log("url", url);
       const response = await fetch(url);
       if (!response.ok) {

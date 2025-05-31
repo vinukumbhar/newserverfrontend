@@ -35,6 +35,8 @@ import Grid from "@mui/material/Unstable_Grid2";
 import Priority from "../Priority/Priority";
 import Status from "../Status/Status";
 import { toast } from "react-toastify";
+import axios from "axios";
+import debounce from "lodash.debounce";
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -453,7 +455,7 @@ const handleUserChange = (newSelectedUsers) => {
         .then((result) => {
           // Handle success
           toast.success("Task Template created successfully");
-          resetFields();
+        
           fetchTaskData();
         })
         .catch((error) => {
@@ -706,6 +708,32 @@ const handleUserChange = (newSelectedUsers) => {
     page * rowsPerPage + rowsPerPage
   );
 
+  // Debounced function to check template name existence
+  const checkTemplateName = async (name) => {
+      try {
+        const res = await axios.get(`${TASK_API}/workflow/tasks/check-name`, {
+          params: { name },
+        });
+        if (res.data.exists) {
+          setTemplateNameError('Template name already exists');
+        } else {
+          setTemplateNameError('');
+        }
+      } catch (err) {
+        console.error(err);
+        setTemplateNameError('');
+      }
+    };
+  
+   const debouncedCheck = debounce((name) => {
+      if (name.trim()) checkTemplateName(name);
+      else setTemplateNameError('');
+    }, 500);
+  
+    useEffect(() => {
+      debouncedCheck(templatename);
+      return debouncedCheck.cancel;
+    }, [templatename]);
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box>
@@ -886,10 +914,11 @@ const handleUserChange = (newSelectedUsers) => {
                                 name="TemplateName"
                                 placeholder="Template Name"
                                 size="small"
-                                margin="normal"
+                               
                                 sx={{
-                                  background: "#fff",
+                                  background: "#fff",mt:2
                                 }}
+                                 value={templatename}
                                 onChange={(e) =>
                                   settemplatename(e.target.value)
                                 }
@@ -916,7 +945,7 @@ const handleUserChange = (newSelectedUsers) => {
                                   variant="filled"
                                   severity="error"
                                 >
-                                  Name can't be blank
+                                  {templateNameError}
                                 </Alert>
                               )}
                             </Box>
@@ -973,7 +1002,7 @@ const handleUserChange = (newSelectedUsers) => {
                           </Grid> */}
                           <Grid item xs={12} sm={6} pr={3}>
   
-    <InputLabel sx={{color:'black'}}>Task Assignee</InputLabel>
+    <InputLabel sx={{color:'black',mb:2}}>Task Assignee</InputLabel>
     {/* // With internal options (fetches data automatically) */}
 <MultiSelectDropdown 
   value={selectedUser}
