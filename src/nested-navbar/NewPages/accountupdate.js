@@ -421,22 +421,23 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
       setAccountType(selectedAccount.clientType);
       setaccountName(selectedAccount.accountName);
       setAccountcontact(selectedAccount.contacts);
-         setSelectedCountry({
-          name: selectedAccount.country?.name || "", // Use name field or an empty string
-          code: selectedAccount.country?.code || "", // Use code field or an empty string
-        })
-       setStreetAddress(selectedAccount.streetAddress || "");
-        setCity(selectedAccount.city || "");
-        setState(selectedAccount.state || "");
-        setPostalCode(selectedAccount.postalCode || "");
+      setSelectedCountry({
+        name: selectedAccount.country?.name || "", // Use name field or an empty string
+        code: selectedAccount.country?.code || "", // Use code field or an empty string
+      });
+      setStreetAddress(selectedAccount.streetAddress || "");
+      setCity(selectedAccount.city || "");
+      setState(selectedAccount.state || "");
+      setPostalCode(selectedAccount.postalCode || "");
+      setcompanyname(selectedAccount.companyName);
       // setContacts(selectedAccount.contacts)
       // Safely check if companyAddress exists before accessing its properties
       // if (selectedAccount.companyAddress) {
       //   setcompanyname(selectedAccount.companyAddress.companyName);
-        // setSelectedCountry({
-        //   name: selectedAccount.companyAddress.country?.name || "", // Use name field or an empty string
-        //   code: selectedAccount.companyAddress.country?.code || "", // Use code field or an empty string
-        // });
+      // setSelectedCountry({
+      //   name: selectedAccount.companyAddress.country?.name || "", // Use name field or an empty string
+      //   code: selectedAccount.companyAddress.country?.code || "", // Use code field or an empty string
+      // });
       //   setStreetAddress(selectedAccount.companyAddress.streetAddress || "");
       //   setCity(selectedAccount.companyAddress.city || "");
       //   setState(selectedAccount.companyAddress.state || "");
@@ -543,6 +544,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
         clientType: accountType,
         accountName: accountName,
         tags: combinedTagsValues || [],
+        companyName: companyname,
         teamMember: combinedTeamMemberValues || [],
         foldertemplate: selectedTemplate?.value || null,
         country: selectedCountry || "",

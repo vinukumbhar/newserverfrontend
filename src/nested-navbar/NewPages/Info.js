@@ -85,6 +85,30 @@ const Info = () => {
       setOpenDialog(true);
     }
   };
+ const handleSimpleSwitchChange = async (field, contactData) => {
+  const updatedValue = !contactData[field];
+
+  try {
+    await axios.patch(`${CONTACT_API}/contacts/${contactData._id}`, {
+      [field]: updatedValue,
+    });
+
+    // ✅ Update the local UI by setting new state
+    setContacts(prev =>
+      prev.map(contact =>
+        contact._id === contactData._id
+          ? { ...contact, [field]: updatedValue }
+          : contact
+      )
+    );
+
+    console.log(`Updated ${field} for ${contactData.contactName} to ${updatedValue}`);
+  } catch (error) {
+    console.error(`Failed to update ${field}:`, error);
+  }
+};
+
+
   const handleCloseDialog = () => {
     setOpenDialog(false); // Close dialog
   };
@@ -1264,18 +1288,31 @@ const Info = () => {
                                   onChange={() => handleSwitchChange(contact)}
                                 />
                               </TableCell>
-                              <TableCell>
+                              {/* <TableCell>
                                 <Switch
                                   checked={notify}
-                                  // disabled
+                                  
                                 />
                               </TableCell>
                               <TableCell>
                                 <Switch
                                   checked={emailSync}
-                                  // disabled
+                                 
                                 />
-                              </TableCell>
+                              </TableCell> */}
+                              <TableCell>
+  <Switch
+    checked={notify}
+    onChange={() => handleSimpleSwitchChange('notify', contact)}
+  />
+</TableCell>
+<TableCell>
+  <Switch
+    checked={emailSync}
+    onChange={() => handleSimpleSwitchChange('emailSync', contact)}
+  />
+</TableCell>
+
                             </TableRow>
                           </React.Fragment>
                         );

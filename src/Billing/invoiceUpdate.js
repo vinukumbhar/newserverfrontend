@@ -357,7 +357,7 @@ const Invoices = ({ charLimit = 4000 }) => {
     fetch(url, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result.invoiceTemplate);
+        console.log("invoiceTemplate",result.invoiceTemplate);
         setDescription(result.invoiceTemplate.description);
         setIsPayInvoice(result.invoiceTemplate.payInvoicewithcredits);
         setIsEmailInvoice(result.invoiceTemplate.sendEmailWhenInvCreated);
@@ -644,7 +644,7 @@ const Invoices = ({ charLimit = 4000 }) => {
     fetch(url, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
+        console.log("invoices ",result);
 
         // Check if result and invoice exist before setting state
         if (result && result.invoice) {
@@ -677,12 +677,23 @@ const Invoices = ({ charLimit = 4000 }) => {
           };
           setPaymentMode(paymentMethod);
 
+          // // Set team member
+          // const teammember = {
+          //   value: result.invoice.teammember._id,
+          //   label: result.invoice.teammember.username, // Use "username" field for the label
+          // };
+          // setSelectedUser(teammember);
           // Set team member
-          const teammember = {
-            value: result.invoice.teammember._id,
-            label: result.invoice.teammember.username, // Use "username" field for the label
-          };
-          setSelectedUser(teammember);
+if (result.invoice.teammember) {
+  const teammember = {
+    value: result.invoice.teammember._id,
+    label: result.invoice.teammember.username,
+  };
+  setSelectedUser(teammember);
+} else {
+  setSelectedUser(null); // Or leave it unset, or set a default
+}
+
 
           // Set invoice description
           setDescription(result.invoice.description);

@@ -679,11 +679,22 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
           setPaymentMode(paymentMethod);
 
           // Set team member
-          const teammember = {
-            value: result.invoice.teammember._id,
-            label: result.invoice.teammember.username, // Use "username" field for the label
-          };
-          setSelectedUser(teammember);
+          // const teammember = {
+          //   value: result.invoice.teammember._id,
+          //   label: result.invoice.teammember.username, // Use "username" field for the label
+          // };
+          // setSelectedUser(teammember);
+          // Set team member
+if (result.invoice.teammember) {
+  const teammember = {
+    value: result.invoice.teammember._id,
+    label: result.invoice.teammember.username,
+  };
+  setSelectedUser(teammember);
+} else {
+  setSelectedUser(null); // Or leave it unset, or set a default
+}
+
 
           // Set invoice description
           setDescription(result.invoice.description);

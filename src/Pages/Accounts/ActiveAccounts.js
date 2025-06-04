@@ -57,6 +57,7 @@ import "../account.css";
 import { useNavigate } from "react-router-dom";
 import { LoginContext } from "../../Sidebar/Context/Context.js";
 const FixedColumnTable = () => {
+  const WINDOWS_PORT = process.env.REACT_APP_SERVER_URI
   const { logindata } = useContext(LoginContext);
   const [loginuserid, setLoginUserId] = useState("");
   console.log(logindata);
@@ -1812,7 +1813,7 @@ const FixedColumnTable = () => {
                             background: "#fff",
                             fontSize: "12px",
                             fontWeight: "normal",
-                            // padding: "12px 16px", // Add padding for better spacing
+                            
                           }}
                         >
                           <Link

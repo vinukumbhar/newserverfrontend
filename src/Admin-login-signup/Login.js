@@ -23,6 +23,8 @@ import { jwtDecode } from "jwt-decode";
 const Login = () => {
   const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
   const history = useNavigate();
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
+
   const [inpval, setInpval] = useState({
     email: "",
     password: "",
@@ -65,6 +67,11 @@ const Login = () => {
       toast.error("Please select the expiration time!");
       return;
     }
+    if (!agreeToTerms) {
+  toast.error("You must agree to the conditions!");
+  return;
+}
+
 
     try {
       const url = `${LOGIN_API}/common/login/generatetoken/`;
@@ -255,7 +262,13 @@ handleUserRole(user.role);
             </Box>
 
             <Box display="flex" alignItems={"center"}>
-              <Checkbox id="terms" />
+              {/* <Checkbox id="terms" /> */}
+              <Checkbox
+  id="terms"
+  checked={agreeToTerms}
+  onChange={(e) => setAgreeToTerms(e.target.checked)}
+/>
+
 
               <Typography fontSize="14px" color="#696969" component="label" htmlFor="terms">
                 Agree to{" "}

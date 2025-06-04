@@ -574,14 +574,24 @@ const AddJobs = ({
     };
 
     // Get the tags for the selected accounts
-    const accountTags = combinedaccountValues
+        const accountTags = combinedaccountValues
+
       .map((accountId) => {
+        console.log("combinedaccountValues", combinedaccountValues);
         const account = accountdata.find(
           (account) => account._id === accountId
         );
         return account ? account.tags || [] : []; // Assuming accounts have tags
       })
-      .flat(); // Flattening array to get all tags
+      .flat();
+    // const accountTags = combinedaccountValues
+    //   .map((accountId) => {
+    //     const account = accountdata.find(
+    //       (account) => account._id === accountId
+    //     );
+    //     return account ? account.tags || [] : []; // Assuming accounts have tags
+    //   })
+    //   .flat(); // Flattening array to get all tags
     const ACCOUNT_TASKS_API = process.env.REACT_APP_TASKS_API;
     const CHAT_API = process.env.REACT_APP_CHAT_TEMP_URL;
     const CHATTOCLIENT_API = process.env.REACT_APP_CHAT_API;
