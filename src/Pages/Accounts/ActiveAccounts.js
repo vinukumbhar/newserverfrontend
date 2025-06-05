@@ -2178,6 +2178,7 @@ const FixedColumnTable = () => {
               <ManageTags
                 selectedAccounts={selected}
                 onClose={handleFormClose}
+              fetchData={fetchData}
               />
             </Box>
           )}
@@ -2212,6 +2213,7 @@ const FixedColumnTable = () => {
               <ManageTeams
                 selectedAccounts={selected}
                 onClose={handleFormClose}
+                fetchAccountData={fetchData}
               />
             </Box>
           )}

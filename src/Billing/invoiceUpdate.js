@@ -1487,7 +1487,7 @@ if (result.invoice.teammember) {
             {/* <Box >
                                 <MaterialReactTable columns={columns} table={table} />
                             </Box> */}
-            <Box sx={{ overflowX: "auto", width: "100%" , border:'1px solid red', height:'300px'}}>
+            <Box sx={{ overflowX: "auto", width: "100%" , }}>
               <Table>
                 <TableHead>
                   <TableRow>

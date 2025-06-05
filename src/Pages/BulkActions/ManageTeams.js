@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Select, MenuItem, Button, Typography, Box } from "@mui/material";
 import { toast } from "react-toastify";
 
-const ManageTeams = ({ selectedAccounts, onClose }) => {
+const ManageTeams = ({ selectedAccounts, onClose,fetchAccountData }) => {
   const USER_API = process.env.REACT_APP_USER_URL;
   const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
   const [userData, setUserData] = useState([]);
@@ -72,6 +72,9 @@ const ManageTeams = ({ selectedAccounts, onClose }) => {
       .then((result) => {
         console.log(result);
         removebulkTeamMember();
+       
+       
+          
       })
       .catch((error) => console.error(error));
   };
@@ -97,6 +100,7 @@ const ManageTeams = ({ selectedAccounts, onClose }) => {
       .then((result) => {
         console.log(result);
         toast.success("Team Member Assign Successfully");
+        fetchAccountData()
         handleCancel();
       })
       .catch((error) => console.error(error));

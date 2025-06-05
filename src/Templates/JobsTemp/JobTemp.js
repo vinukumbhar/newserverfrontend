@@ -37,8 +37,8 @@ const JobTemp = ({ charLimit = 4000 }) => {
   const [templatename, settemplatename] = useState("");
   const [priority, setPriority] = useState("");
   const [showForm, setShowForm] = useState(false);
-  const [startsin, setstartsin] = useState("");
-  const [duein, setduein] = useState("");
+  const [startsin, setstartsin] = useState(0);
+  const [duein, setduein] = useState(0);
   const [absoluteDate, setAbsoluteDates] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [dueDate, setDueDate] = useState(null);
@@ -1189,7 +1189,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                       <InputLabel sx={{ color: "black", mb: 1 }}>Start In</InputLabel>
                       </Grid>
                       <Grid item xs={12} sm={5}>
-                        <TextField size="small" placeholder="0" defaultValue={0} value={startsin} sx={{ background: "#fff", width: "100%" }} onChange={(e) => setstartsin(e.target.value)} />
+                        <TextField size="small"  value={startsin} sx={{ background: "#fff", width: "100%" }} onChange={(e) => setstartsin(e.target.value)} />
                       </Grid>
                       <Grid item xs={12} sm={5}>
                         <Autocomplete
@@ -1212,7 +1212,7 @@ onRowsPerPageChange={handleChangeRowsPerPage}
                       <InputLabel sx={{ color: "black", mb: 1 }}>Due In</InputLabel>
                       </Grid>
                       <Grid item xs={12} sm={5}>
-                        <TextField size="small" placeholder="0" value={duein} fullWidth sx={{ background: "#fff" }} onChange={(e) => setduein(e.target.value)} />
+                        <TextField size="small"  value={duein} fullWidth sx={{ background: "#fff" }} onChange={(e) => setduein(e.target.value)} />
                       </Grid>
                       <Grid item xs={12} sm={5}>
                         <Autocomplete

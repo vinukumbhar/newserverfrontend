@@ -347,7 +347,7 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
     fetch(url, requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result.invoiceTemplate);
+        console.log("invoice temp",result.invoiceTemplate);
         setDescription(result.invoiceTemplate.description);
         setIsPayInvoice(result.invoiceTemplate.payInvoicewithcredits);
         setIsEmailInvoice(result.invoiceTemplate.sendEmailWhenInvCreated);
@@ -359,7 +359,7 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
         };
         setPaymentMode(paymentMethod);
         // Assuming lineitems is an array of objects and each object matches the structure needed for rows
-        console.log(result.invoiceTemplate.lineItems);
+        // console.log(result.invoiceTemplate.lineItems);
         const lineitems = result.invoiceTemplate.lineItems.map((item) => ({
           productName: item.productorService || "",
           description: item.description || "",
@@ -372,7 +372,7 @@ const InvoicesUpdate = ({ charLimit = 4000, onClose, invoiceData }) => {
         setRows(lineitems);
         setSubtotal(result.invoiceTemplate.summary.subtotal);
         setTaxRate(result.invoiceTemplate.summary.taxRate);
-        console.log(result.invoiceTemplate.summary.taxRate);
+        // console.log(result.invoiceTemplate.summary.taxRate);
         setTaxTotal(result.invoiceTemplate.summary.taxTotal);
         setTotalAmount(result.invoiceTemplate.summary.total);
       })

@@ -553,7 +553,7 @@ const Accountupdate = ({ onClose, selectedAccount }) => {
         city: city || "",
         postalCode: postalCode || "",
       });
-      console.log(raw);
+      console.log("account update",raw);
       const requestOptions = {
         method: "PATCH",
         headers: myHeaders,

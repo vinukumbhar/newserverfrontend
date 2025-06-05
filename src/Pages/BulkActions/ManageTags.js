@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Badge ,Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Select, MenuItem, Button, Typography, Box } from "@mui/material";
 import { toast } from "react-toastify";
 
-const ManageTags = ({ selectedAccounts, onClose }) => {
+const ManageTags = ({ selectedAccounts, onClose,fetchData }) => {
   const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
   const [tags, setTags] = useState([]);
   const [tagActions, setTagActions] = useState({});
@@ -88,7 +88,9 @@ const ManageTags = ({ selectedAccounts, onClose }) => {
       .then((result) => {
         console.log(result);
         removebulkTags();
-        // toast.success("Tags Assign Successfully")
+      
+       
+        
       })
       .catch((error) => console.error(error));
   };
@@ -114,7 +116,9 @@ const ManageTags = ({ selectedAccounts, onClose }) => {
       .then((result) => {
         console.log(result);
         toast.success("Tags Assign Successfully");
+        
         handleCancel();
+          fetchData()
       })
       .catch((error) => console.error(error));
   };

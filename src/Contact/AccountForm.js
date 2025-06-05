@@ -45,6 +45,8 @@ import TagsMultiSelectDropDown from "../Templates/TagsMultiSelectDropDown"
 import MultiSelectDropdown from "../Templates/MultiSelectDropdown"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+
+import debounce from "lodash.debounce";
 const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
   const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
   const USER_API = process.env.REACT_APP_USER_URL;
@@ -1470,6 +1472,33 @@ const handleOpenModal = (id) => {
       .catch((error) => console.error(error));
   };
 
+
+  // Debounced function to check template name existence
+  const checkTemplateName = async (name) => {
+      try {
+        const res = await axios.get(`${ACCOUNT_API}/accounts/check-name`, {
+          params: { name },
+        });
+        if (res.data.exists) {
+          setAccountNameError('Account name taken');
+        } else {
+          setAccountNameError('');
+        }
+      } catch (err) {
+        console.error(err);
+        setAccountNameError('');
+      }
+    };
+  
+   const debouncedCheck = debounce((name) => {
+      if (name.trim()) checkTemplateName(name);
+      else setAccountNameError('');
+    }, 500);
+  
+    useEffect(() => {
+      debouncedCheck(accountName);
+      return debouncedCheck.cancel;
+    }, [accountName]);
   return (
     <Box>
       <Box

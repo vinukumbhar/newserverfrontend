@@ -34,8 +34,8 @@ const JobTemplateUpdate = ({ charLimit = 4000 }) => {
   const [AssigneesNew, setAssigneesNew] = useState([]);
   const [PriorityNew, setPriorityNew] = useState();
   const [JobDescriptionNew, setJobDescriptionNew] = useState();
-  const [StartsInNew, setStartsInNew] = useState();
-  const [DueInNew, setDueInNew] = useState();
+  const [StartsInNew, setStartsInNew] = useState(0);
+  const [DueInNew, setDueInNew] = useState(0);
   const [StartsDateNew, setStartsDateNew] = useState(null);
   const [DueDateNew, setDueDateNew] = useState(null);
   const [StartsInDurationNew, setStartsInDurationNew] = useState();
