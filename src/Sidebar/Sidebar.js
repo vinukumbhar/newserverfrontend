@@ -494,7 +494,20 @@ if (
   const [profilePicture, setProfilePicture] = useState("");
 
   const [userid, setUserid] = useState("");
-  const fetchUserData = async (id) => {
+   const [currentImage, setCurrentImage] = useState(null);
+    const [preview, setPreview] = useState(currentImage);
+ 
+   useEffect(() => {
+     if (currentImage) {
+       // Replace 'uploads/' with 'profilepicture/' in the path
+       const transformedUrl = currentImage.replace(
+         "uploads/",
+         "profilepicture/"
+       );
+       setPreview(`${LOGIN_API}/${transformedUrl}`);
+     }
+   }, [currentImage]);
+    const fetchUserData = async (id) => {
     const maxLength = 15;
     const myHeaders = new Headers();
 
@@ -515,8 +528,11 @@ if (
           setUserData(truncateString(result.email, maxLength)); // Set a maximum length for userData if email exists
           setUserEmail(result.email);
         }
+       
         // console.log(userData)
         setUserid(result._id);
+         setCurrentImage(result.profilePicture);
+
       });
   };
 
@@ -662,7 +678,7 @@ if (
                     anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                     variant="dot"
                   >
-                    <Avatar
+                    {/* <Avatar
                       alt={username}
                       src={croppedImage || ""}
                       sx={{
@@ -675,7 +691,15 @@ if (
                       }}
                     >
                       {!croppedImage && getInitials(username)}
-                    </Avatar>
+                    </Avatar> */}
+                     <Avatar
+                                          src={preview || currentImage}
+                                          sx={{
+                                             width: 40,
+                        height: 40,
+                                            border: "2px solid #eee",
+                                          }}
+                                        />
                   </StyledBadge>
                   <Box ml={2}>
                     <Typography
@@ -778,20 +802,14 @@ if (
                   anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                   variant="dot"
                 >
-                  <Avatar
-                    alt={username}
-                    src={croppedImage || ""}
-                    sx={{
-                      width: 30,
-                      height: 30,
-                      backgroundColor: "#f5f5f5",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                      color: "#555",
-                    }}
-                  >
-                    {!croppedImage && getInitials(username)}
-                  </Avatar>
+                   <Avatar
+                                          src={preview || currentImage}
+                                          sx={{
+                                             width: 40,
+                        height: 40,
+                                            border: "2px solid #eee",
+                                          }}
+                                        />
                 </StyledBadge>
                 <Box>
                   <Typography

@@ -87,7 +87,7 @@ const [currentInvoice, setCurrentInvoice] = useState(null);
 const handleUpdateStatus = (invoiceNumber, status) => {
   if (!invoiceNumber || !status) return;
 
-  fetch(`http://127.0.0.1/workflow/invoices/invoicestatus/${invoiceNumber}`, {
+  fetch(`${INVOICES_API}/workflow/invoices/invoicestatus/${invoiceNumber}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ invoiceStatus: status }),

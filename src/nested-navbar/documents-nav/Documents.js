@@ -1228,7 +1228,7 @@ const Documents = () => {
     }
   };
   const handleFileOpen = (fileItem) => {
-    // Assuming fileItem.filepath = "/uploads/folder1/filename.pdf"
+   
     const baseUrl = `${DOCS_MANAGMENTS}`; // or http://localhost:8000 in dev
     const fileUrl = `${baseUrl}/${fileItem.path}`;
 

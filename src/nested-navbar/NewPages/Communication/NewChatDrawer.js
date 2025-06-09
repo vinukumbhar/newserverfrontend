@@ -774,7 +774,7 @@ const NewChatDrawer = ({ open, handleClose, accountwiseChatlist, data,isActiveTr
             // onClick={sendSaveChatMail}
             onClick={saveChat}
           >
-            Save chat
+            Create chat
           </Button>
           <Button
             onClick={handleCloseDrawer}

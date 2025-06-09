@@ -12,6 +12,8 @@ import {
   Select,
   MenuItem,
   TextField,
+  Divider,
+  CircularProgress,
 } from "@mui/material";
 import { unstable_ClassNameGenerator as ClassNameGenerator } from "@mui/material/className";
 import BorderColorRoundedIcon from "@mui/icons-material/BorderColorRounded";
@@ -32,6 +34,8 @@ import { styled } from "@mui/material/styles";
 import Badge from "@mui/material/Badge";
 import Avatar from "@mui/material/Avatar";
 import Stack from "@mui/material/Stack";
+import EditIcon from "@mui/icons-material/Edit";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import axios from "axios";
 import ImageCropper from "./ImageCropper";
 // Configure ClassNameGenerator
@@ -128,34 +132,95 @@ const MyAccount = () => {
   //     console.error("Error fetching data:", error);
   //   }
   // };
- 
- const fetchData = async () => {
-  try {
-    const url = `${LOGIN_API}/common/user/${loginuserid}`;
-    console.log("jjj", url);
-    const response = await fetch(url);
-    const data = await response.json();
+  const [currentImage, setCurrentImage] = useState(null);
+  const [preview, setPreview] = useState(currentImage);
+  const [isUploading, setIsUploading] = useState(false);
+  const fetchData = async () => {
+    try {
+      const url = `${LOGIN_API}/common/user/${loginuserid}`;
+      console.log("jjj", url);
+      const response = await fetch(url);
+      const data = await response.json();
 
-    const validTime = logindata.user.exp - logindata.user.iat;
-    setSignedTime(formatTimePeriod(validTime));
+      const validTime = logindata.user.exp - logindata.user.iat;
+      setSignedTime(formatTimePeriod(validTime));
 
-    setuserdata(data);
-    console.log("dta", data);
+      setuserdata(data);
+      console.log("dta", data);
+      setCurrentImage(data.profilePicture);
 
-    if (data.role === "TeamMember") {
-     
-      fetchTeamMemberData(data.email)
-    } else {
-      fetchAdminData(data.email);
+      if (data.role === "TeamMember") {
+        fetchTeamMemberData(data.email);
+      } else {
+        fetchAdminData(data.email);
+      }
+
+      fetchNotificationData(loginuserid);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  useEffect(() => {
+    if (currentImage) {
+      // Replace 'uploads/' with 'profilepicture/' in the path
+      const transformedUrl = currentImage.replace(
+        "uploads/",
+        "profilepicture/"
+      );
+      setPreview(`${LOGIN_API}/${transformedUrl}`);
+      console.log("ghfhgf",`${LOGIN_API}/${transformedUrl}`)
+    }
+  }, [currentImage]);
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!image) {
+      toast.warning("Please select an image first");
+      return;
     }
 
-    fetchNotificationData(loginuserid);
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
-};
+    const formData = new FormData();
+    formData.append("profilePicture", image);
 
- 
+    try {
+      setIsUploading(true);
+      const response = await axios.post(
+        `${LOGIN_API}/common/${loginuserid}/profile-picture`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      toast.success("Profile picture updated successfully");
+
+      setIsUploading(false);
+      fetchData();
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error(
+        error.response?.data?.error || "Failed to upload profile picture"
+      );
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const [username, setUserName] = useState("");
   const fetchAdminData = async (email) => {
     try {
@@ -1237,17 +1302,17 @@ const MyAccount = () => {
     fetchLastUploadedImage();
   }, []);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImage(reader.result); // Set the base64 image data
-        console.log("vinayak", reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onload = () => {
+  //       setImage(reader.result); // Set the base64 image data
+  //       console.log("vinayak", reader.result);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
   const handleCroppedImage = (cropped) => {
     setCroppedImage(cropped); // Set the cropped image data
@@ -1341,33 +1406,20 @@ const MyAccount = () => {
       </Box>
       <Box className="account-settings">
         <Box className="accounts-details-user">
-          <Box>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Box className="user-profile-container">
-                {/* <img src={user} alt="" className="user-profile-image" style={{ width: "40px", height: "40px", borderRadius: "50%", marginTop: "25px" }} /> */}
-                <StyledBadge
-                  overlap="circular"
-                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                  variant="dot"
-                >
-                  <Avatar
-                    alt={username}
-                    src={croppedImage || ""}
-                    sx={{
-                      width: 40,
-                      height: 40,
-                      backgroundColor: "#f5f5f5",
-                      fontSize: "16px",
-                      fontWeight: "bold",
-                      color: "#555",
-                    }}
-                  >
-                    {!croppedImage && getInitials(username)}
-                  </Avatar>
-                </StyledBadge>
+          <Box sx={{ ml: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                mt: 1,
+              }}
+            >
+              <Box>
+                {" "}
+                <Typography variant="h6">Personal Details</Typography>
               </Box>
-
-              <Box className="hr">
+              <Box>
                 <BorderColorRoundedIcon
                   sx={{
                     float: "right",
@@ -1379,8 +1431,107 @@ const MyAccount = () => {
                 />
               </Box>
             </Box>
+            <Box>
+              <Divider sx={{ mt: 1.5 }} />
+            </Box>
+
+            {!isEditable && (
+              <Box mt={3} sx={{display:'flex', alignItems:'center', gap:5}}>
+                 <Avatar
+                      src={preview || currentImage}
+                      sx={{
+                        width: 120,
+                        height: 120,
+                        border: "2px solid #eee",
+                      }}
+                    />
+                    <Box>
+                      <Typography variant="h5">
+                  {firstName} {lastname}
+                </Typography>
+                <Typography variant="body1">
+                {phonenumber}
+                </Typography>
+                      </Box>
+                
+              </Box>
+            )}
             {isEditable && (
-              <Box>
+              <Box mt={3}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 2,
+                  }}
+                >
+                  <Box sx={{ position: "relative" }}>
+                    <Avatar
+                      src={preview || currentImage}
+                      sx={{
+                        width: 120,
+                        height: 120,
+                        border: "2px solid #eee",
+                      }}
+                    />
+                    <input
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      id="profile-picture-upload"
+                      type="file"
+                      onChange={handleImageChange}
+                    />
+                    <label htmlFor="profile-picture-upload">
+                      <Box
+                        // color="primary"
+                        aria-label="upload picture"
+                        component="span"
+                        sx={{
+                          position: "absolute",
+                          bottom: 0,
+                          right: 0,
+                          borderRadius: "10px",
+                          cursor: "pointer",
+                          padding: "6px 8px",
+                          backgroundColor: "primary.main",
+                          "&:hover": {
+                            backgroundColor: "primary.dark",
+                          },
+                        }}
+                      >
+                        <EditIcon sx={{ color: "white" }} fontSize="small" />
+                      </Box>
+                    </label>
+                  </Box>
+
+                  {image && (
+                    <>
+                      <Typography variant="body2" sx={{ mt: 1 }}>
+                        {image.name} ({Math.round(image.size / 1024)} KB)
+                      </Typography>
+
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<CloudUploadIcon />}
+                        onClick={handleUpload}
+                        disabled={isUploading}
+                        fullWidth
+                        sx={{ mt: 2 }}
+                      >
+                        {isUploading ? (
+                          <>
+                            <CircularProgress size={24} color="inherit" />
+                            <Box sx={{ ml: 1 }}>Uploading...</Box>
+                          </>
+                        ) : (
+                          "Upload Profile Picture"
+                        )}
+                      </Button>
+                    </>
+                  )}
+                </Box>
                 <Box className="contact-details">
                   <Box
                     sx={{
@@ -1460,61 +1611,6 @@ const MyAccount = () => {
                       />
                     </Box>
                   </Box>
-                </Box>
-
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="center"
-                  justifyContent="center"
-                  minHeight="100vh"
-                  sx={{ bgcolor: "#f5f5f5" }}
-                >
-                  <Typography variant="h4" gutterBottom>
-                    React Easy Crop with Avatar
-                  </Typography>
-
-                  {croppedImage ? (
-                    <Avatar
-                      src={croppedImage}
-                      sx={{ width: 120, height: 120, mb: 2 }}
-                    />
-                  ) : (
-                    <Avatar sx={{ width: 120, height: 120, mb: 2 }} />
-                  )}
-
-                  {!image && (
-                    <Button
-                      variant="contained"
-                      component="label"
-                      sx={{ mb: 2 }}
-                    >
-                      Upload Image
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        hidden
-                      />
-                    </Button>
-                  )}
-
-                  {image && (
-                    <ImageCropper
-                      image={image}
-                      onCroppedImage={handleCroppedImage}
-                    />
-                  )}
-
-                  {croppedImage && (
-                    <Button
-                      variant="contained"
-                      sx={{ mt: 2 }}
-                      onClick={() => handleSubmit(loginuserid)}
-                    >
-                      Submit Image
-                    </Button>
-                  )}
                 </Box>
               </Box>
             )}

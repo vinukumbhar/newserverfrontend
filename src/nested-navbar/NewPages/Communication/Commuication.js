@@ -492,7 +492,7 @@ const countUnreadAdminMessages = (chat) => {
   const handleShowChat = async (chatId) => {
   try {
     // Mark as read
-    await axios.patch(`http://127.0.0.1/chats/mark-all-read/${chatId}/accounts/${data}/Admin`);
+    await axios.patch(`${CHATTOCLIENT_API}/chats/mark-all-read/${chatId}/accounts/${data}/Admin`);
     
     // // Navigate to the chat
     // navigate(`/updatechat/${chatId}`);
