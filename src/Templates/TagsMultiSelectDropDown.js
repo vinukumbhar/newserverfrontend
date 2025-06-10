@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { FaCaretUp, FaCaretDown, FaTimes } from "react-icons/fa";
 
-const MultiSelectDropdown = ({
+const TagsMultiSelectDropDown = ({
   value = [],
   onChange,
   options: propOptions,
@@ -221,4 +221,4 @@ const filteredOptions = options
   );
 };
 
-export default MultiSelectDropdown;
+export default TagsMultiSelectDropDown;

@@ -53,6 +53,7 @@ import { useNavigate } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
 import DeleteIcon from "@mui/icons-material/Delete";
 import TagAutomationComponent from "../TagAutomationComponent"
+import TagsMultiSelectDropDown  from "../TagsMultiSelectDropDown"
 const PipelineTemp = () => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -2333,15 +2334,92 @@ const PipelineTemp = () => {
                 </Button>
               </Box>
             </Grid> */}
+<Grid item>
+  <Box
+    sx={{
+      border: "2px solid #ddd",
+      borderRadius: "8px",
+      padding: 2,
+    }}
+  >
+    <Typography gutterBottom>
+      1. {automationSelect || "No Type"}
+    </Typography>
 
-<TagAutomationComponent
-        automationSelect="Priority Tagging"
-        // onSaveAutomation={handleSaveAutomation}
-        tagsoptions={tagsoptions}
-        initialAddTags={addTags}
-        initialRemoveTags={removeTags}
-        initialSelectedTags={selectedTags}
-      />
+    <Box sx={{ display: "flex", alignItems: "center", gap: 5 }}>
+      <Box mt={2} width={"50%"}>
+        <Typography gutterBottom variant="body2">
+          Add Tags
+        </Typography>
+        <TagsMultiSelectDropDown
+          value={addTags.map(tagId => {
+            const option = tagsoptions.find(opt => opt.value === tagId);
+            return { value: tagId, label: option?.label || tagId };
+          })}
+          onChange={(selected) => {
+            setAddTags(selected.map(item => item.value));
+          }}
+          options={tagsoptions.map(option => ({
+            value: option.value,
+            label: option.label,
+            colour: option.colour
+          }))}
+          placeholder="Select tags..."
+          width="100%"
+        />
+      </Box>
+
+      <Box mt={2} width={"50%"}>
+        <Typography gutterBottom variant="body2">
+          Remove Tags
+        </Typography>
+        <TagsMultiSelectDropDown
+          value={removeTags.map(tagId => {
+            const option = tagsoptions.find(opt => opt.value === tagId);
+            return { value: tagId, label: option?.label || tagId };
+          })}
+          onChange={(selected) => {
+            setRemoveTags(selected.map(item => item.value));
+          }}
+          options={tagsoptions.map(option => ({
+            value: option.value,
+            label: option.label,
+            colour: option.colour
+          }))}
+          placeholder="Select tags..."
+          width="100%"
+        />
+      </Box>
+    </Box>
+
+    {selectedTags.length > 0 && (
+      <Grid container alignItems="center" gap={1}>
+        <Typography>Only for:</Typography>
+        <Grid item>{selectedTagElements}</Grid>
+      </Grid>
+    )}
+
+    <Button variant="text" onClick={handleAddConditions}>
+      Add Conditions
+    </Button>
+  </Box>
+  <Box mt={2}>
+    <Button
+      variant="contained"
+      onClick={handleSaveAutomation(stageSelected)}
+      sx={{
+        backgroundColor: "var(--color-save-btn)",
+        "&:hover": {
+          backgroundColor: "var(--color-save-hover-btn)",
+        },
+        borderRadius: "15px",
+      }}
+    >
+      Save Automation
+    </Button>
+  </Box>
+</Grid>
+
             {/* Condition tags for automation */}
             <Drawer
               anchor="right"

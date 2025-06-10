@@ -429,19 +429,7 @@ const MultiSelectDropdown = ({
           <Typography sx={{ p: 2, color: "gray" }}>No results found</Typography>
         )}
 
-        {/* {value.length > 0 && (
-          <Box
-            sx={{
-              padding: "8px 12px",
-              color: "red",
-              cursor: "pointer",
-              "&:hover": { bgcolor: "action.hover" },
-            }}
-            onClick={clearSelection}
-          >
-            X Clear selected
-          </Box>
-        )} */}
+       
       </Menu>
     </Box>
   );
