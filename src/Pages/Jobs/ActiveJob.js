@@ -2072,7 +2072,9 @@ const getPriorityStyle = (priority) => {
                           lineHeight: "1",
                         }}
                       >
-                        {row.clientfacingstatus?.statusName && (
+                        {row.visibilityForClient === true ? (
+                          <>
+                           {row.clientfacingstatus?.statusName && (
                           <span
                             style={{
                               display: "flex",
@@ -2088,7 +2090,12 @@ const getPriorityStyle = (priority) => {
                             />
                             {row.clientfacingstatus.statusName}
                           </span>
+                        )}</>
+                        ) : (
+                          <>       No Status</>
+                   
                         )}
+                       
                       </TableCell>
                       <TableCell
                         style={{

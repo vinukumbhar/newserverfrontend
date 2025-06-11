@@ -170,6 +170,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { AiOutlineSearch } from "react-icons/ai";
 
 const EditAutomationDrawer = ({
+  setSelectedAutomationData,
   isEditDrawerOpen,
   setIsEditDrawerOpen,
   selectedAutomationData,
@@ -198,11 +199,14 @@ const EditAutomationDrawer = ({
   tagsoptions,
   taskTemplateOptions,
   chatTemplateOptions,
-  handleTagChange,
-  // filteredAddTagsOptions,
+  handleTagChange,handleEditClientChange,setEditClientDescripation,
+  statusOptions,handleStatusChange,optionstatus,setClientDescription,clientDescription,selectedClientStatus,setSelectedClientStatus,
+ maxDescriptionLength ,handleClientDescriptionChange,clientFacingJobs,handleClientStatusChange,setClientFacingJobs
+ // filteredAddTagsOptions,
   // filteredRemoveTagsOptions
 }) => {
   console.log("automation list", selectedAutomationData);
+  console.log("statusOptions",statusOptions)
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
   const MenuProps = {
@@ -346,96 +350,9 @@ const EditAutomationDrawer = ({
           </Box>
           <Box sx={{height:'91vh',overflowY:'auto'}}>
             <Box sx={{padding:'15px'}}>
-            <Box>
+            {/* <Box>
               {selectedAutomationData.length > 0 ? (
-                // selectedAutomationData.map((automation, index) => (
-                //   <Box
-                //     key={index}
-                //     sx={{
-                //       border: "2px solid #ddd",
-                //       borderRadius: "8px",
-                //       padding: 2,
-                //       marginBottom: 2,
-                //     }}
-                //   >
-                //     <Box
-                //       sx={{ display: "flex", justifyContent: "space-between" }}
-                //     >
-                //       <Typography>
-                //         {index + 1}. {automation.type || "No Type"}
-                //       </Typography>
-                //       <IconButton onClick={() => handleDeleteAutomation(index)}>
-                //         <DeleteIcon color="error" />
-                //       </IconButton>
-                //     </Box>
-
-                //       <>
-                //         <Typography gutterBottom variant="body2">
-                //           Select Template
-                //         </Typography>
-                //         <Autocomplete
-                //           options={
-                //             automation.type === "Send Email"
-                //               ? emailTemplateOptions
-                //               : automation.type === "Send Invoice"
-                //                 ? invoiceTemplateOptions
-                //                 : automation.type === "Create Organizer"
-                //                   ? organizerOptions
-                //                   : automation.type === "Send Proposal/Els"
-                //                     ? proposalElsOptions
-                //                     : automation.type === "Apply folder template"
-                //                       ? optionfolder
-                //                       : []
-                //           }
-                //           getOptionLabel={(option) => option.label}
-                //           value={automation.template || null}
-                //           onChange={(event, newValue) =>
-                //             handleEditTemplateChange(index, newValue)
-                //           }
-                //           renderInput={(params) => (
-                //             <TextField
-                //               {...params}
-                //               variant="outlined"
-                //               size="small"
-                //               placeholder="Select Template"
-                //             />
-                //           )}
-                //         />
-
-                //         {automation.tags && automation.tags.length > 0 && (
-                //           <Box sx={{ marginTop: "10px" }}>
-                //             <Typography variant="body2">Only For:</Typography>
-                //             <Box
-                //               sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}
-                //             >
-                //               {automation.tags.map((tag) => (
-                //                 <Chip
-                //                   key={tag._id}
-                //                   label={tag.tagName}
-                //                   sx={{
-                //                     backgroundColor: tag.tagColour,
-                //                     color: "#fff",
-                //                     fontWeight: "500",
-                //                     borderRadius: "20px",
-                //                     marginRight: 1,
-                //                   }}
-                //                 />
-                //               ))}
-                //             </Box>
-                //           </Box>
-                //         )}
-
-                //         <Button
-                //           variant="text"
-                //           sx={{ marginTop: 2 }}
-                //           onClick={() => handleEditConditions(index)}
-                //         >
-                //           Add Conditions
-                //         </Button>
-                //       </>
-
-                //   </Box>
-                // ))
+                
                 selectedAutomationData.map((automation, index) => (
                   <Box
                     key={index}
@@ -459,7 +376,7 @@ const EditAutomationDrawer = ({
 
                     {automation.type === "Update account tags" ? (
                       <>
-                        {/* Select for Added Tags */}
+                       
                         <Typography variant="body2">Added Tags:</Typography>
 
                         <Select
@@ -502,26 +419,7 @@ const EditAutomationDrawer = ({
                           fullWidth
                           MenuProps={MenuProps}
                         >
-                          {/* {tagsoptions
-    .filter((option) => !automation.removeTags.some((tag) => tag._id === option.value)) // Hide selected removeTags
-    .map((option) => (
-      <MenuItem key={option.value} value={option.value} sx={{ backgroundColor: option.colour, color: "#fff" , fontSize: "10px",
-        borderRadius: "10px",
-        margin: "5px",
-        textAlign: "center",
-        display: "flex",
-        justifyContent: "center",
-        padding: "4px 9px",
-     
-        whiteSpace: "nowrap", // Prevent line breaks
-       
-        "&:hover": {
-                                  backgroundColor: option.colour,
-                                  color: "#fff",
-                                },}}>
-        {option.label}
-      </MenuItem>
-    ))} */}
+                       
                           {tagsoptions
                             .filter(
                               (option) =>
@@ -571,7 +469,7 @@ const EditAutomationDrawer = ({
                               );
                             })}
                         </Select>
-                        {/* Select for Removed Tags */}
+                        
                         <Typography variant="body2" sx={{ marginTop: 2 }}>
                           Removed Tags:
                         </Typography>
@@ -616,28 +514,7 @@ const EditAutomationDrawer = ({
                           fullWidth
                           MenuProps={MenuProps}
                         >
-                          {/* {tagsoptions
-    .filter((option) => !automation.addTags.some((tag) => tag._id === option.value)) // Hide selected addTags
-    .map((option) => (
-      <MenuItem key={option.value} value={option.value} sx={{ backgroundColor: option.colour, color: "#fff", fontSize: "10px",
-        borderRadius: "10px",
-        margin: "5px",
-        textAlign: "center",
-        display: "flex",
-        justifyContent: "center",
-        padding: "4px 9px",
-        // alignItems: "center",
-        // paddingLeft: "10px",
-        whiteSpace: "nowrap", // Prevent line breaks
-        // textAlign: "left", // Ensure text is left-aligned
-        // paddingLeft: "10px", // Add left padding for proper alignment,
-         "&:hover": {
-                                  backgroundColor: option.colour,
-                                  color: "#fff",
-                                }, }}>
-        {option.label}
-      </MenuItem>
-    ))} */}
+                          
                           {tagsoptions
                             .filter(
                               (option) =>
@@ -690,7 +567,7 @@ const EditAutomationDrawer = ({
                       </>
                     ) : (
                       <>
-                        {/* Other Automation Types */}
+                     
                         <Typography gutterBottom variant="body2">
                           Select Template
                         </Typography>
@@ -779,7 +656,477 @@ const EditAutomationDrawer = ({
                   No automations selected.
                 </Typography>
               )}
+            </Box> */}
+            <Box>
+  {selectedAutomationData.length > 0 ? (
+    selectedAutomationData.map((automation, index) => (
+      <Box
+        key={index}
+        sx={{
+          border: "2px solid #ddd",
+          borderRadius: "8px",
+          padding: 2,
+          marginBottom: 2,
+        }}
+      >
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Typography>
+            {index + 1}. {automation.type || "No Type"}
+          </Typography>
+          <IconButton onClick={() => handleDeleteAutomation(index)}>
+            <DeleteIcon color="error" />
+          </IconButton>
+        </Box>
+
+        {automation.type === "Update account tags" ? (
+          <>
+            {/* Existing Update Tags UI */}
+            <Typography variant="body2">Added Tags:</Typography>
+            <Select
+              multiple
+              displayEmpty
+              multiline
+              size="small"
+              value={automation.addTags.map((tag) => tag._id)}
+              onChange={(event) =>
+                handleTagChange(index, "addTags", event)
+              }
+              renderValue={(selected) =>
+                selected.length === 0 ? (
+                  <Typography color="gray">
+                    Select tags to add
+                  </Typography>
+                ) : (
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                    {automation.addTags.map((tag) => (
+                      <Chip
+                        key={tag._id}
+                        label={tag.tagName}
+                        sx={{
+                          backgroundColor: tag.tagColour,
+                          color: "#fff",
+                          fontWeight: "500",
+                          borderRadius: "20px",
+                        }}
+                      />
+                    ))}
+                  </Box>
+                )
+              }
+              fullWidth
+              MenuProps={MenuProps}
+            >
+              {tagsoptions
+                .filter(
+                  (option) =>
+                    !automation.removeTags.some(
+                      (tag) => tag._id === option.value
+                    )
+                )
+                .map((option) => {
+                  const canvas = document.createElement("canvas");
+                  const context = canvas.getContext("2d");
+                  context.font = "14px Arial";
+                  const textWidth = context.measureText(option.label).width;
+                  const dynamicWidth = Math.min(textWidth + 20, 200);
+
+                  return (
+                    <MenuItem
+                      key={option.value}
+                      value={option.value}
+                      sx={{
+                        backgroundColor: option.colour,
+                        color: "#fff",
+                        fontSize: "10px",
+                        borderRadius: "10px",
+                        margin: "5px",
+                        textAlign: "center",
+                        display: "flex",
+                        justifyContent: "center",
+                        padding: "4px 9px",
+                        whiteSpace: "nowrap",
+                        minWidth: `${dynamicWidth}px`,
+                        maxWidth: `${dynamicWidth}px`,
+                        "&:hover": {
+                          backgroundColor: option.colour,
+                          color: "#fff",
+                        },
+                      }}
+                    >
+                      {option.label}
+                    </MenuItem>
+                  );
+                })}
+            </Select>
+            
+            <Typography variant="body2" sx={{ marginTop: 2 }}>
+              Removed Tags:
+            </Typography>
+            <Select
+              multiple
+              size="small"
+              multiline
+              displayEmpty
+              value={automation.removeTags.map((tag) => tag._id)}
+              onChange={(event) =>
+                handleTagChange(index, "removeTags", event)
+              }
+              renderValue={(selected) =>
+                selected.length === 0 ? (
+                  <Typography color="gray">
+                    Select tags to remove
+                  </Typography>
+                ) : (
+                  <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                    {automation.removeTags.map((tag) => (
+                      <Chip
+                        key={tag._id}
+                        label={tag.tagName}
+                        sx={{
+                          backgroundColor: tag.tagColour,
+                          color: "#fff",
+                          fontWeight: "500",
+                          borderRadius: "20px",
+                        }}
+                      />
+                    ))}
+                  </Box>
+                )
+              }
+              fullWidth
+              MenuProps={MenuProps}
+            >
+              {tagsoptions
+                .filter(
+                  (option) =>
+                    !automation.addTags.some(
+                      (tag) => tag._id === option.value
+                    )
+                )
+                .map((option) => {
+                  const canvas = document.createElement("canvas");
+                  const context = canvas.getContext("2d");
+                  context.font = "14px Arial";
+                  const textWidth = context.measureText(option.label).width;
+                  const dynamicWidth = Math.min(textWidth + 20, 200);
+
+                  return (
+                    <MenuItem
+                      key={option.value}
+                      value={option.value}
+                      sx={{
+                        backgroundColor: option.colour,
+                        color: "#fff",
+                        fontSize: "10px",
+                        borderRadius: "10px",
+                        margin: "5px",
+                        textAlign: "center",
+                        display: "flex",
+                        justifyContent: "center",
+                        padding: "4px 9px",
+                        whiteSpace: "nowrap",
+                        minWidth: `${dynamicWidth}px`,
+                        maxWidth: `${dynamicWidth}px`,
+                        "&:hover": {
+                          backgroundColor: option.colour,
+                          color: "#fff",
+                        },
+                      }}
+                    >
+                      {option.label}
+                    </MenuItem>
+                  );
+                })}
+            </Select>
+          </>
+        ) : automation.type === "Update client-facing job status" ? (
+//           <>
+          
+//         <InputLabel sx={{ color: "black", mb: 1 }}>
+//                               Visibility for client
+//                             </InputLabel>
+//             <Autocomplete
+//                                  options={statusOptions}
+//                                  getOptionLabel={(option) => option.label}
+//                                  value={statusOptions.find(option => option.value === automation.visibilityForClient) || null}
+//  onChange={handleStatusChange}
+//                                  renderInput={(params) => (
+//                                    <TextField
+//                                      {...params}
+//                                      size="small"
+//                                      variant="outlined"
+//                                      placeholder="Select status"
+//                                    />
+//                                  )}
+//                                  fullWidth
+//                                />
+//                                  {automation.visibilityForClient === true && (
+//                                                  <Box>
+//                                                    <Box>
+//                                                      <InputLabel sx={{ color: "black", mb: 1, mt: 1 }}>
+//                                                        Select status
+//                                                      </InputLabel>
+//                                                      <Autocomplete
+//                                                        options={optionstatus}
+//                                                        size="small"
+//                                                        sx={{ mt: 1 }}
+//                                                        value={automation.selectedClientStatus}
+                                                      
+//                                                        getOptionLabel={(option) => option.label}
+//                                                        isOptionEqualToValue={(option, value) =>
+//                                                          option.value === value.value
+//                                                        }
+//                                                        renderOption={(props, option) => (
+//                                                          <Box component="li" {...props}>
+//                                                            {/* Color dot */}
+//                                                            <Chip
+//                                                              size="small"
+//                                                              style={{
+//                                                                backgroundColor: option.clientfacingColour,
+//                                                                marginRight: 8,
+//                                                                marginLeft: 8,
+//                                                                borderRadius: "50%",
+//                                                                height: "15px",
+//                                                              }}
+//                                                            />
+//                                                            {option.label}
+//                                                          </Box>
+//                                                        )}
+//                                                        renderInput={(params) => (
+//                                                          <TextField
+//                                                            {...params}
+//                                                            placeholder="Select status"
+//                                                            InputProps={{
+//                                                              ...params.InputProps,
+//                                                              startAdornment:
+//                                                                params.inputProps.value &&
+//                                                                clientFacingJobs.length > 0 ? (
+//                                                                  <Chip
+//                                                                    size="small"
+//                                                                    style={{
+//                                                                      backgroundColor: clientFacingJobs.find(
+//                                                                        (job) =>
+//                                                                          job.clientfacingName ===
+//                                                                          params.inputProps.value
+//                                                                      )?.clientfacingColour, // Set color from selection
+//                                                                      marginRight: 8,
+//                                                                      marginLeft: 2,
+//                                                                      borderRadius: "50%",
+//                                                                      height: "15px",
+//                                                                    }}
+//                                                                  />
+//                                                                ) : null,
+//                                                            }}
+//                                                          />
+//                                                        )}
+//                                                      />
+//                                                    </Box>
+//                                                    <Box mt={1}>
+//                                                      <InputLabel sx={{ color: "black", mb: 1 }}>
+//                                                        Status description for client
+//                                                      </InputLabel>
+//                                                      <TextField
+//                                                        fullWidth
+//                                                        multiline
+//                                                        rows={4}
+//                                                        variant="outlined"
+//                                                        value={automation.statusDescription}
+                                                     
+//                                                        placeholder="Status description for client"
+//                                                      />
+//                                                      <Typography variant="caption" color="textSecondary">
+//                                                        {automation.statusDescription.length}/{maxDescriptionLength}
+//                                                      </Typography>
+//                                                    </Box>
+//                                                  </Box>
+//                                                )}
+//           </>
+ <>
+    {/* UI for Update client-facing job status */}
+    <InputLabel sx={{ color: "black", mb: 1 }}>
+      Visibility for client
+    </InputLabel>
+    <Autocomplete
+      options={statusOptions}
+      getOptionLabel={(option) => option.label}
+      value={statusOptions.find(option => option.value === automation.visibilityForClient) || null}
+      onChange={(event, newValue) => {
+        const updatedAutomations = [...selectedAutomationData];
+        updatedAutomations[index].visibilityForClient = newValue?.value;
+        setSelectedAutomationData(updatedAutomations);
+      }}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          size="small"
+          variant="outlined"
+          placeholder="Select status"
+        />
+      )}
+      fullWidth
+    />
+    {automation.visibilityForClient === true && (
+      <Box>
+        <Box>
+          <InputLabel sx={{ color: "black", mb: 1, mt: 1 }}>
+            Select status
+          </InputLabel>
+          <Autocomplete
+            options={optionstatus}
+            size="small"
+            sx={{ mt: 1 }}
+            value={automation.selectedClientStatus || null}
+            
+             onChange={(event, newValue) =>
+                handleEditClientChange(index, newValue)
+              }
+            getOptionLabel={(option) => option.label}
+            isOptionEqualToValue={(option, value) =>
+              option.value === value?.value
+            }
+            renderOption={(props, option) => (
+              <Box component="li" {...props}>
+                <Chip
+                  size="small"
+                  style={{
+                    backgroundColor: option.clientfacingColour,
+                    marginRight: 8,
+                    marginLeft: 8,
+                    borderRadius: "50%",
+                    height: "15px",
+                  }}
+                />
+                {option.label}
+              </Box>
+            )}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                placeholder="Select status"
+                InputProps={{
+                  ...params.InputProps,
+                  startAdornment:
+                    params.inputProps.value ? (
+                      <Chip
+                        size="small"
+                        style={{
+                          backgroundColor: optionstatus.find(
+                            opt => opt.label === params.inputProps.value
+                          )?.clientfacingColour,
+                          marginRight: 8,
+                          marginLeft: 2,
+                          borderRadius: "50%",
+                          height: "15px",
+                        }}
+                      />
+                    ) : null,
+                }}
+              />
+            )}
+          />
+        </Box>
+        <Box mt={1}>
+          <InputLabel sx={{ color: "black", mb: 1 }}>
+            Status description for client
+          </InputLabel>
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            variant="outlined"
+            value={automation.statusDescription || ""}
+            onChange={(event) => {
+              const updatedAutomations = [...selectedAutomationData];
+              updatedAutomations[index].statusDescription = event.target.value;
+              setSelectedAutomationData(updatedAutomations);
+            }}
+            placeholder="Status description for client"
+          />
+          <Typography variant="caption" color="textSecondary">
+            {automation.statusDescription?.length || 0}/{maxDescriptionLength}
+          </Typography>
+        </Box>
+      </Box>
+    )}
+  </>
+        ) : (
+          <>
+            {/* Other Automation Types */}
+            <Typography gutterBottom variant="body2">
+              Select Template
+            </Typography>
+            <Autocomplete
+              options={
+                automation.type === "Send Email"
+                  ? emailTemplateOptions
+                  : automation.type === "Send Invoice"
+                  ? invoiceTemplateOptions
+                  : automation.type === "Create Organizer"
+                  ? organizerOptions
+                  : automation.type === "Send Proposal/Els"
+                  ? proposalElsOptions
+                  : automation.type === "Apply folder template"
+                  ? optionfolder
+                  : automation.type === "Create Task"
+                  ? taskTemplateOptions
+                  : automation.type === "Send message"
+                  ? chatTemplateOptions
+                  : []
+              }
+              getOptionLabel={(option) => option.label}
+              value={automation.template || null}
+              onChange={(event, newValue) =>
+                handleEditTemplateChange(index, newValue)
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="outlined"
+                  size="small"
+                  placeholder="Select Template"
+                />
+              )}
+            />
+          </>
+        )}
+
+        <Box>
+          {automation.tags && automation.tags.length > 0 && (
+            <Box sx={{ marginTop: "10px" }}>
+              <Typography variant="body2">Only For:</Typography>
+              <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+                {automation.tags.map((tag) => (
+                  <Chip
+                    key={tag._id}
+                    label={tag.tagName}
+                    sx={{
+                      backgroundColor: tag.tagColour,
+                      color: "#fff",
+                      fontWeight: "500",
+                      borderRadius: "20px",
+                      marginRight: 1,
+                    }}
+                  />
+                ))}
+              </Box>
             </Box>
+          )}
+        </Box>
+        <Button
+          variant="text"
+          sx={{ marginTop: 2 }}
+          onClick={() => handleEditConditions(index)}
+        >
+          Add Conditions
+        </Button>
+      </Box>
+    ))
+  ) : (
+    <Typography variant="body2" sx={{ marginTop: 2 }}>
+      No automations selected.
+    </Typography>
+  )}
+</Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
               <Button
                 variant="text"
@@ -845,6 +1192,10 @@ const EditAutomationDrawer = ({
               {/* Send message */}
               <MenuItem onClick={() => handleMenuItemSelect("Send message")}>
                 Send message
+              </MenuItem>
+              {/* Update client-facing job status */}
+               <MenuItem onClick={() => handleMenuItemSelect("Update client-facing job status")}>
+               Update client-facing job status
               </MenuItem>
             </Menu>
             </Box>

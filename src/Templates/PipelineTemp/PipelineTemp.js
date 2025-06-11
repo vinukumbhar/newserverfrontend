@@ -52,8 +52,9 @@ import { CiMenuKebab } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 import { RxCross2 } from "react-icons/rx";
 import DeleteIcon from "@mui/icons-material/Delete";
-import TagAutomationComponent from "../TagAutomationComponent"
-import TagsMultiSelectDropDown  from "../TagsMultiSelectDropDown"
+import TagAutomationComponent from "../TagAutomationComponent";
+import TagsMultiSelectDropDown from "../TagsMultiSelectDropDown";
+import { GoDotFill } from "react-icons/go";
 const PipelineTemp = () => {
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -257,32 +258,7 @@ const PipelineTemp = () => {
       )
     );
   };
-  //  const handleTagChange = (index, type, event) => {
-  //     const { value } = event.target; // Array of selected tag IDs
 
-  //     setSelectedAutomationData((prev) => {
-  //       const updatedAutomations = [...prev];
-
-  //       // Get the correct tag options list
-  //       const tagOptions = type === "addTags" ? filteredAddTagsOptions : filteredRemoveTagsOptions;
-
-  //       // Map selected tag IDs to tag objects with _id, tagName, and tagColour
-  //       const updatedTags = value.map((tagId) => {
-  //         const tag = tagOptions.find((t) => t.value === tagId);
-  //         return tag
-  //           ? { _id: tag.value, tagName: tag.label, tagColour: tag.colour }
-  //           : tagId; // Preserve unknown tag IDs
-  //       });
-
-  //       updatedAutomations[index] = {
-  //         ...updatedAutomations[index],
-  //         [type]: updatedTags,
-  //       };
-
-  //       console.log("Updated Automations:", updatedAutomations);
-  //       return updatedAutomations;
-  //     });
-  //   };
   const handleTagChange = (index, type, event) => {
     const { value } = event.target; // Array of selected tag IDs
 
@@ -368,6 +344,16 @@ const PipelineTemp = () => {
           tags: [],
         };
         break;
+      // Update client-facing job status
+      case "Update client-facing job status":
+        // Initialize addTags and removeTags as separate empty arrays
+        newAutomation = {
+          type: "Update client-facing job status",
+          visibiltyforClient: true, // Independent array for addTags
+          selecteStatus: null, // Independent array for removeTags
+          statusDescription: "",
+        };
+        break;
       default:
         break;
     }
@@ -395,6 +381,56 @@ const PipelineTemp = () => {
     setSelectedAutomationData(updatedData);
   };
 
+  // const handleEditClientChange=(index,newValue)=>{
+  //    const updatedData = [...selectedAutomationData];
+  //     updatedData[index].visibilityForClient = newValue;
+  //      setSelectedAutomationData(updatedData);
+  // }
+  const[ editClientDescription, setEditClientDescripation]=useState("")
+  const handleEditClientChange = async (index, newValue) => {
+  const updatedData = [...selectedAutomationData];
+  
+  // Update the selected status immediately
+  updatedData[index].selectedClientStatus = newValue;
+  
+  // Clear the existing description while we fetch the new one
+  updatedData[index].statusDescription = "";
+  
+  // Update the state immediately (optional, but provides better UX)
+  setSelectedAutomationData(updatedData);
+
+  if (newValue && newValue.value) {
+    const clientjobId = newValue.value;
+    try {
+      const response = await fetch(
+        `${CLIENT_FACING_API}/workflow/clientfacingjobstatus/${clientjobId}`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+
+      // Create a new copy of the data to update
+      const updatedDataWithDescription = [...selectedAutomationData];
+      
+      // Update both the status and description
+      updatedDataWithDescription[index].selectedClientStatus = newValue;
+      updatedDataWithDescription[index].statusDescription = 
+        data.clientfacingjobstatuses.clientfacingdescription || "";
+      
+      // Update the state
+      setSelectedAutomationData(updatedDataWithDescription);
+      
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      // Optionally set an error state or default description
+      const updatedDataWithError = [...selectedAutomationData];
+      updatedDataWithError[index].statusDescription = "Error loading description";
+      setSelectedAutomationData(updatedDataWithError);
+    }
+  }
+};
+
   const [isEditDrawerOpen, setIsEditDrawerOpen] = useState(false);
   const [selectedAutomationData, setSelectedAutomationData] = useState([]);
   const [editingStageIndex, setEditingStageIndex] = useState(null);
@@ -402,12 +438,6 @@ const PipelineTemp = () => {
     setAnchorEl(event.currentTarget); // Opens the menu
     SetStageSelected(index); // Stores the selected stage index
 
-    // if (actionType === "edit") {
-    //     // Ensure automation data exists before accessing
-    //     const automations = stages[index]?.automations || [];
-    //     setSelectedAutomationData(automations); // Populate drawer with automations
-    //     setIsEditDrawerOpen(true); // Open the edit automation drawer
-    // }
     if (actionType === "edit") {
       const automations = stages[index]?.automations || [];
       if (automations.length > 0) {
@@ -425,32 +455,6 @@ const PipelineTemp = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  // const handleEditCheckboxChange = (tag, index) => {
-  //   // Find the selected automation by index
-  //   const updatedAutomation = [...selectedAutomationData];
-  //   const automation = updatedAutomation[index];
-
-  //   // Check if the tag is already selected
-  //   const isTagSelected = automation.tags.some(
-  //     (existingTag) => existingTag._id === tag._id
-  //   );
-
-  //   if (isTagSelected) {
-  //     // Remove the tag if already selected
-  //     automation.tags = automation.tags.filter(
-  //       (existingTag) => existingTag._id !== tag._id
-  //     );
-  //   } else {
-  //     // Add the tag if not selected
-  //     automation.tags.push(tag);
-  //   }
-
-  //   // Update the state with the modified automation
-  //   setSelectedAutomationData(updatedAutomation);
-  // };
-
-  // handleUpdateDrawer
 
   const handleEditCheckboxChange = (tag) => {
     setStageAutomationTags((prevTags) => {
@@ -625,38 +629,33 @@ const PipelineTemp = () => {
     label: folderTemplates.templatename,
   }));
   const [selectedtemp, setselectedTemp] = useState();
-  const handletemp = (selectedOptions,automationSelect) => {
+  const handletemp = (selectedOptions, automationSelect) => {
     setselectedTemp(selectedOptions);
-    console.log(selectedOptions)
+    console.log(selectedOptions);
     if (automationSelect === "Send message") {
       fetchTaskTempbyid(selectedOptions.value);
-  }
-
+    }
   };
-    
-   
-  
-      //get id wise template Record
-      const fetchTaskTempbyid = async (_id) => {
-          try {
-              const url = `${CHAT_API}/Workflow/chats/chattemplate/chattemplateList/${_id}`;
-              const response = await fetch(url);
-              if (!response.ok) {
-                  throw new Error("Failed to fetch data");
-              }
-              const data = await response.json();
-              console.log("chattemp", data)
-             
-  
-              // setTempValues(data.taskTemplate);
-              setReminderChecked(data.chatTemplate.sendreminderstoclient || false);
-              setNoOfReminder(data.chatTemplate.numberofreminders || "1")
-             setDaysuntilNextReminder(data.chatTemplate.daysuntilnextreminder || "3")
-  
-          } catch (error) {
-              console.error("Error fetching data:", error);
-          }
-      };
+
+  //get id wise template Record
+  const fetchTaskTempbyid = async (_id) => {
+    try {
+      const url = `${CHAT_API}/Workflow/chats/chattemplate/chattemplateList/${_id}`;
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      const data = await response.json();
+      console.log("chattemp", data);
+
+      // setTempValues(data.taskTemplate);
+      setReminderChecked(data.chatTemplate.sendreminderstoclient || false);
+      setNoOfReminder(data.chatTemplate.numberofreminders || "1");
+      setDaysuntilNextReminder(data.chatTemplate.daysuntilnextreminder || "3");
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   // condition tags
   const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
@@ -861,11 +860,82 @@ const PipelineTemp = () => {
   );
   const [selectedAddTags, setSelectedAddTags] = useState([]);
   const [reminderChecked, setReminderChecked] = useState(false);
-    const [daysuntilNextReminder, setDaysuntilNextReminder] = useState('3');
-    const [noOfReminder, setNoOfReminder] = useState(1);
-    const handleReminderChange = (checked) => {
-      setReminderChecked(checked);
-    };
+  const [daysuntilNextReminder, setDaysuntilNextReminder] = useState("3");
+  const [noOfReminder, setNoOfReminder] = useState(1);
+  const handleReminderChange = (checked) => {
+    setReminderChecked(checked);
+  };
+  const statusOptions = [
+    { value: true, label: "Show status" },
+    { value: false, label: "Hide status" },
+  ];
+  const CLIENT_FACING_API = process.env.REACT_APP_CLIENT_FACING_URL;
+  const [status, setStatus] = useState(
+    statusOptions.find((option) => option.value === true)
+  );
+  const handleStatusChange = (event, newValue) => {
+  setStatus(newValue);
+};
+  const [clientDescription, setClientDescription] = useState("");
+  const maxDescriptionLength = 150;
+  const [selectedClientStatus, setSelectedClientStatus] = useState(null);
+  console.log("upadte clientfacing status", status.value);
+  const [clientFacingJobs, setClientFacingJobs] = useState([]);
+  const fetchClientFacingJobsData = async () => {
+    try {
+      const response = await fetch(
+        `${CLIENT_FACING_API}/workflow/clientfacingjobstatus/`
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      setClientFacingJobs(data.clientFacingJobStatues); // Ensure data is set correctly
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const optionstatus = clientFacingJobs.map((status) => ({
+    value: status._id,
+    label: status.clientfacingName,
+    clientfacingColour: status.clientfacingColour,
+  }));
+
+  // useEffect to fetch jobs when the component mounts
+  useEffect(() => {
+    fetchClientFacingJobsData();
+  }, []);
+  const handleClientStatusChange = async (event, newValue) => {
+    setSelectedClientStatus(newValue);
+
+    if (newValue && newValue.value) {
+      const clientjobId = newValue.value;
+      try {
+        const response = await fetch(
+          `${CLIENT_FACING_API}/workflow/clientfacingjobstatus/${clientjobId}`
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+
+        console.log(data);
+        setClientDescription(
+          data.clientfacingjobstatuses.clientfacingdescription
+        );
+        console.log(data.clientfacingjobstatuses.clientfacingdescription);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+  };
+
+  const handleClientDescriptionChange = (e) => {
+    if (e.target.value.length <= maxDescriptionLength) {
+      setClientDescription(e.target.value);
+    }
+  };
   const renderActionContent = (automationSelect, index) => {
     switch (automationSelect) {
       // Create Task
@@ -891,7 +961,9 @@ const PipelineTemp = () => {
                   options={taskTemplateOptions}
                   getOptionLabel={(option) => option.label}
                   value={selectedtemp}
-                 onChange={(event, newValue) => handletemp(newValue, automationSelect)}
+                  onChange={(event, newValue) =>
+                    handletemp(newValue, automationSelect)
+                  }
                   isOptionEqualToValue={(option, value) =>
                     option.value === value.value
                   }
@@ -1077,7 +1149,9 @@ const PipelineTemp = () => {
                   options={chatTemplateOptions}
                   getOptionLabel={(option) => option.label}
                   value={selectedtemp}
-                 onChange={(event, newValue) => handletemp(newValue, automationSelect)}
+                  onChange={(event, newValue) =>
+                    handletemp(newValue, automationSelect)
+                  }
                   isOptionEqualToValue={(option, value) =>
                     option.value === value.value
                   }
@@ -1144,42 +1218,51 @@ const PipelineTemp = () => {
                   </Box>
                 </Box>
 
-                 {reminderChecked && (
-                                          <Box mb={3}>
-                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mt: 2 }}>
-                
-                                              <Box>
-                                                <InputLabel sx={{ color: 'black' }}>Days until next reminder</InputLabel>
-                                                <TextField
-                                                  // margin="normal"
-                                                  fullWidth
-                                                  name="Daysuntilnextreminder"
-                                                  value={daysuntilNextReminder}
-                                                  onChange={(e) => setDaysuntilNextReminder(e.target.value)}
-                                                  placeholder="Days until next reminder"
-                                                  size="small"
-                                                  sx={{ mt: 2 }}
-                                                />
-                                              </Box>
-                
-                                              <Box>
-                                                <InputLabel sx={{ color: 'black' }}>No Of reminders</InputLabel>
-                                                <TextField
-                
-                                                  fullWidth
-                                                  name="No Of reminders"
-                                                  value={noOfReminder}
-                                                  onChange={(e) => setNoOfReminder(e.target.value)}
-                
-                                                  placeholder="NoOfreminders"
-                                                  size="small"
-                                                  sx={{ mt: 2 }}
-                                                />
-                                              </Box>
-                
-                                            </Box>
-                                          </Box>
-                                        )}
+                {reminderChecked && (
+                  <Box mb={3}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 3,
+                        mt: 2,
+                      }}
+                    >
+                      <Box>
+                        <InputLabel sx={{ color: "black" }}>
+                          Days until next reminder
+                        </InputLabel>
+                        <TextField
+                          // margin="normal"
+                          fullWidth
+                          name="Daysuntilnextreminder"
+                          value={daysuntilNextReminder}
+                          onChange={(e) =>
+                            setDaysuntilNextReminder(e.target.value)
+                          }
+                          placeholder="Days until next reminder"
+                          size="small"
+                          sx={{ mt: 2 }}
+                        />
+                      </Box>
+
+                      <Box>
+                        <InputLabel sx={{ color: "black" }}>
+                          No Of reminders
+                        </InputLabel>
+                        <TextField
+                          fullWidth
+                          name="No Of reminders"
+                          value={noOfReminder}
+                          onChange={(e) => setNoOfReminder(e.target.value)}
+                          placeholder="NoOfreminders"
+                          size="small"
+                          sx={{ mt: 2 }}
+                        />
+                      </Box>
+                    </Box>
+                  </Box>
+                )}
               </Box>
               <Box mt={2}>
                 <Button
@@ -1324,7 +1407,9 @@ const PipelineTemp = () => {
                   options={invoiceTemplateOptions}
                   getOptionLabel={(option) => option.label}
                   value={selectedtemp}
-                 onChange={(event, newValue) => handletemp(newValue, automationSelect)}
+                  onChange={(event, newValue) =>
+                    handletemp(newValue, automationSelect)
+                  }
                   isOptionEqualToValue={(option, value) =>
                     option.value === value.value
                   }
@@ -1507,7 +1592,9 @@ const PipelineTemp = () => {
                   options={proposalElsOptions}
                   getOptionLabel={(option) => option.label}
                   value={selectedtemp}
-                 onChange={(event, newValue) => handletemp(newValue, automationSelect)}
+                  onChange={(event, newValue) =>
+                    handletemp(newValue, automationSelect)
+                  }
                   isOptionEqualToValue={(option, value) =>
                     option.value === value.value
                   }
@@ -1689,7 +1776,9 @@ const PipelineTemp = () => {
                   options={emailTemplateOptions}
                   getOptionLabel={(option) => option.label}
                   value={selectedtemp}
-                 onChange={(event, newValue) => handletemp(newValue, automationSelect)}
+                  onChange={(event, newValue) =>
+                    handletemp(newValue, automationSelect)
+                  }
                   isOptionEqualToValue={(option, value) =>
                     option.value === value.value
                   }
@@ -1874,7 +1963,9 @@ const PipelineTemp = () => {
                   options={optionfolder}
                   getOptionLabel={(option) => option.label}
                   value={selectedtemp}
-                 onChange={(event, newValue) => handletemp(newValue, automationSelect)}
+                  onChange={(event, newValue) =>
+                    handletemp(newValue, automationSelect)
+                  }
                   isOptionEqualToValue={(option, value) =>
                     option.value === value.value
                   }
@@ -2042,7 +2133,7 @@ const PipelineTemp = () => {
       case "Update account tags":
         return (
           <>
-            {/* <Grid item>
+            <Grid item>
               <Box
                 sx={{
                   border: "2px solid #ddd",
@@ -2056,7 +2147,6 @@ const PipelineTemp = () => {
                 </Typography>
 
                 <Box sx={{ display: "flex", alignItems: "center", gap: 5 }}>
-                
                   <Box mt={2} width={"50%"}>
                     <Typography gutterBottom variant="body2">
                       Add Tags
@@ -2333,8 +2423,8 @@ const PipelineTemp = () => {
                   Save Automation
                 </Button>
               </Box>
-            </Grid> */}
-<Grid item>
+            </Grid>
+            {/* <Grid item>
   <Box
     sx={{
       border: "2px solid #ddd",
@@ -2418,7 +2508,7 @@ const PipelineTemp = () => {
       Save Automation
     </Button>
   </Box>
-</Grid>
+</Grid> */}
 
             {/* Condition tags for automation */}
             <Drawer
@@ -2544,7 +2634,9 @@ const PipelineTemp = () => {
                   options={organizerOptions}
                   getOptionLabel={(option) => option.label}
                   value={selectedtemp}
-                 onChange={(event, newValue) => handletemp(newValue, automationSelect)}
+                  onChange={(event, newValue) =>
+                    handletemp(newValue, automationSelect)
+                  }
                   isOptionEqualToValue={(option, value) =>
                     option.value === value.value
                   }
@@ -2709,6 +2801,274 @@ const PipelineTemp = () => {
           </>
         );
       // Add cases for other actions here
+      //  Update client-facing job status
+      case "Update client-facing job status":
+        return (
+          <>
+            <Grid item>
+              {/* {automationSelect} */}
+              <Box
+                sx={{
+                  border: "2px solid #ddd",
+                  borderRadius: "8px",
+                  padding: 2,
+                  // marginBottom: 2,
+                }}
+              >
+                <Typography gutterBottom>
+                  1. {automationSelect || "No Type"}
+                </Typography>
+                <Typography gutterBottom fontSize={"12px"}>
+                  The client-facing status will update automatically as soon as
+                  the job enters the stage. Your clients will see it in their
+                  client portal.
+                </Typography>
+
+                <Grid container spacing={2} mt={2}>
+                  <Grid item xs={12}>
+                    <InputLabel sx={{ color: "black", mb: 1 }}>
+                      Visibility for client
+                    </InputLabel>
+                    <Autocomplete
+                      options={statusOptions}
+                      getOptionLabel={(option) => option.label}
+                      value={status}
+                    onChange={handleStatusChange}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          size="small"
+                          variant="outlined"
+                          placeholder="Select status"
+                        />
+                      )}
+                      fullWidth
+                    />
+                  </Grid>
+                </Grid>
+                {status?.value === true && (
+                  <Box>
+                    <Box>
+                      <InputLabel sx={{ color: "black", mb: 1, mt: 1 }}>
+                        Select status
+                      </InputLabel>
+                      <Autocomplete
+                        options={optionstatus}
+                        size="small"
+                        sx={{ mt: 1 }}
+                        value={selectedClientStatus}
+                        onChange={handleClientStatusChange}
+                        getOptionLabel={(option) => option.label}
+                        isOptionEqualToValue={(option, value) =>
+                          option.value === value.value
+                        }
+                        renderOption={(props, option) => (
+                          <Box component="li" {...props}>
+                            {/* Color dot */}
+                            <Chip
+                              size="small"
+                              style={{
+                                backgroundColor: option.clientfacingColour,
+                                marginRight: 8,
+                                marginLeft: 8,
+                                borderRadius: "50%",
+                                height: "15px",
+                              }}
+                            />
+                            {option.label}
+                          </Box>
+                        )}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            placeholder="Select status"
+                            InputProps={{
+                              ...params.InputProps,
+                              startAdornment:
+                                params.inputProps.value &&
+                                clientFacingJobs.length > 0 ? (
+                                  <Chip
+                                    size="small"
+                                    style={{
+                                      backgroundColor: clientFacingJobs.find(
+                                        (job) =>
+                                          job.clientfacingName ===
+                                          params.inputProps.value
+                                      )?.clientfacingColour, // Set color from selection
+                                      marginRight: 8,
+                                      marginLeft: 2,
+                                      borderRadius: "50%",
+                                      height: "15px",
+                                    }}
+                                  />
+                                ) : null,
+                            }}
+                          />
+                        )}
+                      />
+                    </Box>
+                    <Box mt={1}>
+                      <InputLabel sx={{ color: "black", mb: 1 }}>
+                        Status description for client
+                      </InputLabel>
+                      <TextField
+                        fullWidth
+                        multiline
+                        rows={4}
+                        variant="outlined"
+                        value={clientDescription}
+                        onChange={handleClientDescriptionChange}
+                        placeholder="Status description for client"
+                      />
+                      <Typography variant="caption" color="textSecondary">
+                        {clientDescription.length}/{maxDescriptionLength}
+                      </Typography>
+                    </Box>
+                  </Box>
+                )}
+
+                <Box mt={2}>
+                  {" "}
+                  {selectedTags.length > 0 && (
+                    <Grid container alignItems="center" gap={1}>
+                      <Typography>Only for:</Typography>
+                      <Grid item>{selectedTagElements}</Grid>
+                    </Grid>
+                  )}
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Button variant="text" onClick={handleAddConditions}>
+                    Add Conditions
+                  </Button>
+                </Box>
+              </Box>
+              <Box mt={2}>
+                <Button
+                  variant="contained"
+                  onClick={handleSaveAutomation(stageSelected)}
+                  sx={{
+                    backgroundColor: "var(--color-save-btn)", // Normal background
+
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                    },
+                    borderRadius: "15px",
+                  }}
+                >
+                  Save Automation
+                </Button>
+              </Box>
+            </Grid>
+            <Drawer
+              anchor="right"
+              open={isConditionsFormOpen}
+              onClose={handleGoBack}
+              BackdropProps={{ invisible: true }}
+              PaperProps={{ sx: { width: "550px", padding: 2 } }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <IconButton onClick={handleGoBack}>
+                  <IoMdArrowRoundBack fontSize="large" color="blue" />
+                </IconButton>
+                <Typography variant="h6">Add conditions</Typography>
+              </Box>
+
+              <Box sx={{ padding: 2 }}>
+                <Typography variant="body1">
+                  Apply automation only for accounts with these tags
+                </Typography>
+                <TextField
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  placeholder="Search..."
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  InputProps={{
+                    startAdornment: (
+                      <AiOutlineSearch style={{ marginRight: 8 }} />
+                    ),
+                  }}
+                  sx={{ marginTop: 2 }}
+                />
+
+                <Box sx={{ marginTop: 2, height: "68vh", overflowY: "auto" }}>
+                  {filteredTags.map((tag) => (
+                    <Box
+                      key={tag._id}
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 3,
+                        borderBottom: "1px solid grey",
+                        paddingBottom: 1,
+                      }}
+                    >
+                      <Checkbox
+                        checked={tempSelectedTags.includes(tag)}
+                        onChange={() => handleCheckboxChange(tag)}
+                      />
+                      <Chip
+                        label={tag.tagName}
+                        sx={{
+                          backgroundColor: tag.tagColour,
+                          color: "#fff",
+                          fontWeight: "500",
+                          borderRadius: "20px",
+                          marginRight: 1,
+                        }}
+                      />
+                    </Box>
+                  ))}
+                </Box>
+
+                <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    disabled={!isAnyCheckboxChecked}
+                    onClick={handleAddTags}
+                    sx={{
+                      backgroundColor: "var(--color-save-btn)", // Normal background
+
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                      },
+                      borderRadius: "15px",
+                      width: "80px",
+                    }}
+                  >
+                    Add
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={handleGoBack}
+                    sx={{
+                      borderColor: "var(--color-border-cancel-btn)", // Normal background
+                      color: "var(--color-save-btn)",
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                        color: "#fff",
+                        border: "none",
+                      },
+                      width: "80px",
+                      borderRadius: "15px",
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </Box>
+              </Box>
+            </Drawer>
+          </>
+        );
       default:
         return null;
     }
@@ -2833,6 +3193,16 @@ const PipelineTemp = () => {
               }
             : null;
         });
+      } else if (automationSelect === "Update client-facing job status") {
+        selectedAutomation.visibilityForClient = status.value; // true/false
+        selectedAutomation.selectedClientStatus = selectedClientStatus
+          ? {
+              label: selectedClientStatus.label,
+              value: selectedClientStatus.value,
+              clientfacingColour: selectedClientStatus.clientfacingColour,
+            }
+          : null;
+        selectedAutomation.statusDescription = clientDescription || null;
       }
 
       // Ensure selected stage exists before adding automation
@@ -2858,6 +3228,9 @@ const PipelineTemp = () => {
       setIsAnyCheckboxChecked(false);
       setAddTags([]); // Reset addTags
       setRemoveTags([]); // Reset removeTags
+      setClientDescription("");
+      setStatus(statusOptions.find((option) => option.value === true));
+      setSelectedClientStatus(null);
       handleDrawerClose();
     };
   };
@@ -4307,6 +4680,16 @@ const PipelineTemp = () => {
                                   >
                                     Send message
                                   </MenuItem>
+                                  <MenuItem
+                                    onClick={() =>
+                                      handleAddAutomation(
+                                        stageSelected,
+                                        "Update client-facing job status"
+                                      )
+                                    }
+                                  >
+                                    Update client-facing job status
+                                  </MenuItem>
                                 </Menu>
                                 <AddAutomationDrawer
                                   isDrawerOpen={isDrawerOpen}
@@ -4330,6 +4713,7 @@ const PipelineTemp = () => {
                                   selectedAutomationData={
                                     selectedAutomationData
                                   }
+                                  setSelectedAutomationData={setSelectedAutomationData}
                                   handleDeleteAutomation={
                                     handleDeleteAutomation
                                   }
@@ -4380,6 +4764,21 @@ const PipelineTemp = () => {
                                   taskTemplateOptions={taskTemplateOptions}
                                   chatTemplateOptions={chatTemplateOptions}
                                   handleTagChange={handleTagChange}
+                                  statusOptions={statusOptions}
+                                  // status={status}
+                                  handleStatusChange={handleStatusChange}
+                                  setStatus={setStatus}
+                                  optionstatus={optionstatus}
+                                  setClientDescription={setClientDescription}
+                                setEditClientDescripation={setEditClientDescripation}
+                                  setSelectedClientStatus={setSelectedClientStatus}
+                                  maxDescriptionLength={maxDescriptionLength}
+                                  handleClientDescriptionChange={handleClientDescriptionChange}
+                                  clientFacingJobs={clientFacingJobs}
+                                  setClientFacingJobs={setClientFacingJobs}
+                                  handleClientStatusChange={handleClientStatusChange}
+                                handleEditClientChange={handleEditClientChange}
+                                
                                 />
 
                                 <Box>
@@ -4512,7 +4911,39 @@ const PipelineTemp = () => {
                                                     </Box>
                                                   </Box>
                                                 )}
-
+                                              <Box>
+                                                {automation.visibilityForClient ===
+                                                false ? (
+                                                  <Typography>
+                                                    Don't show status
+                                                  </Typography>
+                                                ) : (
+                                                  <>
+                                                    <Box
+                                                      sx={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                      }}
+                                                    >
+                                                      <GoDotFill
+                                                        style={{
+                                                          color:
+                                                            automation
+                                                              .selectedClientStatus
+                                                              .clientfacingColour,
+                                                          fontSize: "20px",
+                                                          marginTop: "5px",
+                                                        }}
+                                                      />
+                                                      {
+                                                        automation
+                                                          .selectedClientStatus
+                                                          .label
+                                                      }
+                                                    </Box>
+                                                  </>
+                                                )}
+                                              </Box>
                                               {automation.tags &&
                                                 automation.tags.length > 0 && (
                                                   <Box
