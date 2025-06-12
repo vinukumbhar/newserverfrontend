@@ -4911,7 +4911,7 @@ const PipelineTemp = () => {
                                                     </Box>
                                                   </Box>
                                                 )}
-                                              <Box>
+                                              {/* <Box>
                                                 {automation.visibilityForClient ===
                                                 false ? (
                                                   <Typography>
@@ -4943,7 +4943,32 @@ const PipelineTemp = () => {
                                                     </Box>
                                                   </>
                                                 )}
-                                              </Box>
+                                              </Box> */}
+                                              {automation.type === "Update client-facing job status" && (
+              <Box>
+                {automation.visibilityForClient === false ? (
+                  <Typography>Don't show status</Typography>
+                ) : (
+                  <>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <GoDotFill
+                        style={{
+                          color: automation.selectedClientStatus?.clientfacingColour,
+                          fontSize: "20px",
+                          marginTop: "5px",
+                        }}
+                      />
+                      {automation.selectedClientStatus.label}
+                    </Box>
+                  </>
+                )}
+              </Box>
+            )}
                                               {automation.tags &&
                                                 automation.tags.length > 0 && (
                                                   <Box

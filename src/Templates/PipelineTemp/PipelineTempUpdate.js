@@ -5568,7 +5568,7 @@ statusOptions={statusOptions}
                                                   </Box>
                                                 )}
 
-                                              {/* Remove Tags Section */}
+                                              
                                               {automation.removeTags &&
                                                 automation.removeTags.length >
                                                   0 && (
@@ -5614,7 +5614,7 @@ statusOptions={statusOptions}
                                                     </Box>
                                                   </Box>
                                                 )}
- <Box>
+ {/* <Box>
                                                 {automation.visibilityForClient ===
                                                 false ? (
                                                   <Typography>
@@ -5644,7 +5644,32 @@ statusOptions={statusOptions}
                                                     </Box>
                                                   </>
                                                 )}
-                                              </Box>
+                                              </Box> */}
+                                              {automation.type === "Update client-facing job status" && (
+              <Box>
+                {automation.visibilityForClient === false ? (
+                  <Typography>Don't show status</Typography>
+                ) : (
+                  <>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <GoDotFill
+                        style={{
+                          color: automation.selectedClientStatus?.clientfacingColour,
+                          fontSize: "20px",
+                          marginTop: "5px",
+                        }}
+                      />
+                      {automation.selectedClientStatus.label}
+                    </Box>
+                  </>
+                )}
+              </Box>
+            )}
                                               {automation.tags &&
                                                 automation.tags.length > 0 && (
                                                   <Box

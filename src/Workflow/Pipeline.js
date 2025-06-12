@@ -1323,61 +1323,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                         <Typography variant="body2" sx={{ marginBottom: 1 }}>
                           Add tags to account
                         </Typography>
-                        {/* <Select
-                          multiple
-                          value={automation.addTags}
-                          renderValue={(selected) =>
-                            selected.map((tag) => (
-                              <Chip
-                                key={tag._id}
-                                label={tag.tagName}
-                                sx={{
-                                  backgroundColor: tag.tagColour,
-                                  color: "#fff",
-                                  marginRight: 1,
-                                }}
-                              />
-                            ))
-                          }
-                          MenuProps={MenuProps}
-                          sx={{ width: "100%", marginBottom: 2 }}
-                        >
-                          {tagsoptions.map((option) => {
-                            const canvas = document.createElement("canvas");
-                            const context = canvas.getContext("2d");
-                            context.font = "12px Arial"; // Match the font size/style of MenuItem
-                            const textWidth = context.measureText(
-                              option.label
-                            ).width; // Get precise width
-                            const dynamicWidth = Math.min(textWidth + 16, 150); // Add padding & set max width
-                            return (
-                              <MenuItem
-                                key={option.value}
-                                value={option.value}
-                                sx={{
-                                  backgroundColor: option.colour,
-                                  color: "#fff",
-                                  fontSize: "10px",
-                                  borderRadius: "10px",
-                                  margin: "5px",
-                                  textAlign: "center",
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  padding: "4px 9px",
-                                  whiteSpace: "nowrap", // Prevent line breaks
-                                  minWidth: `${dynamicWidth}px`,
-                                  maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
-                                  "&:hover": {
-                                    backgroundColor: option.colour,
-                                    color: "#fff",
-                                  },
-                                }}
-                              >
-                                {option.label}
-                              </MenuItem>
-                            );
-                          })}
-                        </Select> */}
+                        
                         <Select
                           multiple
                           displayEmpty
@@ -1418,26 +1364,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                           fullWidth
                           MenuProps={MenuProps}
                         >
-                          {/* {tagsoptions
-    .filter((option) => !automation.removeTags.some((tag) => tag._id === option.value)) // Hide selected removeTags
-    .map((option) => (
-      <MenuItem key={option.value} value={option.value} sx={{ backgroundColor: option.colour, color: "#fff" , fontSize: "10px",
-        borderRadius: "10px",
-        margin: "5px",
-        textAlign: "center",
-        display: "flex",
-        justifyContent: "center",
-        padding: "4px 9px",
-     
-        whiteSpace: "nowrap", // Prevent line breaks
-       
-        "&:hover": {
-                                  backgroundColor: option.colour,
-                                  color: "#fff",
-                                },}}>
-        {option.label}
-      </MenuItem>
-    ))} */}
+                          
                           {tagsoptions
                             .filter(
                               (option) =>
@@ -1490,68 +1417,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                         <Typography variant="body2" sx={{ marginBottom: 1 }}>
                           Remove tags from account
                         </Typography>
-                        {/* <Select
-                          multiple
-                          value={automation.removeTags}
-                          renderValue={(selected) =>
-                            selected.map((tag) => (
-                              <Chip
-                                key={tag._id}
-                                label={tag.tagName}
-                                sx={{
-                                  backgroundColor: tag.tagColour,
-                                  color: "#fff",
-                                  marginRight: 1,
-                                }}
-                              />
-                            ))
-                          }
-                          MenuProps={MenuProps}
-                          sx={{ width: "100%", marginBottom: 2 }}
-                        >
-                          {tagsoptions.map((option) => {
-                            // const dynamicWidth = Math.min(option.label.length * 10, 150); // Adjust width dynamically
-                            // Create a canvas element to measure the actual text width
-                            const canvas = document.createElement("canvas");
-                            const context = canvas.getContext("2d");
-                            context.font = "12px Arial"; // Match the font size/style of MenuItem
-
-                            const textWidth = context.measureText(
-                              option.label
-                            ).width; // Get precise width
-                            const dynamicWidth = Math.min(textWidth + 16, 150); // Add padding & set max width
-                            return (
-                              <MenuItem
-                                key={option.value}
-                                value={option.value}
-                                sx={{
-                                  backgroundColor: option.colour,
-                                  color: "#fff",
-                                  fontSize: "10px",
-                                  borderRadius: "10px",
-                                  margin: "5px",
-                                  textAlign: "center",
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  padding: "4px 9px",
-                                  // alignItems: "center",
-                                  // paddingLeft: "10px",
-                                  whiteSpace: "nowrap", // Prevent line breaks
-                                  // textAlign: "left", // Ensure text is left-aligned
-                                  // paddingLeft: "10px", // Add left padding for proper alignment
-                                  minWidth: `${dynamicWidth}px`,
-                                  maxWidth: `${dynamicWidth}px`, // Dynamically set maxWidth
-                                  "&:hover": {
-                                    backgroundColor: option.colour,
-                                    color: "#fff",
-                                  },
-                                }}
-                              >
-                                {option.label}
-                              </MenuItem>
-                            );
-                          })}
-                        </Select> */}
+                       
                         <Select
                           multiple
                           size="small"
@@ -1592,28 +1458,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                           fullWidth
                           MenuProps={MenuProps}
                         >
-                          {/* {tagsoptions
-    .filter((option) => !automation.addTags.some((tag) => tag._id === option.value)) // Hide selected addTags
-    .map((option) => (
-      <MenuItem key={option.value} value={option.value} sx={{ backgroundColor: option.colour, color: "#fff", fontSize: "10px",
-        borderRadius: "10px",
-        margin: "5px",
-        textAlign: "center",
-        display: "flex",
-        justifyContent: "center",
-        padding: "4px 9px",
-        // alignItems: "center",
-        // paddingLeft: "10px",
-        whiteSpace: "nowrap", // Prevent line breaks
-        // textAlign: "left", // Ensure text is left-aligned
-        // paddingLeft: "10px", // Add left padding for proper alignment,
-         "&:hover": {
-                                  backgroundColor: option.colour,
-                                  color: "#fff",
-                                }, }}>
-        {option.label}
-      </MenuItem>
-    ))} */}
+                          
                           {tagsoptions
                             .filter(
                               (option) =>
@@ -1670,7 +1515,23 @@ const Pipeline = ({ charLimit = 4000 }) => {
                         </Alert>
                       </Box>
                     </Box>
-                  ) : (
+                  ) : automation.type === "Update client-facing job status" ? (
+                                    <Box>
+                                      <Typography variant="body1">
+                                        <strong>Type:</strong> {automation.type}
+                                        {automation.visibilityForClient &&
+                                          automation.selectedClientStatus && (
+                                            <span>
+                                              {" "}
+                                              : {automation.selectedClientStatus.label}
+                                            </span>
+                                          )}
+                                        {!automation.visibilityForClient && (
+                                          <span> : Hide status</span>
+                                        )}
+                                      </Typography>
+                                    </Box>
+                                  ) : (
                     <Box>
                       <Typography variant="body1">
                         <strong>Type:</strong> {automation.type}
@@ -1706,76 +1567,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
           )}
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
-            {/* <Button
-              onClick={async () => {
-                // Filter selected automations: include automations without tags or with matching tags
-                const selectedAutomations = selectedAutomationIndices
-                  .map((index) => automations[index])
-                  .filter((automation) => {
-                    // Allow automations without tags
-                    if (!automation.tags || automation.tags.length === 0) {
-                      return true;
-                    }
-                    // Check for matching tags
-                    return automation.tags.some((tag) =>
-                      accountTags.some(
-                        (accountTag) => accountTag._id === tag._id
-                      )
-                    );
-                  });
-
-                if (selectedAutomations.length > 0) {
-                  // Process all valid automations
-                  for (const automation of selectedAutomations) {
-                    const { type, template } = automation;
-                    const templateValue = template?.value;
-
-                    if (type && templateValue && automationAccountId) {
-                      try {
-                        // Call the API for each automation
-                        await selectAutomationApi(
-                          type,
-                          templateValue,
-                          automationAccountId
-                        );
-                      } catch (error) {
-                        console.error(
-                          "Error processing automation:",
-                          automation,
-                          error
-                        );
-                      }
-                    } else {
-                      console.warn(
-                        "Skipping automation due to missing parameters:",
-                        automation
-                      );
-                    }
-                  }
-                }
-
-                // Move the job to the target stage after processing (even if no automations are selected)
-                onMoveJob(jobId, targetStage);
-
-                // Close the drawer
-                onClose();
-              }}
-              variant="contained"
-              color="primary"
-              // sx={{ marginTop: 2 }}
-              sx={{
-                backgroundColor: "var(--color-save-btn)", // Normal background
-
-                "&:hover": {
-                  backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-                },
-                width: "80px",
-                borderRadius: "15px",
-                mt: 2,
-              }}
-            >
-              Move
-            </Button> */}
+            
             <Button
               onClick={async () => {
                 const selectedAutomations = selectedAutomationIndices
@@ -1790,6 +1582,11 @@ const Pipeline = ({ charLimit = 4000 }) => {
                       )
                     );
                   });
+
+                   // Find the "Update client-facing job status" automation if it exists
+    const clientStatusAutomation = selectedAutomations.find(
+      (automation) => automation.type === "Update client-facing job status"
+    );
 
                 if (selectedAutomations.length > 0) {
                   for (const automation of selectedAutomations) {
@@ -1821,7 +1618,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
                 }
 
                 // Move the job to the target stage
-                onMoveJob(jobId, targetStage);
+                onMoveJob(jobId, targetStage,clientStatusAutomation);
 
                 // Close the drawer
                 onClose();
@@ -3473,29 +3270,67 @@ const Pipeline = ({ charLimit = 4000 }) => {
     setTempJobData({ jobId, targetStageName });
   };
 
-  const handleMoveJob = (jobId, targetStage) => {
-    // Call the API to update the job stage in the backend
-    const updateJobStage = async () => {
-      let data = JSON.stringify({ stageid: targetStage._id });
-      let config = {
-        method: "post",
-        maxBodyLength: Infinity,
-        url: `${JOBS_API}/workflow/jobs/job/jobpipeline/updatestageid/${jobId}`,
-        headers: { "Content-Type": "application/json" },
-        data: data,
-      };
-      try {
-        const response = await axios.request(config);
-        console.log("Job moved successfully:", response.data);
-        toast.success("Job moved successfully!");
-        fetchJobData(); // Refresh the data
-      } catch (error) {
-        console.error("Error moving job:", error);
-        toast.error("Failed to move job");
-      }
+  // const handleMoveJob = (jobId, targetStage) => {
+  //   // Call the API to update the job stage in the backend
+  //   const updateJobStage = async () => {
+  //     let data = JSON.stringify({ stageid: targetStage._id });
+  //     let config = {
+  //       method: "post",
+  //       maxBodyLength: Infinity,
+  //       url: `${JOBS_API}/workflow/jobs/job/jobpipeline/updatestageid/${jobId}`,
+  //       headers: { "Content-Type": "application/json" },
+  //       data: data,
+  //     };
+  //     try {
+  //       const response = await axios.request(config);
+  //       console.log("Job moved successfully:", response.data);
+  //       toast.success("Job moved successfully!");
+  //       fetchJobData(); // Refresh the data
+  //     } catch (error) {
+  //       console.error("Error moving job:", error);
+  //       toast.error("Failed to move job");
+  //     }
+  //   };
+  //   updateJobStage();
+  // };
+ 
+ const handleMoveJob = (jobId, targetStage, automation) => {
+  // Call the API to update the job stage in the backend
+  const updateJobStage = async () => {
+    let data = {
+      stageid: targetStage._id,
     };
-    updateJobStage();
+
+    // If there's an automation of type "Update client-facing job status", update those fields
+    if (automation && automation.type === "Update client-facing job status") {
+      data = {
+        ...data,
+        showinclientportal: automation.visibilityForClient,
+        clientfacingstatus: automation.selectedClientStatus?.value,
+        clientfacingDescription: automation.statusDescription,
+      };
+    }
+
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: `${JOBS_API}/workflow/jobs/job/jobpipeline/updatestageid/${jobId}`,
+      headers: { "Content-Type": "application/json" },
+      data: JSON.stringify(data),
+    };
+    try {
+      const response = await axios.request(config);
+      console.log("Job moved successfully:", response.data);
+      toast.success("Job moved successfully!");
+      fetchJobData(); // Refresh the data
+    } catch (error) {
+      console.error("Error moving job:", error);
+      toast.error("Failed to move job");
+    }
   };
+  updateJobStage();
+};
+ 
   console.log("pipeline", pipelineData);
   const optionpipeline = pipelineData.map((pipeline) => ({
     value: pipeline._id,

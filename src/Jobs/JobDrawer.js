@@ -1317,13 +1317,6 @@ const JobDrawer = ({
         case "Create Task":
           try {
             const taskData = await fetchtasktempbyid(automationTemp);
-
-            // Add job and account references
-            // const taskPayload = {
-
-            //   jobId  // Only add job if exists
-            // };
-
             console.log("Creating task with:", jobId);
             return await assignTaskToAccount(
               taskData,
@@ -1520,82 +1513,167 @@ const JobDrawer = ({
       }
     };
 
+    // const createJob = async () => {
+    //   const myHeaders = new Headers();
+    //   myHeaders.append("Content-Type", "application/json");
+
+    //   // Create jobs for each account
+    //   const jobCreationPromises = combinedaccountValues.map(
+    //     async (accountId) => {
+    //       const jobData = {
+    //         accounts: [accountId], // Single account per job
+    //         // stageid: selectedStage.value,
+    //         pipeline: selectedPipeline.value,
+    //         templatename: selectedtemp.value,
+    //         jobname: jobName,
+    //         jobassignees: combinedValues,
+    //         priority: priority,
+    //         description: description,
+    //         absolutedates: absoluteDate,
+    //         startsin: startsin,
+    //         startsinduration: startsInDuration,
+    //         duein: duein,
+    //         dueinduration: dueinduration,
+    //         showinclientportal: clientFacingStatus,
+    //         jobnameforclient: inputText,
+    //         clientfacingstatus: selectedJob?.value,
+    //         clientfacingDescription: clientDescription,
+    //         startdate: startDate,
+    //         enddate: dueDate,
+    //       };
+
+    //       const response = await fetch(`${JOBS_API}/workflow/jobs/newjob`, {
+    //         method: "POST",
+    //         headers: myHeaders,
+    //         body: JSON.stringify(jobData),
+    //       });
+    //       console.log("jobs automation creatyion", jobData);
+    //       if (!response.ok) {
+    //         const error = await response.json();
+    //         throw new Error(
+    //           `Failed to create job for account ${accountId}: ${error.message}`
+    //         );
+    //       }
+
+    //       const result = await response.json();
+    //       if (!result.createdJobs || result.createdJobs.length === 0) {
+    //         throw new Error(`No job created for account ${accountId}`);
+    //       }
+
+    //       // Return both account and job information
+    //       return {
+    //         accountId,
+    //         jobId: result.createdJobs[0]._id, // Assuming one job per account
+    //         jobData: result.createdJobs[0],
+    //       };
+    //     }
+    //   );
+
+    //   try {
+    //     const jobResults = await Promise.all(jobCreationPromises);
+
+    //     // Create a mapping of accountId to jobId
+    //     const accountJobMap = {};
+    //     jobResults.forEach((result) => {
+    //       accountJobMap[result.accountId] = result.jobId;
+    //     });
+
+    //     return {
+    //       success: true,
+    //       accountJobMap,
+    //       jobs: jobResults.map((r) => r.jobData),
+    //     };
+    //   } catch (error) {
+    //     console.error("Job creation failed:", error);
+    //     throw error;
+    //   }
+    // };
     const createJob = async () => {
-      const myHeaders = new Headers();
-      myHeaders.append("Content-Type", "application/json");
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
 
-      // Create jobs for each account
-      const jobCreationPromises = combinedaccountValues.map(
-        async (accountId) => {
-          const jobData = {
-            accounts: [accountId], // Single account per job
-            // stageid: selectedStage.value,
-            pipeline: selectedPipeline.value,
-            templatename: selectedtemp.value,
-            jobname: jobName,
-            jobassignees: combinedValues,
-            priority: priority,
-            description: description,
-            absolutedates: absoluteDate,
-            startsin: startsin,
-            startsinduration: startsInDuration,
-            duein: duein,
-            dueinduration: dueinduration,
-            showinclientportal: clientFacingStatus,
-            jobnameforclient: inputText,
-            clientfacingstatus: selectedJob?.value,
-            clientfacingDescription: clientDescription,
-            startdate: startDate,
-            enddate: dueDate,
-          };
+  // Find the "Update client-facing job status" automation if it exists
+  const clientStatusAutomation = automations.find(
+    (automation) => automation.type === "Update client-facing job status"
+  );
 
-          const response = await fetch(`${JOBS_API}/workflow/jobs/newjob`, {
-            method: "POST",
-            headers: myHeaders,
-            body: JSON.stringify(jobData),
-          });
-          console.log("jobs automation creatyion", jobData);
-          if (!response.ok) {
-            const error = await response.json();
-            throw new Error(
-              `Failed to create job for account ${accountId}: ${error.message}`
-            );
-          }
+  // Create jobs for each account
+  const jobCreationPromises = combinedaccountValues.map(
+    async (accountId) => {
+      const jobData = {
+        accounts: [accountId], // Single account per job
+        pipeline: selectedPipeline.value,
+        templatename: selectedtemp.value,
+        jobname: jobName,
+        jobassignees: combinedValues,
+        priority: priority,
+        description: description,
+        absolutedates: absoluteDate,
+        startsin: startsin,
+        startsinduration: startsInDuration,
+        duein: duein,
+        dueinduration: dueinduration,
+        // Use values from automation if it exists, otherwise use the default values
+        showinclientportal: clientStatusAutomation 
+          ? clientStatusAutomation.visibilityForClient 
+          : clientFacingStatus,
+        jobnameforclient: inputText,
+        clientfacingstatus: clientStatusAutomation 
+          ? clientStatusAutomation.selectedClientStatus?.value 
+          : selectedJob?.value,
+        clientfacingDescription: clientStatusAutomation 
+          ? clientStatusAutomation.statusDescription 
+          : clientDescription,
+        startdate: startDate,
+        enddate: dueDate,
+      };
 
-          const result = await response.json();
-          if (!result.createdJobs || result.createdJobs.length === 0) {
-            throw new Error(`No job created for account ${accountId}`);
-          }
-
-          // Return both account and job information
-          return {
-            accountId,
-            jobId: result.createdJobs[0]._id, // Assuming one job per account
-            jobData: result.createdJobs[0],
-          };
-        }
-      );
-
-      try {
-        const jobResults = await Promise.all(jobCreationPromises);
-
-        // Create a mapping of accountId to jobId
-        const accountJobMap = {};
-        jobResults.forEach((result) => {
-          accountJobMap[result.accountId] = result.jobId;
-        });
-
-        return {
-          success: true,
-          accountJobMap,
-          jobs: jobResults.map((r) => r.jobData),
-        };
-      } catch (error) {
-        console.error("Job creation failed:", error);
-        throw error;
+      const response = await fetch(`${JOBS_API}/workflow/jobs/newjob`, {
+        method: "POST",
+        headers: myHeaders,
+        body: JSON.stringify(jobData),
+      });
+      console.log("jobs automation creation", jobData);
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(
+          `Failed to create job for account ${accountId}: ${error.message}`
+        );
       }
+
+      const result = await response.json();
+      if (!result.createdJobs || result.createdJobs.length === 0) {
+        throw new Error(`No job created for account ${accountId}`);
+      }
+
+      // Return both account and job information
+      return {
+        accountId,
+        jobId: result.createdJobs[0]._id, // Assuming one job per account
+        jobData: result.createdJobs[0],
+      };
+    }
+  );
+
+  try {
+    const jobResults = await Promise.all(jobCreationPromises);
+
+    // Create a mapping of accountId to jobId
+    const accountJobMap = {};
+    jobResults.forEach((result) => {
+      accountJobMap[result.accountId] = result.jobId;
+    });
+
+    return {
+      success: true,
+      accountJobMap,
+      jobs: jobResults.map((r) => r.jobData),
     };
-    // console.log("combinedaccountValues",combinedaccountValues)
+  } catch (error) {
+    console.error("Job creation failed:", error);
+    throw error;
+  }
+};
     return (
       <Box p={2}>
         <Typography variant="h6" sx={{ display: "flex", alignItems: "center" }}>
@@ -1826,6 +1904,22 @@ const JobDrawer = ({
                         below
                       </Alert>
                     </Box>
+                  </Box>
+                ) : automation.type === "Update client-facing job status" ? (
+                  <Box>
+                    <Typography variant="body1">
+                      <strong>Type:</strong> {automation.type}
+                      {automation.visibilityForClient &&
+                        automation.selectedClientStatus && (
+                          <span>
+                            {" "}
+                            : {automation.selectedClientStatus.label}
+                          </span>
+                        )}
+                      {!automation.visibilityForClient && (
+                        <span> : Hide status</span>
+                      )}
+                    </Typography>
                   </Box>
                 ) : (
                   <Box>
