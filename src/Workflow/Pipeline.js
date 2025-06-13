@@ -506,6 +506,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
 
     console.log("account id automation", accountId);
 
+    
     // fetch invoive temp by id
     const fetchinvoicetempbyid = async (automationTemp) => {
       const requestOptions = {
@@ -943,113 +944,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
         .then((result) => console.log(result))
         .catch((error) => console.error(error));
     };
-    // const selectAutomationApi = async (
-    //   automationType,
-    //   automationTemp,
-    //   automationAccountId
-    // ) => {
-    //   if (!automationType || !automationTemp || !automationAccountId) {
-    //     console.error("Missing required parameters");
-    //     return;
-    //   }
-    //   switch (automationType) {
-    //     case "Send Invoice":
-    //       console.log(
-    //         `Processing 'Send Invoice' with template: ${automationTemp}, Account ID: ${automationAccountId}`
-    //       );
-    //       try {
-    //         const invoiceData = await fetchinvoicetempbyid(automationTemp); // Await the fetched data
-    //         console.log("Fetched invoice data", invoiceData);
-    //         // Proceed with further logic
-    //         assignInvoiceToAccount(
-    //           invoiceData,
-    //           automationTemp,
-    //           automationAccountId
-    //         );
-    //       } catch (error) {
-    //         console.error("Error processing 'Send Invoice':", error);
-    //       }
-    //       break;
-
-    //     case "Apply folder template":
-    //       console.log(
-    //         `Apply folder template with template: ${automationTemp}, Account ID: ${automationAccountId}`
-    //       );
-    //       try {
-    //         // Assign the folder template to the account
-    //         await assignfoldertemp(automationAccountId, automationTemp);
-    //         console.log("Folder template assigned successfully");
-    //       } catch (error) {
-    //         console.error("Error applying folder template:", error);
-    //       }
-    //       break;
-    //     case "Create Organizer":
-    //       console.log(
-    //         `Processing 'Create Organizer' with template: ${automationTemp}, Account ID: ${automationAccountId}`
-    //       );
-    //       try {
-    //         const organizerData = await fetchorganizertempbyid(automationTemp); // Await the fetched data
-    //         console.log("Fetched organizer data", organizerData);
-    //         // Proceed with further logic
-    //         assignOrganizerToAccount(
-    //           organizerData,
-    //           automationTemp,
-    //           automationAccountId
-    //         );
-    //       } catch (error) {
-    //         console.error("Error processing 'Send Invoice':", error);
-    //       }
-    //       break;
-    //     case "Send Proposal/Els":
-    //       console.log(
-    //         `Creating Proposals with template: ${automationTemp}, Account ID: ${automationAccountId}`
-    //       );
-    //       try {
-    //         const proposalesandelsData =
-    //           await fetchproposalbyid(automationTemp); // Await the fetched data
-    //         console.log("Fetched Proposals data", proposalesandelsData);
-    //         // Proceed with further logic
-    //         assignProposalToAccount(
-    //           proposalesandelsData,
-    //           automationTemp,
-    //           automationAccountId
-    //         );
-    //       } catch (error) {
-    //         console.error("Error processing 'Send Invoice':", error);
-    //       }
-    //       break;
-
-    //     case "Send Email":
-    //       console.log(
-    //         `Sending email with template: ${automationTemp}, Account ID: ${automationAccountId}`
-    //       );
-    //       // Add logic to handle sending email
-    //       const myHeaders = new Headers();
-    //       myHeaders.append("Content-Type", "application/json");
-    //       const raw = JSON.stringify({
-    //         automationType: automationType,
-    //         templateId: automationTemp,
-    //         accountId: automationAccountId,
-    //       });
-    //       const requestOptions = {
-    //         method: "POST",
-    //         headers: myHeaders,
-    //         body: raw,
-    //         redirect: "follow",
-    //       };
-    //       fetch(`${AUTOMATION_API}/automations/`, requestOptions)
-    //         .then((response) => response.json())
-    //         .then((result) => {
-    //           console.log(result);
-    //         })
-    //         .catch((error) => console.error(error));
-    //       break;
-    //     default:
-    //       console.warn(`Unhandled automation type: ${automationType}`);
-    //       break;
-    //   }
-    // };
-
+   
     const selectAutomationApi = async (
       automationType,
       automationTemp,
@@ -1062,48 +957,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
       }
 
       switch (automationType) {
-        //     case "Update account tags":
-        //       console.log(`Updating account tags for Account ID: ${automationAccountId}`);
-
-        //       try {
-        //         // Fetch the current account data
-        //         const response = await fetch(`${AUTOMATION_API}/accounts/accountdetails/${automationAccountId}`);
-        //         if (!response.ok) throw new Error("Failed to fetch account data");
-
-        //         const accountsData = await response.json();
-        //         let currentTags = accountsData.account.tags || [];
-
-        //           // Extract tags from automation object
-        //     const addTags = automation?.addTags || [];
-        //     const removeTags = automation?.removeTags || [];
-        //    console.log(addTags)
-        //    console.log(removeTags)
-
-        // // Add tags without duplication
-        // const updatedTags = [...new Set([...currentTags, ...addTags])];
-
-        // // Remove tags that match `removeTags`
-        // const finalTags = updatedTags.filter(tag => !removeTags.includes(tag));
-
-        // console.log("Updated tags list:", finalTags);
-        //         // Send updated tags to the backend
-        //         const updateResponse = await fetch(`${ACCOUNT_API}/accounts/accountdetails/updateaccounttags/${automationAccountId}`, {
-        //           method: "PATCH",
-        //           headers: {
-        //             "Content-Type": "application/json",
-        //           },
-        //           body: JSON.stringify({ tags: finalTags }),
-        //         });
-        //         const updateData = await updateResponse.json();
-
-        //         if (!updateResponse.ok) throw new Error("Failed to update account tags");
-
-        //         console.log("Account tags updated successfully!",updateData);
-
-        //       } catch (error) {
-        //         console.error("Error updating account tags:", error);
-        //       }
-        //       break;
+        
         case "Update account tags":
           console.log(
             `Updating account tags for Account ID: ${automationAccountId}`
@@ -1515,7 +1369,123 @@ const Pipeline = ({ charLimit = 4000 }) => {
                         </Alert>
                       </Box>
                     </Box>
-                  ) : automation.type === "Update client-facing job status" ? (
+                  ) : automation.type === "Update job assignees" ? (
+                            <Box>
+                              <Box sx={{ width: 500 }}>
+                                <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                                  Add assignees to job
+                                </Typography>
+                  
+                                <Select
+                                  multiple
+                                  displayEmpty
+                                  multiline
+                                  size="small"
+                                  value={automation.addAssignees.map((assignee) => assignee._id)}
+                                  onChange={(event) =>
+                                    handleAssigneeChange(index, "addAssignees", event)
+                                  }
+                                  renderValue={(selected) =>
+                                    selected.length === 0 ? (
+                                      <Typography color="gray">
+                                        Select assignees to add
+                                      </Typography>
+                                    ) : (
+                                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                                        {automation.addAssignees.map((assignee) => (
+                                          <Chip
+                                            key={assignee._id}
+                                            label={assignee.username}
+                                            sx={{
+                                              backgroundColor: '#e0e0e0',
+                                              color: "#000",
+                                              fontWeight: "500",
+                                              borderRadius: "20px",
+                                            }}
+                                          />
+                                        ))}
+                                      </Box>
+                                    )
+                                  }
+                                  fullWidth
+                                  MenuProps={MenuProps}
+                                  sx={{ width: "100%", marginBottom: 2 }}
+                                >
+                                  {assigneeOptions.map((option) => (
+                                    <MenuItem
+                                      key={option.value}
+                                      value={option.value}
+                                      sx={{
+                                        '&:hover': {
+                                          backgroundColor: '#f5f5f5',
+                                        },
+                                      }}
+                                    >
+                                      {option.label}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                  
+                                <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                                  Remove assignees from job
+                                </Typography>
+                  
+                                <Select
+                                  multiple
+                                  size="small"
+                                  multiline
+                                  displayEmpty
+                                  value={automation.removeAssignees.map((assignee) => assignee._id)}
+                                  onChange={(event) =>
+                                    handleAssigneeChange(index, "removeAssignees", event)
+                                  }
+                                  renderValue={(selected) =>
+                                    selected.length === 0 ? (
+                                      <Typography color="gray">
+                                        Select assignees to remove
+                                      </Typography>
+                                    ) : (
+                                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                                        {automation.removeAssignees.map((assignee) => (
+                                          <Chip
+                                            key={assignee._id}
+                                           label={assignee.username}
+                                            sx={{
+                                              backgroundColor: '#e0e0e0',
+                                              color: "#000",
+                                              fontWeight: "500",
+                                              borderRadius: "20px",
+                                            }}
+                                          />
+                                        ))}
+                                      </Box>
+                                    )
+                                  }
+                                  MenuProps={MenuProps}
+                                  sx={{ width: "100%", marginBottom: 2 }}
+                                >
+                                  {assigneeOptions.map((option) => (
+                                    <MenuItem
+                                      key={option.value}
+                                      value={option.value}
+                                      sx={{
+                                        '&:hover': {
+                                          backgroundColor: '#f5f5f5',
+                                        },
+                                      }}
+                                    >
+                                      {option.label}
+                                    </MenuItem>
+                                  ))}
+                                </Select>
+                  
+                                <Alert severity="warning" sx={{ marginBottom: 2 }}>
+                                  This automation can affect job assignment notifications
+                                </Alert>
+                              </Box>
+                            </Box>
+                            
+                          ) : automation.type === "Update client-facing job status" ? (
                                     <Box>
                                       <Typography variant="body1">
                                         <strong>Type:</strong> {automation.type}
@@ -1568,7 +1538,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
             
-            <Button
+            {/* <Button
               onClick={async () => {
                 const selectedAutomations = selectedAutomationIndices
                   .map((index) => automations[index])
@@ -1587,6 +1557,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
     const clientStatusAutomation = selectedAutomations.find(
       (automation) => automation.type === "Update client-facing job status"
     );
+    
 
                 if (selectedAutomations.length > 0) {
                   for (const automation of selectedAutomations) {
@@ -1634,8 +1605,65 @@ const Pipeline = ({ charLimit = 4000 }) => {
               }}
             >
               Move
-            </Button>
+            </Button> */}
+<Button
+            onClick={async () => {
+              const selectedAutomations = selectedAutomationIndices
+                .map((index) => automations[index])
+                .filter((automation) => {
+                  // Filter based on tags if applicable
+                  if (!automation.tags || automation.tags.length === 0) {
+                    return true;
+                  }
+                  return automation.tags.some((tag) =>
+                    accountTags.some(
+                      (accountTag) => accountTag._id === tag._id
+                    )
+                  );
+                });
 
+              // Find specific automations if needed
+              const clientStatusAutomation = selectedAutomations.find(
+                (a) => a.type === "Update client-facing job status"
+              );
+              const assigneeAutomation = selectedAutomations.find(
+                (a) => a.type === "Update job assignees"
+              );
+
+              // Process all selected automations
+              if (selectedAutomations.length > 0) {
+                for (const automation of selectedAutomations) {
+                  const { type, template } = automation;
+                  const templateValue = template?.value;
+
+                  if (type && automationAccountId) {
+                    try {
+                      await selectAutomationApi(
+                        type,
+                        templateValue,
+                        automationAccountId,
+                        automation
+                      );
+                    } catch (error) {
+                      console.error("Error processing automation:", error);
+                    }
+                  }
+                }
+              }
+
+              // Move the job with any relevant automations
+              onMoveJob(jobId, targetStage, {
+                clientStatus: clientStatusAutomation,
+                assignees: assigneeAutomation
+              });
+
+              onClose();
+            }}
+            variant="contained"
+            color="primary"
+          >
+            Move
+          </Button>
             <Button
               onClick={onClose}
               variant="outlined"
@@ -3294,43 +3322,103 @@ const Pipeline = ({ charLimit = 4000 }) => {
   //   updateJobStage();
   // };
  
- const handleMoveJob = (jobId, targetStage, automation) => {
-  // Call the API to update the job stage in the backend
-  const updateJobStage = async () => {
-    let data = {
+//  const handleMoveJob = (jobId, targetStage, automation) => {
+
+//   console.log("while moving job automation", automation)
+//   // Call the API to update the job stage in the backend
+//   const updateJobStage = async () => {
+//     let data = {
+//       stageid: targetStage._id,
+//     };
+
+//     // If there's an automation of type "Update client-facing job status", update those fields
+//     if (automation && automation.type === "Update client-facing job status") {
+//       data = {
+//         ...data,
+//         showinclientportal: automation.visibilityForClient,
+//         clientfacingstatus: automation.selectedClientStatus?.value,
+//         clientfacingDescription: automation.statusDescription,
+//       };
+//     }
+
+//     let config = {
+//       method: "post",
+//       maxBodyLength: Infinity,
+//       url: `${JOBS_API}/workflow/jobs/job/jobpipeline/updatestageid/${jobId}`,
+//       headers: { "Content-Type": "application/json" },
+//       data: JSON.stringify(data),
+//     };
+//     try {
+//       const response = await axios.request(config);
+//       console.log("Job moved successfully:", response.data);
+//       toast.success("Job moved successfully!");
+//       fetchJobData(); // Refresh the data
+//     } catch (error) {
+//       console.error("Error moving job:", error);
+//       toast.error("Failed to move job");
+//     }
+//   };
+//   updateJobStage();
+// };
+ 
+const handleMoveJob = async (jobId, targetStage, automations = {}) => {
+  try {
+    // First, get the current job data to work with the existing assignees
+    const currentJobResponse = await axios.get(`${JOBS_API}/workflow/jobs/job/${jobId}`);
+    const currentJob = currentJobResponse.data;
+    const currentAssignees = currentJob.jobassignees || [];
+
+    // Prepare the data object with stage update
+    const data = {
       stageid: targetStage._id,
     };
 
-    // If there's an automation of type "Update client-facing job status", update those fields
-    if (automation && automation.type === "Update client-facing job status") {
-      data = {
-        ...data,
-        showinclientportal: automation.visibilityForClient,
-        clientfacingstatus: automation.selectedClientStatus?.value,
-        clientfacingDescription: automation.statusDescription,
-      };
+    // Handle client-facing status if automation exists
+    if (automations.clientStatus) {
+      const { visibilityForClient, selectedClientStatus, statusDescription } = automations.clientStatus;
+      Object.assign(data, {
+        showinclientportal: visibilityForClient,
+        clientfacingstatus: selectedClientStatus?.value,
+        clientfacingDescription: statusDescription,
+      });
     }
 
-    let config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: `${JOBS_API}/workflow/jobs/job/jobpipeline/updatestageid/${jobId}`,
-      headers: { "Content-Type": "application/json" },
-      data: JSON.stringify(data),
-    };
-    try {
-      const response = await axios.request(config);
-      console.log("Job moved successfully:", response.data);
-      toast.success("Job moved successfully!");
-      fetchJobData(); // Refresh the data
-    } catch (error) {
-      console.error("Error moving job:", error);
-      toast.error("Failed to move job");
+    // Handle assignee updates if automation exists
+    if (automations.assignees) {
+      const { addAssignees = [], removeAssignees = [] } = automations.assignees;
+      
+      // Create new assignees array:
+      // 1. Start with current assignees
+      // 2. Remove any assignees in removeAssignees
+      // 3. Add any assignees in addAssignees that aren't already present
+      const newAssignees = [
+        ...currentAssignees.filter(
+          assigneeId => !removeAssignees.some(ra => ra._id === assigneeId)
+        ),
+        ...addAssignees
+          .map(a => a._id)
+          .filter(newId => !currentAssignees.includes(newId))
+      ];
+
+      Object.assign(data, {
+        jobassignees: newAssignees
+      });
     }
-  };
-  updateJobStage();
+
+    // Make the API call to update the job
+    const response = await axios.post(
+      `${JOBS_API}/workflow/jobs/job/jobpipeline/updatestageid/${jobId}`,
+      data
+    );
+
+    console.log("Job moved and updated successfully:", response.data);
+    toast.success("Job moved and updated successfully!");
+    fetchJobData(); // Refresh the job data
+  } catch (error) {
+    console.error("Error moving/updating job:", error);
+    toast.error("Failed to move and update job");
+  }
 };
- 
   console.log("pipeline", pipelineData);
   const optionpipeline = pipelineData.map((pipeline) => ({
     value: pipeline._id,
@@ -3428,6 +3516,71 @@ const Pipeline = ({ charLimit = 4000 }) => {
       return updatedAutomations;
     });
   };
+   const [assignee, setAssignee] = useState([]);
+    const [selectedAssignees, setSelectedAssignees] = useState([]);
+    const [assigneesToRemove, setAssigneesToRemove] = useState([]);
+    useEffect(() => {
+      const fetchAssignees = async () => {
+        try {
+          const response = await axios.get(`${LOGIN_API}/common/users/roles?roles=TeamMember,Admin`);
+          console.log("assigness data",response.data)
+          setAssignee(response.data);
+        } catch (error) {
+          console.error("Error fetching assignees:", error);
+        }
+      };
+      
+      fetchAssignees();
+    }, []);
+    const assigneeOptions = assignee.map((ass)=>({
+       value: ass._id,
+        label: ass.username,
+    }))
+     const handleAssigneeChange = (index, type, event) => {
+      const { value } = event.target; // Array of selected tag IDs
+  
+      setAutomationData((prev) => {
+        const updatedAutomations = [...prev];
+  
+        // Get the correct tag options list
+        const assigneeoptions = assigneeOptions;
+  
+        // Map selected tag IDs to tag objects with _id, tagName, and tagColour
+        const selectedTags = value
+          .map((assId) => {
+            const ass = assigneeoptions.find((t) => t.value === assId);
+            return ass
+              ? { _id: ass.value, username: ass.label,  }
+              : null;
+          })
+          .filter(Boolean); // Remove null values
+  
+        // Prevent duplicate selections
+        const uniqueTags = selectedTags.filter(
+          (ass, idx, self) => self.findIndex((t) => t._id === ass._id) === idx
+        );
+  
+        // Ensure the tag is removed from the opposite category
+        if (type === "addAssignees") {
+          updatedAutomations[index].removeAssignees = updatedAutomations[
+            index
+          ].removeAssignees.filter(
+            (ass) => !uniqueTags.some((t) => t._id === ass._id)
+          );
+        } else if (type === "removeAssignees") {
+          updatedAutomations[index].addAssignees = updatedAutomations[
+            index
+          ].addAssignees.filter((tag) => !uniqueTags.some((t) => t._id === tag._id));
+        }
+  
+        updatedAutomations[index] = {
+          ...updatedAutomations[index],
+          [type]: uniqueTags,
+        };
+  
+        return updatedAutomations;
+      });
+    };
   return (
     <DndProvider backend={HTML5Backend}>
       <Box p={3}>

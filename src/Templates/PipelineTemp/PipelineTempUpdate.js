@@ -31,6 +31,7 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { useNavigate, useParams } from "react-router-dom";
 import AddAutomationDrawer from "./AddAutomationDrawer";
 import { GoDotFill } from "react-icons/go";
+import axios from "axios";
 import EditAutomationDrawer from "./EditAutomationDrawer";
 const PipelineTempUpdate = () => {
   const ITEM_HEIGHT = 48;
@@ -521,7 +522,26 @@ const PipelineTempUpdate = () => {
   const handleEditGoBack = () => {
     setIsConditionsEditFormOpen(false);
   };
-
+const [assignee, setAssignee] = useState([]);
+const [selectedAssignees, setSelectedAssignees] = useState([]);
+const [assigneesToRemove, setAssigneesToRemove] = useState([]);
+useEffect(() => {
+  const fetchAssignees = async () => {
+    try {
+      const response = await axios.get(`${LOGIN_API}/common/users/roles?roles=TeamMember,Admin`);
+      console.log("assigness data",response.data)
+      setAssignee(response.data);
+    } catch (error) {
+      console.error("Error fetching assignees:", error);
+    }
+  };
+  
+  fetchAssignees();
+}, []);
+const assigneeOptions = assignee.map((ass)=>({
+   value: ass._id,
+    label: ass.username,
+}))
   const handleTagChange = (index, type, event) => {
     const { value } = event.target; // Array of selected tag IDs
   
@@ -558,6 +578,53 @@ const PipelineTempUpdate = () => {
         [type]: uniqueTags,
       };
   
+      return updatedAutomations;
+    });
+
+  };
+
+    const handleAssigneeChange = (index, type, event) => {
+    const { value } = event.target; // Array of selected tag IDs
+
+    setSelectedAutomationData((prev) => {
+      const updatedAutomations = [...prev];
+
+      // Get the correct tag options list
+      const assigneeoptions = assigneeOptions;
+
+      // Map selected tag IDs to tag objects with _id, tagName, and tagColour
+      const selectedTags = value
+        .map((assId) => {
+          const ass = assigneeoptions.find((t) => t.value === assId);
+          return ass
+            ? { _id: ass.value, username: ass.label,  }
+            : null;
+        })
+        .filter(Boolean); // Remove null values
+
+      // Prevent duplicate selections
+      const uniqueTags = selectedTags.filter(
+        (ass, idx, self) => self.findIndex((t) => t._id === ass._id) === idx
+      );
+
+      // Ensure the tag is removed from the opposite category
+      if (type === "addAssignees") {
+        updatedAutomations[index].removeAssignees = updatedAutomations[
+          index
+        ].removeAssignees.filter(
+          (ass) => !uniqueTags.some((t) => t._id === ass._id)
+        );
+      } else if (type === "removeAssignees") {
+        updatedAutomations[index].addAssignees = updatedAutomations[
+          index
+        ].addAssignees.filter((tag) => !uniqueTags.some((t) => t._id === tag._id));
+      }
+
+      updatedAutomations[index] = {
+        ...updatedAutomations[index],
+        [type]: uniqueTags,
+      };
+
       return updatedAutomations;
     });
   };
@@ -597,6 +664,15 @@ const PipelineTempUpdate = () => {
           type: "Update account tags",
           addTags: [], // Independent array for addTags
           removeTags: [], // Independent array for removeTags
+          tags: [],
+        };
+        break;
+         case "Update job assignees":
+        // Initialize addTags and removeTags as separate empty arrays
+        newAutomation = {
+          type: "Update job assignees",
+          addAssignees: [], // Independent array for addTags
+          removeAssignees: [], // Independent array for removeTags
           tags: [],
         };
         break;
@@ -951,6 +1027,42 @@ const PipelineTempUpdate = () => {
             }
             return tag; // Keep existing tag objects
           }).filter(Boolean),
+        };
+      }
+      else if (automation.type === "Update job assignees") {
+        return {
+          ...automation,
+          addAssignees: automation.addAssignees
+            .map((tag) => {
+              if (typeof tag === "string") {
+                const foundTag = assignee.find((t) => t._id === tag);
+                return foundTag
+                  ? {
+                      _id: foundTag._id,
+                      label: foundTag.username,
+                     
+                    }
+                  : null;
+              }
+              return tag; // Keep existing tag objects
+            })
+            .filter(Boolean), // Remove any null values
+
+          removeAssignees: automation.removeAssignees
+            .map((tag) => {
+              if (typeof tag === "string") {
+                const foundTag = assignee.find((t) => t._id === tag);
+                return foundTag
+                  ? {
+                      _id: foundTag._id,
+                      label: foundTag.username,
+                      
+                    }
+                  : null;
+              }
+              return tag; // Keep existing tag objects
+            })
+            .filter(Boolean),
         };
       }
       return automation;
@@ -3923,7 +4035,332 @@ const PipelineTempUpdate = () => {
               </Drawer>
             </>
           );
-      
+      case "Update job assignees":
+  return (
+    <>
+      <Grid item>
+        <Box
+          sx={{
+            border: "2px solid #ddd",
+            borderRadius: "8px",
+            padding: 2,
+          }}
+        >
+          <Typography gutterBottom>
+            1. {automationSelect || "No Type"}
+          </Typography>
+
+          <Box sx={{ display: "flex", alignItems: "center", gap: 5 }}>
+            <Box mt={2} width={"50%"}>
+              <Typography gutterBottom variant="body2">
+                Add Assignees
+              </Typography>
+              <FormControl
+                sx={{
+                  width: "100%",
+                  marginTop: "8px",
+                  backgroundColor: "#fff",
+                }}
+                size="small"
+              >
+                <Select
+                  multiple
+                  size="small"
+                  fullWidth
+                  multiline
+                  value={selectedAssignees}
+                  onChange={(e) => setSelectedAssignees(e.target.value)}
+                  input={<OutlinedInput />}
+                  displayEmpty
+                  renderValue={(selected) => {
+                    if (selected.length === 0) {
+                      return (
+                        <span style={{ color: "#aaa" }}>
+                          Select assignees...
+                        </span>
+                      );
+                    }
+                    return (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: "6px",
+                          padding: "6px",
+                          borderRadius: "10px",
+                        }}
+                      >
+                        {selected.map((value) => {
+                          const option = assigneeOptions.find(
+                            (opt) => opt.value === value
+                          );
+                          return (
+                            <Chip
+                              key={value}
+                              label={option?.label}
+                             
+                            />
+                          );
+                        })}
+                      </Box>
+                    );
+                  }}
+                  MenuProps={MenuProps}
+                  sx={{
+                    borderRadius: "10px",
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                    },
+                  }}
+                >
+                  {assigneeOptions.filter(opt => !assigneesToRemove.includes(opt.value)).map((option) => {
+                 
+                    return (
+                      <MenuItem
+                        key={option.value}
+                        value={option.value}
+                        
+                      >
+                        {option.label}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Box>
+
+            <Box mt={2} width={"50%"}>
+              <Typography gutterBottom variant="body2">
+                Remove Assignees
+              </Typography>
+              <FormControl
+                sx={{
+                  width: "100%",
+                  marginTop: "8px",
+                  backgroundColor: "#fff",
+                }}
+                size="small"
+              >
+                <Select
+                  multiple
+                  size="small"
+                  fullWidth
+                  multiline
+                  value={assigneesToRemove}
+                  onChange={(e) => setAssigneesToRemove(e.target.value)}
+                  input={<OutlinedInput />}
+                  displayEmpty
+                  renderValue={(selected) => {
+                    if (selected.length === 0) {
+                      return (
+                        <span style={{ color: "#aaa" }}>
+                          Select assignees...
+                        </span>
+                      );
+                    }
+                    return (
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: "6px",
+                          padding: "6px",
+                          borderRadius: "10px",
+                        }}
+                      >
+                        {selected.map((value) => {
+                          const option = assigneeOptions.find(
+                            (opt) => opt.value === value
+                          );
+                          return (
+                            <Chip
+                              key={value}
+                              label={option?.label}
+                             
+                            />
+                          );
+                        })}
+                      </Box>
+                    );
+                  }}
+                  MenuProps={MenuProps}
+                  sx={{
+                    borderRadius: "10px",
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "10px",
+                    },
+                  }}
+                >
+                  {assigneeOptions.filter(opt => !selectedAssignees.includes(opt.value)).map((option) => {
+                    // const canvas = document.createElement("canvas");
+                    // const context = canvas.getContext("2d");
+                    // context.font = "12px Arial";
+                    // const textWidth = context.measureText(option.label).width;
+                    // const dynamicWidth = Math.min(textWidth + 16, 150);
+                    return (
+                      <MenuItem
+                        key={option.value}
+                        value={option.value}
+                        // sx={{
+                        //   backgroundColor: "#f44336", // Red color for remove
+                        //   color: "#fff",
+                        //   fontSize: "10px",
+                        //   borderRadius: "10px",
+                        //   margin: "5px",
+                        //   textAlign: "center",
+                        //   display: "flex",
+                        //   justifyContent: "center",
+                        //   padding: "4px 9px",
+                        //   whiteSpace: "nowrap",
+                        //   minWidth: `${dynamicWidth}px`,
+                        //   maxWidth: `${dynamicWidth}px`,
+                        //   "&:hover": {
+                        //     backgroundColor: "#d32f2f", // Darker red on hover
+                        //     color: "#fff",
+                        //   },
+                        // }}
+                      >
+                        {option.label}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Box>
+          </Box>
+
+          {selectedTags.length > 0 && (
+            <Grid container alignItems="center" gap={1}>
+              <Typography>Only for:</Typography>
+              <Grid item>{selectedTagElements}</Grid>
+            </Grid>
+          )}
+
+          <Button variant="text" onClick={handleAddConditions}>
+            Add Conditions
+          </Button>
+        </Box>
+        <Box mt={2}>
+          <Button
+            variant="contained"
+            onClick={handleSaveAutomation(stageSelected)}
+            sx={{
+              backgroundColor: "var(--color-save-btn)",
+              "&:hover": {
+                backgroundColor: "var(--color-save-hover-btn)",
+              },
+              borderRadius: "15px",
+            }}
+          >
+            Save Automation
+          </Button>
+        </Box>
+      </Grid>
+
+      {/* Condition tags for automation */}
+      <Drawer
+        anchor="right"
+        open={isConditionsFormOpen}
+        onClose={handleGoBack}
+        BackdropProps={{ invisible: true }}
+        PaperProps={{ sx: { width: "550px", padding: 2 } }}
+      >
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <IconButton onClick={handleGoBack}>
+            <IoMdArrowRoundBack fontSize="large" color="blue" />
+          </IconButton>
+          <Typography variant="h6">Add conditions</Typography>
+        </Box>
+
+        <Box sx={{ padding: 2 }}>
+          <Typography variant="body1">
+            Apply automation only for accounts with these tags
+          </Typography>
+          <TextField
+            fullWidth
+            size="small"
+            variant="outlined"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={handleSearchChange}
+            InputProps={{
+              startAdornment: (
+                <AiOutlineSearch style={{ marginRight: 8 }} />
+              ),
+            }}
+            sx={{ marginTop: 2 }}
+          />
+
+          <Box sx={{ marginTop: 2, height: "68vh", overflowY: "auto" }}>
+            {filteredTags.map((tag) => (
+              <Box
+                key={tag._id}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 3,
+                  borderBottom: "1px solid grey",
+                  paddingBottom: 1,
+                }}
+              >
+                <Checkbox
+                  checked={tempSelectedTags.includes(tag)}
+                  onChange={() => handleCheckboxChange(tag)}
+                />
+                <Chip
+                  label={tag.tagName}
+                  sx={{
+                    backgroundColor: tag.tagColour,
+                    color: "#fff",
+                    fontWeight: "500",
+                    borderRadius: "20px",
+                    marginRight: 1,
+                  }}
+                />
+              </Box>
+            ))}
+          </Box>
+
+          <Box sx={{ display: "flex", gap: 2, marginTop: 2 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={!isAnyCheckboxChecked}
+              onClick={handleAddTags}
+              sx={{
+                backgroundColor: "var(--color-save-btn)",
+                "&:hover": {
+                  backgroundColor: "var(--color-save-hover-btn)",
+                },
+                borderRadius: "15px",
+                width: "80px",
+              }}
+            >
+              Add
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={handleGoBack}
+              sx={{
+                borderColor: "var(--color-border-cancel-btn)",
+                color: "var(--color-save-btn)",
+                "&:hover": {
+                  backgroundColor: "var(--color-save-hover-btn)",
+                  color: "#fff",
+                  border: "none",
+                },
+                width: "80px",
+                borderRadius: "15px",
+              }}
+            >
+              Cancel
+            </Button>
+          </Box>
+        </Box>
+      </Drawer>
+    </>
+  );
       
       
         case "Create Organizer":
@@ -4511,7 +4948,16 @@ const PipelineTempUpdate = () => {
               }
             : null;
         });
-      } else if (automationSelect === "Update client-facing job status") {
+      }else if (automationSelect === "Update job assignees") {
+      selectedAutomation.addAssignees = selectedAssignees.map((userId) => {
+        const user = assignee.find((u) => u._id === userId);
+        return user ? { _id: user._id, username: user.username } : null;
+      });
+      
+      selectedAutomation.removeAssignees = assigneesToRemove.map((userId) => {
+        const user = assignee.find((u) => u._id === userId);
+        return user ? { _id: user._id, username: user.username } : null;
+      });} else if (automationSelect === "Update client-facing job status") {
         selectedAutomation.visibilityForClient = status.value; // true/false
         selectedAutomation.selectedClientStatus = selectedClientStatus
           ? {
@@ -5364,6 +5810,17 @@ const PipelineTempUpdate = () => {
                                   >
                                     Update account tags
                                   </MenuItem>
+                                  {/* Update job assignees */}
+                                  <MenuItem
+                                    onClick={() =>
+                                      handleAddAutomation(
+                                        stageSelected,
+                                        "Update job assignees"
+                                      )
+                                    }
+                                  >
+                                    Update job assignees
+                                  </MenuItem>
                                    <MenuItem
                                                                       onClick={() =>
                                                                         handleAddAutomation(
@@ -5464,6 +5921,7 @@ const PipelineTempUpdate = () => {
                                     filteredAddTagsOptions
                                   }
                                   tagsoptions={tagsoptions}
+                                    assigneeOptions={assigneeOptions}
                                   taskTemplateOptions={taskTemplateOptions}
                                   chatTemplateOptions={chatTemplateOptions}
 
@@ -5472,6 +5930,7 @@ statusOptions={statusOptions}
                                   // status={status}
                                   handleStatusChange={handleStatusChange}
                                   setStatus={setStatus}
+                                    handleAssigneeChange={handleAssigneeChange}
                                   optionstatus={optionstatus}
                                   setClientDescription={setClientDescription}
                                 setEditClientDescripation={setEditClientDescripation}
@@ -5614,37 +6073,71 @@ statusOptions={statusOptions}
                                                     </Box>
                                                   </Box>
                                                 )}
- {/* <Box>
-                                                {automation.visibilityForClient ===
-                                                false ? (
-                                                  <Typography>
-                                                    Don't show status
-                                                  </Typography>
-                                                ) : (
-                                                  <>
-                                                    <Box
-                                                      sx={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                      }}
-                                                    >
-                                                      <GoDotFill
-                                                        style={{
-                                                          color:
-                                                            automation.selectedClientStatus?.clientfacingColour,
-                                                          fontSize: "20px",
-                                                          marginTop: "5px",
-                                                        }}
-                                                      />
-                                                      {
-                                                        automation
-                                                          .selectedClientStatus
-                                                          .label
-                                                      }
-                                                    </Box>
-                                                  </>
-                                                )}
-                                              </Box> */}
+  {automation.addAssignees &&
+                                                 automation.addAssignees.length >
+                                                   0 && (
+                                                   <Box sx={{ marginTop: 2 }}>
+                                                     <Typography
+                                                       variant="body2"
+                                                       color="text.secondary"
+                                                     >
+                                                       Add Assignees:
+                                                     </Typography>
+                                                     <Box
+                                                       sx={{
+                                                         display: "flex",
+                                                         gap: 1,
+                                                         flexWrap: "wrap",
+                                                         marginTop: 1,
+                                                       }}
+                                                     >
+                                                       {automation.addAssignees.map(
+                                                         (tag) => (
+                                                           <Box
+                                                             key={tag._id}
+                                                             
+                                                           >
+                                                             {tag.username}
+                                                           </Box>
+                                                         )
+                                                       )}
+                                                     </Box>
+                                                   </Box>
+                                                 )}
+ 
+ 
+                                               {/* Remove Tags Section */}
+                                               {automation.removeAssignees &&
+                                                 automation.removeAssignees.length >
+                                                   0 && (
+                                                   <Box sx={{ marginTop: 2 }}>
+                                                     <Typography
+                                                       variant="body2"
+                                                       color="text.secondary"
+                                                     >
+                                                       Remove Assignees:
+                                                     </Typography>
+                                                     <Box
+                                                       sx={{
+                                                         display: "flex",
+                                                         gap: 1,
+                                                         flexWrap: "wrap",
+                                                         marginTop: 1,
+                                                       }}
+                                                     >
+                                                       {automation.removeAssignees.map(
+                                                         (tag) => (
+                                                           <Box
+                                                             key={tag._id}
+                                                             
+                                                           >
+                                                             {tag.username}
+                                                           </Box>
+                                                         )
+                                                       )}
+                                                     </Box>
+                                                   </Box>
+                                                 )}
                                               {automation.type === "Update client-facing job status" && (
               <Box>
                 {automation.visibilityForClient === false ? (

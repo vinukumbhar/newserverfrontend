@@ -48,6 +48,7 @@ const AddAutomationDrawer = ({
         <MenuItem onClick={() => handleMenuItemSelect("Create Organizer")}>Create Organizer</MenuItem>
         <MenuItem onClick={() => handleMenuItemSelect("Apply folder template")}>Apply folder template</MenuItem>
         <MenuItem onClick={() => handleMenuItemSelect("Update account tags ")}>Update account tags</MenuItem>
+              <MenuItem onClick={() => handleMenuItemSelect("Update job assignees")}>Update job assignees</MenuItem>
       </Menu>
     </Drawer>
   );

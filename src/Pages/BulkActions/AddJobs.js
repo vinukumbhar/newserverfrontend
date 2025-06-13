@@ -20,7 +20,8 @@ import {
   Autocomplete,
   FormControl,
   Select,
-  MenuItem,Alert
+  MenuItem,
+  Alert,
 } from "@mui/material";
 import React, { useState, useEffect, useContext } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -36,8 +37,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import axios from "axios";
-import MultiSelectDropdown from "../../Templates/MultiSelectDropdown"
-import AccountMultiSelectDropdown from "../../Templates/AccountMultiSelectDropdown"
+import MultiSelectDropdown from "../../Templates/MultiSelectDropdown";
+import AccountMultiSelectDropdown from "../../Templates/AccountMultiSelectDropdown";
 import { LoginContext } from "../../Sidebar/Context/Context";
 // Initialize the plugin
 dayjs.extend(customParseFormat);
@@ -122,10 +123,10 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
   // };
   const handleAccountChange = (newSelectedAcc) => {
     setSelectedaccount(newSelectedAcc);
-    console.log(newSelectedAcc)
+    console.log(newSelectedAcc);
     const selectedValues = newSelectedAcc.map((option) => option.value);
     setCombinedaccountValues(selectedValues);
-    console.log(selectedValues)
+    console.log(selectedValues);
   };
   useEffect(() => {
     fetchAccountData();
@@ -186,10 +187,10 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
   // };
   const handleUserChange = (newSelectedUsers) => {
     setSelectedUser(newSelectedUsers);
-    console.log(newSelectedUsers)
+    console.log(newSelectedUsers);
     const selectedValues = newSelectedUsers.map((option) => option.value);
     setCombinedAssigneesValues(selectedValues);
-    console.log(selectedValues)
+    console.log(selectedValues);
   };
   const assigneesoptions = userData.map((user) => ({
     value: user._id,
@@ -736,111 +737,178 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
   };
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
+  const [tags, setTags] = useState([]);
 
+  useEffect(() => {
+    fetchTags();
+  }, []);
 
-  
-      const TAGS_API = process.env.REACT_APP_TAGS_TEMP_URL;
-        const [tags, setTags] = useState([]);
-    
-        useEffect(() => {
-          fetchTags();
-        }, []);
-    
-        const fetchTags = async () => {
-          try {
-            const url = `${TAGS_API}/tags/`;
-            const response = await fetch(url);
-            const data = await response.json();
-            console.log("tags dtata", data.tags);
-            setTags(data.tags);
-          } catch (error) {
-            console.error("Error fetching data:", error);
-          }
-        };
-    
-        const calculateWidth = (label) => Math.min(label.length * 8, 200);
-    
-        const tagsoptions = tags.map((tag) => ({
-          value: tag._id,
-          label: tag.tagName,
-          colour: tag.tagColour,
-          customStyle: {
-            backgroundColor: tag.tagColour,
-            color: "#fff",
-            borderRadius: "8px",
-            alignItems: "center",
-            textAlign: "center",
-            marginBottom: "5px",
-            padding: "2px,8px",
-            fontSize: "10px",
-            width: `${calculateWidth(tag.tagName)}px`,
-            margin: "7px",
-            cursor: "pointer",
-          },
-          customTagStyle: {
-            backgroundColor: tag.tagColour,
-            color: "#fff",
-            alignItems: "center",
-            textAlign: "center",
-            padding: "2px,8px",
-            fontSize: "10px",
-            cursor: "pointer",
-          },
-        }));
-    
-      const handleTagChange = (index, type, event) => {
-        const { value } = event.target; // Array of selected tag IDs
-      
-        setAutomations((prev) => {
-          const updatedAutomations = [...prev];
-      
-          // Get the correct tag options list
-          const tagOptions = tagsoptions;
-      
-          // Map selected tag IDs to tag objects with _id, tagName, and tagColour
-          const selectedTags = value.map((tagId) => {
-            const tag = tagOptions.find((t) => t.value === tagId);
-            return tag ? { _id: tag.value, tagName: tag.label, tagColour: tag.colour } : null;
-          }).filter(Boolean); // Remove null values
-      
-          // Prevent duplicate selections
-          const uniqueTags = selectedTags.filter(
-            (tag, idx, self) => self.findIndex((t) => t._id === tag._id) === idx
-          );
-      
-          // Ensure the tag is removed from the opposite category
-          if (type === "addTags") {
-            updatedAutomations[index].removeTags = updatedAutomations[index].removeTags.filter(
-              (tag) => !uniqueTags.some((t) => t._id === tag._id)
-            );
-          } else if (type === "removeTags") {
-            updatedAutomations[index].addTags = updatedAutomations[index].addTags.filter(
-              (tag) => !uniqueTags.some((t) => t._id === tag._id)
-            );
-          }
-      
-          updatedAutomations[index] = {
-            ...updatedAutomations[index],
-            [type]: uniqueTags,
-          };
-      
-          return updatedAutomations;
-        });
+  const fetchTags = async () => {
+    try {
+      const url = `${TAGS_API}/tags/`;
+      const response = await fetch(url);
+      const data = await response.json();
+      console.log("tags dtata", data.tags);
+      setTags(data.tags);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const calculateWidth = (label) => Math.min(label.length * 8, 200);
+
+  const tagsoptions = tags.map((tag) => ({
+    value: tag._id,
+    label: tag.tagName,
+    colour: tag.tagColour,
+    customStyle: {
+      backgroundColor: tag.tagColour,
+      color: "#fff",
+      borderRadius: "8px",
+      alignItems: "center",
+      textAlign: "center",
+      marginBottom: "5px",
+      padding: "2px,8px",
+      fontSize: "10px",
+      width: `${calculateWidth(tag.tagName)}px`,
+      margin: "7px",
+      cursor: "pointer",
+    },
+    customTagStyle: {
+      backgroundColor: tag.tagColour,
+      color: "#fff",
+      alignItems: "center",
+      textAlign: "center",
+      padding: "2px,8px",
+      fontSize: "10px",
+      cursor: "pointer",
+    },
+  }));
+
+  const handleTagChange = (index, type, event) => {
+    const { value } = event.target; // Array of selected tag IDs
+
+    setAutomations((prev) => {
+      const updatedAutomations = [...prev];
+
+      // Get the correct tag options list
+      const tagOptions = tagsoptions;
+
+      // Map selected tag IDs to tag objects with _id, tagName, and tagColour
+      const selectedTags = value
+        .map((tagId) => {
+          const tag = tagOptions.find((t) => t.value === tagId);
+          return tag
+            ? { _id: tag.value, tagName: tag.label, tagColour: tag.colour }
+            : null;
+        })
+        .filter(Boolean); // Remove null values
+
+      // Prevent duplicate selections
+      const uniqueTags = selectedTags.filter(
+        (tag, idx, self) => self.findIndex((t) => t._id === tag._id) === idx
+      );
+
+      // Ensure the tag is removed from the opposite category
+      if (type === "addTags") {
+        updatedAutomations[index].removeTags = updatedAutomations[
+          index
+        ].removeTags.filter(
+          (tag) => !uniqueTags.some((t) => t._id === tag._id)
+        );
+      } else if (type === "removeTags") {
+        updatedAutomations[index].addTags = updatedAutomations[
+          index
+        ].addTags.filter((tag) => !uniqueTags.some((t) => t._id === tag._id));
+      }
+
+      updatedAutomations[index] = {
+        ...updatedAutomations[index],
+        [type]: uniqueTags,
       };
+
+      return updatedAutomations;
+    });
+  };
+     const [assignee, setAssignee] = useState([]);
+    const [selectedAssignees, setSelectedAssignees] = useState([]);
+    const [assigneesToRemove, setAssigneesToRemove] = useState([]);
+    useEffect(() => {
+      const fetchAssignees = async () => {
+        try {
+          const response = await axios.get(`${LOGIN_API}/common/users/roles?roles=TeamMember,Admin`);
+          console.log("assigness data",response.data)
+          setAssignee(response.data);
+        } catch (error) {
+          console.error("Error fetching assignees:", error);
+        }
+      };
+      
+      fetchAssignees();
+    }, []);
+    const assigneeOptions = assignee.map((ass)=>({
+       value: ass._id,
+        label: ass.username,
+    }))
+     const handleAssigneeChange = (index, type, event) => {
+      const { value } = event.target; // Array of selected tag IDs
+  
+      setAutomations((prev) => {
+        const updatedAutomations = [...prev];
+  
+        // Get the correct tag options list
+        const assigneeoptions = assigneeOptions;
+  
+        // Map selected tag IDs to tag objects with _id, tagName, and tagColour
+        const selectedTags = value
+          .map((assId) => {
+            const ass = assigneeoptions.find((t) => t.value === assId);
+            return ass
+              ? { _id: ass.value, username: ass.label,  }
+              : null;
+          })
+          .filter(Boolean); // Remove null values
+  
+        // Prevent duplicate selections
+        const uniqueTags = selectedTags.filter(
+          (ass, idx, self) => self.findIndex((t) => t._id === ass._id) === idx
+        );
+  
+        // Ensure the tag is removed from the opposite category
+        if (type === "addAssignees") {
+          updatedAutomations[index].removeAssignees = updatedAutomations[
+            index
+          ].removeAssignees.filter(
+            (ass) => !uniqueTags.some((t) => t._id === ass._id)
+          );
+        } else if (type === "removeAssignees") {
+          updatedAutomations[index].addAssignees = updatedAutomations[
+            index
+          ].addAssignees.filter((tag) => !uniqueTags.some((t) => t._id === tag._id));
+        }
+  
+        updatedAutomations[index] = {
+          ...updatedAutomations[index],
+          [type]: uniqueTags,
+        };
+  
+        return updatedAutomations;
+      });
+    };
   // Drawer Component
   const DrawerContent = () => {
+    const ITEM_HEIGHT = 48;
+    const ITEM_PADDING_TOP = 8;
+    const MenuProps = {
+      PaperProps: {
+        style: {
+          maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+          width: "auto",
+        },
+      },
+    };
 
-     const ITEM_HEIGHT = 48;
-            const ITEM_PADDING_TOP = 8;
-            const MenuProps = {
-              PaperProps: {
-                style: {
-                  maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-                  width: "auto",
-                },
-              },
-            };
-           
     // Get the tags for the selected accounts
     const accountTags = combinedaccountValues
       .map((accountId) => {
@@ -850,8 +918,8 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
         return account ? account.tags || [] : []; // Assuming accounts have tags
       })
       .flat(); // Flattening array to get all tags
-      const CHAT_API = process.env.REACT_APP_CHAT_TEMP_URL;
-      const CHATTOCLIENT_API = process.env.REACT_APP_CHAT_API;
+    const CHAT_API = process.env.REACT_APP_CHAT_TEMP_URL;
+    const CHATTOCLIENT_API = process.env.REACT_APP_CHAT_API;
     const INVOICE_API = process.env.REACT_APP_INVOICE_TEMP_URL;
     const INVOICE_NEW = process.env.REACT_APP_INVOICES_URL;
     const PROPOSAL_API = process.env.REACT_APP_PROPOSAL_TEMP_URL;
@@ -875,24 +943,24 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
         throw error; // Let the calling function handle the error
       }
     };
-      // fetch task temp by id
-      const TASK_API = process.env.REACT_APP_TASK_TEMP_URL;
-      const fetchtasktempbyid = async (automationTemp) => {
-        const requestOptions = {
-          method: "GET",
-          redirect: "follow",
-        };
-        const url = `${TASK_API}/workflow/tasks/tasktemplate/tasktemplatebyid/${automationTemp}`;
-        try {
-          const response = await fetch(url, requestOptions); // Fetch the data
-          const result = await response.json(); // Parse the JSON response
-          console.log("Fetched task template:", result.taskTemplate);
-          return result.taskTemplate; // Return the data
-        } catch (error) {
-          console.error("Error fetching invoice template:", error);
-          throw error; // Let the calling function handle the error
-        }
+    // fetch task temp by id
+    const TASK_API = process.env.REACT_APP_TASK_TEMP_URL;
+    const fetchtasktempbyid = async (automationTemp) => {
+      const requestOptions = {
+        method: "GET",
+        redirect: "follow",
       };
+      const url = `${TASK_API}/workflow/tasks/tasktemplate/tasktemplatebyid/${automationTemp}`;
+      try {
+        const response = await fetch(url, requestOptions); // Fetch the data
+        const result = await response.json(); // Parse the JSON response
+        console.log("Fetched task template:", result.taskTemplate);
+        return result.taskTemplate; // Return the data
+      } catch (error) {
+        console.error("Error fetching invoice template:", error);
+        throw error; // Let the calling function handle the error
+      }
+    };
     // fetch chat temp by id
     const fetchchattempbyid = async (automationTemp) => {
       const requestOptions = {
@@ -1018,162 +1086,166 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
     };
 
     const [chatId, setChatId] = useState();
-         const [adminusername, setAdminUsername] = useState("");
-         const fetchLoginUserData = async (loginuserid) => {
-    
-           const myHeaders = new Headers();
-       
-           const requestOptions = {
-             method: "GET",
-             headers: myHeaders,
-             redirect: "follow",
-           };
-           const url = `${LOGIN_API}/common/user/${loginuserid}`;
-           fetch(url, requestOptions)
-             .then((response) => response.json())
-             .then((result) => {
-               console.log("jbhguhid", result);
-       
-               // console.log(userData)
-               setAdminUsername(result.username);
-             });
-         };
-      useEffect(() => {
-        console.log("teammenber", loginuserid);
-        fetchLoginUserData(loginuserid);
-      }, []);
-            // sendChatToAccount
-            const sendChatToAccount = (
-              chatData,
-              automationTemp,
-              automationAccountId
-            ) => {
-              console.log(
-                "sending chat",
-                chatData,
-                automationTemp,
-                automationAccountId
-              );
-        
-              const myHeaders = new Headers();
-              myHeaders.append("Content-Type", "application/json");
-              const subtaskData = chatData.clienttasks.map(({ id, text, checked }) => ({
-                id,
-                text,
-                checked: checked !== undefined ? checked : false, // Ensure checked is either true or false
-              }));
-              const messageData = [
-                {
-                  message: chatData.description,
-                  fromwhome: "Admin",
-                    senderid: loginuserid,
-          isRead:false
-                },
-              ];
-              // Dynamically prepare the payload from invoiceData
-              const raw = JSON.stringify({
-                accountids: [automationAccountId],
-                chattemplateid: automationTemp, // Fill in if required
-                chatsubject: chatData.chatsubject, // Today's date
-                description: messageData || "",
-                sendreminderstoclient: chatData.sendreminderstoclient,
-                daysuntilnextreminder: chatData.daysuntilnextreminder,
-                numberofreminders: chatData.numberofreminders,
-                clienttasks: subtaskData,
-              });
-              console.log("chats", raw);
-              const requestOptions = {
-                method: "POST",
-                headers: myHeaders,
-                body: raw,
-                redirect: "follow",
-              };
-              fetch(`${CHATTOCLIENT_API}/chats/chatsaccountwise`, requestOptions)
-                .then((response) => response.json())
-                .then((result) => {
-                  console.log("send chat to account successfully:", result);
-                  // console.log("chat id", result.newChats._id);
-                  // setChatId(result.newChats._id);
-                  // toast.success("New Chat created successfully");
-                  // sendSaveChatMail(result.newChats._id,automationAccountId,automationTemp,adminusername);
-                })
-                .catch((error) => console.error("Error assigning invoice:", error));
-            };
-            // mail for drawer btn
-            const sendSaveChatMail = (chatId,automationAccountId,automationTemp,adminusername) => {
-              const myHeaders = new Headers();
-              myHeaders.append("Content-Type", "application/json");
-        
-              const raw = JSON.stringify({
-                accountid: automationAccountId,
-                chattemplateid: automationTemp,
-                username: adminusername,
-                chatId: chatId,
-                viewchatlink: "/login",
-              });
-        
-              const requestOptions = {
-                method: "POST",
-                headers: myHeaders,
-                body: raw,
-                redirect: "follow",
-              };
-              console.log(raw);
-              fetch(`${CHATTOCLIENT_API}/chatsend/securechatsend`, requestOptions)
-                .then((response) => response.json())
-                .then((result) => console.log(result))
-                .catch((error) => console.error(error));
-            };
-            const ACCOUNT_TASKS_API = process.env.REACT_APP_TASKS_API;
+    const [adminusername, setAdminUsername] = useState("");
+    const fetchLoginUserData = async (loginuserid) => {
+      const myHeaders = new Headers();
 
-            const assignTaskToAccount = (
-              taskData,
-              automationTemp,
-              automationAccountId,
-              jobId
-            ) => {
-              console.log(
-                "Assigning task",
-                taskData,
-                automationTemp,
-                automationAccountId,
-                jobId
-              );
-        
-              const myHeaders = new Headers();
-              myHeaders.append("Content-Type", "application/json");
-        
-              const raw = JSON.stringify({
-                accounts: automationAccountId,
-                job: jobId,
-                templatename: automationTemp,
-                taskname: taskData.templatename,
-                status: taskData.status,
-                taskassignees: taskData.taskassignees,
-                priority: taskData.priority,
-                description: taskData.description,
-                tasktags: taskData.tasktags,
-                issubtaskschecked: taskData.issubtaskschecked,
-                startdate: taskData.startdate,
-                enddate: taskData.enddate,
-                subtasks: taskData.subtasks,
-              });
-              console.log("tasks creation", raw);
-              const requestOptions = {
-                method: "POST",
-                headers: myHeaders,
-                body: raw,
-                redirect: "follow",
-              };
-        
-              fetch(`${ACCOUNT_TASKS_API}/accountstasks/newtask`, requestOptions)
-                .then((response) => response.json())
-                .then((result) => {
-                  console.log("task created", result);
-                  // onClose()
-                })
-                .catch((error) => console.error(error));
-            };
+      const requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow",
+      };
+      const url = `${LOGIN_API}/common/user/${loginuserid}`;
+      fetch(url, requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+          console.log("jbhguhid", result);
+
+          // console.log(userData)
+          setAdminUsername(result.username);
+        });
+    };
+    useEffect(() => {
+      console.log("teammenber", loginuserid);
+      fetchLoginUserData(loginuserid);
+    }, []);
+    // sendChatToAccount
+    const sendChatToAccount = (
+      chatData,
+      automationTemp,
+      automationAccountId
+    ) => {
+      console.log(
+        "sending chat",
+        chatData,
+        automationTemp,
+        automationAccountId
+      );
+
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+      const subtaskData = chatData.clienttasks.map(({ id, text, checked }) => ({
+        id,
+        text,
+        checked: checked !== undefined ? checked : false, // Ensure checked is either true or false
+      }));
+      const messageData = [
+        {
+          message: chatData.description,
+          fromwhome: "Admin",
+          senderid: loginuserid,
+          isRead: false,
+        },
+      ];
+      // Dynamically prepare the payload from invoiceData
+      const raw = JSON.stringify({
+        accountids: [automationAccountId],
+        chattemplateid: automationTemp, // Fill in if required
+        chatsubject: chatData.chatsubject, // Today's date
+        description: messageData || "",
+        sendreminderstoclient: chatData.sendreminderstoclient,
+        daysuntilnextreminder: chatData.daysuntilnextreminder,
+        numberofreminders: chatData.numberofreminders,
+        clienttasks: subtaskData,
+      });
+      console.log("chats", raw);
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+      fetch(`${CHATTOCLIENT_API}/chats/chatsaccountwise`, requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+          console.log("send chat to account successfully:", result);
+          // console.log("chat id", result.newChats._id);
+          // setChatId(result.newChats._id);
+          // toast.success("New Chat created successfully");
+          // sendSaveChatMail(result.newChats._id,automationAccountId,automationTemp,adminusername);
+        })
+        .catch((error) => console.error("Error assigning invoice:", error));
+    };
+    // mail for drawer btn
+    const sendSaveChatMail = (
+      chatId,
+      automationAccountId,
+      automationTemp,
+      adminusername
+    ) => {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      const raw = JSON.stringify({
+        accountid: automationAccountId,
+        chattemplateid: automationTemp,
+        username: adminusername,
+        chatId: chatId,
+        viewchatlink: "/login",
+      });
+
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+      console.log(raw);
+      fetch(`${CHATTOCLIENT_API}/chatsend/securechatsend`, requestOptions)
+        .then((response) => response.json())
+        .then((result) => console.log(result))
+        .catch((error) => console.error(error));
+    };
+    const ACCOUNT_TASKS_API = process.env.REACT_APP_TASKS_API;
+
+    const assignTaskToAccount = (
+      taskData,
+      automationTemp,
+      automationAccountId,
+      jobId
+    ) => {
+      console.log(
+        "Assigning task",
+        taskData,
+        automationTemp,
+        automationAccountId,
+        jobId
+      );
+
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      const raw = JSON.stringify({
+        accounts: automationAccountId,
+        job: jobId,
+        templatename: automationTemp,
+        taskname: taskData.templatename,
+        status: taskData.status,
+        taskassignees: taskData.taskassignees,
+        priority: taskData.priority,
+        description: taskData.description,
+        tasktags: taskData.tasktags,
+        issubtaskschecked: taskData.issubtaskschecked,
+        startdate: taskData.startdate,
+        enddate: taskData.enddate,
+        subtasks: taskData.subtasks,
+      });
+      console.log("tasks creation", raw);
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+
+      fetch(`${ACCOUNT_TASKS_API}/accountstasks/newtask`, requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+          console.log("task created", result);
+          // onClose()
+        })
+        .catch((error) => console.error(error));
+    };
     const assignProposalToAccount = (
       proposalesandelsData,
       automationTemp,
@@ -1225,7 +1297,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
           paymentterms: proposalesandelsData.paymentterms,
           paymentduedate: proposalesandelsData.paymentduedate,
           paymentamount: proposalesandelsData.paymentamount,
-             status:'Pending',
+          status: "Pending",
           active: true,
         }),
       };
@@ -1463,9 +1535,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
     //   // Proceed with job creation after all automations are done
     //   createJob();
     // };
-   
-   
-   
+
     const selectAutomationApi = async (
       automationType,
       automationTemp,
@@ -1473,7 +1543,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
       automation,
       jobId = null
     ) => {
-      console.log("bvhgv",automation)
+      console.log("bvhgv", automation);
       if (!automationType || !automationAccountId) {
         console.error("Missing required parameters");
         return;
@@ -1481,77 +1551,86 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
 
       switch (automationType) {
         case "Update account tags":
-          console.log(`Updating account tags for Account ID: ${automationAccountId}`);
-        
+          console.log(
+            `Updating account tags for Account ID: ${automationAccountId}`
+          );
+
           try {
             // Fetch the current account data
-            const response = await fetch(`${ACCOUNT_API}/accounts/accountdetails/${automationAccountId}`);
+            const response = await fetch(
+              `${ACCOUNT_API}/accounts/accountdetails/${automationAccountId}`
+            );
             if (!response.ok) throw new Error("Failed to fetch account data");
-        
+
             const accountsData = await response.json();
             let currentTags = accountsData.account.tags || []; // Existing tag IDs
-        
+
             // Extract tag IDs from automation object
-            const addTagIds = automation?.addTags?.map(tag => tag._id) || [];
-            const removeTagIds = automation?.removeTags?.map(tag => tag._id) || [];
-        
+            const addTagIds = automation?.addTags?.map((tag) => tag._id) || [];
+            const removeTagIds =
+              automation?.removeTags?.map((tag) => tag._id) || [];
+
             console.log("Current Tags:", currentTags);
             console.log("Tags to Add:", addTagIds);
             console.log("Tags to Remove:", removeTagIds);
-        
+
             // Remove tags that match `removeTags`
-            let updatedTags = currentTags.filter(tagId => !removeTagIds.includes(tagId));
-        
+            let updatedTags = currentTags.filter(
+              (tagId) => !removeTagIds.includes(tagId)
+            );
+
             // Add new tags without duplication
             updatedTags = [...new Set([...updatedTags, ...addTagIds])];
-        
+
             console.log("Final Updated Tags:", updatedTags);
-        
+
             // Send updated tags back to the server
-            const updateResponse = await fetch(`${ACCOUNT_API}/accounts/accountdetails/updateaccounttags/${automationAccountId}`, {
-              method: "PATCH",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ tags: updatedTags }),
-            });
-        
+            const updateResponse = await fetch(
+              `${ACCOUNT_API}/accounts/accountdetails/updateaccounttags/${automationAccountId}`,
+              {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ tags: updatedTags }),
+              }
+            );
+
             console.log("PATCH Response Status:", updateResponse.status);
             console.log("PATCH Response OK:", updateResponse.ok);
-        
+
             const updateResponseData = await updateResponse.json();
             console.log("PATCH Response Data:", updateResponseData);
-        
-            if (!updateResponse.ok) throw new Error("Failed to update account tags");
-        
+
+            if (!updateResponse.ok)
+              throw new Error("Failed to update account tags");
+
             console.log("Account tags updated successfully");
-        
-            
           } catch (error) {
             console.error("Error updating account tags:", error);
           }
           break;
-          case "Create Task":
-            try {
-              const taskData = await fetchtasktempbyid(automationTemp);
-  
-              // Add job and account references
-              // const taskPayload = {
-  
-              //   jobId  // Only add job if exists
-              // };
-  
-              console.log("Creating task with:", jobId);
-              return await assignTaskToAccount(
-                taskData,
-                automationTemp,
-                automationAccountId,
-                jobId
-              );
-            } catch (error) {
-              console.error("Task creation failed:", error);
-              throw new Error(`Failed to create task: ${error.message}`);
-            }
+        case "Create Task":
+          try {
+            const taskData = await fetchtasktempbyid(automationTemp);
+
+            // Add job and account references
+            // const taskPayload = {
+
+            //   jobId  // Only add job if exists
+            // };
+
+            console.log("Creating task with:", jobId);
+            return await assignTaskToAccount(
+              taskData,
+              automationTemp,
+              automationAccountId,
+              jobId
+            );
+          } catch (error) {
+            console.error("Task creation failed:", error);
+            throw new Error(`Failed to create task: ${error.message}`);
+          }
         // Other automation cases (unchanged)
         case "Send Invoice":
           console.log(
@@ -1569,18 +1648,18 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
             console.error("Error processing 'Send Invoice':", error);
           }
           break;
-          case "Send message":
-            console.log(
-              `Processing 'Send message' with template: ${automationTemp}, Account ID: ${automationAccountId}`
-            );
-            try {
-              const chatData = await fetchchattempbyid(automationTemp);
-              console.log("Fetched chat data", chatData);
-              sendChatToAccount(chatData, automationTemp, automationAccountId);
-            } catch (error) {
-              console.error("Error processing 'Send Invoice':", error);
-            }
-            break;
+        case "Send message":
+          console.log(
+            `Processing 'Send message' with template: ${automationTemp}, Account ID: ${automationAccountId}`
+          );
+          try {
+            const chatData = await fetchchattempbyid(automationTemp);
+            console.log("Fetched chat data", chatData);
+            sendChatToAccount(chatData, automationTemp, automationAccountId);
+          } catch (error) {
+            console.error("Error processing 'Send Invoice':", error);
+          }
+          break;
         case "Apply folder template":
           console.log(
             `Applying folder template with template: ${automationTemp}, Account ID: ${automationAccountId}`
@@ -1658,8 +1737,7 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
           break;
       }
     };
-   
-   
+
     const [selectedAutomations, setSelectedAutomations] = useState([]);
 
     useEffect(() => {
@@ -1794,8 +1872,8 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
     //     // Validate the required fields in automation
     //     if (
     //       !automation ||
-    //       !automation.type 
-         
+    //       !automation.type
+
     //     ) {
     //       console.error(
     //         "Missing required automation data for automation index:",
@@ -1941,89 +2019,100 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
     //       toast.error("Failed to create Job");
     //     });
     // };
-    
-     const handleMove = async () => {
-          try {
-            // 1. Create all jobs first
-            const { accountJobMap } = await createJob();
-            console.log("Job mapping created:", accountJobMap);
-        
-            // 2. Process automations for each account
-            const automationResults = await Promise.allSettled(
-              combinedaccountValues.map(async (accountId) => {
-                const jobId = accountJobMap[accountId];
-                if (!jobId) {
-                  throw new Error(`No job ID found for account ${accountId}`);
+
+    const handleMove = async () => {
+      try {
+        // 1. Create all jobs first
+        const { accountJobMap } = await createJob();
+        console.log("Job mapping created:", accountJobMap);
+
+        // 2. Process automations for each account
+        const automationResults = await Promise.allSettled(
+          combinedaccountValues.map(async (accountId) => {
+            const jobId = accountJobMap[accountId];
+            if (!jobId) {
+              throw new Error(`No job ID found for account ${accountId}`);
+            }
+
+            // Process each automation for this account
+            await Promise.all(
+              selectedAutomations.map(async (automationIndex) => {
+                const automation = automations[automationIndex];
+                if (!automation || !automation.type) {
+                  throw new Error(
+                    `Invalid automation at index ${automationIndex}`
+                  );
                 }
-        
-                // Process each automation for this account
-                await Promise.all(
-                  selectedAutomations.map(async (automationIndex) => {
-                    const automation = automations[automationIndex];
-                    if (!automation || !automation.type) {
-                      throw new Error(`Invalid automation at index ${automationIndex}`);
-                    }
-        
-                    const automationType = automation.type;
-                    const automationTemp = automation?.template?.value || null;
-        
-                    // Check for tag matching if automation has tags
-                    if (automation.tags && automation.tags.length > 0) {
-                      const account = accountdata.find((acc) => acc._id === accountId);
-                      if (!account) {
-                        console.warn(`Account with ID ${accountId} not found. Skipping.`);
-                        return;
-                      }
-        
-                      const accountTags = account.tags || [];
-                      const tagMatch = automation.tags.some((automationTag) =>
-                        accountTags.some(
-                          (accountTag) => accountTag.tagName === automationTag.tagName
-                        )
-                      );
-        
-                      if (!tagMatch) {
-                        console.warn(
-                          `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
-                        );
-                        return;
-                      }
-                    }
-        
-                    await selectAutomationApi(
-                      automationType,
-                      automationTemp,
-                      [accountId],
-                      automation,
-                      automationType === "Create Task" ? jobId : null
+
+                const automationType = automation.type;
+                const automationTemp = automation?.template?.value || null;
+
+                // Check for tag matching if automation has tags
+                if (automation.tags && automation.tags.length > 0) {
+                  const account = accountdata.find(
+                    (acc) => acc._id === accountId
+                  );
+                  if (!account) {
+                    console.warn(
+                      `Account with ID ${accountId} not found. Skipping.`
                     );
-                  })
+                    return;
+                  }
+
+                  const accountTags = account.tags || [];
+                  const tagMatch = automation.tags.some((automationTag) =>
+                    accountTags.some(
+                      (accountTag) =>
+                        accountTag.tagName === automationTag.tagName
+                    )
+                  );
+
+                  if (!tagMatch) {
+                    console.warn(
+                      `Tags do not match for automation index: ${automationIndex} and account ID: ${accountId}. Skipping this account.`
+                    );
+                    return;
+                  }
+                }
+
+                await selectAutomationApi(
+                  automationType,
+                  automationTemp,
+                  [accountId],
+                  automation,
+                  automationType === "Create Task" ? jobId : null
                 );
               })
             );
-        
-            // Check for failures
-            const failedResults = automationResults.filter((r) => r.status === "rejected");
-            if (failedResults.length > 0) {
-              console.error("Some automations failed:", failedResults);
-              toast.error(`${failedResults.length} automations failed (job was created)`);
-            } else {
-              toast.success("Job created successfully");
-              navigate("/jobs/activejob")
-            }
-            setDrawerOpen(false)
-            // handleDrawerClose();
-            // fetchJobData();
-          } catch (error) {
-            console.error("Operation failed:", error);
-            toast.error(`Operation failed: ${error.message}`);
-          }
-        };
-        
+          })
+        );
+
+        // Check for failures
+        const failedResults = automationResults.filter(
+          (r) => r.status === "rejected"
+        );
+        if (failedResults.length > 0) {
+          console.error("Some automations failed:", failedResults);
+          toast.error(
+            `${failedResults.length} automations failed (job was created)`
+          );
+        } else {
+          toast.success("Job created successfully");
+          navigate("/jobs/activejob");
+        }
+        setDrawerOpen(false);
+        // handleDrawerClose();
+        // fetchJobData();
+      } catch (error) {
+        console.error("Operation failed:", error);
+        toast.error(`Operation failed: ${error.message}`);
+      }
+    };
+
     // const createJob = async () => {
     //   const myHeaders = new Headers();
     //   myHeaders.append("Content-Type", "application/json");
-    
+
     //   // Create jobs for each account
     //   const jobCreationPromises = combinedaccountValues.map(async (accountId) => {
     //     const jobData = {
@@ -2047,23 +2136,23 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
     //       startdate: startDate,
     //       enddate: dueDate,
     //     };
-    
+
     //     const response = await fetch(`${JOBS_API}/workflow/jobs/newjob`, {
     //       method: "POST",
     //       headers: myHeaders,
     //       body: JSON.stringify(jobData),
     //     });
-    
+
     //     if (!response.ok) {
     //       const error = await response.json();
     //       throw new Error(`Failed to create job for account ${accountId}: ${error.message}`);
     //     }
-    
+
     //     const result = await response.json();
     //     if (!result.createdJobs || result.createdJobs.length === 0) {
     //       throw new Error(`No job created for account ${accountId}`);
     //     }
-    
+
     //     // Return both account and job information
     //     return {
     //       accountId,
@@ -2071,16 +2160,16 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
     //       jobData: result.createdJobs[0]
     //     };
     //   });
-    
+
     //   try {
     //     const jobResults = await Promise.all(jobCreationPromises);
-        
+
     //     // Create a mapping of accountId to jobId
     //     const accountJobMap = {};
     //     jobResults.forEach(result => {
     //       accountJobMap[result.accountId] = result.jobId;
     //     });
-    
+
     //     return {
     //       success: true,
     //       accountJobMap,
@@ -2091,93 +2180,202 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
     //     throw error;
     //   }
     // };
-    
-        const createJob = async () => {
-  const myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
 
-  // Find the "Update client-facing job status" automation if it exists
-  const clientStatusAutomation = automations.find(
-    (automation) => automation.type === "Update client-facing job status"
-  );
+    //         const createJob = async () => {
+    //   const myHeaders = new Headers();
+    //   myHeaders.append("Content-Type", "application/json");
 
-  // Create jobs for each account
-  const jobCreationPromises = combinedaccountValues.map(
-    async (accountId) => {
-      const jobData = {
-        accounts: [accountId], // Single account per job
-        pipeline: selectedPipeline.value,
-        templatename: selectedtemp.value,
-        jobname: jobName,
-        jobassignees: combinedAssigneesValues,
-        priority: priority,
-        description: description,
-        absolutedates: absoluteDate,
-        startsin: startsin,
-        startsinduration: startsInDuration,
-        duein: duein,
-        dueinduration: dueinduration,
-        // Use values from automation if it exists, otherwise use the default values
-        showinclientportal: clientStatusAutomation 
-          ? clientStatusAutomation.visibilityForClient 
-          : clientFacingStatus,
-        jobnameforclient: inputText,
-        clientfacingstatus: clientStatusAutomation 
-          ? clientStatusAutomation.selectedClientStatus?.value 
-          : selectedJob?.value,
-        clientfacingDescription: clientStatusAutomation 
-          ? clientStatusAutomation.statusDescription 
-          : clientDescription,
-        startdate: startDate,
-        enddate: dueDate,
-      };
+    //   // Find the "Update client-facing job status" automation if it exists
+    //   const clientStatusAutomation = automations.find(
+    //     (automation) => automation.type === "Update client-facing job status"
+    //   );
 
-      const response = await fetch(`${JOBS_API}/workflow/jobs/newjob`, {
-        method: "POST",
-        headers: myHeaders,
-        body: JSON.stringify(jobData),
-      });
-      console.log("jobs automation creation", jobData);
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(
-          `Failed to create job for account ${accountId}: ${error.message}`
-        );
+    //   // Create jobs for each account
+    //   const jobCreationPromises = combinedaccountValues.map(
+    //     async (accountId) => {
+    //       const jobData = {
+    //         accounts: [accountId], // Single account per job
+    //         pipeline: selectedPipeline.value,
+    //         templatename: selectedtemp.value,
+    //         jobname: jobName,
+    //         jobassignees: combinedAssigneesValues,
+    //         priority: priority,
+    //         description: description,
+    //         absolutedates: absoluteDate,
+    //         startsin: startsin,
+    //         startsinduration: startsInDuration,
+    //         duein: duein,
+    //         dueinduration: dueinduration,
+    //         // Use values from automation if it exists, otherwise use the default values
+    //         showinclientportal: clientStatusAutomation
+    //           ? clientStatusAutomation.visibilityForClient
+    //           : clientFacingStatus,
+    //         jobnameforclient: inputText,
+    //         clientfacingstatus: clientStatusAutomation
+    //           ? clientStatusAutomation.selectedClientStatus?.value
+    //           : selectedJob?.value,
+    //         clientfacingDescription: clientStatusAutomation
+    //           ? clientStatusAutomation.statusDescription
+    //           : clientDescription,
+    //         startdate: startDate,
+    //         enddate: dueDate,
+    //       };
+
+    //       const response = await fetch(`${JOBS_API}/workflow/jobs/newjob`, {
+    //         method: "POST",
+    //         headers: myHeaders,
+    //         body: JSON.stringify(jobData),
+    //       });
+    //       console.log("jobs automation creation", jobData);
+    //       if (!response.ok) {
+    //         const error = await response.json();
+    //         throw new Error(
+    //           `Failed to create job for account ${accountId}: ${error.message}`
+    //         );
+    //       }
+
+    //       const result = await response.json();
+    //       if (!result.createdJobs || result.createdJobs.length === 0) {
+    //         throw new Error(`No job created for account ${accountId}`);
+    //       }
+
+    //       // Return both account and job information
+    //       return {
+    //         accountId,
+    //         jobId: result.createdJobs[0]._id, // Assuming one job per account
+    //         jobData: result.createdJobs[0],
+    //       };
+    //     }
+    //   );
+
+    //   try {
+    //     const jobResults = await Promise.all(jobCreationPromises);
+
+    //     // Create a mapping of accountId to jobId
+    //     const accountJobMap = {};
+    //     jobResults.forEach((result) => {
+    //       accountJobMap[result.accountId] = result.jobId;
+    //     });
+
+    //     return {
+    //       success: true,
+    //       accountJobMap,
+    //       jobs: jobResults.map((r) => r.jobData),
+    //     };
+    //   } catch (error) {
+    //     console.error("Job creation failed:", error);
+    //     throw error;
+    //   }
+    // };
+    const createJob = async () => {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      // Find relevant automations
+      const clientStatusAutomation = automations.find(
+        (automation) => automation.type === "Update client-facing job status"
+      );
+
+      const assigneesAutomation = automations.find(
+        (automation) => automation.type === "Update job assignees"
+      );
+
+      // Create jobs for each account
+      const jobCreationPromises = combinedaccountValues.map(
+        async (accountId) => {
+          // Start with the base assignees from combinedValues
+          let finalAssignees = [...combinedAssigneesValues];
+
+          // Apply assignees automation if it exists
+          if (assigneesAutomation) {
+            // Add new assignees (avoid duplicates)
+            assigneesAutomation.addAssignees.forEach((assignee) => {
+              if (!finalAssignees.includes(assignee._id)) {
+                finalAssignees.push(assignee._id);
+              }
+            });
+
+            // Remove specified assignees
+            finalAssignees = finalAssignees.filter(
+              (assigneeId) =>
+                !assigneesAutomation.removeAssignees.some(
+                  (removeAssignee) => removeAssignee._id === assigneeId
+                )
+            );
+          }
+
+          const jobData = {
+            accounts: [accountId],
+            pipeline: selectedPipeline.value,
+            templatename: selectedtemp.value,
+            jobname: jobName,
+            jobassignees: finalAssignees, // Use the modified assignees list
+            priority: priority,
+            description: description,
+            absolutedates: absoluteDate,
+            startsin: startsin,
+            startsinduration: startsInDuration,
+            duein: duein,
+            dueinduration: dueinduration,
+            showinclientportal: clientStatusAutomation
+              ? clientStatusAutomation.visibilityForClient
+              : clientFacingStatus,
+            jobnameforclient: inputText,
+            clientfacingstatus: clientStatusAutomation
+              ? clientStatusAutomation.selectedClientStatus?.value
+              : selectedJob?.value,
+            clientfacingDescription: clientStatusAutomation
+              ? clientStatusAutomation.statusDescription
+              : clientDescription,
+            startdate: startDate,
+            enddate: dueDate,
+          };
+
+          const response = await fetch(`${JOBS_API}/workflow/jobs/newjob`, {
+            method: "POST",
+            headers: myHeaders,
+            body: JSON.stringify(jobData),
+          });
+
+          console.log("jobs automation creation", jobData);
+          if (!response.ok) {
+            const error = await response.json();
+            throw new Error(
+              `Failed to create job for account ${accountId}: ${error.message}`
+            );
+          }
+
+          const result = await response.json();
+          if (!result.createdJobs || result.createdJobs.length === 0) {
+            throw new Error(`No job created for account ${accountId}`);
+          }
+
+          return {
+            accountId,
+            jobId: result.createdJobs[0]._id,
+            jobData: result.createdJobs[0],
+          };
+        }
+      );
+
+      try {
+        const jobResults = await Promise.all(jobCreationPromises);
+
+        const accountJobMap = {};
+        jobResults.forEach((result) => {
+          accountJobMap[result.accountId] = result.jobId;
+        });
+
+        return {
+          success: true,
+          accountJobMap,
+          jobs: jobResults.map((r) => r.jobData),
+        };
+      } catch (error) {
+        console.error("Job creation failed:", error);
+        throw error;
       }
-
-      const result = await response.json();
-      if (!result.createdJobs || result.createdJobs.length === 0) {
-        throw new Error(`No job created for account ${accountId}`);
-      }
-
-      // Return both account and job information
-      return {
-        accountId,
-        jobId: result.createdJobs[0]._id, // Assuming one job per account
-        jobData: result.createdJobs[0],
-      };
-    }
-  );
-
-  try {
-    const jobResults = await Promise.all(jobCreationPromises);
-
-    // Create a mapping of accountId to jobId
-    const accountJobMap = {};
-    jobResults.forEach((result) => {
-      accountJobMap[result.accountId] = result.jobId;
-    });
-
-    return {
-      success: true,
-      accountJobMap,
-      jobs: jobResults.map((r) => r.jobData),
     };
-  } catch (error) {
-    console.error("Job creation failed:", error);
-    throw error;
-  }
-};
     return (
       <Box p={2}>
         <Typography variant="h6" sx={{ display: "flex", alignItems: "center" }}>
@@ -2240,209 +2438,350 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                     </Typography>
                   )}
                 </Box>
- {automation.type === "Update account tags" ? (
-                                    <Box>
-                                      <Box sx={{ width: 500 }}>
-                                        <Typography variant="body2" sx={{ marginBottom: 1 }}>
-                                          Add tags to account
-                                        </Typography>
-                                         <Select
-                                                                                  multiple
-                                                                                  displayEmpty
-                                                                                  multiline
-                                                                                  size="small"
-                                                                                  value={automation.addTags.map((tag) => tag._id)}
-                                                                                  onChange={(event) => handleTagChange(index, "addTags", event)}
-                                                                                 renderValue={(selected) =>
-                                                                                    selected.length === 0 ? (
-                                                                                      <Typography color="gray">Select tags to add</Typography>
-                                                                                    ) : (
-                                                                                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                                                                                        {automation.addTags.map((tag) => (
-                                                                                          <Chip
-                                                                                            key={tag._id}
-                                                                                            label={tag.tagName}
-                                                                                            sx={{
-                                                                                              backgroundColor: tag.tagColour,
-                                                                                              color: "#fff",
-                                                                                              fontWeight: "500",
-                                                                                              borderRadius: "20px",
-                                                                                            }}
-                                                                                          />
-                                                                                        ))}
-                                                                                      </Box>
-                                                                                    )
-                                                                                  }
-                                                                                  fullWidth
-                                                                                  MenuProps={MenuProps}
-                                                                                  sx={{ width: "100%", marginBottom: 2 }}
-                                                                                >
-                                                                                 {tagsoptions
-                                                                                     .filter((option) => !automation.removeTags.some((tag) => tag._id === option.value)) // Hide selected removeTags
-                                                                                     .map((option) => {
-                                                                                       // Create a hidden canvas to measure text width
-                                                                                       const canvas = document.createElement("canvas");
-                                                                                       const context = canvas.getContext("2d");
-                                                                                       context.font = "14px Arial"; // Match the MenuItem font style
-                                                                                 
-                                                                                       const textWidth = context.measureText(option.label).width; // Get exact width
-                                                                                       const dynamicWidth = Math.min(textWidth + 20, 200); // Add padding & set max width
-                                                                                 
-                                                                                       return (
-                                                                                         <MenuItem
-                                                                                           key={option.value}
-                                                                                           value={option.value}
-                                                                                           sx={{
-                                                                                             backgroundColor: option.colour,
-                                                                                             color: "#fff",
-                                                                                             fontSize: "10px",
-                                                                                             borderRadius: "10px",
-                                                                                             margin: "5px",
-                                                                                             textAlign: "center",
-                                                                                             display: "flex",
-                                                                                             justifyContent: "center",
-                                                                                             padding: "4px 9px",
-                                                                                             whiteSpace: "nowrap", // Prevent text wrapping
-                                                                                             minWidth: `${dynamicWidth}px`,
-                                                                                             maxWidth: `${dynamicWidth}px`, // Set dynamic max width
-                                                                                             "&:hover": {
-                                                                                               backgroundColor: option.colour,
-                                                                                               color: "#fff",
-                                                                                             },
-                                                                                           }}
-                                                                                         >
-                                                                                           {option.label}
-                                                                                         </MenuItem>
-                                                                                       );
-                                                                                     })}
-                                                                                </Select>
-                
-                                        <Typography variant="body2" sx={{ marginBottom: 1 }}>
-                                          Remove tags from account
-                                        </Typography>
-                                         <Select
-                                                                                  multiple
-                                                                                  size="small"
-                                                                                  multiline
-                                                                                  displayEmpty
-                                                                                  value={automation.removeTags.map((tag) => tag._id)}
-                                                                                  onChange={(event) => handleTagChange(index, "removeTags", event)}
-                                                                                  renderValue={(selected) =>
-                                                                                     selected.length === 0 ? (
-                                                                                       <Typography color="gray">Select tags to remove</Typography>
-                                                                                     ) : (
-                                                                                       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                                                                                         {automation.removeTags.map((tag) => (
-                                                                                           <Chip
-                                                                                             key={tag._id}
-                                                                                             label={tag.tagName}
-                                                                                             sx={{
-                                                                                               backgroundColor: tag.tagColour,
-                                                                                               color: "#fff",
-                                                                                               fontWeight: "500",
-                                                                                               borderRadius: "20px",
-                                                                                             }}
-                                                                                           />
-                                                                                         ))}
-                                                                                       </Box>
-                                                                                     )
-                                                                                   }
-                                                                                 MenuProps={MenuProps}
-                                                                                 sx={{ width: "100%", marginBottom: 2 }}
-                                                                               >
-                                                                                {tagsoptions
-                                                                                   .filter((option) => !automation.addTags.some((tag) => tag._id === option.value)) // Hide selected removeTags
-                                                                                   .map((option) => {
-                                                                                     // Create a hidden canvas to measure text width
-                                                                                     const canvas = document.createElement("canvas");
-                                                                                     const context = canvas.getContext("2d");
-                                                                                     context.font = "14px Arial"; // Match the MenuItem font style
-                                                                               
-                                                                                     const textWidth = context.measureText(option.label).width; // Get exact width
-                                                                                     const dynamicWidth = Math.min(textWidth + 20, 200); // Add padding & set max width
-                                                                               
-                                                                                     return (
-                                                                                       <MenuItem
-                                                                                         key={option.value}
-                                                                                         value={option.value}
-                                                                                         sx={{
-                                                                                           backgroundColor: option.colour,
-                                                                                           color: "#fff",
-                                                                                           fontSize: "10px",
-                                                                                           borderRadius: "10px",
-                                                                                           margin: "5px",
-                                                                                           textAlign: "center",
-                                                                                           display: "flex",
-                                                                                           justifyContent: "center",
-                                                                                           padding: "4px 9px",
-                                                                                           whiteSpace: "nowrap", // Prevent text wrapping
-                                                                                           minWidth: `${dynamicWidth}px`,
-                                                                                           maxWidth: `${dynamicWidth}px`, // Set dynamic max width
-                                                                                           "&:hover": {
-                                                                                             backgroundColor: option.colour,
-                                                                                             color: "#fff",
-                                                                                           },
-                                                                                         }}
-                                                                                       >
-                                                                                         {option.label}
-                                                                                       </MenuItem>
-                                                                                     );
-                                                                                   })}
-                                                                               </Select>
-                
-                                        {/* Warning Message */}
-                                        <Alert severity="warning" sx={{ marginBottom: 2 }}>
-                                          This automation can affect conditions for automations
-                                          below
-                                        </Alert>
-                                      </Box>
-                                    </Box>
-                                  ) : automation.type === "Update client-facing job status" ? (
-                                                                    <Box>
-                                                                      <Typography variant="body1">
-                                                                        <strong>Type:</strong> {automation.type}
-                                                                        {automation.visibilityForClient &&
-                                                                          automation.selectedClientStatus && (
-                                                                            <span>
-                                                                              {" "}
-                                                                              : {automation.selectedClientStatus.label}
-                                                                            </span>
-                                                                          )}
-                                                                        {!automation.visibilityForClient && (
-                                                                          <span> : Hide status</span>
-                                                                        )}
-                                                                      </Typography>
-                                                                    </Box>
-                                                                  ) : (
-<Box>
-                <Typography variant="body1">
-                  <strong>Type:</strong> {automation.type}
-                </Typography>
+                {automation.type === "Update account tags" ? (
+                  <Box>
+                    <Box sx={{ width: 500 }}>
+                      <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                        Add tags to account
+                      </Typography>
+                      <Select
+                        multiple
+                        displayEmpty
+                        multiline
+                        size="small"
+                        value={automation.addTags.map((tag) => tag._id)}
+                        onChange={(event) =>
+                          handleTagChange(index, "addTags", event)
+                        }
+                        renderValue={(selected) =>
+                          selected.length === 0 ? (
+                            <Typography color="gray">
+                              Select tags to add
+                            </Typography>
+                          ) : (
+                            <Box
+                              sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}
+                            >
+                              {automation.addTags.map((tag) => (
+                                <Chip
+                                  key={tag._id}
+                                  label={tag.tagName}
+                                  sx={{
+                                    backgroundColor: tag.tagColour,
+                                    color: "#fff",
+                                    fontWeight: "500",
+                                    borderRadius: "20px",
+                                  }}
+                                />
+                              ))}
+                            </Box>
+                          )
+                        }
+                        fullWidth
+                        MenuProps={MenuProps}
+                        sx={{ width: "100%", marginBottom: 2 }}
+                      >
+                        {tagsoptions
+                          .filter(
+                            (option) =>
+                              !automation.removeTags.some(
+                                (tag) => tag._id === option.value
+                              )
+                          ) // Hide selected removeTags
+                          .map((option) => {
+                            // Create a hidden canvas to measure text width
+                            const canvas = document.createElement("canvas");
+                            const context = canvas.getContext("2d");
+                            context.font = "14px Arial"; // Match the MenuItem font style
 
-                <Typography variant="body1">
-                  <strong>Template:</strong> {automation.template.label}
-                </Typography>
-                <Typography variant="body1">
-                  <strong>Tags:</strong>
-                </Typography>
-                {automation.tags.map((tag) => (
-                  <Box
-                    key={tag._id}
-                    sx={{
-                      display: "inline-block",
-                      backgroundColor: tag.tagColour,
-                      color: "white",
-                      borderRadius: "15px",
-                      padding: "3px 8px",
-                      marginRight: "4px",
-                    }}
-                  >
-                    {tag.tagName}
+                            const textWidth = context.measureText(
+                              option.label
+                            ).width; // Get exact width
+                            const dynamicWidth = Math.min(textWidth + 20, 200); // Add padding & set max width
+
+                            return (
+                              <MenuItem
+                                key={option.value}
+                                value={option.value}
+                                sx={{
+                                  backgroundColor: option.colour,
+                                  color: "#fff",
+                                  fontSize: "10px",
+                                  borderRadius: "10px",
+                                  margin: "5px",
+                                  textAlign: "center",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  padding: "4px 9px",
+                                  whiteSpace: "nowrap", // Prevent text wrapping
+                                  minWidth: `${dynamicWidth}px`,
+                                  maxWidth: `${dynamicWidth}px`, // Set dynamic max width
+                                  "&:hover": {
+                                    backgroundColor: option.colour,
+                                    color: "#fff",
+                                  },
+                                }}
+                              >
+                                {option.label}
+                              </MenuItem>
+                            );
+                          })}
+                      </Select>
+
+                      <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                        Remove tags from account
+                      </Typography>
+                      <Select
+                        multiple
+                        size="small"
+                        multiline
+                        displayEmpty
+                        value={automation.removeTags.map((tag) => tag._id)}
+                        onChange={(event) =>
+                          handleTagChange(index, "removeTags", event)
+                        }
+                        renderValue={(selected) =>
+                          selected.length === 0 ? (
+                            <Typography color="gray">
+                              Select tags to remove
+                            </Typography>
+                          ) : (
+                            <Box
+                              sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}
+                            >
+                              {automation.removeTags.map((tag) => (
+                                <Chip
+                                  key={tag._id}
+                                  label={tag.tagName}
+                                  sx={{
+                                    backgroundColor: tag.tagColour,
+                                    color: "#fff",
+                                    fontWeight: "500",
+                                    borderRadius: "20px",
+                                  }}
+                                />
+                              ))}
+                            </Box>
+                          )
+                        }
+                        MenuProps={MenuProps}
+                        sx={{ width: "100%", marginBottom: 2 }}
+                      >
+                        {tagsoptions
+                          .filter(
+                            (option) =>
+                              !automation.addTags.some(
+                                (tag) => tag._id === option.value
+                              )
+                          ) // Hide selected removeTags
+                          .map((option) => {
+                            // Create a hidden canvas to measure text width
+                            const canvas = document.createElement("canvas");
+                            const context = canvas.getContext("2d");
+                            context.font = "14px Arial"; // Match the MenuItem font style
+
+                            const textWidth = context.measureText(
+                              option.label
+                            ).width; // Get exact width
+                            const dynamicWidth = Math.min(textWidth + 20, 200); // Add padding & set max width
+
+                            return (
+                              <MenuItem
+                                key={option.value}
+                                value={option.value}
+                                sx={{
+                                  backgroundColor: option.colour,
+                                  color: "#fff",
+                                  fontSize: "10px",
+                                  borderRadius: "10px",
+                                  margin: "5px",
+                                  textAlign: "center",
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  padding: "4px 9px",
+                                  whiteSpace: "nowrap", // Prevent text wrapping
+                                  minWidth: `${dynamicWidth}px`,
+                                  maxWidth: `${dynamicWidth}px`, // Set dynamic max width
+                                  "&:hover": {
+                                    backgroundColor: option.colour,
+                                    color: "#fff",
+                                  },
+                                }}
+                              >
+                                {option.label}
+                              </MenuItem>
+                            );
+                          })}
+                      </Select>
+
+                      {/* Warning Message */}
+                      <Alert severity="warning" sx={{ marginBottom: 2 }}>
+                        This automation can affect conditions for automations
+                        below
+                      </Alert>
+                    </Box>
                   </Box>
-                ))}
+                ) : automation.type === "Update job assignees" ? (
+                          <Box>
+                            <Box sx={{ width: 500 }}>
+                              <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                                Add assignees to job
+                              </Typography>
+                
+                              <Select
+                                multiple
+                                displayEmpty
+                                multiline
+                                size="small"
+                                value={automation.addAssignees.map((assignee) => assignee._id)}
+                                onChange={(event) =>
+                                  handleAssigneeChange(index, "addAssignees", event)
+                                }
+                                renderValue={(selected) =>
+                                  selected.length === 0 ? (
+                                    <Typography color="gray">
+                                      Select assignees to add
+                                    </Typography>
+                                  ) : (
+                                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                                      {automation.addAssignees.map((assignee) => (
+                                        <Chip
+                                          key={assignee._id}
+                                          label={assignee.username}
+                                          sx={{
+                                            backgroundColor: '#e0e0e0',
+                                            color: "#000",
+                                            fontWeight: "500",
+                                            borderRadius: "20px",
+                                          }}
+                                        />
+                                      ))}
+                                    </Box>
+                                  )
+                                }
+                                fullWidth
+                                MenuProps={MenuProps}
+                                sx={{ width: "100%", marginBottom: 2 }}
+                              >
+                                {assigneeOptions.map((option) => (
+                                  <MenuItem
+                                    key={option.value}
+                                    value={option.value}
+                                    sx={{
+                                      '&:hover': {
+                                        backgroundColor: '#f5f5f5',
+                                      },
+                                    }}
+                                  >
+                                    {option.label}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                
+                              <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                                Remove assignees from job
+                              </Typography>
+                
+                              <Select
+                                multiple
+                                size="small"
+                                multiline
+                                displayEmpty
+                                value={automation.removeAssignees.map((assignee) => assignee._id)}
+                                onChange={(event) =>
+                                  handleAssigneeChange(index, "removeAssignees", event)
+                                }
+                                renderValue={(selected) =>
+                                  selected.length === 0 ? (
+                                    <Typography color="gray">
+                                      Select assignees to remove
+                                    </Typography>
+                                  ) : (
+                                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                                      {automation.removeAssignees.map((assignee) => (
+                                        <Chip
+                                          key={assignee._id}
+                                         label={assignee.username}
+                                          sx={{
+                                            backgroundColor: '#e0e0e0',
+                                            color: "#000",
+                                            fontWeight: "500",
+                                            borderRadius: "20px",
+                                          }}
+                                        />
+                                      ))}
+                                    </Box>
+                                  )
+                                }
+                                MenuProps={MenuProps}
+                                sx={{ width: "100%", marginBottom: 2 }}
+                              >
+                                {assigneeOptions.map((option) => (
+                                  <MenuItem
+                                    key={option.value}
+                                    value={option.value}
+                                    sx={{
+                                      '&:hover': {
+                                        backgroundColor: '#f5f5f5',
+                                      },
+                                    }}
+                                  >
+                                    {option.label}
+                                  </MenuItem>
+                                ))}
+                              </Select>
+                
+                              <Alert severity="warning" sx={{ marginBottom: 2 }}>
+                                This automation can affect job assignment notifications
+                              </Alert>
+                            </Box>
+                          </Box>
+                          
+                        ) : automation.type === "Update client-facing job status" ? (
+                  <Box>
+                    <Typography variant="body1">
+                      <strong>Type:</strong> {automation.type}
+                      {automation.visibilityForClient &&
+                        automation.selectedClientStatus && (
+                          <span>
+                            {" "}
+                            : {automation.selectedClientStatus.label}
+                          </span>
+                        )}
+                      {!automation.visibilityForClient && (
+                        <span> : Hide status</span>
+                      )}
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Box>
+                    <Typography variant="body1">
+                      <strong>Type:</strong> {automation.type}
+                    </Typography>
 
-</Box>
-    )}
+                    <Typography variant="body1">
+                      <strong>Template:</strong> {automation.template.label}
+                    </Typography>
+                    <Typography variant="body1">
+                      <strong>Tags:</strong>
+                    </Typography>
+                    {automation.tags.map((tag) => (
+                      <Box
+                        key={tag._id}
+                        sx={{
+                          display: "inline-block",
+                          backgroundColor: tag.tagColour,
+                          color: "white",
+                          borderRadius: "15px",
+                          padding: "3px 8px",
+                          marginRight: "4px",
+                        }}
+                      >
+                        {tag.tagName}
+                      </Box>
+                    ))}
+                  </Box>
+                )}
               </Box>
             );
           })}
@@ -2488,19 +2827,21 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Box>
-        <form >
-        <Box mt={2} mb={1}>
-              <hr />
-            </Box>
-          <Box className="bulk-job-form" sx={{height:'88vh', overflowY:'auto'}}>
-           
+        <form>
+          <Box mt={2} mb={1}>
+            <hr />
+          </Box>
+          <Box
+            className="bulk-job-form"
+            sx={{ height: "88vh", overflowY: "auto" }}
+          >
             <Grid spacing={2}>
               <Grid padding={1}>
                 <Box>
                   <InputLabel sx={{ color: "black" }}>
                     Select Accounts
                   </InputLabel>
-                  <AccountMultiSelectDropdown 
+                  <AccountMultiSelectDropdown
                     value={selectedaccount}
                     onChange={handleAccountChange}
                     placeholder="Accounts"
@@ -2714,11 +3055,11 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                       option.value === value.value
                     }
                   /> */}
-                   <MultiSelectDropdown 
-                                     value={selectedUser}
-                                     onChange={handleUserChange}
-                                     placeholder="Job Assignees"
-                                   />
+                  <MultiSelectDropdown
+                    value={selectedUser}
+                    onChange={handleUserChange}
+                    placeholder="Job Assignees"
+                  />
                 </Box>
                 <Box mt={2}>
                   <Priority
@@ -2796,7 +3137,6 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                         size="small"
                         margin="normal"
                         fullWidth
-                   
                         placeholder="0"
                         sx={{ ml: 1, backgroundColor: "#fff" }}
                         value={startsin}
@@ -2843,7 +3183,6 @@ const CreateBulkJob = ({ selectedAccounts, onClose, charLimit = 4000 }) => {
                         size="small"
                         margin="normal"
                         fullWidth
-                     
                         sx={{ ml: 1.5, backgroundColor: "#fff" }}
                         value={duein}
                         placeholder="0"

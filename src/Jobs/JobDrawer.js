@@ -725,6 +725,71 @@ const JobDrawer = ({
       return updatedAutomations;
     });
   };
+    const [assignee, setAssignee] = useState([]);
+  const [selectedAssignees, setSelectedAssignees] = useState([]);
+  const [assigneesToRemove, setAssigneesToRemove] = useState([]);
+  useEffect(() => {
+    const fetchAssignees = async () => {
+      try {
+        const response = await axios.get(`${LOGIN_API}/common/users/roles?roles=TeamMember,Admin`);
+        console.log("assigness data",response.data)
+        setAssignee(response.data);
+      } catch (error) {
+        console.error("Error fetching assignees:", error);
+      }
+    };
+    
+    fetchAssignees();
+  }, []);
+  const assigneeOptions = assignee.map((ass)=>({
+     value: ass._id,
+      label: ass.username,
+  }))
+   const handleAssigneeChange = (index, type, event) => {
+    const { value } = event.target; // Array of selected tag IDs
+
+    setAutomations((prev) => {
+      const updatedAutomations = [...prev];
+
+      // Get the correct tag options list
+      const assigneeoptions = assigneeOptions;
+
+      // Map selected tag IDs to tag objects with _id, tagName, and tagColour
+      const selectedTags = value
+        .map((assId) => {
+          const ass = assigneeoptions.find((t) => t.value === assId);
+          return ass
+            ? { _id: ass.value, username: ass.label,  }
+            : null;
+        })
+        .filter(Boolean); // Remove null values
+
+      // Prevent duplicate selections
+      const uniqueTags = selectedTags.filter(
+        (ass, idx, self) => self.findIndex((t) => t._id === ass._id) === idx
+      );
+
+      // Ensure the tag is removed from the opposite category
+      if (type === "addAssignees") {
+        updatedAutomations[index].removeAssignees = updatedAutomations[
+          index
+        ].removeAssignees.filter(
+          (ass) => !uniqueTags.some((t) => t._id === ass._id)
+        );
+      } else if (type === "removeAssignees") {
+        updatedAutomations[index].addAssignees = updatedAutomations[
+          index
+        ].addAssignees.filter((tag) => !uniqueTags.some((t) => t._id === tag._id));
+      }
+
+      updatedAutomations[index] = {
+        ...updatedAutomations[index],
+        [type]: uniqueTags,
+      };
+
+      return updatedAutomations;
+    });
+  };
   // Drawer Component
   const DrawerContent = () => {
     const ITEM_HEIGHT = 48;
@@ -1588,24 +1653,136 @@ const JobDrawer = ({
     //     throw error;
     //   }
     // };
-    const createJob = async () => {
+
+//     const createJob = async () => {
+//   const myHeaders = new Headers();
+//   myHeaders.append("Content-Type", "application/json");
+
+//   // Find the "Update client-facing job status" automation if it exists
+//   const clientStatusAutomation = automations.find(
+//     (automation) => automation.type === "Update client-facing job status"
+//   );
+
+//   // Create jobs for each account
+//   const jobCreationPromises = combinedaccountValues.map(
+//     async (accountId) => {
+//       const jobData = {
+//         accounts: [accountId], // Single account per job
+//         pipeline: selectedPipeline.value,
+//         templatename: selectedtemp.value,
+//         jobname: jobName,
+//         jobassignees: combinedValues,
+//         priority: priority,
+//         description: description,
+//         absolutedates: absoluteDate,
+//         startsin: startsin,
+//         startsinduration: startsInDuration,
+//         duein: duein,
+//         dueinduration: dueinduration,
+//         // Use values from automation if it exists, otherwise use the default values
+//         showinclientportal: clientStatusAutomation 
+//           ? clientStatusAutomation.visibilityForClient 
+//           : clientFacingStatus,
+//         jobnameforclient: inputText,
+//         clientfacingstatus: clientStatusAutomation 
+//           ? clientStatusAutomation.selectedClientStatus?.value 
+//           : selectedJob?.value,
+//         clientfacingDescription: clientStatusAutomation 
+//           ? clientStatusAutomation.statusDescription 
+//           : clientDescription,
+//         startdate: startDate,
+//         enddate: dueDate,
+//       };
+
+//       const response = await fetch(`${JOBS_API}/workflow/jobs/newjob`, {
+//         method: "POST",
+//         headers: myHeaders,
+//         body: JSON.stringify(jobData),
+//       });
+//       console.log("jobs automation creation", jobData);
+//       if (!response.ok) {
+//         const error = await response.json();
+//         throw new Error(
+//           `Failed to create job for account ${accountId}: ${error.message}`
+//         );
+//       }
+
+//       const result = await response.json();
+//       if (!result.createdJobs || result.createdJobs.length === 0) {
+//         throw new Error(`No job created for account ${accountId}`);
+//       }
+
+//       // Return both account and job information
+//       return {
+//         accountId,
+//         jobId: result.createdJobs[0]._id, // Assuming one job per account
+//         jobData: result.createdJobs[0],
+//       };
+//     }
+//   );
+
+//   try {
+//     const jobResults = await Promise.all(jobCreationPromises);
+
+//     // Create a mapping of accountId to jobId
+//     const accountJobMap = {};
+//     jobResults.forEach((result) => {
+//       accountJobMap[result.accountId] = result.jobId;
+//     });
+
+//     return {
+//       success: true,
+//       accountJobMap,
+//       jobs: jobResults.map((r) => r.jobData),
+//     };
+//   } catch (error) {
+//     console.error("Job creation failed:", error);
+//     throw error;
+//   }
+// };
+
+const createJob = async () => {
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
-  // Find the "Update client-facing job status" automation if it exists
+  // Find relevant automations
   const clientStatusAutomation = automations.find(
     (automation) => automation.type === "Update client-facing job status"
+  );
+  
+  const assigneesAutomation = automations.find(
+    (automation) => automation.type === "Update job assignees"
   );
 
   // Create jobs for each account
   const jobCreationPromises = combinedaccountValues.map(
     async (accountId) => {
+      // Start with the base assignees from combinedValues
+      let finalAssignees = [...combinedValues];
+      
+      // Apply assignees automation if it exists
+      if (assigneesAutomation) {
+        // Add new assignees (avoid duplicates)
+        assigneesAutomation.addAssignees.forEach(assignee => {
+          if (!finalAssignees.includes(assignee._id)) {
+            finalAssignees.push(assignee._id);
+          }
+        });
+        
+        // Remove specified assignees
+        finalAssignees = finalAssignees.filter(assigneeId => 
+          !assigneesAutomation.removeAssignees.some(
+            removeAssignee => removeAssignee._id === assigneeId
+          )
+        );
+      }
+
       const jobData = {
-        accounts: [accountId], // Single account per job
+        accounts: [accountId],
         pipeline: selectedPipeline.value,
         templatename: selectedtemp.value,
         jobname: jobName,
-        jobassignees: combinedValues,
+        jobassignees: finalAssignees, // Use the modified assignees list
         priority: priority,
         description: description,
         absolutedates: absoluteDate,
@@ -1613,7 +1790,6 @@ const JobDrawer = ({
         startsinduration: startsInDuration,
         duein: duein,
         dueinduration: dueinduration,
-        // Use values from automation if it exists, otherwise use the default values
         showinclientportal: clientStatusAutomation 
           ? clientStatusAutomation.visibilityForClient 
           : clientFacingStatus,
@@ -1633,6 +1809,7 @@ const JobDrawer = ({
         headers: myHeaders,
         body: JSON.stringify(jobData),
       });
+      
       console.log("jobs automation creation", jobData);
       if (!response.ok) {
         const error = await response.json();
@@ -1646,10 +1823,9 @@ const JobDrawer = ({
         throw new Error(`No job created for account ${accountId}`);
       }
 
-      // Return both account and job information
       return {
         accountId,
-        jobId: result.createdJobs[0]._id, // Assuming one job per account
+        jobId: result.createdJobs[0]._id,
         jobData: result.createdJobs[0],
       };
     }
@@ -1658,7 +1834,6 @@ const JobDrawer = ({
   try {
     const jobResults = await Promise.all(jobCreationPromises);
 
-    // Create a mapping of accountId to jobId
     const accountJobMap = {};
     jobResults.forEach((result) => {
       accountJobMap[result.accountId] = result.jobId;
@@ -1905,7 +2080,123 @@ const JobDrawer = ({
                       </Alert>
                     </Box>
                   </Box>
-                ) : automation.type === "Update client-facing job status" ? (
+                ) : automation.type === "Update job assignees" ? (
+          <Box>
+            <Box sx={{ width: 500 }}>
+              <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                Add assignees to job
+              </Typography>
+
+              <Select
+                multiple
+                displayEmpty
+                multiline
+                size="small"
+                value={automation.addAssignees.map((assignee) => assignee._id)}
+                onChange={(event) =>
+                  handleAssigneeChange(index, "addAssignees", event)
+                }
+                renderValue={(selected) =>
+                  selected.length === 0 ? (
+                    <Typography color="gray">
+                      Select assignees to add
+                    </Typography>
+                  ) : (
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                      {automation.addAssignees.map((assignee) => (
+                        <Chip
+                          key={assignee._id}
+                          label={assignee.username}
+                          sx={{
+                            backgroundColor: '#e0e0e0',
+                            color: "#000",
+                            fontWeight: "500",
+                            borderRadius: "20px",
+                          }}
+                        />
+                      ))}
+                    </Box>
+                  )
+                }
+                fullWidth
+                MenuProps={MenuProps}
+                sx={{ width: "100%", marginBottom: 2 }}
+              >
+                {assigneeOptions.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: '#f5f5f5',
+                      },
+                    }}
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+
+              <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                Remove assignees from job
+              </Typography>
+
+              <Select
+                multiple
+                size="small"
+                multiline
+                displayEmpty
+                value={automation.removeAssignees.map((assignee) => assignee._id)}
+                onChange={(event) =>
+                  handleAssigneeChange(index, "removeAssignees", event)
+                }
+                renderValue={(selected) =>
+                  selected.length === 0 ? (
+                    <Typography color="gray">
+                      Select assignees to remove
+                    </Typography>
+                  ) : (
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                      {automation.removeAssignees.map((assignee) => (
+                        <Chip
+                          key={assignee._id}
+                         label={assignee.username}
+                          sx={{
+                            backgroundColor: '#e0e0e0',
+                            color: "#000",
+                            fontWeight: "500",
+                            borderRadius: "20px",
+                          }}
+                        />
+                      ))}
+                    </Box>
+                  )
+                }
+                MenuProps={MenuProps}
+                sx={{ width: "100%", marginBottom: 2 }}
+              >
+                {assigneeOptions.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: '#f5f5f5',
+                      },
+                    }}
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+
+              <Alert severity="warning" sx={{ marginBottom: 2 }}>
+                This automation can affect job assignment notifications
+              </Alert>
+            </Box>
+          </Box>
+          
+        ) : automation.type === "Update client-facing job status" ? (
                   <Box>
                     <Typography variant="body1">
                       <strong>Type:</strong> {automation.type}
