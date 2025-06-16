@@ -39,13 +39,34 @@ const AddJobs = ({
   console.log("janavi stage ", stages);
   const { logindata } = useContext(LoginContext);
   const [loginuserid, setLoginUserId] = useState("");
+ const [username, setUsername] = useState("");
+  const fetchUserData = async (id) => {
+    const myHeaders = new Headers();
 
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+    const url = `${LOGIN_API}/common/user/${id}`;
+    fetch(url, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log("id", result);
+
+        // console.log(userData)
+        setUsername(result.username);
+      });
+  };
   useEffect(() => {
     if (logindata?.user?.id) {
       // Check if logindata and user.id exist
       setLoginUserId(logindata.user.id);
     }
   }, [logindata]);
+    useEffect(() => {
+      fetchUserData(loginuserid);
+    }, []);
 
   // console.log("teammenber", loginuserid);
   const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
@@ -886,6 +907,8 @@ const AddJobs = ({
         chattemplateid: automationTemp, // Fill in if required
         chatsubject: chatData.chatsubject, // Today's date
         description: messageData || "",
+         templatename:chatData.templatename,
+          from : username,
         sendreminderstoclient: chatData.sendreminderstoclient,
         daysuntilnextreminder: chatData.daysuntilnextreminder,
         numberofreminders: chatData.numberofreminders,

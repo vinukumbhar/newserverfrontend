@@ -705,6 +705,8 @@ const Pipeline = ({ charLimit = 4000 }) => {
         chattemplateid: automationTemp, // Fill in if required
         chatsubject: chatData.chatsubject, // Today's date
         description: messageData || "",
+         templatename:chatData.templatename,
+          from : username,
         sendreminderstoclient: chatData.sendreminderstoclient,
         daysuntilnextreminder: chatData.daysuntilnextreminder,
         numberofreminders: chatData.numberofreminders,
@@ -1607,6 +1609,15 @@ const Pipeline = ({ charLimit = 4000 }) => {
               Move
             </Button> */}
 <Button
+sx={{
+                    backgroundColor: "var(--color-save-btn)", // Normal background
+
+                    "&:hover": {
+                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                    },
+                    borderRadius: "15px",
+                    mt: 2,
+                  }}
             onClick={async () => {
               const selectedAutomations = selectedAutomationIndices
                 .map((index) => automations[index])
@@ -2373,82 +2384,7 @@ const Pipeline = ({ charLimit = 4000 }) => {
         });
     };
     return (
-      // <Box
-      //   className={`job-card ${isDragging ? "dragging" : ""}`}
-      //   ref={drag}
-      //   onMouseEnter={() => setIsHovered(true)}
-      //   onMouseLeave={() => setIsHovered(false)}
-      //   onDrop={updateLastUpdatedTime}
-      // >
-      //   <Box
-      //     sx={{
-      //       display: "flex",
-      //       alignItems: "center",
-      //       justifyContent: "space-between",
-      //       paddingBottom: "10px",
-      //     }}
-      //   >
-      //     <Typography color={"black"}>{job.Account.join(", ")}</Typography>
-      //     {isHovered ? (
-      //       <RiDeleteBin5Line
-      //         onClick={handleOpen}
-      //         style={{ cursor: "pointer" }}
-      //       />
-      //     ) : (
-      //       <span className="automation-batch">1</span>
-      //     )}
-      //   </Box>
-      //   <Typography
-      //     sx={{
-      //       fontWeight: "bold",
-      //       marginBottom: "8px",
-      //       cursor: "pointer",
-      //       whiteSpace: "normal", // Allows text to wrap
-      //       wordBreak: "break-word", // Breaks long words if necessary
-      //       overflowWrap: "break-word", // Ensures wrapping works in all cases
-      //     }}
-      //     color="black"
-      //     onClick={() => handleEditJobCard(job.id)}
-      //   >
-      //     {job.Name}
-      //   </Typography>
-
-      //   <Typography
-      //     color={"black"}
-      //     variant="body2"
-      //     sx={{ marginBottom: "8px" }}
-      //   >
-      //     {job.JobAssignee.join(", ")}
-      //   </Typography>
-      //   <Typography
-      //     color={"black"}
-      //     variant="body2"
-      //     sx={{ marginBottom: "8px" }}
-      //   >
-      //     {truncateDescription(stripHtmlTags(job.Description))}
-      //   </Typography>
-
-      //   <span style={getPriorityStyle(job.Priority)}>{job.Priority}</span>
-
-      //   <br />
-
-      //   <Typography
-      //     color={"black"}
-      //     sx={{ marginBottom: "4px", mt: 2 }}
-      //     variant="body2"
-      //   >
-      //     Starts : {startDateFormatted}
-      //   </Typography>
-      //   <Typography color={"black"} variant="body2">
-      //     Due : {dueDateFormatted}
-      //   </Typography>
-      //   <Typography
-      //     color={"black"}
-      //     variant="body2"
-      //     sx={{ marginBottom: "5px", mt: 2 }}
-      //   >
-      //     {timeAgo()}
-      //   </Typography>
+      
       <Box
         className={`job-card ${isDragging ? "dragging" : ""}`}
         ref={drag}
@@ -3512,13 +3448,13 @@ const handleMoveJob = async (jobId, targetStage, automations = {}) => {
         ...updatedAutomations[index],
         [type]: uniqueTags,
       };
+      
 
       return updatedAutomations;
     });
   };
    const [assignee, setAssignee] = useState([]);
-    const [selectedAssignees, setSelectedAssignees] = useState([]);
-    const [assigneesToRemove, setAssigneesToRemove] = useState([]);
+    
     useEffect(() => {
       const fetchAssignees = async () => {
         try {

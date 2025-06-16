@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "./login.css";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
@@ -24,7 +24,7 @@ const Login = () => {
   const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
   const history = useNavigate();
   const [agreeToTerms, setAgreeToTerms] = useState(false);
-
+ const [logoutTimer, setLogoutTimer] = useState(null);
   const [inpval, setInpval] = useState({
     email: "",
     password: "",
@@ -126,6 +126,7 @@ handleUserRole(user.role);
         localStorage.setItem("usersdatatoken", res.result.token);
         
         Cookies.set("userToken", res.result.token);
+         startLogoutTimer(expiryTime);
         history("/");
         setInpval({ ...inpval, email: "", password: "" });
 
@@ -140,7 +141,36 @@ handleUserRole(user.role);
       toast.error("An error occurred. Please try again.");
     }
   };
+const startLogoutTimer = (expiryTime) => {
+  let timeout;
+  switch(expiryTime) {
+    case '1min': timeout = 60 * 1000; break;
+    case '5min': timeout = 5 * 60 * 1000; break;
+    case '30min': timeout = 30 * 60 * 1000; break;
+    case '4hours': timeout = 4 * 60 * 60 * 1000; break;
+    case '8hours': timeout = 8 * 60 * 60 * 1000; break;
+    default: timeout = 30 * 60 * 1000; // default to 30 minutes
+  }
 
+  const timer = setTimeout(() => {
+    // Perform logout actions
+    localStorage.removeItem("usersdatatoken");
+    localStorage.removeItem("teamMemberData");
+    localStorage.removeItem("userRole");
+    Cookies.remove("userToken");
+    history("/login");
+    toast.info("Your session has expired. Please login again.");
+  }, timeout);
+
+  setLogoutTimer(timer);
+};
+
+// Add this useEffect to clear timer on component unmount
+useEffect(() => {
+  return () => {
+    if (logoutTimer) clearTimeout(logoutTimer);
+  };
+}, [logoutTimer]);
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => {

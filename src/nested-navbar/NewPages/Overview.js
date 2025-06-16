@@ -313,7 +313,8 @@ const accountwiseChatlist = (data, isActiveTrue) => {
               <TableRow key={job.id}>
                 <TableCell>{job.Name}</TableCell>
                 <TableCell>{job.Pipeline}</TableCell>
-                <TableCell>{job.Stage.join(", ")}</TableCell>
+                <TableCell></TableCell>
+                {/* <TableCell>{job.Stage.join(", ")}</TableCell> */}
                 {/* <TableCell>{job.Account.join(", ")}</TableCell> */}
                 {/* <TableCell>{new Date(job.StartDate).toLocaleDateString()}</TableCell> */}
                 {/* <TableCell>{new Date(job.DueDate).toLocaleDateString()}</TableCell> */}
