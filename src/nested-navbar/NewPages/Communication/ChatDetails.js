@@ -30,6 +30,7 @@ const ChatDetails = ({ chat, getsChatDetails, accountwiseChatlist,onChatAction ,
   const CHATTOCLIENT_API = process.env.REACT_APP_CHAT_API;
   const [showTasks, setShowTasks] = useState(false);
   const [chatId, setChatId] = useState(chat._id);
+  const [chatTemplate, setChatTemplate]=useState(chat.chattemplateid)
   const { logindata } = useContext(LoginContext);
   const [loginUserId, setLoginUserId] = useState();
   const messageRefs = useRef({});
@@ -46,13 +47,36 @@ const ChatDetails = ({ chat, getsChatDetails, accountwiseChatlist,onChatAction ,
   };
   useEffect(() => {
     if (logindata?.user?.id) {
-      setLoginUserId(logindata.user.id);
+      const id = logindata.user.id;
+      setLoginUserId(id);
+      // setLoginUserId(logindata.user.id);
+      fetchUserData(id)
     }
     if (chat.clienttasks) {
       setTasks(chat.clienttasks.flat());
     }
   }, [logindata, chat.clienttasks]);
+   const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
+   const [senderEmail,setSenderEmail]= useState("")
+   const [senderName,setSenderName]=useState("")
+ const fetchUserData = async (id) => {
+  
+    const myHeaders = new Headers();
 
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+    const url = `${LOGIN_API}/common/user/${id}`;
+    fetch(url , requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log("id", result);
+        setSenderEmail(result.email)
+setSenderName(result.username)
+      });
+  };
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
     const day = date.getDate();
@@ -127,6 +151,7 @@ const ChatDetails = ({ chat, getsChatDetails, accountwiseChatlist,onChatAction ,
       })
       .then(() => {
         toast.success("Message sent");
+         securemessagechatsend(chatId);
         updatechatStatus(chatId);
       accountwiseChatlist(data, isActiveTrue);
         getsChatDetails();
@@ -136,6 +161,31 @@ const ChatDetails = ({ chat, getsChatDetails, accountwiseChatlist,onChatAction ,
       });
   };
 
+   const securemessagechatsend = (chatId) => {
+    console.log("bvhg", chatId)
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+
+    const raw = JSON.stringify({
+      accountid: data,
+      chattemplateid: chatTemplate,
+      username: senderName,
+      viewchatlink: "/login",
+      chatId: chatId,
+    });
+    console.log(raw);
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: raw,
+      redirect: "follow",
+    };
+
+    fetch(`${CHATTOCLIENT_API}/chatmsg/securemessagechatsend`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => console.log(result))
+      .catch((error) => console.error(error));
+  };
   const updatechatStatus = (chatId) => {
     return new Promise((resolve, reject) => {
       let data = JSON.stringify({

@@ -22,6 +22,7 @@ import {
   Brightness4,
   Brightness7,
   Task,
+  NotificationAddRounded,
 } from "@mui/icons-material";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
@@ -61,6 +62,7 @@ import { faL } from "@fortawesome/free-solid-svg-icons";
 import OrganizerDialog from "../Pages/Organizers/ClientSelectionDialog";
 import ChatForm from "../Pages/ChatForm";
 import JobDrawer from "../Jobs/JobDrawer";
+import NotificationsIcon from '@mui/icons-material/Notifications';
 function Sidebar() {
   const StyledBadge = styled(Badge)(({ theme }) => ({
     "& .MuiBadge-badge": {
@@ -619,6 +621,10 @@ if (
     setInvoiceDrawerOpen(true); // Open right drawer when an account is selected
     setIsDialogOpen(false); // Close the client selection dialog
   };
+
+  const unreadHashEmailCount = Cookies.get('unreadHashEmailCount');
+console.log('Stored unread count:', unreadHashEmailCount);
+
   return (
     <div className="grid-container">
       <header className="header">
@@ -666,7 +672,12 @@ if (
           <Box>
             <SearchComponent />
           </Box>
-          <Box ml={"auto"} mr={3}>
+          {/* <Box ml={"auto"} mr={3}><NotificationsIcon/></Box> */}
+          <Box ml={"auto"} mr={3} sx={{display:'flex', alignItems:'center', gap:3}}>
+            <Box>   <Badge badgeContent={unreadHashEmailCount} color="primary"> {/* You can change '5' to your dynamic count */}
+        <NotificationsIcon />
+      </Badge></Box>
+          
             <Link to="#" className="logout-link">
               <Box className="info">
                 <Box

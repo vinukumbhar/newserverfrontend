@@ -1,211 +1,392 @@
-import * as React from 'react';
-import { useState, useEffect, useCallback } from 'react';
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-import { Container, Divider, Typography, Button, TextField, List, ListItem } from '@mui/material'; // Add ListItem here
-import { gapi } from 'gapi-script';
-import Cookies from 'js-cookie';
+import * as React from "react";
+import { useState, useEffect, useCallback } from "react";
+import { styled } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid";
+import {
+  Container,
+  Divider,
+  Typography,
+  Button,
+  TextField,
+  List,
+  ListItem,
+} from "@mui/material"; // Add ListItem here
+import { gapi } from "gapi-script";
+import Cookies from "js-cookie";
 
-
-
-const CLIENT_ID = "1070770223600-nkocmga9ensmg3aaip15rhp0vpjlugd1.apps.googleusercontent.com";
+const CLIENT_ID =
+  "1070770223600-nkocmga9ensmg3aaip15rhp0vpjlugd1.apps.googleusercontent.com";
 const API_KEY = "AIzaSyDR042NieiN9Lbz13KAxTTl5ShVW4Ln4yM";
-const SCOPES = "https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send";
-
+const SCOPES =
+  "https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/gmail.send";
 
 const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: '#fff',
+  backgroundColor: "#fff",
   ...theme.typography.body2,
   padding: theme.spacing(2),
-  textAlign: 'left',
+  textAlign: "left",
   color: theme.palette.text.secondary,
-  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
 }));
 
 export default function Chat() {
-
-  const emailId = Cookies.get('emailId'); // Retrieve email from cookies
-  const accessToken = Cookies.get('accessToken');
+  const emailId = Cookies.get("emailId"); // Retrieve email from cookies
+  const accessToken = Cookies.get("accessToken");
   const [emails, setEmails] = useState([]);
   const [currentEmail, setCurrentEmail] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [filter, setFilter] = useState('');
-  const options = ['Tasks', 'Email Template', 'Jobs', 'Pipelines', 'Folder', 'Chats', 'Invoice', 'Proposals & Els', 'Organisers'];
+  const [filter, setFilter] = useState("");
+  const options = [
+    "Tasks",
+    "Email Template",
+    "Jobs",
+    "Pipelines",
+    "Folder",
+    "Chats",
+    "Invoice",
+    "Proposals & Els",
+    "Organisers",
+  ];
 
-  const [replyText, setReplyText] = useState(''); // Define state for reply text
+  const [replyText, setReplyText] = useState(""); // Define state for reply text
 
-  const [currentTab, setCurrentTab] = useState('inbox'); // 'inbox' or 'outbox'
+  const [currentTab, setCurrentTab] = useState("inbox"); // 'inbox' or 'outbox'
   const [sentEmails, setSentEmails] = useState([]); // Store sent emails
 
   const [attachments, setAttachments] = useState([]);
+const [unreadCount, setUnreadCount] = useState(0);
 
-  const fetchEmails = useCallback(() => {
-    setLoading(true);
-    gapi.client.setToken({ access_token: accessToken });
+  // const fetchEmails = useCallback(() => {
+  //   setLoading(true);
+  //   gapi.client.setToken({ access_token: accessToken });
 
-    gapi.client.gmail.users.messages.list({
-      userId: 'me',
-      labelIds: ['INBOX'],
-      maxResults: 10,
-    }).then(response => {
-      const { messages } = response.result;
-      if (!messages) {
-        setEmails([]);
-        setLoading(false);
-        return;
-      }
+  //   // Get unread count
+  // gapi.client.gmail.users.labels.get({
+  //   userId: 'me',
+  //   id: 'INBOX',
+  // }).then(labelResponse => {
+  //   const unreadCount = labelResponse.result.messagesUnread;
+  //   setUnreadCount(unreadCount);
+  // });
+  //   gapi.client.gmail.users.messages
+  //     .list({
+  //       userId: "me",
+  //       // labelIds: ["INBOX"],
+  //       labelIds: ['INBOX', 'UNREAD'],
+  //       maxResults: 30,
+  //     })
+  //     .then((response) => {
+  //       const { messages } = response.result;
+  //       if (!messages) {
+  //         setEmails([]);
+  //         setLoading(false);
+  //         return;
+  //       }
 
-      const emailPromises = messages.map(message => {
-        return gapi.client.gmail.users.messages.get({
-          userId: 'me',
-          id: message.id,
-        }).then(emailResponse => emailResponse.result);
+  //       const emailPromises = messages.map((message) => {
+  //         return gapi.client.gmail.users.messages
+  //           .get({
+  //             userId: "me",
+  //             id: message.id,
+  //           })
+  //           .then((emailResponse) => emailResponse.result);
+  //       });
+
+  //       Promise.all(emailPromises)
+  //         .then((emailData) => {
+  //           // const processedEmails = emailData.map(email => {
+  //           //   let body = '';
+  //           //   let attachments = [];
+
+  //           //   // Function to recursively extract body and attachments from parts
+  //           //   const extractParts = (parts) => {
+  //           //     parts.forEach(part => {
+  //           //       // Check for text or HTML parts
+  //           //       if (part.mimeType === 'text/plain' || part.mimeType === 'text/html') {
+  //           //         body = cleanString(decodeAndStripHTML(part.body.data));
+  //           //       }
+
+  //           //       // Check for nested multipart types
+  //           //       if (part.mimeType === 'multipart/alternative' || part.mimeType === 'multipart/mixed') {
+  //           //         extractParts(part.parts); // Recursive call to handle nested parts
+  //           //       }
+
+  //           //       // Check for attachments
+  //           //       if (part.filename && part.body.attachmentId) {
+  //           //         attachments.push({
+  //           //           filename: part.filename,
+  //           //           id: part.body.attachmentId,
+  //           //         });
+  //           //       }
+  //           //     });
+  //           //   };
+
+  //           //   // Start extracting parts from the email payload
+  //           //   if (email.payload.parts) {
+  //           //     extractParts(email.payload.parts);
+  //           //   } else if (email.payload.body) {
+  //           //     // Handle single part email case
+  //           //     body = cleanString(decodeAndStripHTML(email.payload.body.data));
+  //           //   }
+
+  //           //   return {
+  //           //     id: email.id,
+  //           //     from: email.payload.headers.find(header => header.name === 'From')?.value,
+  //           //     subject: email.payload.headers.find(header => header.name === 'Subject')?.value,
+  //           //     body: body || 'No content available.', // Fallback if body is empty
+  //           //     attachments: attachments,
+  //           //   };
+  //           // });
+  //           const processedEmails = emailData
+  //             .map((email) => {
+  //               let body = "";
+  //               let attachments = [];
+
+  //               const extractParts = (parts) => {
+  //                 parts.forEach((part) => {
+  //                   if (
+  //                     part.mimeType === "text/plain" ||
+  //                     part.mimeType === "text/html"
+  //                   ) {
+  //                     body = cleanString(decodeAndStripHTML(part.body.data));
+  //                   }
+  //                   if (
+  //                     part.mimeType === "multipart/alternative" ||
+  //                     part.mimeType === "multipart/mixed"
+  //                   ) {
+  //                     extractParts(part.parts);
+  //                   }
+  //                   if (part.filename && part.body.attachmentId) {
+  //                     attachments.push({
+  //                       filename: part.filename,
+  //                       id: part.body.attachmentId,
+  //                     });
+  //                   }
+  //                 });
+  //               };
+
+  //               if (email.payload.parts) {
+  //                 extractParts(email.payload.parts);
+  //               } else if (email.payload.body) {
+  //                 body = cleanString(
+  //                   decodeAndStripHTML(email.payload.body.data)
+  //                 );
+  //               }
+
+  //               const subject = email.payload.headers.find(
+  //                 (header) => header.name === "Subject"
+  //               )?.value;
+
+  //               return {
+  //                 id: email.id,
+  //                 from: email.payload.headers.find(
+  //                   (header) => header.name === "From"
+  //                 )?.value,
+  //                 subject,
+  //                 body: body || "No content available.",
+  //                 attachments,
+  //               };
+  //             })
+  //             .filter((email) => email.subject?.startsWith("#")); // Only include emails whose subject starts with #
+
+  //           setEmails(processedEmails);
+  //           console.log("Processed Emails:", processedEmails);
+  //           setLoading(false);
+  //         })
+  //         .catch((error) => {
+  //           console.error("Error fetching individual emails:", error);
+  //           setLoading(false);
+  //         });
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching emails from inbox:", error);
+  //       setLoading(false);
+  //     });
+  // }, [accessToken]);
+const fetchEmails = useCallback(() => {
+  setLoading(true);
+  gapi.client.setToken({ access_token: accessToken });
+
+  gapi.client.gmail.users.messages.list({
+    userId: 'me',
+    labelIds: ['INBOX', 'UNREAD'],
+    maxResults: 100,
+  }).then(response => {
+    const { messages } = response.result;
+    if (!messages) {
+      setEmails([]);
+      setUnreadCount(0);
+      setLoading(false);
+      return;
+    }
+
+    const emailPromises = messages.map(message =>
+      gapi.client.gmail.users.messages.get({
+        userId: 'me',
+        id: message.id,
+      }).then(emailResponse => emailResponse.result)
+    );
+
+    Promise.all(emailPromises).then(emailData => {
+      const filteredEmails = emailData.filter(email => {
+        const subjectHeader = email.payload.headers.find(header => header.name === 'Subject');
+        const subject = subjectHeader?.value || '';
+        return subject.startsWith('#');
       });
 
-      Promise.all(emailPromises).then(emailData => {
-        const processedEmails = emailData.map(email => {
-          let body = '';
-          let attachments = [];
+      // Set count and also processed email data
+      setUnreadCount(filteredEmails.length);
+      Cookies.set('unreadHashEmailCount', filteredEmails.length, { expires: 1 });
 
-          // Function to recursively extract body and attachments from parts
-          const extractParts = (parts) => {
-            parts.forEach(part => {
-              // Check for text or HTML parts
-              if (part.mimeType === 'text/plain' || part.mimeType === 'text/html') {
-                body = cleanString(decodeAndStripHTML(part.body.data));
-              }
+      const processedEmails = filteredEmails.map(email => {
+        let body = '';
+        let attachments = [];
 
-              // Check for nested multipart types
-              if (part.mimeType === 'multipart/alternative' || part.mimeType === 'multipart/mixed') {
-                extractParts(part.parts); // Recursive call to handle nested parts
-              }
+        const extractParts = (parts) => {
+          parts.forEach(part => {
+            if (part.mimeType === 'text/plain' || part.mimeType === 'text/html') {
+              body = cleanString(decodeAndStripHTML(part.body.data));
+            }
+            if (part.mimeType === 'multipart/alternative' || part.mimeType === 'multipart/mixed') {
+              extractParts(part.parts);
+            }
+            if (part.filename && part.body.attachmentId) {
+              attachments.push({
+                filename: part.filename,
+                id: part.body.attachmentId,
+              });
+            }
+          });
+        };
 
-              // Check for attachments
-              if (part.filename && part.body.attachmentId) {
-                attachments.push({
-                  filename: part.filename,
-                  id: part.body.attachmentId,
-                });
-              }
-            });
-          };
+        if (email.payload.parts) {
+          extractParts(email.payload.parts);
+        } else if (email.payload.body) {
+          body = cleanString(decodeAndStripHTML(email.payload.body.data));
+        }
 
-          // Start extracting parts from the email payload
-          if (email.payload.parts) {
-            extractParts(email.payload.parts);
-          } else if (email.payload.body) {
-            // Handle single part email case
-            body = cleanString(decodeAndStripHTML(email.payload.body.data));
-          }
+        const subject = email.payload.headers.find(header => header.name === 'Subject')?.value;
 
-          return {
-            id: email.id,
-            from: email.payload.headers.find(header => header.name === 'From')?.value,
-            subject: email.payload.headers.find(header => header.name === 'Subject')?.value,
-            body: body || 'No content available.', // Fallback if body is empty
-            attachments: attachments,
-          };
-        });
-
-        setEmails(processedEmails);
-        console.log("Processed Emails:", processedEmails);
-        setLoading(false);
-      }).catch(error => {
-        console.error("Error fetching individual emails:", error);
-        setLoading(false);
+        return {
+          id: email.id,
+          from: email.payload.headers.find(header => header.name === 'From')?.value,
+          subject,
+          body: body || 'No content available.',
+          attachments,
+        };
       });
 
+      setEmails(processedEmails);
+      setLoading(false);
     }).catch(error => {
-      console.error("Error fetching emails from inbox:", error);
+      console.error("Error fetching individual emails:", error);
       setLoading(false);
     });
-  }, [accessToken]);
 
+  }).catch(error => {
+    console.error("Error fetching emails from inbox:", error);
+    setLoading(false);
+  });
+}, [accessToken]);
 
   const fetchSentEmails = useCallback(() => {
     setLoading(true);
     gapi.client.setToken({ access_token: accessToken });
 
-    gapi.client.gmail.users.messages.list({
-      userId: 'me',
-      labelIds: ['SENT'],
-      maxResults: 20,
-    }).then(response => {
-      const { messages } = response.result;
-      if (!messages) {
-        setSentEmails([]); // Assuming you have a state for sent emails
-        setLoading(false);
-        return;
-      }
+    gapi.client.gmail.users.messages
+      .list({
+        userId: "me",
+        labelIds: ["SENT"],
+        maxResults: 20,
+      })
+      .then((response) => {
+        const { messages } = response.result;
+        if (!messages) {
+          setSentEmails([]); // Assuming you have a state for sent emails
+          setLoading(false);
+          return;
+        }
 
-      const emailPromises = messages.map(message => {
-        return gapi.client.gmail.users.messages.get({
-          userId: 'me',
-          id: message.id,
-        }).then(emailResponse => emailResponse.result);
-      });
-
-      // Inside the fetchSentEmails function
-      Promise.all(emailPromises).then(emailData => {
-        const processedEmails = emailData.map(email => {
-          let body = '';
-          let attachments = []; // Initialize attachments array
-
-          // Check if the email has parts
-          if (email.payload.parts) {
-            email.payload.parts.forEach(part => {
-              // Check for text or HTML body
-              if (part.mimeType === 'text/plain' || part.mimeType === 'text/html') {
-                body = cleanString(decodeAndStripHTML(part.body.data)); // Clean after decoding
-              }
-
-              // Check for attachments
-              if (part.filename && part.body.attachmentId) {
-                attachments.push({
-                  filename: part.filename,
-                  id: part.body.attachmentId,
-                });
-              }
-            });
-          } else if (email.payload.body) {
-            // Handle single part emails
-            body = cleanString(decodeAndStripHTML(email.payload.body.data)); // Clean after decoding
-          }
-
-          return {
-            id: email.id,
-            from: email.payload.headers.find(header => header.name === 'From')?.value,
-            to: email.payload.headers.find(header => header.name === 'To')?.value,
-            subject: email.payload.headers.find(header => header.name === 'Subject')?.value,
-            body: body,
-            attachments: attachments, // Add attachments to the email object
-          };
+        const emailPromises = messages.map((message) => {
+          return gapi.client.gmail.users.messages
+            .get({
+              userId: "me",
+              id: message.id,
+            })
+            .then((emailResponse) => emailResponse.result);
         });
 
-        setSentEmails(processedEmails);
-        console.log("Processed Sent Emails:", processedEmails); // Log processed sent emails for debugging
-        setLoading(false);
-      }).catch(error => {
-        console.error("Error fetching individual sent emails:", error);
+        // Inside the fetchSentEmails function
+        Promise.all(emailPromises)
+          .then((emailData) => {
+            const processedEmails = emailData.map((email) => {
+              let body = "";
+              let attachments = []; // Initialize attachments array
+
+              // Check if the email has parts
+              if (email.payload.parts) {
+                email.payload.parts.forEach((part) => {
+                  // Check for text or HTML body
+                  if (
+                    part.mimeType === "text/plain" ||
+                    part.mimeType === "text/html"
+                  ) {
+                    body = cleanString(decodeAndStripHTML(part.body.data)); // Clean after decoding
+                  }
+
+                  // Check for attachments
+                  if (part.filename && part.body.attachmentId) {
+                    attachments.push({
+                      filename: part.filename,
+                      id: part.body.attachmentId,
+                    });
+                  }
+                });
+              } else if (email.payload.body) {
+                // Handle single part emails
+                body = cleanString(decodeAndStripHTML(email.payload.body.data)); // Clean after decoding
+              }
+
+              return {
+                id: email.id,
+                from: email.payload.headers.find(
+                  (header) => header.name === "From"
+                )?.value,
+                to: email.payload.headers.find((header) => header.name === "To")
+                  ?.value,
+                subject: email.payload.headers.find(
+                  (header) => header.name === "Subject"
+                )?.value,
+                body: body,
+                attachments: attachments, // Add attachments to the email object
+              };
+            });
+
+            setSentEmails(processedEmails);
+            console.log("Processed Sent Emails:", processedEmails); // Log processed sent emails for debugging
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.error("Error fetching individual sent emails:", error);
+            setLoading(false);
+          });
+      })
+      .catch((error) => {
+        console.error("Error fetching sent emails:", error);
         setLoading(false);
       });
-
-    }).catch(error => {
-      console.error("Error fetching sent emails:", error);
-      setLoading(false);
-    });
   }, [accessToken]);
 
-
   const downloadAttachment = (attachmentId, filename) => {
-    gapi.client.gmail.users.messages.attachments.get({
-      userId: 'me',
-      id: attachmentId,
-      messageId: currentEmail.id,
-    })
-      .then(response => {
+    gapi.client.gmail.users.messages.attachments
+      .get({
+        userId: "me",
+        id: attachmentId,
+        messageId: currentEmail.id,
+      })
+      .then((response) => {
         if (response && response.result) {
           const base64Data = response.result.data; // Ensure this is the correct path to your data.
 
@@ -215,7 +396,7 @@ export default function Chat() {
           }
 
           // Convert base64url to standard base64
-          const base64 = base64Data.replace(/-/g, '+').replace(/_/g, '/');
+          const base64 = base64Data.replace(/-/g, "+").replace(/_/g, "/");
 
           // Decode the base64 string
           const binaryString = window.atob(base64);
@@ -225,10 +406,10 @@ export default function Chat() {
             bytes[i] = binaryString.charCodeAt(i);
           }
 
-          const blob = new Blob([bytes], { type: 'application/octet-stream' }); // Adjust the type as necessary
+          const blob = new Blob([bytes], { type: "application/octet-stream" }); // Adjust the type as necessary
           const url = URL.createObjectURL(blob);
 
-          const a = document.createElement('a');
+          const a = document.createElement("a");
           a.href = url;
           a.download = filename;
           document.body.appendChild(a);
@@ -239,7 +420,7 @@ export default function Chat() {
           console.error("Invalid response:", response);
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Error downloading attachment:", error);
       });
   };
@@ -252,17 +433,19 @@ export default function Chat() {
         await gapi.client.init({
           apiKey: API_KEY,
           clientId: CLIENT_ID,
-          discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest"],
+          discoveryDocs: [
+            "https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest",
+          ],
           scope: SCOPES,
         });
 
-        const token = Cookies.get('accessToken'); // Retrieve access token from cookies
+        const token = Cookies.get("accessToken"); // Retrieve access token from cookies
         if (token) {
           gapi.client.setToken({
             access_token: token,
           });
           // fetchEmails(); // Fetch emails after setting the token
-          if (currentTab === 'inbox') {
+          if (currentTab === "inbox") {
             fetchEmails();
           } else {
             fetchSentEmails(); // Fetch sent emails when in 'outbox' tab
@@ -277,22 +460,21 @@ export default function Chat() {
     gapi.load("client:auth2", initGapiClient);
   }, [currentTab]);
 
-
-
-
   function parseEmailBody(emailBody, fromEmail, toEmail) {
-    const tempDiv = document.createElement('div');
+    const tempDiv = document.createElement("div");
     tempDiv.innerHTML = emailBody;
 
     const messages = [];
-    const emailBlocks = Array.from(tempDiv.querySelectorAll('div[dir="ltr"], blockquote, div:not([dir])'));
-    let lastMessage = '';
+    const emailBlocks = Array.from(
+      tempDiv.querySelectorAll('div[dir="ltr"], blockquote, div:not([dir])')
+    );
+    let lastMessage = "";
     let replyCount = emailBlocks.length;
 
     emailBlocks.forEach((block, index) => {
-      let messageText = block.innerText.replace(/\u00A0/g, ' ').trim();
-      const emailPattern = new RegExp(fromEmail, 'g');
-      messageText = messageText.replace(emailPattern, '').trim();
+      let messageText = block.innerText.replace(/\u00A0/g, " ").trim();
+      const emailPattern = new RegExp(fromEmail, "g");
+      messageText = messageText.replace(emailPattern, "").trim();
 
       const replyMatch = messageText.match(/On\s(.+?)\s(wrote:|at|<.*>)/i);
 
@@ -323,7 +505,6 @@ export default function Chat() {
     return messages;
   }
 
-
   function parseSentEmailBody(emailBody, fromEmail, toEmail) {
     const messages = [];
     if (!emailBody) {
@@ -331,14 +512,16 @@ export default function Chat() {
       return messages; // Return an empty array if there's no body
     }
 
-    const tempDiv = document.createElement('div');
+    const tempDiv = document.createElement("div");
     tempDiv.innerHTML = emailBody; // Use emailBody instead of body
 
     const textContent = tempDiv.textContent || tempDiv.innerText || "";
-    const cleanTextContent = textContent.replace(/On\s.+?at\s.+?\s<[^>]+>\s+wrote:/, '').trim();
+    const cleanTextContent = textContent
+      .replace(/On\s.+?at\s.+?\s<[^>]+>\s+wrote:/, "")
+      .trim();
 
     messages.push({
-      text: `${cleanTextContent}\n${fromEmail}` // Include the sender's email address
+      text: `${cleanTextContent}\n${fromEmail}`, // Include the sender's email address
     });
 
     return messages;
@@ -346,13 +529,13 @@ export default function Chat() {
 
   // Decode email body from base64
   const decodeAndStripHTML = (data) => {
-    const decodedData = atob(data.replace(/-/g, '+').replace(/_/g, '/'));
+    const decodedData = atob(data.replace(/-/g, "+").replace(/_/g, "/"));
     return cleanString(decodedData); // Clean the decoded string
   };
 
   // Function to remove unwanted characters
   const cleanString = (str) => {
-    return str.replace(/\u00C2/g, '').trim(); // Remove instances of Â and trim whitespace
+    return str.replace(/\u00C2/g, "").trim(); // Remove instances of Â and trim whitespace
   };
 
   // Handle selecting an email to show the body
@@ -362,19 +545,17 @@ export default function Chat() {
     setCurrentEmail(email);
 
     // Mark email as read
-    setEmails(prevEmails =>
-      prevEmails.map(e =>
-        e.id === email.id ? { ...e, isRead: true } : e // Set isRead to true for the clicked email
+    setEmails((prevEmails) =>
+      prevEmails.map(
+        (e) => (e.id === email.id ? { ...e, isRead: true } : e) // Set isRead to true for the clicked email
       )
     );
   }, []);
-
 
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
     setAttachments(files);
   };
-
 
   const handleReply = async () => {
     if (!replyText || !currentEmail) return;
@@ -402,99 +583,132 @@ export default function Chat() {
     emailContent += `--${boundary}--`;
 
     const base64EncodedEmail = btoa(emailContent)
-      .replace(/\+/g, '-')
-      .replace(/\//g, '_')
-      .replace(/=+$/, '');
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
 
-    gapi.client.gmail.users.messages.send({
-      userId: 'me',
-      resource: { raw: base64EncodedEmail },
-    }).then(response => {
-      setReplyText('');
-      setAttachments([]); // Clear attachments after sending
-      fetchEmails();
-    }).catch(error => {
-      console.error('Error sending email:', error);
-    });
+    gapi.client.gmail.users.messages
+      .send({
+        userId: "me",
+        resource: { raw: base64EncodedEmail },
+      })
+      .then((response) => {
+        setReplyText("");
+        setAttachments([]); // Clear attachments after sending
+        fetchEmails();
+      })
+      .catch((error) => {
+        console.error("Error sending email:", error);
+      });
   };
-
 
   const readFileAsBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () => resolve(reader.result.split(',')[1]); // Remove the "data:<mime-type>;base64," prefix
-      reader.onerror = error => reject(error);
+      reader.onload = () => resolve(reader.result.split(",")[1]); // Remove the "data:<mime-type>;base64," prefix
+      reader.onerror = (error) => reject(error);
       reader.readAsDataURL(file);
     });
   };
 
-
-
   const renderEmailList = (emailList, handleEmailClick) => (
     <List sx={{ padding: 0 }}>
-      {emailList.filter(email => {
-        if (filter === '') return true;
-        return email.subject.toLowerCase().includes(filter.toLowerCase());
-      }).map(email => (
-        <ListItem
-          key={email.id}
-          onClick={() => handleEmailClick(email)}
-          sx={{
-            cursor: 'pointer',
-            marginBottom: '10px',
-            padding: '10px',
-            borderRadius: '8px',
-            backgroundColor: '#f9f9f9',
-            transition: 'background-color 0.3s, box-shadow 0.3s',
-            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.05)',
-            '&:hover': {
-              backgroundColor: '#e0f7fa',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-            },
-          }}
-        >
-          <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-              {email.from}
-            </Typography>
-            <Typography variant="body2" color="text.primary">
-              {email.subject}
-            </Typography>
-          </Box>
-        </ListItem>
-      ))}
+      {emailList
+        .filter((email) => {
+          if (filter === "") return true;
+          return email.subject.toLowerCase().includes(filter.toLowerCase());
+        })
+        .map((email) => (
+          <ListItem
+            key={email.id}
+            onClick={() => handleEmailClick(email)}
+            sx={{
+              cursor: "pointer",
+              marginBottom: "10px",
+              padding: "10px",
+              borderRadius: "8px",
+              backgroundColor: "#f9f9f9",
+              transition: "background-color 0.3s, box-shadow 0.3s",
+              boxShadow: "0 2px 6px rgba(0, 0, 0, 0.05)",
+              "&:hover": {
+                backgroundColor: "#e0f7fa",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+              },
+            }}
+          >
+            <Box
+              sx={{ display: "flex", flexDirection: "column", width: "100%" }}
+            >
+              <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+                {email.from}
+              </Typography>
+
+              <Typography variant="body2" color="text.primary">
+                {email.subject.startsWith("#")
+                  ? email.subject.slice(1).trim()
+                  : email.subject}
+              </Typography>
+            </Box>
+          </ListItem>
+        ))}
     </List>
   );
-
-
 
   const renderEmailBody = () => {
     if (!currentEmail) {
       return <Typography>Select an email to read its content.</Typography>;
     }
 
-    const parsedMessages = currentTab === 'inbox'
-      ? parseEmailBody(currentEmail.body, currentEmail.from, emailId)
-      : parseSentEmailBody(currentEmail.body, emailId, currentEmail.to);
+    const parsedMessages =
+      currentTab === "inbox"
+        ? parseEmailBody(currentEmail.body, currentEmail.from, emailId)
+        : parseSentEmailBody(currentEmail.body, emailId, currentEmail.to);
 
     return (
-      <Box sx={{ padding: 2, backgroundColor: '#ffffff', borderRadius: '8px', boxShadow: 1 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
-          {currentTab === 'inbox' ? (
+      <Box
+        sx={{
+          padding: 2,
+          backgroundColor: "#ffffff",
+          borderRadius: "8px",
+          boxShadow: 1,
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginBottom: 2,
+          }}
+        >
+          {currentTab === "inbox" ? (
             <>
-              <Typography variant="body1" sx={{ color: '#003366', fontWeight: 'bold' }}>
+              <Typography
+                variant="body1"
+                sx={{ color: "#003366", fontWeight: "bold" }}
+              >
                 <strong>From:</strong> {currentEmail.from}
               </Typography>
-              <Typography variant="body1" sx={{ color: '#003366', fontWeight: 'bold' }} textAlign="right">
+              <Typography
+                variant="body1"
+                sx={{ color: "#003366", fontWeight: "bold" }}
+                textAlign="right"
+              >
                 <strong>To:</strong> {emailId}
               </Typography>
             </>
           ) : (
             <>
-              <Typography variant="body1" sx={{ color: '#003366', fontWeight: 'bold' }}>
+              <Typography
+                variant="body1"
+                sx={{ color: "#003366", fontWeight: "bold" }}
+              >
                 <strong>From:</strong> {emailId}
               </Typography>
-              <Typography variant="body1" sx={{ color: '#003366', fontWeight: 'bold' }} textAlign="right">
+              <Typography
+                variant="body1"
+                sx={{ color: "#003366", fontWeight: "bold" }}
+                textAlign="right"
+              >
                 <strong>To:</strong> {currentEmail.to}
               </Typography>
             </>
@@ -507,10 +721,14 @@ export default function Chat() {
             parsedMessages.map((message, index) => (
               <Box key={index} sx={{ marginBottom: 2 }}>
                 <Typography variant="body2" color="#333">
-                  {message.text.split('\n')[0]}
+                  {message.text.split("\n")[0]}
                 </Typography>
-                <Typography variant="caption" color="text.secondary" sx={{ marginTop: 1 }}>
-                  {message.text.split('\n')[1]}
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ marginTop: 1 }}
+                >
+                  {message.text.split("\n")[1]}
                 </Typography>
                 <Divider sx={{ marginY: 1 }} />
               </Box>
@@ -522,10 +740,12 @@ export default function Chat() {
           {currentEmail.attachments && currentEmail.attachments.length > 0 && (
             <Box sx={{ marginTop: 2 }}>
               <Typography variant="h6">Attachments:</Typography>
-              {currentEmail.attachments.map(attachment => (
+              {currentEmail.attachments.map((attachment) => (
                 <Button
                   key={attachment.id}
-                  onClick={() => downloadAttachment(attachment.id, attachment.filename)}
+                  onClick={() =>
+                    downloadAttachment(attachment.id, attachment.filename)
+                  }
                   sx={{ margin: 1 }}
                   variant="outlined"
                 >
@@ -535,7 +755,7 @@ export default function Chat() {
             </Box>
           )}
 
-          {currentTab === 'inbox' && (
+          {currentTab === "inbox" && (
             <Box sx={{ marginTop: 2 }}>
               <TextField
                 fullWidth
@@ -543,7 +763,7 @@ export default function Chat() {
                 rows={4}
                 placeholder="Type your reply..."
                 value={replyText}
-                onChange={e => setReplyText(e.target.value)}
+                onChange={(e) => setReplyText(e.target.value)}
                 variant="outlined"
                 sx={{ marginBottom: 2 }}
               />
@@ -569,10 +789,15 @@ export default function Chat() {
     );
   };
 
-
-
   return (
-    <Box sx={{ flexGrow: 1, backgroundColor: '#f4f4f4', height: '100vh', padding: 2 }}>
+    <Box
+      sx={{
+        flexGrow: 1,
+        backgroundColor: "#f4f4f4",
+        height: "100vh",
+        padding: 2,
+      }}
+    >
       {!emailId ? (
         // Display if emailId (sign-in token) is not available
         <Container sx={{ padding: 2 }}>
@@ -584,11 +809,11 @@ export default function Chat() {
         <Grid container spacing={2}>
           {/* Filter Options Bar */}
           <Grid item xs={12} sx={{ margin: 2 }}>
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
               <Button
-                variant={filter === '' ? 'contained' : 'outlined'}
+                variant={filter === "" ? "contained" : "outlined"}
                 color="primary"
-                onClick={() => setFilter('')}
+                onClick={() => setFilter("")}
                 sx={{ marginX: 1 }}
               >
                 All
@@ -596,7 +821,7 @@ export default function Chat() {
               {options.map((option) => (
                 <Button
                   key={option}
-                  variant={filter === option ? 'contained' : 'outlined'}
+                  variant={filter === option ? "contained" : "outlined"}
                   color="primary"
                   onClick={() => setFilter(option)}
                   sx={{ marginX: 1 }}
@@ -607,22 +832,21 @@ export default function Chat() {
             </Box>
           </Grid>
 
-
           {/* Tab Buttons for Inbox and Sent Emails */}
           <Grid item xs={12} sx={{}}>
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
               <Button
-                variant={currentTab === 'inbox' ? 'contained' : 'outlined'}
+                variant={currentTab === "inbox" ? "contained" : "outlined"}
                 color="primary"
-                onClick={() => setCurrentTab('inbox')}
+                onClick={() => setCurrentTab("inbox")}
                 sx={{ marginX: 1 }}
               >
                 Inbox
               </Button>
               <Button
-                variant={currentTab === 'outbox' ? 'contained' : 'outlined'}
+                variant={currentTab === "outbox" ? "contained" : "outlined"}
                 color="primary"
-                onClick={() => setCurrentTab('outbox')}
+                onClick={() => setCurrentTab("outbox")}
                 sx={{ marginX: 1 }}
               >
                 Sent
@@ -633,17 +857,23 @@ export default function Chat() {
           {/* First Grid: Email List */}
           <Grid item xs={4}>
             <Item>
-              <Typography variant="h6" sx={{
-                color: '#003366', // Dark blue color
-                marginBottom: '10px',
-                fontWeight: 'bold',
-              }}>
-                <strong>{currentTab === 'inbox' ? 'Inbox' : 'Sent'}</strong>
+              <Typography
+                variant="h6"
+                sx={{
+                  color: "#003366", // Dark blue color
+                  marginBottom: "10px",
+                  fontWeight: "bold",
+                }}
+              >
+                <strong>{currentTab === "inbox" ? "Inbox" : "Sent"}</strong>
               </Typography>
               <Divider sx={{ marginY: 1 }} />
+
+              <Typography>Unread Emails: {unreadCount}</Typography>
+
               {loading ? (
                 <Typography>Loading emails...</Typography>
-              ) : currentTab === 'inbox' ? (
+              ) : currentTab === "inbox" ? (
                 renderEmailList(emails, handleEmailClick) // Call the function here for inbox
               ) : (
                 renderEmailList(sentEmails, handleEmailClick) // Call the function here for sent emails
@@ -659,7 +889,4 @@ export default function Chat() {
       )}
     </Box>
   );
-
 }
-
-
