@@ -14,6 +14,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  CircularProgress,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { styled } from "@mui/material/styles";
@@ -30,6 +31,8 @@ import { SlQuestion } from "react-icons/sl";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -37,6 +40,7 @@ import Avatar from "@mui/material/Avatar";
 import Badge from "@mui/material/Badge";
 import Stack from "@mui/material/Stack";
 // import axios from "axios";
+import EditIcon from "@mui/icons-material/Edit";
 import ImageCropper from "../Settings/ImageCropper";
 const UpdateTeamMember = () => {
   const LOGIN_API = process.env.REACT_APP_USER_LOGIN;
@@ -55,9 +59,9 @@ const UpdateTeamMember = () => {
   const handleLoginDetails = () => {
     setLoginDetails(!logindetails); // Set to true to show the text
   };
-const handleCloseLoginDetials=()=>{
-  setLoginDetails(!logindetails);
-}
+  const handleCloseLoginDetials = () => {
+    setLoginDetails(!logindetails);
+  };
   // const handleOpen = () => {
   //   setOpen(true);
   //   setEditable(true); // Enable editing when modal is opened
@@ -77,8 +81,6 @@ const handleCloseLoginDetials=()=>{
   };
 
   const [error, setError] = useState(""); // Error state
-
-  
 
   // const handleFileChange = (event) => {
   //   const file = event.target.files[0];
@@ -269,7 +271,7 @@ const handleCloseLoginDetials=()=>{
   // };
 
   // const handleUpdateTeamMember = () => {
-    
+
   //     const myHeaders = new Headers();
   //     myHeaders.append("Content-Type", "application/json");
 
@@ -325,7 +327,7 @@ const handleCloseLoginDetials=()=>{
   //         if (result && result.teamMember && result.teamMember.userid) {
   //           const userId = result.teamMember.userid;
   //           const updatedUsername = `${firstName} ${middleName ? middleName + " " : ""}${lastName}`.trim();
-   
+
   //           // Call function to update the username
   //           updateUserUsername(userId, updatedUsername);
   //         }
@@ -336,16 +338,16 @@ const handleCloseLoginDetials=()=>{
   //   const updateUserUsername = (userId, username) => {
   //     const myHeaders = new Headers();
   //     myHeaders.append("Content-Type", "application/json");
-    
+
   //     const raw = JSON.stringify({ username });
-    
+
   //     const requestOptions = {
   //       method: "PATCH",
   //       headers: myHeaders,
   //       body: raw,
   //       redirect: "follow",
   //     };
-    
+
   //     fetch(`${LOGIN_API}/common/user/${userId}`, requestOptions)
   //       .then((response) => {
   //         if (!response.ok) {
@@ -364,106 +366,107 @@ const handleCloseLoginDetials=()=>{
   //       });
   //   };
   const handleUpdateTeamMember = () => {
-  const myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-
-  const raw = JSON.stringify({
-    firstName: firstName,
-    middleName: middleName,
-    lastName: lastName,
-    role: selectedOption,
-    email: email,
-    managePayments: isCheckedPayments,
-    manageInvoices: isCheckedInvoices,
-    managePipelines: isCheckedPipelines,
-    manageJobRecurrence: isCheckedJobRecurrences,
-    manageTimeEntries: isCheckedTimeEntries,
-    manageRatesinTimeEntries: isCheckedRatesTimeEntries,
-    manageAccounts: isCheckedAccounts,
-    viewallAccounts: isCheckedAllAccounts,
-    manageTags: isCheckedTags,
-    manageCustomFields: isCheckedCustomFields,
-    manageOrganizers: isCheckedOrganizers,
-    assignTeamMates: isCheckedTeammates,
-    chargeFirmBalance: isCheckedFirmBalance,
-    viewAllContacts: isCheckedAllContacts,
-    manageContacts: isCheckedContacts,
-    manageProposals: isCheckedProposals,
-    manageSites: isCheckedSite,
-    manageEmails: isCheckedEmail,
-    manageServices: isCheckedServices,
-    editOrganizersAnswers: isCheckedOrgnizerAnswers,
-    managePublicFilterTemplates: isCheckedFilterTemplates,
-    manageDocuments: isCheckedDocuments,
-    manageTemplates: isCheckedTemplates,
-    manageIRSTranscripts: isCheckedTranscripts,
-    manageMarketPlace: isCheckedMarketplace,
-    viewReporting: isCheckedViewReporting,
-  });
-
-  const requestOptions = {
-    method: "PATCH",
-    headers: myHeaders,
-    body: raw,
-    redirect: "follow",
-  };
-
-  fetch(`${LOGIN_API}/admin/teammember/${id}`, requestOptions)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Failed to update team member");
-      }
-      return response.json();
-    })
-    .then((result) => {
-      if (result && result.teamMember && result.teamMember.userid) {
-        const userId = result.teamMember.userid;
-        const updatedUsername = `${firstName} ${middleName ? middleName + " " : ""}${lastName}`.trim();
-        return updateUserUsername(userId, updatedUsername);
-      }
-      return Promise.resolve(); // Resolve if no userid is present
-    })
-    .then(() => {
-      toast.success("Team member updated successfully");
-      handleNewDrawerClose();
-    })
-    .catch((error) => {
-      console.error(error);
-      toast.error(error.message || "Failed to update team member");
-    });
-};
-
-const updateUserUsername = (userId, username) => {
-  return new Promise((resolve, reject) => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-  
-    const raw = JSON.stringify({ username });
-  
+
+    const raw = JSON.stringify({
+      firstName: firstName,
+      middleName: middleName,
+      lastName: lastName,
+      role: selectedOption,
+      email: email,
+      managePayments: isCheckedPayments,
+      manageInvoices: isCheckedInvoices,
+      managePipelines: isCheckedPipelines,
+      manageJobRecurrence: isCheckedJobRecurrences,
+      manageTimeEntries: isCheckedTimeEntries,
+      manageRatesinTimeEntries: isCheckedRatesTimeEntries,
+      manageAccounts: isCheckedAccounts,
+      viewallAccounts: isCheckedAllAccounts,
+      manageTags: isCheckedTags,
+      manageCustomFields: isCheckedCustomFields,
+      manageOrganizers: isCheckedOrganizers,
+      assignTeamMates: isCheckedTeammates,
+      chargeFirmBalance: isCheckedFirmBalance,
+      viewAllContacts: isCheckedAllContacts,
+      manageContacts: isCheckedContacts,
+      manageProposals: isCheckedProposals,
+      manageSites: isCheckedSite,
+      manageEmails: isCheckedEmail,
+      manageServices: isCheckedServices,
+      editOrganizersAnswers: isCheckedOrgnizerAnswers,
+      managePublicFilterTemplates: isCheckedFilterTemplates,
+      manageDocuments: isCheckedDocuments,
+      manageTemplates: isCheckedTemplates,
+      manageIRSTranscripts: isCheckedTranscripts,
+      manageMarketPlace: isCheckedMarketplace,
+      viewReporting: isCheckedViewReporting,
+    });
+
     const requestOptions = {
       method: "PATCH",
       headers: myHeaders,
       body: raw,
       redirect: "follow",
     };
-  
-    fetch(`${LOGIN_API}/common/user/${userId}`, requestOptions)
+
+    fetch(`${LOGIN_API}/admin/teammember/${id}`, requestOptions)
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Failed to update username");
+          throw new Error("Failed to update team member");
         }
         return response.json();
       })
       .then((result) => {
-        console.log("Username updated:", result);
-        resolve(); // Resolve the promise
+        if (result && result.teamMember && result.teamMember.userid) {
+          const userId = result.teamMember.userid;
+          const updatedUsername =
+            `${firstName} ${middleName ? middleName + " " : ""}${lastName}`.trim();
+          return updateUserUsername(userId, updatedUsername);
+        }
+        return Promise.resolve(); // Resolve if no userid is present
+      })
+      .then(() => {
+        toast.success("Team member updated successfully");
+        handleNewDrawerClose();
       })
       .catch((error) => {
         console.error(error);
-        reject(error); // Reject the promise
+        toast.error(error.message || "Failed to update team member");
       });
-  });
-};
+  };
+
+  const updateUserUsername = (userId, username) => {
+    return new Promise((resolve, reject) => {
+      const myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      const raw = JSON.stringify({ username });
+
+      const requestOptions = {
+        method: "PATCH",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+
+      fetch(`${LOGIN_API}/common/user/${userId}`, requestOptions)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to update username");
+          }
+          return response.json();
+        })
+        .then((result) => {
+          console.log("Username updated:", result);
+          resolve(); // Resolve the promise
+        })
+        .catch((error) => {
+          console.error(error);
+          reject(error); // Reject the promise
+        });
+    });
+  };
   const handleSaveButtonClick = () => {
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
@@ -518,6 +521,7 @@ const updateUserUsername = (userId, username) => {
         const teamMembers = result;
         console.log(teamMembers);
         console.log(teamMembers.teamMember.userid);
+
         setTeamMemeberData(teamMembers.teamMember);
         setTeamMemberUserId(teamMembers.teamMember.userid);
         setFirstName(teamMembers.teamMember.firstName);
@@ -563,12 +567,9 @@ const updateUserUsername = (userId, username) => {
           teamMembers.teamMember.editOrganizersAnswers
         );
         setIsCheckedDocuments(teamMembers.teamMember.manageDocuments);
-
-        
       })
       .catch((error) => console.error(error));
   };
-  
 
   // Function to check if email exists
   const checkEmailExists = async (enteredEmail) => {
@@ -729,7 +730,7 @@ const updateUserUsername = (userId, username) => {
       .then((response) => {
         const imageUrl = response.data.imageUrl;
         setCroppedImage(imageUrl); // Set the last uploaded image URL as the profile picture
-        console.log("viayak",imageUrl)
+        console.log("viayak", imageUrl);
       })
       .catch((error) => {
         console.error("Error fetching last image:", error);
@@ -737,17 +738,17 @@ const updateUserUsername = (userId, username) => {
   }, []);
   // const imageUrlWithCacheBuster = `${croppedImage}`;
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImage(reader.result); // Set the base64 image data
-        console.log("vinayak",reader.result)
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onload = () => {
+  //       setImage(reader.result); // Set the base64 image data
+  //       console.log("vinayak",reader.result)
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
   const handleCroppedImage = (cropped) => {
     setCroppedImage(cropped); // Set the cropped image data
@@ -788,6 +789,83 @@ const updateUserUsername = (userId, username) => {
       console.error("No cropped image to send!");
     }
   };
+
+  const [currentImage, setCurrentImage] = useState(null);
+  const [preview, setPreview] = useState(currentImage);
+  const [isUploading, setIsUploading] = useState(false);
+  const fetchData = async () => {
+    try {
+      const url = `${LOGIN_API}/common/user/${teamMemberUserId}`;
+      console.log("jjj", url);
+      const response = await fetch(url);
+      const data = await response.json();
+
+      // const validTime = logindata.user.exp - logindata.user.iat;
+      // setSignedTime(formatTimePeriod(validTime));
+
+      setCurrentImage(data.profilePicture);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  useEffect(() => {
+    if (teamMemberUserId) {
+      fetchData();
+    }
+  }, [teamMemberUserId]);
+  useEffect(() => {
+    if (currentImage) {
+      // Replace 'uploads/' with 'profilepicture/' in the path
+      const transformedUrl = currentImage.replace(
+        "uploads/",
+        "profilepicture/"
+      );
+      setPreview(`${LOGIN_API}/${transformedUrl}`);
+    }
+  }, [currentImage]);
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!image) {
+      toast.warning("Please select an image first");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("profilePicture", image);
+
+    try {
+      setIsUploading(true);
+      const response = await axios.post(
+        `${LOGIN_API}/common/${teamMemberUserId}/profile-picture`,
+        formData
+      );
+      console.log("jhgds", response);
+      toast.success("Profile picture updated successfully");
+
+      setIsUploading(false);
+      fetchData();
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error(
+        error.response?.data?.error || "Failed to upload profile picture"
+      );
+    } finally {
+      setIsUploading(false);
+    }
+  };
   return (
     <Box sx={{ padding: 3 }}>
       <Box display={"flex"} alignItems={"center"} mb={1} gap={2}>
@@ -799,7 +877,7 @@ const updateUserUsername = (userId, username) => {
       <Box mt={2} flexGrow={1} padding={2}>
         <Grid container spacing={2} columns={16}>
           <Grid xs={8}>
-            <Box
+            {/* <Box
               display={"flex"}
               alignItems={"center"}
               justifyContent={"space-between"}
@@ -812,20 +890,140 @@ const updateUserUsername = (userId, username) => {
                   anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                   variant="dot"
                 >
+                  
                   <Avatar
-                    alt="User Name"
-                    src={croppedImage  || "default_image_url"}
-                    sx={{ width: 40, height: 40 }}
-                  />
+                                        src={preview || currentImage}
+                                        sx={{
+                                          width: 40,
+                                          height: 40,
+                                          border: "2px solid #eee",
+                                        }}
+                                      />
                 </StyledBadge>
               <Box>
                 <IconButton onClick={handleEditClick}>
                   <BorderColorIcon sx={{ color: "#1976d3" }} />
                 </IconButton>
               </Box>
-            </Box>
-            {isEditable && (
+            </Box> */}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                mt: 1,
+              }}
+            >
               <Box>
+                {" "}
+                <Typography variant="h6">Personal Details</Typography>
+              </Box>
+              <Box>
+                <IconButton onClick={handleEditClick}>
+                  <BorderColorIcon sx={{ color: "#1976d3" }} />
+                </IconButton>
+              </Box>
+            </Box>
+            <Box>
+              <Divider sx={{ mt: 1.5 }} />
+            </Box>
+            {!isEditable && (
+              <Box
+                mt={3}
+                sx={{ display: "flex", alignItems: "center", gap: 5 }}
+              >
+                <Avatar
+                  src={preview || currentImage}
+                  sx={{
+                    width: 120,
+                    height: 120,
+                    border: "2px solid #eee",
+                  }}
+                />
+                <Box>
+                  <Typography variant="h5">
+                    {firstName} {lastName}
+                  </Typography>
+                  <Typography variant="body1">{phonenumber}</Typography>
+                </Box>
+              </Box>
+            )}
+            {isEditable && (
+              <Box mt={2}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 2,
+                  }}
+                >
+                  <Box sx={{ position: "relative" }}>
+                    <Avatar
+                      src={preview || currentImage}
+                      sx={{
+                        width: 120,
+                        height: 120,
+                        border: "2px solid #eee",
+                      }}
+                    />
+                    <input
+                      accept="image/*"
+                      style={{ display: "none" }}
+                      id="profile-picture-upload"
+                      type="file"
+                      onChange={handleImageChange}
+                    />
+                    <label htmlFor="profile-picture-upload">
+                      <Box
+                        // color="primary"
+                        aria-label="upload picture"
+                        component="span"
+                        sx={{
+                          position: "absolute",
+                          bottom: 0,
+                          right: 0,
+                          borderRadius: "10px",
+                          cursor: "pointer",
+                          padding: "6px 8px",
+                          backgroundColor: "primary.main",
+                          "&:hover": {
+                            backgroundColor: "primary.dark",
+                          },
+                        }}
+                      >
+                        <EditIcon sx={{ color: "white" }} fontSize="small" />
+                      </Box>
+                    </label>
+                  </Box>
+
+                  {image && (
+                    <>
+                      <Typography variant="body2" sx={{ mt: 1 }}>
+                        {image.name} ({Math.round(image.size / 1024)} KB)
+                      </Typography>
+
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<CloudUploadIcon />}
+                        onClick={handleUpload}
+                        disabled={isUploading}
+                        fullWidth
+                        sx={{ mt: 2 }}
+                      >
+                        {isUploading ? (
+                          <>
+                            <CircularProgress size={24} color="inherit" />
+                            <Box sx={{ ml: 1 }}>Uploading...</Box>
+                          </>
+                        ) : (
+                          "Upload Profile Picture"
+                        )}
+                      </Button>
+                    </>
+                  )}
+                </Box>
                 <Box sx={{ display: "flex", gap: 2 }} mt={2}>
                   <Box>
                     <Typography>First Name</Typography>
@@ -869,10 +1067,10 @@ const updateUserUsername = (userId, username) => {
                   <TextField
                     margin="normal"
                     value={phonenumber}
-                     onChange={(e) => {
-    const onlyNums = e.target.value.replace(/\D/g, ''); // Remove non-digits
-    setPhoneNumber(onlyNums);
-  }}
+                    onChange={(e) => {
+                      const onlyNums = e.target.value.replace(/\D/g, ""); // Remove non-digits
+                      setPhoneNumber(onlyNums);
+                    }}
                     // onChange={(e) => setPhoneNumber(e.target.value)}
                     placeholder="Phone Number"
                     fullWidth
@@ -881,61 +1079,6 @@ const updateUserUsername = (userId, username) => {
                   />
                 </Box>
 
-
-                <Box
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="center"
-                  justifyContent="center"
-                  minHeight="100vh"
-                  sx={{ bgcolor: "#f5f5f5" }}
-                >
-                  <Typography variant="h4" gutterBottom>
-                    React Easy Crop with Avatar
-                  </Typography>
-
-                  {croppedImage ? (
-                    <Avatar
-                      src={croppedImage}
-                      sx={{ width: 120, height: 120, mb: 2 }}
-                    />
-                  ) : (
-                    <Avatar sx={{ width: 120, height: 120, mb: 2 }} />
-                  )}
-
-                  {!image && (
-                    <Button
-                      variant="contained"
-                      component="label"
-                      sx={{ mb: 2 }}
-                    >
-                      Upload Image
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        hidden
-                      />
-                    </Button>
-                  )}
-
-                  {image && (
-                    <ImageCropper
-                      image={image}
-                      onCroppedImage={handleCroppedImage}
-                    />
-                  )}
-
-                  {croppedImage && (
-                    <Button
-                      variant="contained"
-                      sx={{ mt: 2 }}
-                      onClick={handleSubmit}
-                    >
-                      Submit Image
-                    </Button>
-                  )}
-                </Box>
                 {showSaveButtons && (
                   <Box display="flex" alignItems="center" gap={2} mt={2}>
                     <Button
@@ -1050,15 +1193,19 @@ const updateUserUsername = (userId, username) => {
                   </Box>
                 </Box>
                 <Box mt={2} display="flex" alignItems="center" gap={3}>
-                  <Button variant="contained" onClick={updatePassword} sx={{
-                        backgroundColor: "var(--color-save-btn)", // Normal background
+                  <Button
+                    variant="contained"
+                    onClick={updatePassword}
+                    sx={{
+                      backgroundColor: "var(--color-save-btn)", // Normal background
 
-                        "&:hover": {
-                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-                        },
-                        borderRadius: "15px",
-                        width: "80px",
-                      }}>
+                      "&:hover": {
+                        backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                      },
+                      borderRadius: "15px",
+                      width: "80px",
+                    }}
+                  >
                     Save
                   </Button>
                   <Button
@@ -1129,7 +1276,7 @@ const updateUserUsername = (userId, username) => {
                         padding: "20px",
                       }}
                     >
-                       <Typography variant="h6">
+                      <Typography variant="h6">
                         {" "}
                         Edit team member {firstName} {middleName} {lastName}
                       </Typography>
@@ -1140,8 +1287,11 @@ const updateUserUsername = (userId, username) => {
                     </Box>
                     <Divider />
                   </Box>
-                  <form >
-                      <Box sx={{height:'80vh',overflowY:'auto',p:2}} className="bulk-job-form">
+                  <form>
+                    <Box
+                      sx={{ height: "80vh", overflowY: "auto", p: 2 }}
+                      className="bulk-job-form"
+                    >
                       <Box
                         sx={{ display: "flex", alignItems: "center", gap: 2 }}
                       >
@@ -1245,7 +1395,6 @@ const updateUserUsername = (userId, username) => {
                                   >
                                     <Switch
                                       onChange={handleSwitchPayments}
-                                      
                                       checked={isCheckedPayments}
                                       onColor="#3A91F5"
                                       onHandleColor="#FFF"
@@ -1254,7 +1403,7 @@ const updateUserUsername = (userId, username) => {
                                       checkedIcon={false}
                                       height={20}
                                       width={32}
-                                         disabled
+                                      disabled
                                       className="react-switch"
                                     />
                                     <p style={{ color: "black" }}>
@@ -1272,7 +1421,6 @@ const updateUserUsername = (userId, username) => {
                                   >
                                     <Switch
                                       onChange={handleSwitchPipelines}
-                                     
                                       checked={isCheckedPipelines}
                                       onColor="#3A91F5"
                                       onHandleColor="#FFF"
@@ -1307,7 +1455,7 @@ const updateUserUsername = (userId, username) => {
                                       height={20}
                                       width={32}
                                       className="react-switch"
-                                         disabled
+                                      disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage time entries
@@ -1349,7 +1497,6 @@ const updateUserUsername = (userId, username) => {
                                   >
                                     <Switch
                                       onChange={handleSwitchTags}
-                                      
                                       checked={isCheckedTags}
                                       onColor="#3A91F5"
                                       onHandleColor="#FFF"
@@ -1410,7 +1557,7 @@ const updateUserUsername = (userId, username) => {
                                       height={20}
                                       width={32}
                                       className="react-switch"
-                                       disabled
+                                      disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage firm balance
@@ -1461,7 +1608,7 @@ const updateUserUsername = (userId, username) => {
                                       height={20}
                                       width={32}
                                       className="react-switch"
-                                       disabled
+                                      disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage site
@@ -1478,7 +1625,6 @@ const updateUserUsername = (userId, username) => {
                                   >
                                     <Switch
                                       onChange={handleSwitchServices}
-                                     
                                       checked={isCheckedServices}
                                       onColor="#3A91F5"
                                       onHandleColor="#FFF"
@@ -1513,7 +1659,7 @@ const updateUserUsername = (userId, username) => {
                                       height={20}
                                       width={32}
                                       className="react-switch"
-                                       disabled
+                                      disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage public filter templates
@@ -1530,7 +1676,6 @@ const updateUserUsername = (userId, username) => {
                                   >
                                     <Switch
                                       onChange={handleSwitchTemplates}
-                                      
                                       checked={isCheckedTemplates}
                                       onColor="#3A91F5"
                                       onHandleColor="#FFF"
@@ -1565,7 +1710,7 @@ const updateUserUsername = (userId, username) => {
                                       height={20}
                                       width={32}
                                       className="react-switch"
-                                       disabled
+                                      disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage marketplace
@@ -1592,7 +1737,7 @@ const updateUserUsername = (userId, username) => {
                                       height={20}
                                       width={32}
                                       className="react-switch"
-                                       disabled
+                                      disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage invoices
@@ -1618,7 +1763,7 @@ const updateUserUsername = (userId, username) => {
                                       height={20}
                                       width={32}
                                       className="react-switch"
-                                       disabled
+                                      disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage job recurrences
@@ -1644,7 +1789,7 @@ const updateUserUsername = (userId, username) => {
                                       height={20}
                                       width={32}
                                       className="react-switch"
-                                       disabled
+                                      disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage rates in time entries
@@ -1661,7 +1806,6 @@ const updateUserUsername = (userId, username) => {
                                   >
                                     <Switch
                                       onChange={handleSwitchAllAccounts}
-                                      
                                       checked={isCheckedAllAccounts}
                                       onColor="#3A91F5"
                                       onHandleColor="#FFF"
@@ -1696,7 +1840,7 @@ const updateUserUsername = (userId, username) => {
                                       height={20}
                                       width={32}
                                       className="react-switch"
-                                       disabled
+                                      disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage custome fields
@@ -1722,7 +1866,7 @@ const updateUserUsername = (userId, username) => {
                                       height={20}
                                       width={32}
                                       className="react-switch"
-                                       disabled
+                                      disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage teammates
@@ -1739,7 +1883,6 @@ const updateUserUsername = (userId, username) => {
                                   >
                                     <Switch
                                       onChange={handleSwitchAllContacts}
-                                     
                                       checked={isCheckedAllContacts}
                                       onColor="#3A91F5"
                                       onHandleColor="#FFF"
@@ -1765,7 +1908,6 @@ const updateUserUsername = (userId, username) => {
                                   >
                                     <Switch
                                       onChange={handleSwitchProposals}
-                                     
                                       checked={isCheckedProposals}
                                       onColor="#3A91F5"
                                       onHandleColor="#FFF"
@@ -1800,7 +1942,7 @@ const updateUserUsername = (userId, username) => {
                                       height={20}
                                       width={32}
                                       className="react-switch"
-                                       disabled
+                                      disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Mute emails
@@ -1826,7 +1968,7 @@ const updateUserUsername = (userId, username) => {
                                       height={20}
                                       width={32}
                                       className="react-switch"
-                                       disabled
+                                      disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Edit orgnizer answers
@@ -1852,7 +1994,7 @@ const updateUserUsername = (userId, username) => {
                                       height={20}
                                       width={32}
                                       className="react-switch"
-                                       disabled
+                                      disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage documents
@@ -1878,7 +2020,7 @@ const updateUserUsername = (userId, username) => {
                                       height={20}
                                       width={32}
                                       className="react-switch"
-                                       disabled
+                                      disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       Manage IRS Transcripts
@@ -1904,7 +2046,7 @@ const updateUserUsername = (userId, username) => {
                                       height={20}
                                       width={32}
                                       className="react-switch"
-                                       disabled
+                                      disabled
                                     />
                                     <p style={{ color: "black" }}>
                                       View reporting
@@ -1925,7 +2067,7 @@ const updateUserUsername = (userId, username) => {
                       alignItems: "center",
                       gap: 5,
                       // margin: "8px",
-                      mt:1,
+                      mt: 1,
                       ml: 3,
                     }}
                   >
@@ -1934,7 +2076,7 @@ const updateUserUsername = (userId, username) => {
                       onClick={handleUpdateTeamMember}
                       sx={{
                         backgroundColor: "var(--color-save-btn)", // Normal background
-    
+
                         "&:hover": {
                           backgroundColor: "var(--color-save-hover-btn)", // Hover background color
                         },
@@ -1945,18 +2087,22 @@ const updateUserUsername = (userId, username) => {
                     >
                       Save
                     </Button>
-                    <Button variant="outlined" onClick={handleNewDrawerClose} sx={{
-                    borderColor: "var(--color-border-cancel-btn)", // Normal background
-                    color: "var(--color-save-btn)",
-                    "&:hover": {
-                      backgroundColor: "var(--color-save-hover-btn)", // Hover background color
-                      color: "#fff",
-                      border: "none",
-                    },
-                    width: "80px",
-                    borderRadius: "15px",
-                    // mt: 2,
-                  }}>
+                    <Button
+                      variant="outlined"
+                      onClick={handleNewDrawerClose}
+                      sx={{
+                        borderColor: "var(--color-border-cancel-btn)", // Normal background
+                        color: "var(--color-save-btn)",
+                        "&:hover": {
+                          backgroundColor: "var(--color-save-hover-btn)", // Hover background color
+                          color: "#fff",
+                          border: "none",
+                        },
+                        width: "80px",
+                        borderRadius: "15px",
+                        // mt: 2,
+                      }}
+                    >
                       Cancel
                     </Button>
                   </Box>
@@ -1966,6 +2112,7 @@ const updateUserUsername = (userId, username) => {
           </Grid>
         </Grid>
       </Box>
+       <ToastContainer position="top-right" autoClose={3000} />
     </Box>
   );
 };
