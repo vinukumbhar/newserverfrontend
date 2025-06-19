@@ -543,36 +543,73 @@ const MyStepperUpdate = () => {
   const [termsBodyError, setTermsBodyError] = useState("");
   const [selctedOptionError, setSelectedOptionError] = useState("");
 
+  // const validateForm = () => {
+  //   let isValid = true;
+  //   if (!proposalName) {
+  //     setProposalNameError("Name is required");
+  //     isValid = false;
+  //   } else {
+  //     setProposalNameError("");
+  //   }
+  //   if (!introductionContent) {
+  //     setIntroductionBodyError("Body is required");
+  //     isValid = false;
+  //   } else {
+  //     setIntroductionBodyError("");
+  //   }
+  //   if (!termsContent) {
+  //     setTermsBodyError("Body is required");
+  //     isValid = false;
+  //   } else {
+  //     setTermsBodyError("");
+  //   }
+  //   if (!activeOption) {
+  //     setSelectedOptionError("An option must be selected");
+  //     isValid = false;
+  //   } else {
+  //     setSelectedOptionError("");
+  //   }
+
+  //   return isValid;
+  // };
+
+
   const validateForm = () => {
-    let isValid = true;
-    if (!proposalName) {
-      setProposalNameError("Name is required");
-      isValid = false;
-    } else {
-      setProposalNameError("");
-    }
-    if (!introductionContent) {
-      setIntroductionBodyError("Body is required");
-      isValid = false;
-    } else {
-      setIntroductionBodyError("");
-    }
-    if (!termsContent) {
-      setTermsBodyError("Body is required");
-      isValid = false;
-    } else {
-      setTermsBodyError("");
-    }
-    if (!activeOption) {
-      setSelectedOptionError("An option must be selected");
-      isValid = false;
-    } else {
-      setSelectedOptionError("");
-    }
+  let isValid = true;
+  const currentStep = steps[activeStep];
 
-    return isValid;
-  };
+  // Common validation for all steps
+  if (!proposalName) {
+    setProposalNameError("Name is required");
+    isValid = false;
+  } else {
+    setProposalNameError("");
+  }
 
+  // Step-specific validation
+  if (currentStep === "Introduction" && !introductionContent) {
+    setIntroductionBodyError("Body is required");
+    isValid = false;
+  } else {
+    setIntroductionBodyError("");
+  }
+
+  if (currentStep === "Terms" && !termsContent) {
+    setTermsBodyError("Body is required");
+    isValid = false;
+  } else {
+    setTermsBodyError("");
+  }
+
+  if ((currentStep === "Services & Invoices" || currentStep === "Payments") && !activeOption) {
+    setSelectedOptionError("An option must be selected");
+    isValid = false;
+  } else {
+    setSelectedOptionError("");
+  }
+
+  return isValid;
+};
   const handleEditorChange = (content) => {
     setDescription(content);
   };
@@ -831,27 +868,7 @@ const MyStepperUpdate = () => {
   };
 
   console.log(serviceandinvoiceSettings);
-
-  // Define service and invoice settings outside of fetchData
-  // const serviceandinvoiceSettings = {
-  //   servicesandinvoicetempid: invoiceData?.servicesandinvoicetempid,
-  //   invoicetemplatename: invoiceData?.invoicetemplatename,
-  //   invoiceteammember: invoiceData?.invoiceteammember,
-  //   issueinvoice: invoiceData?.issueinvoice,
-  //   specificdate: invoiceData?.specificdate,
-  //   specifictime: invoiceData?.specifictime,
-  //   description: invoiceData?.description,
-  //   lineItems: invoiceData?.lineItems,
-  //   summary: invoiceData?.summary,
-  //   notetoclient: invoiceData?.notetoclient,
-
-  //   isUpdating: isUpdating,
-  // };
-
   useEffect(() => {
-    // const fetchData = async () => {
-    //   await fetchproposalbyid();
-    // };
     fetchData();
   }, []); // Empty dependency array to run only once on mount
 
@@ -960,9 +977,9 @@ const MyStepperUpdate = () => {
             result.message ===
               "ProposalesandelsAccountwise created successfully"
           ) {
-            // fetchPrprosalsAllData();
-            // navigate("/firmtemp/templates/proposals");
             toast.success("ProposalesAndEls Created successfully");
+            //  fetchPrprosalsAllData();
+            navigate(`/clients/accounts/accountsdash/proposals/${data}`);
             // proposalSendMail();
           } else {
             toast.error(result.message || "Failed to Created ProposalesAndEls");
@@ -1042,6 +1059,7 @@ const MyStepperUpdate = () => {
                 "ProposalesandelsAccountwise created successfully"
             ) {
               toast.success("ProposalesAndEls Created successfully");
+              navigate(`/clients/accounts/accountsdash/proposals/${data}`);
               // proposalSendMail();
             } else {
               toast.error(
@@ -1122,6 +1140,8 @@ const MyStepperUpdate = () => {
               // fetchPrprosalsAllData();
               // navigate("/firmtemp/templates/proposals");
               toast.success("ProposalesAndEls Created successfully");
+              //  fetchPrprosalsAllData();
+              navigate(`/clients/accounts/accountsdash/proposals/${data}`);
               // proposalSendMail();
             } else {
               toast.error(
@@ -3035,26 +3055,25 @@ const MyStepperUpdate = () => {
               </Stepper>
             </Box> */}
             <Box sx={{ p: 2, backgroundColor: "#fff" }}>
-  <Stepper activeStep={activeStep}>
-    {steps.map((label, index) => {
-      // Check if the step has an error
-      const isError =
-        (index === 0 && !!proposalNameError) ||
-        (index === 1 && !!introductionBodyError) ||
-        (index === 2 && !!termsBodyError) ||
-        (index === 3 && !!selctedOptionError);
+              <Stepper activeStep={activeStep}>
+                {steps.map((label, index) => {
+                  // Check if the step has an error
+                  const isError =
+                    (index === 0 && !!proposalNameError) ||
+                    (index === 1 && !!introductionBodyError) ||
+                    (index === 2 && !!termsBodyError) ||
+                    (index === 3 && !!selctedOptionError);
 
-      return (
-        <Step key={index} onClick={() => handleStepClick(index)}>
-          <StepLabel error={isError} style={{ cursor: "pointer" }}>
-            {label}
-          </StepLabel>
-        </Step>
-      );
-    })}
-  </Stepper>
-</Box>
-
+                  return (
+                    <Step key={index} onClick={() => handleStepClick(index)}>
+                      <StepLabel error={isError} style={{ cursor: "pointer" }}>
+                        {label}
+                      </StepLabel>
+                    </Step>
+                  );
+                })}
+              </Stepper>
+            </Box>
           </Grid>
           <Grid
             item

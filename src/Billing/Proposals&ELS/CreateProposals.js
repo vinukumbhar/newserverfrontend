@@ -390,16 +390,41 @@ const handleAccountChange = (newSelectedAcc) => {
     setRows(newRows);
   };
 
-  const validateForm = () => {
-    let tempErrors = {};
-    let isValid = true;
-    if (!templatename) tempErrors.templatename = "Template name is required";
-    // if (!jobName) tempErrors.jobName = "Job name is required";
-
-    setErrors(tempErrors);
-    // return isValid;
-    return Object.keys(tempErrors).length === 0;
-  };
+   const [proposalNameError, setProposalNameError] = useState("");
+ 
+   const [introductionBodyError, setIntroductionBodyError] = useState("");
+   const [termsBodyError, setTermsBodyError] = useState("");
+   const [selctedOptionError, setSelectedOptionError] = useState("");
+ 
+   const validateForm = () => {
+     let isValid = true;
+     if (!proposalName) {
+       setProposalNameError("Name is required");
+       isValid = false;
+     } else {
+       setProposalNameError("");
+     }
+     if (!introductionContent) {
+       setIntroductionBodyError("Body is required");
+       isValid = false;
+     } else {
+       setIntroductionBodyError("");
+     }
+     if (!termsContent) {
+       setTermsBodyError("Body is required");
+       isValid = false;
+     } else {
+       setTermsBodyError("");
+     }
+     if (!activeOption) {
+       setSelectedOptionError("An option must be selected");
+       isValid = false;
+     } else {
+       setSelectedOptionError("");
+     }
+ 
+     return isValid;
+   };
 
   const handleEditorChange = (content) => {
     setDescription(content);
@@ -719,10 +744,9 @@ const handleAccountChange = (newSelectedAcc) => {
       .catch((error) => console.error(error));
   }
   const updatesaveProposaltemp = () => {
-    // if (!validateForm()) {
-    //   // toast.error("Please fix the validation errors.");
-    //   return;
-    // }
+    if (!validateForm()) {
+      return false;
+    }
     const currentStep = steps[activeStep];
     console.log(activeOption)
     console.log(activeStep)

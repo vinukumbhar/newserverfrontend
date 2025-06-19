@@ -210,7 +210,7 @@ const ActiveJobs = () => {
                           fontSize: "12px",
                           padding: "4px 8px",
                           lineHeight: "1",
-                        }}>{job.Stage.join(", ")}</TableCell>
+                        }}>{job.Stages?.map(stage => stage.name).join(", ")}</TableCell>
                
                 <TableCell style={{
                           fontSize: "12px",
