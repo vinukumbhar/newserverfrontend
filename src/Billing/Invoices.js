@@ -700,6 +700,21 @@ const Invoices = ({ charLimit = 4000 }) => {
     const handleAccountDash = (_id, data) => {
     navigate(`/clients/accounts/accountsdash/overview/${data}`);
   };
+
+  // Overdue detection helper
+  const isInvoiceOverdue = (invoice, paymentTermDays = 5) => {
+    if (!invoice.invoicedate || invoice.invoiceStatus === "Paid") return false;
+
+    const invoiceDate = new Date(invoice.invoicedate);
+    const dueDate = new Date(invoiceDate);
+    dueDate.setDate(dueDate.getDate() + paymentTermDays);
+    
+    const today = new Date();
+    const isUnpaid = invoice.invoiceStatus === "Pending";
+    const hasBalanceDue = invoice.balanceDueAmount === null || invoice.balanceDueAmount > 0;
+    
+    return today > dueDate && isUnpaid && hasBalanceDue;
+  };
   const fetchInvoiceData = async () => {
     try {
       const url = `${INVOICE_NEW}/workflow/invoices/invoice`;
@@ -709,7 +724,26 @@ const Invoices = ({ charLimit = 4000 }) => {
       }
       const data = await response.json();
 
-      setBillingInvoice(data.invoice);
+      // setBillingInvoice(data.invoice);
+       if (data.invoice) {
+      const updatedInvoices = await Promise.all(
+        data.invoice.map(async (invoice) => {
+          if (isInvoiceOverdue(invoice)) {
+            await fetch(
+              `${INVOICE_NEW}/workflow/invoices/invoicestatus/${invoice.invoicenumber}`,
+              {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ invoiceStatus: "Overdue" }),
+              }
+            );
+            return { ...invoice, invoiceStatus: "Overdue" };
+          }
+          return invoice;
+        })
+      );
+      setBillingInvoice(updatedInvoices);
+    }
     } catch (error) {
       console.error("Error fetching email templates:", error);
     }

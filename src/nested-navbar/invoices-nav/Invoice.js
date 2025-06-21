@@ -24,24 +24,74 @@ const Invoice = () => {
     fetchInvoices(data);
   }, []);
 
-  const fetchInvoices = async (data) => {
+  // Overdue detection helper
+  const isInvoiceOverdue = (invoice, paymentTermDays = 5) => {
+    if (!invoice.invoicedate || invoice.invoiceStatus === "Paid") return false;
+
+    const invoiceDate = new Date(invoice.invoicedate);
+    const dueDate = new Date(invoiceDate);
+    dueDate.setDate(dueDate.getDate() + paymentTermDays);
+    
+    const today = new Date();
+    const isUnpaid = invoice.invoiceStatus === "Pending";
+    const hasBalanceDue = invoice.balanceDueAmount === null || invoice.balanceDueAmount > 0;
+    
+    return today > dueDate && isUnpaid && hasBalanceDue;
+  };
+const fetchInvoices = async (data) => {
     try {
       const requestOptions = {
         method: "GET",
         redirect: "follow",
       };
 
-      fetch(`${INVOICES_API}/workflow/invoices/invoice/invoicelistby/accountid/${data}`, requestOptions)
-        .then((response) => response.json())
-        .then((result) => {
-          console.log(result);
-          setAccountInvoicesData(result.invoice);
-        })
-        .catch((error) => console.error(error));
+      const response = await fetch(
+        `${INVOICES_API}/workflow/invoices/invoice/invoicelistby/accountid/${data}`,
+        requestOptions
+      );
+      const result = await response.json();
+
+      if (result.invoice) {
+        const updatedInvoices = await Promise.all(
+          result.invoice.map(async (invoice) => {
+            if (isInvoiceOverdue(invoice)) {
+              await fetch(
+                `${INVOICES_API}/workflow/invoices/invoicestatus/${invoice.invoicenumber}`,
+                {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ invoiceStatus: "Overdue" }),
+                }
+              );
+              return { ...invoice, invoiceStatus: "Overdue" };
+            }
+            return invoice;
+          })
+        );
+        setAccountInvoicesData(updatedInvoices);
+      }
     } catch (error) {
-      console.error("Error fetching email templates:", error);
+      console.error("Error fetching invoices:", error);
     }
   };
+  // const fetchInvoices = async (data) => {
+  //   try {
+  //     const requestOptions = {
+  //       method: "GET",
+  //       redirect: "follow",
+  //     };
+
+  //     fetch(`${INVOICES_API}/workflow/invoices/invoice/invoicelistby/accountid/${data}`, requestOptions)
+  //       .then((response) => response.json())
+  //       .then((result) => {
+  //         console.log(result);
+  //         setAccountInvoicesData(result.invoice);
+  //       })
+  //       .catch((error) => console.error(error));
+  //   } catch (error) {
+  //     console.error("Error fetching email templates:", error);
+  //   }
+  // };
 
   console.log(accountInvoicesData);
 
@@ -100,29 +150,6 @@ const handleUpdateStatus = (invoiceNumber, status) => {
     .catch((error) => console.error("Error updating invoice status:", error));
 };
 
-  // const handleUpdateStatus = (invoiceNumber) => {
-  //   const myHeaders = new Headers();
-  //   myHeaders.append("Content-Type", "application/json");
-  
-  //   const raw = JSON.stringify({
-  //     invoiceStatus: "Paid",
-  //   });
-  
-  //   const requestOptions = {
-  //     method: "PATCH",
-  //     headers: myHeaders,
-  //     body: raw,
-  //     redirect: "follow",
-  //   };
-  
-  //   fetch(`${INVOICES_API}/workflow/invoices/invoicestatus/${invoiceNumber}`, requestOptions)
-  //     .then((response) => response.json())
-  //     .then((result) => {
-  //       console.log("Invoice status updated:", result);
-  //       // Optionally, refresh the invoice data
-  //     })
-  //     .catch((error) => console.error("Error updating invoice status:", error));
-  // };
   
   //***********Invoice Create */
 
@@ -326,51 +353,7 @@ const handleUpdateStatus = (invoiceNumber, status) => {
     }
   };
 
-  // Function to download invoice as PDF
-  // const handleDownload = async (_id) => {
-  //   try {
-  //     const response = await fetch(`${INVOICES_API}/workflow/invoices/invoice/${_id}`);
-  //     const invoiceData = await response.json();
-
-  //     const doc = new jsPDF();
-
-  //     // Add invoice details to PDF
-  //     doc.setFontSize(12);
-  //     doc.text(`Invoice Number: ${invoiceData.invoice.invoicenumber}`, 10, 10);
-  //     doc.text(`Date: ${new Date(invoiceData.invoice.invoicedate).toLocaleDateString()}`, 10, 20);
-  //     doc.text(`Description: ${invoiceData.invoice.description}`, 10, 30);
-  //     doc.text("Line Items:", 10, 40);
-
-  //     const lineItems = invoiceData.invoice.lineItems;
-  //     let yPosition = 50;
-
-  //     lineItems.forEach((item) => {
-  //       doc.text(`${item.productorService} - Rate: $${item.rate} - Quantity: ${item.quantity} - Amount: $${item.amount}`, 10, yPosition);
-  //       yPosition += 10;
-  //     });
-
-  //     doc.text(`Subtotal: $${invoiceData.invoice.summary.subtotal.toFixed(2)}`, 10, yPosition);
-  //     yPosition += 10;
-  //     doc.text(`Tax: $${invoiceData.invoice.summary.taxTotal.toFixed(2)}`, 10, yPosition);
-  //     yPosition += 10;
-  //     doc.text(`Total: $${invoiceData.invoice.summary.total.toFixed(2)}`, 10, yPosition);
-
-  //     // Save the PDF to local storage
-  //     const pdfBlob = doc.output("blob");
-  //     const pdfUrl = URL.createObjectURL(pdfBlob);
-  //     const a = document.createElement("a");
-  //     a.href = pdfUrl;
-  //     a.download = `Invoice_${invoiceData.invoice.invoicenumber}.pdf`;
-  //     document.body.appendChild(a);
-  //     a.click();
-  //     document.body.removeChild(a);
-
-  //     toast.success("Invoice downloaded successfully");
-  //   } catch (error) {
-  //     console.error("Error downloading invoice:", error);
-  //     toast.error("Failed to download invoice");
-  //   }
-  // };
+  
   const handleDownload = async (_id) => {
     try {
       const response = await fetch(`${INVOICES_API}/workflow/invoices/invoice/${_id}`);

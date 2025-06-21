@@ -205,6 +205,7 @@ const [unreadCount, setUnreadCount] = useState(0);
   //       setLoading(false);
   //     });
   // }, [accessToken]);
+  
 const fetchEmails = useCallback(() => {
   setLoading(true);
   gapi.client.setToken({ access_token: accessToken });

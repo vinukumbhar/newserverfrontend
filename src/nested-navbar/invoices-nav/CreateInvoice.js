@@ -219,7 +219,8 @@ const CreateInvoice = ({ charLimit = 4000, onClose }) => {
     const newRows = rows.filter((_, i) => i !== index);
     setRows(newRows);
   };
-
+const [daysuntilnextreminder, setDaysuntilnextreminder]= useState(3)
+const [numberOfreminder, setNumberOfreminder]= useState(1)
   const fetchinvoicetempbyid = async (id) => {
     const requestOptions = {
       method: "GET",
@@ -234,7 +235,8 @@ const CreateInvoice = ({ charLimit = 4000, onClose }) => {
         setIsPayInvoice(result.invoiceTemplate.payInvoicewithcredits);
         setIsEmailInvoice(result.invoiceTemplate.sendEmailWhenInvCreated);
         setReminders(result.invoiceTemplate.sendReminderstoClients);
-
+setDaysuntilnextreminder(result.invoiceTemplate.daysuntilnextreminder);
+setNumberOfreminder(result.invoiceTemplate.numberOfreminder)
         const paymentMethod = {
           value: result.invoiceTemplate.paymentMethod,
           label: result.invoiceTemplate.paymentMethod,
@@ -257,6 +259,7 @@ const CreateInvoice = ({ charLimit = 4000, onClose }) => {
         console.log(result.invoiceTemplate.summary.taxRate);
         setTaxTotal(result.invoiceTemplate.summary.taxTotal);
         setTotalAmount(result.invoiceTemplate.summary.total);
+
       })
       .catch((error) => console.error(error));
   };
@@ -476,8 +479,8 @@ const CreateInvoice = ({ charLimit = 4000, onClose }) => {
       payInvoicewithcredits: payInvoice,
       reminders: reminders,
       scheduleinvoice: scheduledInvoice,
-      daysuntilnextreminder: "",
-      numberOfreminder: "",
+      daysuntilnextreminder: daysuntilnextreminder,
+      numberOfreminder: numberOfreminder,
       lineItems: lineItems,
       summary: {
         subtotal: subtotal,
