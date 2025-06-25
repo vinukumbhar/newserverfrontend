@@ -135,6 +135,10 @@ const MyAccount = () => {
   const [currentImage, setCurrentImage] = useState(null);
   const [preview, setPreview] = useState(currentImage);
   const [isUploading, setIsUploading] = useState(false);
+  const [emailsync,setEmailSync]=useState('')
+   useEffect(() => {
+    console.log("Email sync updated:", emailsync);
+  }, [emailsync]);
   const fetchData = async () => {
     try {
       const url = `${LOGIN_API}/common/user/${loginuserid}`;
@@ -1208,7 +1212,74 @@ const MyAccount = () => {
       handleLogin(); // Trigger Gmail API sign-in
     }
   };
+  const EMAIL_SYNC = process.env.REACT_APP_EMAILSYNC_API
+   const [emailList, setEmailList] = useState([]);
+   const handleGoogleLogin = () => {
+    window.location.href = `${EMAIL_SYNC}/emailsync/auth/google`;
+  };
+  const updateUserEmailSync = async (userId, emailSyncValue) => {
+  try {
+    await axios.patch(`${LOGIN_API}/common/user/${userId}`, {
+      emailSyncEmail: emailSyncValue,
+    });
+    console.log("✅ User updated with emailSync field.");
+  } catch (error) {
+    console.error("❌ Failed to update user with emailSync field:", error);
+  }
+};
 
+   const handleTokenLogin = async () => {
+    const targetEmail =  emailsync;
+console.log("target", targetEmail)
+    if (!targetEmail) {
+      alert("⚠️ Please enter your email or login with Google first.");
+      return;
+    }
+
+    try {
+      const res = await axios.get(
+        `${EMAIL_SYNC}/emailsync/user/login-with-token/${targetEmail}`
+      );
+      console.log("payload", res.data);
+      setEmail(targetEmail);
+      // setProfile(res.data.profile);
+      setEmailList(res.data.emails || []);
+      localStorage.setItem("gmail_user_email", targetEmail);
+      setEmailSync(targetEmail)
+
+      await updateUserEmailSync(loginuserid, targetEmail);
+      alert("✅ Logged in using refresh token!");
+    } catch (err) {
+      console.error(err);
+      alert("❌ Token login failed. Please login with Google again.");
+    }
+  };
+
+   const handleEmailSync = async () => {
+    if (!emailsync) {
+      alert("⚠️ Please enter an email address.");
+      return;
+    }
+
+    try {
+      const res = await axios.get(
+        `${EMAIL_SYNC}/emailsync/user/exists/${emailsync}`
+      );
+
+      if (res.data.exists) {
+        console.log("User exists, using token login.");
+        setEmail(emailsync);
+        await handleTokenLogin();
+      } else {
+        console.log("User not found, redirecting to Google login.");
+        setEmail(emailsync);
+        await handleGoogleLogin();
+      }
+    } catch (error) {
+      console.error("Email sync failed", error);
+      alert("❌ Something went wrong while checking email existence.");
+    }
+  };
   const [selectedFile, setSelectedFile] = useState(null);
 
   const updateProfilePicture = () => {
@@ -2635,8 +2706,9 @@ const MyAccount = () => {
                   <label htmlFor="last-name">Email for sync</label>
                   <TextField
                     name="Email for sync"
-                    value={emailId}
-                    onChange={(e) => setEmailId(e.target.value)}
+                    // value={emailId}
+                    value={emailsync}
+                    onChange={(e) => setEmailSync(e.target.value)}
                     size="small"
                     margin="normal"
                     fullWidth
@@ -2647,7 +2719,8 @@ const MyAccount = () => {
                   type="submit"
                   variant="contained"
                   color="primary"
-                  onClick={handleEmailIdSubmit}
+                  // onClick={handleEmailIdSubmit}
+                  onClick={handleEmailSync}
                   sx={{
                     mt: 2,
                     width: isSmallScreen ? "100%" : "auto",

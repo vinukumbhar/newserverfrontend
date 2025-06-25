@@ -3,7 +3,7 @@ import "./login.css";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 
-import { Alert, Box, Typography, FormControl, Button, Checkbox, FormControlLabel, IconButton, InputAdornment, InputLabel, Select, MenuItem, OutlinedInput, TextField } from "@mui/material";
+import {Menu, Alert, Box, Typography, FormControl, Button, Checkbox, FormControlLabel, IconButton, InputAdornment, InputLabel, Select, MenuItem, OutlinedInput, TextField } from "@mui/material";
 import { Grid } from "@mui/material";
 import Cookies from "js-cookie";
 import Visibility from "@mui/icons-material/Visibility";
@@ -30,7 +30,9 @@ const Login = () => {
     password: "",
     expiryTime: "",
   });
-
+const [userList, setUserList] = React.useState([]);
+  const [selectedUser, setSelectedUser] = React.useState(null);
+   const [anchorEl, setAnchorEl] = React.useState(null);
   const setVal = (e) => {
     const { name, value } = e.target;
 
@@ -73,73 +75,160 @@ const Login = () => {
 }
 
 
-    try {
-      const url = `${LOGIN_API}/common/login/generatetoken/`;
-      const data = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-          expiryTime,
-        }),
-      });
+//     try {
+//       const url = `${LOGIN_API}/common/login/generatetoken`;
+//       const data = await fetch(url, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({
+//           email,
+//           password,
+//           expiryTime,
+//           // username
+//         }),
+//       });
 
-      const res = await data.json();
-      // console.log("test token",res.result.token);
-// Decode the token
-const user = jwtDecode(res.result.token);
+//       const res = await data.json();
+//       // console.log("test token",res.result.token);
+// // Decode the token
+// const user = jwtDecode(res.result.token);
 
-// Access the payload
-console.log("test decode",user);
+// // Access the payload
+// console.log("test decode",user);
 
-// Function to handle different roles
-function handleUserRole(role) {
-  switch (role) {
-    case "Admin":
-      console.log("User is an Admin.");
-      // Add logic specific to Admin here
-      break;
-    case "TeamMember":
+// // Function to handle different roles
+// function handleUserRole(role) {
+//   switch (role) {
+//     case "Admin":
+//       console.log("User is an Admin.");
+//       // Add logic specific to Admin here
+//       break;
+//     case "TeamMember":
       
 
       
-      console.log("User is a Team Member.");
-      // Add logic specific to TeamMember here
-      break;
-    case "Client":
-      console.log("User is a Client.");
-      // Add logic specific to Client here
-      break;
-    default:
-      console.log("Unknown role.");
-      // Handle unknown or undefined role
-      break;
+//       console.log("User is a Team Member.");
+//       // Add logic specific to TeamMember here
+//       break;
+//     case "Client":
+//       console.log("User is a Client.");
+//       // Add logic specific to Client here
+//       break;
+//     default:
+//       console.log("Unknown role.");
+//       // Handle unknown or undefined role
+//       break;
+//   }
+// }
+
+// // Testing the function
+// handleUserRole(user.role);
+//       if (res.status === 200) {
+//         localStorage.setItem("usersdatatoken", res.result.token);
+        
+//         Cookies.set("userToken", res.result.token);
+//          startLogoutTimer(expiryTime);
+//         history("/");
+//         setInpval({ ...inpval, email: "", password: "" });
+
+//         Cookies.set("userToken", res.result.token);
+//       } else if (res.status === 400) {
+//         toast.error("Invalid email or password!");
+//       } else {
+//         toast.error("An error occurred. Please try again.");
+//       }
+//     } catch (error) {
+//       // console.error("Error:", error);
+//       toast.error("An error occurred. Please try again.");
+//     }
+
+try {
+  const loginUrl = `${LOGIN_API}/common/login/generatetoken`;
+
+  const loginPayload = {
+    email,
+    password,
+    expiryTime,
+     username:selectedUser.username
+    // Optionally add username if needed: username: selectedUser?.username
+  };
+
+  // Enhanced console logging
+  console.group("Login Payload Details");
+  console.log("Stringified payload:", JSON.stringify(loginPayload));
+  console.log("Email:", email);
+  console.log("Password length:", password?.length);
+  console.log("Expiry time (seconds):", expiryTime);
+  console.groupEnd();
+
+  console.log("Sending request to:", loginUrl);
+
+  const loginResponse = await fetch(loginUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(loginPayload),
+  });
+
+  console.log("Response status:", loginResponse.status);
+
+  const loginResult = await loginResponse.json();
+  console.log("Full response:", loginResult);
+
+  if (loginResult.status === 200) {
+    console.log("Login successful, token received");
+
+    const token = loginResult.result.token;
+    const user = jwtDecode(token);
+    console.log("Decoded user from token:", user);
+
+    // Handle user role
+    function handleUserRole(role) {
+      switch (role) {
+        case "Admin":
+          console.log("User is an Admin.");
+          break;
+        case "TeamMember":
+          console.log("User is a Team Member.");
+          break;
+        case "Client":
+          console.log("User is a Client.");
+          break;
+        default:
+          console.log("Unknown role.");
+          break;
+      }
+    }
+
+    handleUserRole(user.role);
+
+    // Store token
+    localStorage.setItem("usersdatatoken", token);
+    Cookies.set("userToken", token);
+
+    // Start token expiry timer
+    startLogoutTimer(expiryTime);
+
+    // Navigate to home
+    history("/");
+
+    // Clear form
+    setInpval({ ...inpval, email: "", password: "" });
+  } else if (loginResult.status === 400) {
+    console.error("Login failed: Invalid email or password.");
+    toast.error("Invalid email or password!");
+  } else {
+    console.error("Login failed with message:", loginResult.message);
+    toast.error("An error occurred. Please try again.");
   }
+} catch (error) {
+  console.error("Unexpected error during login:", error);
+  toast.error("An error occurred. Please try again.");
 }
 
-// Testing the function
-handleUserRole(user.role);
-      if (res.status === 200) {
-        localStorage.setItem("usersdatatoken", res.result.token);
-        
-        Cookies.set("userToken", res.result.token);
-         startLogoutTimer(expiryTime);
-        history("/");
-        setInpval({ ...inpval, email: "", password: "" });
-
-        Cookies.set("userToken", res.result.token);
-      } else if (res.status === 400) {
-        toast.error("Invalid email or password!");
-      } else {
-        toast.error("An error occurred. Please try again.");
-      }
-    } catch (error) {
-      // console.error("Error:", error);
-      toast.error("An error occurred. Please try again.");
-    }
   };
 const startLogoutTimer = (expiryTime) => {
   let timeout;
@@ -179,6 +268,56 @@ useEffect(() => {
   const handleMouseUpPassword = (event) => {
     event.preventDefault();
   };
+
+    const handleUserMenuClose = () => {
+    setAnchorEl(null);
+  };
+ const handleUserSelect = (user) => {
+    setSelectedUser(user);
+    handleUserMenuClose();
+    // You could automatically submit the form here if you want
+    // Or just let the user enter the password and then submit
+  };
+   const checkEmailForUsers = async (email) => {
+    if (!email || !email.includes("@")) return;
+
+    try {
+      const checkUserUrl = `${LOGIN_API}/common/user/email/getuserbyemail/${email}`;
+      const checkUserResponse = await fetch(checkUserUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const userData = await checkUserResponse.json();
+      
+      if (userData.user && userData.user.length > 1) {
+        setUserList(userData.user);
+        return true; // multiple users
+      } else if (userData.user && userData.user.length === 1) {
+        setSelectedUser(userData.user[0]);
+        return false; // single user
+      } else {
+        toast.error("User not found");
+        return false;
+      }
+    } catch (error) {
+      console.error("Error checking users:", error);
+      return false;
+    }
+  };
+
+  const handleEmailBlur = async () => {
+    if (!inpval.email || !inpval.email.includes("@")) return;
+    
+    const hasMultipleUsers = await checkEmailForUsers(inpval.email);
+    if (hasMultipleUsers) {
+      // We'll show the dropdown when the user focuses on the password field
+    }
+  };
+
+  
   return (
     <Grid
       container
@@ -233,8 +372,36 @@ useEffect(() => {
             </Typography>
             <Typography mb={1}>Email</Typography>
 
-            <TextField fullWidth name="email" placeholder="Enter Your Email" size="small" value={inpval.email} onChange={setVal} id="email" sx={{ mb: 1 }} />
+            <TextField fullWidth name="email" placeholder="Enter Your Email" size="small" value={inpval.email} onChange={setVal} id="email" sx={{ mb: 1 }}  onBlur={handleEmailBlur} />
 
+
+
+
+            {selectedUser && (
+              <Typography variant="body2" color="text.secondary">
+                Logging in as: {selectedUser.username} 
+              </Typography>
+            )}
+
+            <Menu
+              id="user-menu"
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleUserMenuClose}
+              MenuListProps={{
+                'aria-labelledby': 'user-menu-button',
+              }}
+            >
+              {userList.map((user) => (
+                <MenuItem 
+                  key={user._id} 
+                  onClick={() => handleUserSelect(user)}
+                  selected={selectedUser && selectedUser._id === user._id}
+                >
+                  {user.username}  ({user.role})
+                </MenuItem>
+              ))}
+            </Menu>
             <Box>
               <Typography mb={1}>Password</Typography>
 

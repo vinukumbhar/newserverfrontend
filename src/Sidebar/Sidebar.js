@@ -62,7 +62,7 @@ import { faL } from "@fortawesome/free-solid-svg-icons";
 import OrganizerDialog from "../Pages/Organizers/ClientSelectionDialog";
 import ChatForm from "../Pages/ChatForm";
 import JobDrawer from "../Jobs/JobDrawer";
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import NotificationsIcon from "@mui/icons-material/Notifications";
 function Sidebar() {
   const StyledBadge = styled(Badge)(({ theme }) => ({
     "& .MuiBadge-badge": {
@@ -276,7 +276,7 @@ function Sidebar() {
               ) {
                 return { ...item, restricted: true };
               }
-if (
+              if (
                 item.label === "Invoice" &&
                 !teamMemberData.teammember.manageInvoices
               ) {
@@ -470,9 +470,12 @@ if (
         // getadminsignup(data.user.id)
         fetchSidebarData();
         navigate("/");
-      } else if (data.user.role === "Client") {
-        navigate("/clientDash/home");
-      } else if (data.user.role === "TeamMember") {
+      }
+
+      // else if (data.user.role === "Client") {
+      //   navigate("/clientDash/home");
+      // }
+      else if (data.user.role === "TeamMember") {
         localStorage.setItem("userRole", data.user.role);
         fetchUserData(data.user.id);
         fectUsersDatabyUserid(data.user.id);
@@ -496,20 +499,20 @@ if (
   const [profilePicture, setProfilePicture] = useState("");
 
   const [userid, setUserid] = useState("");
-   const [currentImage, setCurrentImage] = useState(null);
-    const [preview, setPreview] = useState(currentImage);
- 
-   useEffect(() => {
-     if (currentImage) {
-       // Replace 'uploads/' with 'profilepicture/' in the path
-       const transformedUrl = currentImage.replace(
-         "uploads/",
-         "profilepicture/"
-       );
-       setPreview(`${LOGIN_API}/${transformedUrl}`);
-     }
-   }, [currentImage]);
-    const fetchUserData = async (id) => {
+  const [currentImage, setCurrentImage] = useState(null);
+  const [preview, setPreview] = useState(currentImage);
+
+  useEffect(() => {
+    if (currentImage) {
+      // Replace 'uploads/' with 'profilepicture/' in the path
+      const transformedUrl = currentImage.replace(
+        "uploads/",
+        "profilepicture/"
+      );
+      setPreview(`${LOGIN_API}/${transformedUrl}`);
+    }
+  }, [currentImage]);
+  const fetchUserData = async (id) => {
     const maxLength = 15;
     const myHeaders = new Headers();
 
@@ -530,11 +533,10 @@ if (
           setUserData(truncateString(result.email, maxLength)); // Set a maximum length for userData if email exists
           setUserEmail(result.email);
         }
-       
+
         // console.log(userData)
         setUserid(result._id);
-         setCurrentImage(result.profilePicture);
-
+        setCurrentImage(result.profilePicture);
       });
   };
 
@@ -622,8 +624,8 @@ if (
     setIsDialogOpen(false); // Close the client selection dialog
   };
 
-  const unreadHashEmailCount = Cookies.get('unreadHashEmailCount');
-console.log('Stored unread count:', unreadHashEmailCount);
+  const unreadHashEmailCount = Cookies.get("unreadHashEmailCount");
+  console.log("Stored unread count:", unreadHashEmailCount);
 
   return (
     <div className="grid-container">
@@ -673,11 +675,20 @@ console.log('Stored unread count:', unreadHashEmailCount);
             <SearchComponent />
           </Box>
           {/* <Box ml={"auto"} mr={3}><NotificationsIcon/></Box> */}
-          <Box ml={"auto"} mr={3} sx={{display:'flex', alignItems:'center', gap:3}}>
-            <Box>   <Badge badgeContent={unreadHashEmailCount} color="primary"> {/* You can change '5' to your dynamic count */}
-        <NotificationsIcon />
-      </Badge></Box>
-          
+          <Box
+            ml={"auto"}
+            mr={3}
+            sx={{ display: "flex", alignItems: "center", gap: 3 }}
+          >
+            {/* <Box>
+              {" "}
+              <Badge badgeContent={unreadHashEmailCount} color="primary">
+                {" "}
+               
+                <NotificationsIcon />
+              </Badge>
+            </Box> */}
+
             <Link to="#" className="logout-link">
               <Box className="info">
                 <Box
@@ -703,14 +714,14 @@ console.log('Stored unread count:', unreadHashEmailCount);
                     >
                       {!croppedImage && getInitials(username)}
                     </Avatar> */}
-                     <Avatar
-                                          src={preview || currentImage}
-                                          sx={{
-                                             width: 40,
+                    <Avatar
+                      src={preview || currentImage}
+                      sx={{
+                        width: 40,
                         height: 40,
-                                            border: "2px solid #eee",
-                                          }}
-                                        />
+                        border: "2px solid #eee",
+                      }}
+                    />
                   </StyledBadge>
                   <Box ml={2}>
                     <Typography
@@ -813,14 +824,14 @@ console.log('Stored unread count:', unreadHashEmailCount);
                   anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                   variant="dot"
                 >
-                   <Avatar
-                                          src={preview || currentImage}
-                                          sx={{
-                                             width: 40,
-                        height: 40,
-                                            border: "2px solid #eee",
-                                          }}
-                                        />
+                  <Avatar
+                    src={preview || currentImage}
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      border: "2px solid #eee",
+                    }}
+                  />
                 </StyledBadge>
                 <Box>
                   <Typography
