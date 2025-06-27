@@ -637,7 +637,7 @@ console.log(raw)
         comments: comments,
         showinclientportal: clientFacingStatus,
         jobnameforclient: inputText,
-        clientfacingstatus: selectedJob.value,
+        clientfacingstatus: selectedJob?.value,
         clientfacingDescription: clientDescription,
       });
 

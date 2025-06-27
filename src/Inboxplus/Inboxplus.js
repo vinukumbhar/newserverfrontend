@@ -905,33 +905,96 @@ import {
 } from "@mui/material";
 const Inboxplus = () => {
   const EMAIL_SYNC = process.env.REACT_APP_EMAILSYNC_API
+   const ACCOUNT_API = process.env.REACT_APP_ACCOUNTS_URL;
   const [emailList, setEmailList] = useState([]);
   const [expandedEmailIndex, setExpandedEmailIndex] = useState(null);
-   useEffect(() => {
-    const fetchProfileAndEmails = async () => {
-      const savedEmail = localStorage.getItem("gmail_user_email");
-      if (!savedEmail) return;
+    const [userRole, setUserRole] = useState('');
+  const [accountIds, setAccountIds] = useState([]);
+  
+  useEffect(() => {
+    // Get user role from localStorage
+    const storedData = JSON.parse(localStorage.getItem("teamMemberData"));
+   const userRole = localStorage.getItem("userRole");
+    setUserRole(userRole);
+    
+    if (userRole === 'TeamMember') {
+      // If TeamMember, fetch their associated account IDs
+      fetchTeamMemberAccounts(storedData?.teammember?.userid);
+    }
+  }, []);
+ useEffect(() => {
+  const fetchEmails = async () => {
+    const savedEmail = localStorage.getItem("gmail_user_email");
+    if (!savedEmail) return;
 
-      try {
+    try {
+      if (userRole === 'Admin') {
+        // Admin can see all emails
         const res = await axios.get(
           `${EMAIL_SYNC}/emailsync/user/login-with-token/${savedEmail}`
         );
-        console.log("Auto-login payload", res.data);
-
-        // setEmail(savedEmail);
-        // setProfile(res.data.profile);
         setEmailList(res.data.emails || []);
-      } catch (err) {
-        console.error("Auto-login failed", err);
-        localStorage.removeItem("gmail_user_email");
+      } else if (userRole === 'TeamMember' && accountIds.length > 0) {
+        // TeamMember can only see emails related to their accounts
+        const res = await axios.get(
+          `${EMAIL_SYNC}/emailsync/user/login-with-token/${savedEmail}`
+        );
+        // Filter emails that contain any of the account IDs
+        const filteredEmails = (res.data.emails || []).filter(email => {
+          return accountIds.some(accountId => 
+            email.subject?.includes(accountId)
+           
+          );  // Added missing closing parenthesis here
+        });
+        setEmailList(filteredEmails);
       }
-    };
+    } catch (err) {
+      console.error("Error fetching emails", err);
+    }
+  };
 
-    fetchProfileAndEmails();
-  }, []);
+  fetchEmails();
+}, [userRole, accountIds]);
+
+  const fetchTeamMemberAccounts = async (userId) => {
+    try {
+      const response = await axios.get(
+        `${ACCOUNT_API}/accounts/getaccounts/${userId}/true`
+      );
+      console.log("accountlist", response.data)
+      // Extract account IDs from the response
+      const ids = response.data.accountlist?.map(account => account.id) || [];
+      setAccountIds(ids);
+      console.log("accid",ids)
+    } catch (error) {
+      console.error("Error fetching team member accounts:", error);
+    }
+  };
+  // useEffect(() => {
+  //   const fetchProfileAndEmails = async () => {
+  //     const savedEmail = localStorage.getItem("gmail_user_email");
+  //     if (!savedEmail) return;
+
+  //     try {
+  //       const res = await axios.get(
+  //         `${EMAIL_SYNC}/emailsync/user/login-with-token/${savedEmail}`
+  //       );
+  //       console.log("Auto-login payload", res.data);
+
+  //       // setEmail(savedEmail);
+  //       // setProfile(res.data.profile);
+  //       setEmailList(res.data.emails || []);
+  //     } catch (err) {
+  //       console.error("Auto-login failed", err);
+  //       localStorage.removeItem("gmail_user_email");
+  //     }
+  //   };
+
+  //   fetchProfileAndEmails();
+  // }, []);
   return (
     <div>
-       {emailList.filter((email) => email.subject?.startsWith("#")).length >
+       {/* {emailList.filter((email) => email.subject?.startsWith("#")).length >
         0 && (
         <div style={{ marginTop: 20 }}>
           <h3>📨 Emails :</h3>
@@ -988,7 +1051,82 @@ const Inboxplus = () => {
               ))}
           </div>
         </div>
-      )}
+      )} */}
+
+      {emailList.filter(email => {
+  // First check if subject starts with #
+  if (!email.subject?.startsWith("#")) return false;
+  
+  // If user is TeamMember, verify email contains their account IDs
+  if (userRole === 'TeamMember' && accountIds.length > 0) {
+    return accountIds.some(accountId => 
+      email.subject.includes(accountId) 
+    );
+  }
+  return true;
+}).length > 0 && (
+  <div style={{ marginTop: 20 }}>
+    <h3>📨 Emails :</h3>
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      {emailList
+        .filter(email => {
+          if (!email.subject?.startsWith("#")) return false;
+          if (userRole === 'TeamMember' && accountIds.length > 0) {
+            return accountIds.some(accountId => 
+              email.subject.includes(accountId) 
+            );
+          }
+          return true;
+        })
+        .map((email, idx) => (
+          <Card
+            key={idx}
+            variant="outlined"
+            onMouseEnter={() => setExpandedEmailIndex(idx)}
+            onMouseLeave={() => setExpandedEmailIndex(null)}
+            sx={{ cursor: "pointer" }}
+          >
+            <CardContent
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography>{email.subject.slice(1).trim()}</Typography>
+            </CardContent>
+
+            <CardActions disableSpacing></CardActions>
+
+            <Collapse
+              in={expandedEmailIndex === idx}
+              timeout="auto"
+              unmountOnExit
+            >
+              <CardContent>
+                <Typography
+                  variant="body2"
+                  color="text.primary"
+                  style={{ whiteSpace: "pre-wrap" }}
+                >
+                  <Typography
+                    variant="body2"
+                    component="div"
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        typeof email.body === "string"
+                          ? email.body
+                          : "No content available",
+                    }}
+                  />
+                </Typography>
+              </CardContent>
+            </Collapse>
+          </Card>
+        ))}
+    </div>
+  </div>
+)}
     </div>
   )
 }

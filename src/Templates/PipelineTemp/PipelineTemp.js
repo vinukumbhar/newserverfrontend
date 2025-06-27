@@ -127,6 +127,10 @@ const PipelineTemp = () => {
   const handleAccount_tagsChange = (event) => {
     setAccount_tags(event.target.checked);
   };
+  const [clientFacing_status, setClientFacing_status]= useState(false);
+  const handleClientFacing_status = (event) => {
+    setClientFacing_status(event.target.checked);
+  };
   const [startDate, setStartDate] = useState(false);
   const handleStartDateChange = (event) => {
     setStartDate(event.target.checked);
@@ -3919,6 +3923,7 @@ case "Update job assignees":
       days_on_Stage: Days_on_stage,
       assignees: Assignees,
       name: Name,
+       clientFacing_status:clientFacing_status,
       startdate: startDate,
       stages: stages,
     };
@@ -3968,6 +3973,7 @@ case "Update job assignees":
       days_on_Stage: Days_on_stage,
       assignees: Assignees,
       name: Name,
+       clientFacing_status:clientFacing_status,
       startdate: startDate,
       stages: stages,
     };
@@ -4678,7 +4684,7 @@ case "Update job assignees":
                                   color="primary"
                                 />
                               }
-                              label={"Days on stage"}
+                              label={"Days in stage"}
                             />
                           </Box>
                           <Box mt={2}>
@@ -4693,6 +4699,18 @@ case "Update job assignees":
                               label={"Account tags"}
                             />
                           </Box>
+                          <Box mt={2}>
+                                                  <FormControlLabel
+                                                    control={
+                                                      <Switch
+                                                         checked={clientFacing_status}
+                                  onChange={handleClientFacing_status}
+                                                        color="primary"
+                                                      />
+                                                    }
+                                                    label={"Client-facing Status"}
+                                                  />
+                                                </Box>
                         </Grid>
 
                         <Grid item xs={4}>
@@ -4771,7 +4789,11 @@ case "Update job assignees":
                               label={"Priority"}
                             />
                           </Box>
+                          
                         </Grid>
+                        
+                        
+                        
                       </Grid>
                     </Box>
                   </Grid>

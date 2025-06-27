@@ -502,7 +502,7 @@ const handleUserChange = (newSelectedUsers) => {
         .then((result) => {
           // Handle success
           toast.success("Task Template created successfully");
-          resetFields();
+          // resetFields();
           fetchTaskData();
         })
         .catch((error) => {

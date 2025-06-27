@@ -152,7 +152,7 @@ const MyAccount = () => {
       setuserdata(data);
       console.log("dta", data);
       setCurrentImage(data.profilePicture);
-
+setEmailSync(data.emailSyncEmail)
       if (data.role === "TeamMember") {
         fetchTeamMemberData(data.email);
       } else {

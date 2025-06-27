@@ -94,6 +94,10 @@ const PipelineTempUpdate = () => {
   const handleAccount_tagsChange = (event) => {
     setAccount_tags(event.target.checked);
   };
+   const [clientFacing_status, setClientFacing_status]= useState(false);
+    const handleClientFacing_status = (event) => {
+      setClientFacing_status(event.target.checked);
+    };
   const [startDate, setStartDate] = useState(false);
   const handleStartDateChange = (event) => {
     setStartDate(event.target.checked);
@@ -268,10 +272,11 @@ const PipelineTempUpdate = () => {
       days_on_Stage: Days_on_stage,
       assignees: Assignees,
       name: Name,
+      clientFacing_status:clientFacing_status,
       startdate: startDate,
       stages: stages,
     });
-
+console.log("raw",raw)
     const requestOptions = {
       method: "PATCH",
       headers: myHeaders,
@@ -331,6 +336,7 @@ const PipelineTempUpdate = () => {
       days_on_Stage: Days_on_stage,
       assignees: Assignees,
       name: Name,
+       clientFacing_status:clientFacing_status,
       startdate: startDate,
       stages: stages,
     });
@@ -415,6 +421,7 @@ const PipelineTempUpdate = () => {
         setDescription(data.pipelineTemplate.description);
         setAssignees(data.pipelineTemplate.assignees);
         setStartDate(data.pipelineTemplate.startdate);
+        setClientFacing_status(data.pipelineTemplate.clientFacing_status)
       } catch (error) {
         console.error("Error fetching pipeline data:", error);
       }
@@ -5153,7 +5160,7 @@ const assigneeOptions = assignee.map((ass)=>({
                               color="primary"
                             />
                           }
-                          label={"Days on stage"}
+                          label={"Days in stage"}
                         />
                       </Box>
                       <Box mt={2}>
@@ -5168,6 +5175,18 @@ const assigneeOptions = assignee.map((ass)=>({
                           label={"Account tags"}
                         />
                       </Box>
+                      <Box mt={2}>
+                                                                        <FormControlLabel
+                                                                          control={
+                                                                            <Switch
+                                                                               checked={clientFacing_status}
+                                                        onChange={handleClientFacing_status}
+                                                                              color="primary"
+                                                                            />
+                                                                          }
+                                                                          label={"Client-facing Status"}
+                                                                        />
+                                                                      </Box>
                     </Grid>
 
                     <Grid item xs={4}>
@@ -5246,6 +5265,8 @@ const assigneeOptions = assignee.map((ass)=>({
                           label={"Priority"}
                         />
                       </Box>
+
+                      
                     </Grid>
                   </Grid>
                 </Box>

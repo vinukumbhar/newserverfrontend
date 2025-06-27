@@ -54,11 +54,11 @@ const Section = ({
 
   const [queConditionButton, setQueConditionButton] = useState(false);
   const [questionAnswers, setQuestionAnswers] = useState([
-    { question: "", answer: "" },
+    { question: "", questionId: null, answer: "", optionvalue: false },
   ]);
   const [requiredButton, setRequiredButton] = useState(false);
   const [sectionQuestionAnswers, setSectionQuestionAnswers] = useState([
-    { question: "", answer: "" },
+    { question: "", questionId: null, answer: "", optionvalue: false },
   ]);
   const [selectedElement, setSelectedElement] = useState(null);
   const [sectionConditionBadge, setSectionConditionBadge] = useState(false);
@@ -71,10 +71,18 @@ const Section = ({
       buttonName: repeateButton ? repeatButtonName : "", // You can store the text input value instead of hardcoding it
       conditional: conditionButton,
       sectionMode: sectionMode,
+      // conditions: conditionButton
+      //   ? sectionQuestionAnswers.map((qa, index) => ({
+      //       question: selectedSectionQuestions[index],
+      //       answer: selectedSectionAnswers[index],
+      //     }))
+      //   : [],
       conditions: conditionButton
         ? sectionQuestionAnswers.map((qa, index) => ({
-            question: selectedSectionQuestions[index],
-            answer: selectedSectionAnswers[index],
+            question: selectedSectionQuestions[index]?.text || "",
+            questionId: selectedSectionQuestions[index]?.id || null,
+            answer: selectedSectionAnswers[index] || "",
+            optionvalue: false,
           }))
         : [],
       // conditions: conditionButton ? questionAnswers : [], // assuming questionAnswers is an array of {question, answer} objects
@@ -133,14 +141,7 @@ const Section = ({
         prefilled: prefilledButton,
         conditional: queConditionButton,
         mode: mode,
-         conditions: queConditionButton
-        ? questionAnswers.map((qa, index) => ({
-            questionId: selectedQuestions[index]?.id,
-            question: selectedQuestions[index]?.text,
-            answer: selectedAnswers[index],
-            optionvalue: false,
-          }))
-        : [],
+       
         // conditions: queConditionButton
         //   ? questionAnswers.map((qa, index) => ({
         //       question: selectedQuestions[index], // Ensure selectedQuestions are saved
@@ -148,6 +149,14 @@ const Section = ({
         //       optionvalue: false, // Ensure selectedAnswers are saved
         //     }))
         //   : [],
+         conditions: queConditionButton
+          ? questionAnswers.map((qa, index) => ({
+              question: selectedQuestions[index]?.text || "",
+              questionId: selectedQuestions[index]?.id || null,
+              answer: selectedAnswers[index] || "",
+              optionvalue: false,
+            }))
+          : [],
         descriptionEnabled: descriptionButton,
         description: descriptionButton ? descriptionText : "", // Save descriptionText only if descriptionButton is enabled
       };
@@ -194,72 +203,27 @@ const Section = ({
       setDescriptionText(questionsectionsettings?.description || "");
       setMode(questionsectionsettings?.mode || "Any");
 
-      // const conditions = questionsectionsettings?.conditions || [];
-      // const questions = conditions.map((cond) => cond.question || null);
-      // const answers = conditions.map((cond) => cond.answer || null);
+    //   const conditions = questionsectionsettings?.conditions || [];
+    //   const questions = conditions.map((cond) => cond.question || null);
+    //   const answers = conditions.map((cond) => cond.answer || null);
      
-      // setQuestionAnswers(conditions);
-      // setSelectedQuestions(questions);
-      // setSelectedAnswers(answers);
-        const conditions = questionsectionsettings?.conditions || [];
-    setQuestionAnswers(conditions);
+    //   setQuestionAnswers(conditions);
+    //   setSelectedQuestions(questions);
+    //   setSelectedAnswers(answers);
+      
 
-    // Reconstruct the question objects
-//     const questions = conditions.map((cond) => {
-//       // Find the full question object from all sections
-//       let questionObj = null;
-//       sections.forEach(section => {
-//         const element = section.formElements.find(el => 
-//           el.id === cond.questionId || el.text === cond.question
-//         );
-//         if (element) {
-//           questionObj = {
-//             id: element.id,
-//             text: element.text,
-//             sectionId: section.id
-//           };
-//         }
-//       });
-//       return questionObj || null;
-//     });
 
-//     const answers = conditions.map((cond) => cond.answer || null);
-// console.log("questions",questions)
-//     setSelectedQuestions(questions);
-const questions = conditions.map((cond) => {
-  // Find the full question object from all sections
-  for (const section of sections) {
-    const element = section.formElements.find(el => 
-      // First try to match by ID (more reliable)
-      el.id === cond.questionId || 
-      // Fallback to text match if ID isn't available
-      (cond.questionId === undefined && el.text === cond.question)
-    );
-    
-    if (element) {
-      return {
-        id: element.id,
-        text: element.text,
-        sectionId: section.id
-      };
-    }
-  }
-  
-  // If no match found, return a minimal object with the original text
-  return {
-    id: cond.questionId || null,
-    text: cond.question || 'Unknown question',
-    sectionId: null
-  };
-});
-
-console.log("Reconstructed questions:", questions);
-
-const answers = conditions.map((cond) => cond.answer || null);
-
-setSelectedQuestions(questions);
-setSelectedAnswers(answers);
     // setSelectedAnswers(answers);
+          const conditions = questionsectionsettings?.conditions || [];
+      const questions = conditions.map(cond => 
+        formElements.find(el => el.id === cond.questionId) || null
+      );
+      const answers = conditions.map(cond => cond.answer || null);
+      
+      setQuestionAnswers(conditions);
+      setSelectedQuestions(questions);
+      setSelectedAnswers(answers);
+
     }
   }, [selectedElement]);
 
@@ -273,13 +237,13 @@ setSelectedAnswers(answers);
     setPrefilledButton(checked);
   };
   const handleAddQuestionAnswer = () => {
-    setQuestionAnswers([...questionAnswers, { question: "", answer: "" }]);
+    setQuestionAnswers([...questionAnswers, { question: "", questionId: null, answer: "", optionvalue: false }]);
   };
 
   const handleAddSectionQuestionAnswer = () => {
     setSectionQuestionAnswers([
       ...sectionQuestionAnswers,
-      { question: "", answer: "" },
+      { question: "", questionId: null, answer: "", optionvalue: false },
     ]);
   };
 
@@ -302,46 +266,13 @@ setSelectedAnswers(answers);
     setQueConditionButton(checked);
   };
   const [selectedSectionId, setSelectedSectionId] = useState(null);
-  // const handleSectionSettingsClick = () => {
-  //   setSelectedSectionId(section.id); // Store the ID of the section to open
-  //   toggleDrawer(true); // Open the drawer
-  // };
+
   const [selectedSection, setSelectedSection] = useState();
   //  setSelectedSection(section);
 
   const [selectedSectionData, setSelectedSectionData] = useState(null);
 
-  // const handleSectionSettingsClick = () => {
-  //   setSelectedSectionData(section);
-  //   setSelectedSectionId(section.id);
-  //   if (section && section.sectionSettings) {
-  //     console.log("sections",section.sectionSettings)
-
-  //       // Open the drawer with the updated data
-  //       toggleDrawer(true); // Open the drawer
-  //     // Set the selected section data before opening the drawer
-  //    // Store the ID of the section to open
-
-  //     // Set the section settings
-  //     setRepeateButton(section.sectionSettings.sectionRepeatingMode || false);
-  //     setRepeatButtonName(section.sectionSettings.buttonName || "Repeat Section");
-  //     setConditionButton(section.sectionSettings.conditional || false);
-  //     setSectionMode(section.sectionSettings.sectionMode || "Any");
-  //     setSectionQuestionAnswers(section.sectionSettings.conditions || []);
-
-  //     console.log("Selected single Section Data:", section);
-  //   } else {
-  //     // Handle case where sectionSettings is not available
-  //     // console.log("Section settings not found.");
-  //     toggleDrawer(true); // Optionally close the drawer if sectionSettings is missing
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (isDrawerOpen && selectedSectionData) {
-  //     console.log("Drawer opened with section data:", selectedSectionData);
-  //   }
-  // }, [isDrawerOpen, selectedSectionData]);
+  
   //  Update the badge state when updatedSection changes
   useEffect(() => {
     setSectionConditionBadge(section?.sectionsettings?.conditional);
@@ -364,12 +295,22 @@ setSelectedAnswers(answers);
       setSectionMode(updatedSection.sectionsettings.sectionMode || "Any");
       // setSectionQuestionAnswers(updatedSection.sectionsettings.conditions || []);
       // Extract conditions
-      const conditions = updatedSection.sectionsettings.conditions || [];
-      setSectionQuestionAnswers(conditions); // Store full condition objects
+      // const conditions = updatedSection.sectionsettings.conditions || [];
+      // setSectionQuestionAnswers(conditions); // Store full condition objects
 
-      // Extract questions and answers from conditions
-      const questions = conditions.map((cond) => cond.question || null);
-      const answers = conditions.map((cond) => cond.answer || null);
+      // // Extract questions and answers from conditions
+      // const questions = conditions.map((cond) => cond.question || null);
+      // const answers = conditions.map((cond) => cond.answer || null);
+
+      // setSelectedSectionQuestions(questions);
+      // setSelectedSectionAnswers(answers);
+        const conditions = updatedSection.sectionsettings.conditions || [];
+      setSectionQuestionAnswers(conditions);
+
+      const questions = conditions.map(cond => 
+        getAllQuestions().find(q => q.id === cond.questionId) || null
+      );
+      const answers = conditions.map(cond => cond.answer || null);
 
       setSelectedSectionQuestions(questions);
       setSelectedSectionAnswers(answers);
@@ -379,28 +320,16 @@ setSelectedAnswers(answers);
   const toggleDrawer = (open) => {
     setDrawerOpen(open);
   };
-
-  // useEffect(() => {
-  //   if (selectedSectionData) {
-  //     //       if (section && section.sectionsettings) {
-  //     //         const sectionSettingsData = section.sectionsettings;
-  //     // console.log("sections settinhgs data", sectionSettingsData)
-  //     //         // Update state with section settings
-  //     //         setSectionSettings(sectionSettingsData);
-  //     //         setRepeateButton(sectionSettingsData.sectionRepeatingMode || false);
-  //     //         setRepeatButtonName(sectionSettingsData.buttonName || "Repeat Section");
-  //     //         setConditionButton(sectionSettingsData.conditional || false);
-  //     //         setSectionMode(sectionSettingsData.mode || "Any");
-  //     //         setSectionQuestionAnswers(sectionSettingsData.conditions || []);
-  //     //       } else {
-  //     //         console.error("No section settings available for this section"); // Log error or handle it accordingly
-  //     //       }
-  //     const { sectionSettingsData } = selectedSectionData;
-  //     // console.log("selected section data", sectionSettingsData);
-  //     setSectionMode(sectionSettingsData?.mode || "Any")
-  //     console.log("mode",sectionMode)
-  //   }
-  // }, [selectedSectionData]);
+  const getAllQuestions = () => {
+    return sections.flatMap(section => 
+      section.formElements
+        .filter(element => 
+          element.type === "Radio Buttons" || 
+          element.type === "Checkboxes" || 
+          element.type === "Dropdown"
+        )
+    );
+  };
 
   const handleSettingsClick = (elementId) => {
     const updatedElement = formElements.find(
@@ -450,9 +379,15 @@ setSelectedAnswers(answers);
         conditional: false, // Set conditional to true
         mode: "",
         conditions: [
+          // {
+          //   question: "", // Default question
+          //   answer: "", // Default answer
+          // },
           {
-            question: "", // Default question
-            answer: "", // Default answer
+            question: "",
+            questionId: null,
+            answer: "",
+            optionvalue: false,
           },
         ],
         descriptionEnabled: false,
@@ -598,34 +533,7 @@ setSelectedAnswers(answers);
     "emoji",
   ];
 
-  // const renderOptions = (element) => {
-  //   return (
-  //     <Box>
-  //       {element.options && element.options.map(option => (
-  //         <Box key={option.id} sx={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-  //           <TextField
-  //             variant="outlined"
-  //             placeholder="Option"
-  //             value={option.text}
-  //             size='small'
-  //             margin='normal'
-  //             fullWidth
-  //             className='organizer-input-label'
-  //             onChange={(e) => handleOptionChange(element.id, option.id, e.target.value)}
-
-  //           />
-  //           <IconButton onClick={() => handleDeleteOption(element.id, option.id)}>
-  //             <RiDeleteBinLine />
-  //           </IconButton>
-  //         </Box>
-  //       ))}
-  //       <Button variant="contained" onClick={() => handleAddOption(element.id)}>
-  //         Add Option
-  //       </Button>
-  //     </Box>
-  //   );
-  // };
-
+  
   const renderOptions = (element, type = "text") => {
     return (
       <Box>
@@ -1129,39 +1037,23 @@ setSelectedAnswers(answers);
     }
   };
 
-  // const getRadioButtonOptions = () => {
-  //   return sections.flatMap(
-  //     (section) =>
-  //       section.formElements
-  //         // .filter(element => element.type === 'Radio Buttons')
-  //         .filter(
-  //           (element) =>
-  //             element.type === "Radio Buttons" ||
-  //             element.type === "Checkboxes" ||
-  //             element.type === "Dropdown"
-  //         )
-  //         .map((element) => element.text)
-      
-  //   );
-  // };
-
   const getRadioButtonOptions = () => {
-  return sections.flatMap(
-    (section) =>
-      section.formElements
-        .filter(
-          (element) =>
-            element.type === "Radio Buttons" ||
-            element.type === "Checkboxes" ||
-            element.type === "Dropdown"
-        )
-        .map((element) => ({
-          id: element.id,
-          text: element.text,
-          sectionId: section.id
-        }))
-  );
-};
+    return sections.flatMap(
+      (section) =>
+        section.formElements
+          // .filter(element => element.type === 'Radio Buttons')
+          .filter(
+            (element) =>
+              element.type === "Radio Buttons" ||
+              element.type === "Checkboxes" ||
+              element.type === "Dropdown"
+          )
+          .map((element) => element.text)
+      
+    );
+  };
+
+  
   const [selectedQuestions, setSelectedQuestions] = useState([]);
   const [selectedAnswers, setSelectedAnswers] = useState(
     Array(questionAnswers.length).fill(null)
@@ -1185,15 +1077,11 @@ setSelectedAnswers(answers);
   //   return element ? element.options.map((option) => option.text) : [];
   // };
 
-  const getAnswerOptions = (questionObj) => {
-  if (!questionObj) return [];
+   const getAnswerOptions = (questionElement) => {
+    if (!questionElement) return [];
+    return questionElement.options?.map(option => option.text) || [];
+  };
   
-  const section = sections.find((s) => s.id === questionObj.sectionId);
-  if (!section) return [];
-
-  const element = section.formElements.find((el) => el.id === questionObj.id);
-  return element ? element.options.map((option) => option.text) : [];
-};
   // Handle question selection
   // const handleQuestionSelect = (value, index) => {
   //   const updatedQuestions = [...selectedQuestions];
@@ -1204,27 +1092,41 @@ setSelectedAnswers(answers);
   //   updatedAnswers[index] = null; // Reset answer for the new selected question
   //   setSelectedAnswers(updatedAnswers);
   // };
+const handleQuestionSelect = (value, index) => {
+    const allQuestions = getAllQuestions();
+    const selectedQuestion = allQuestions.find(q => q.id === value?.id);
+    
+    const updatedQuestions = [...selectedQuestions];
+    updatedQuestions[index] = selectedQuestion;
+    setSelectedQuestions(updatedQuestions);
 
-  const handleQuestionSelect = (value, index) => {
-  const updatedQuestions = [...selectedQuestions];
-  updatedQuestions[index] = value; // Now stores the full question object
-  setSelectedQuestions(updatedQuestions);
+    const updatedAnswers = [...selectedAnswers];
+    updatedAnswers[index] = null;
+    setSelectedAnswers(updatedAnswers);
+  };
 
-  const updatedAnswers = [...selectedAnswers];
-  updatedAnswers[index] = null;
-  setSelectedAnswers(updatedAnswers);
-};
+  // const handleSectionQuestionSelect = (newValue, index) => {
+  //   const updatedQuestions = [...selectedSectionQuestions];
+  //   updatedQuestions[index] = newValue; // Update selected question
+  //   setSelectedSectionQuestions(updatedQuestions);
 
+  //   const updatedAnswers = [...selectedSectionAnswers];
+  //   updatedAnswers[index] = null; // Reset answer for the new selected question
+  //   setSelectedSectionAnswers(updatedAnswers);
+  // };
+ 
   const handleSectionQuestionSelect = (newValue, index) => {
+    const allQuestions = getAllQuestions();
+    const selectedQuestion = allQuestions.find(q => q.id === newValue?.id);
+    
     const updatedQuestions = [...selectedSectionQuestions];
-    updatedQuestions[index] = newValue; // Update selected question
+    updatedQuestions[index] = selectedQuestion;
     setSelectedSectionQuestions(updatedQuestions);
 
     const updatedAnswers = [...selectedSectionAnswers];
-    updatedAnswers[index] = null; // Reset answer for the new selected question
+    updatedAnswers[index] = null;
     setSelectedSectionAnswers(updatedAnswers);
   };
- 
   useEffect(() => {
     if (selectedElement) {
       const { questionsectionsettings } = selectedElement;
@@ -1238,12 +1140,22 @@ setSelectedAnswers(answers);
       setDescriptionText(questionsectionsettings?.description || "");
       setMode(questionsectionsettings?.mode || "Any");
 
+      // const conditions = questionsectionsettings?.conditions || [];
+      // setQuestionAnswers(conditions);
+
+      // const questions = conditions.map((cond) => cond.question || null);
+      // const answers = conditions.map((cond) => cond.answer || null);
+
+      // setSelectedQuestions(questions);
+      // setSelectedAnswers(answers);
+
       const conditions = questionsectionsettings?.conditions || [];
+      const questions = conditions.map(cond => 
+        formElements.find(el => el.id === cond.questionId) || null
+      );
+      const answers = conditions.map(cond => cond.answer || null);
+      
       setQuestionAnswers(conditions);
-
-      const questions = conditions.map((cond) => cond.question || null);
-      const answers = conditions.map((cond) => cond.answer || null);
-
       setSelectedQuestions(questions);
       setSelectedAnswers(answers);
     }
@@ -1508,7 +1420,7 @@ setSelectedAnswers(answers);
                   >
                     <Box sx={{ width: "380px" }}>
                       <Typography>Question</Typography>
-                      <Autocomplete
+                      {/* <Autocomplete
                         options={getRadioButtonOptions()}
                         value={selectedSectionQuestions[index] || null}
                         onChange={(event, newValue) =>
@@ -1531,11 +1443,31 @@ setSelectedAnswers(answers);
                             {option}
                           </li>
                         )}
-                      />
+                      /> */}
+                      <Autocomplete
+    options={getAllQuestions()}
+    getOptionLabel={(option) => option.text || ""}
+    value={selectedSectionQuestions[index] || null}
+    onChange={(event, newValue) => handleSectionQuestionSelect(newValue, index)}
+    renderInput={(params) => (
+      <TextField
+        {...params}
+        variant="outlined"
+        size="small"
+        margin="normal"
+        placeholder="Question"
+      />
+    )}
+    renderOption={(props, option) => (
+      <li {...props} style={{ margin: "5px", cursor: "pointer" }}>
+        {option.text}
+      </li>
+    )}
+  />
                     </Box>
                     <Box>
                       <Typography>Answer</Typography>
-                      <Autocomplete
+                      {/* <Autocomplete
                         options={getAnswerOptions(
                           selectedSectionQuestions[index]
                         )} // Get options based on selected question
@@ -1562,7 +1494,30 @@ setSelectedAnswers(answers);
                             {option}
                           </li>
                         )}
-                      />
+                      /> */}
+                       <Autocomplete
+    options={getAnswerOptions(selectedQuestions[index])}
+    value={selectedAnswers[index] || null}
+    onChange={(event, newValue) => {
+      const updatedAnswers = [...selectedAnswers];
+      updatedAnswers[index] = newValue;
+      setSelectedAnswers(updatedAnswers);
+    }}
+    renderInput={(params) => (
+      <TextField
+        {...params}
+        variant="outlined"
+        size="small"
+        margin="normal"
+        placeholder="Answer"
+      />
+    )}
+    renderOption={(props, option) => (
+      <li {...props} style={{ margin: "5px", cursor: "pointer" }}>
+        {option}
+      </li>
+    )}
+  />
                     </Box>
                     <Box mt={5}>
                       <IconButton
@@ -1785,48 +1740,27 @@ setSelectedAnswers(answers);
                             </li>
                           )}
                         /> */}
-                        {/* <Autocomplete
-  options={getRadioButtonOptions()}
-  getOptionLabel={(option) => option.text} // Display the text
-  value={selectedQuestions[index] || null}
-  onChange={(event, newValue) => handleQuestionSelect(newValue, index)}
-  renderInput={(params) => (
-    <TextField
-      {...params}
-      variant="outlined"
-      size="small"
-      margin="normal"
-      placeholder="Question"
-    />
-  )}
-  renderOption={(props, option) => (
-    <li {...props} style={{ margin: "5px", cursor: "pointer" }}>
-      {option.text}
-    </li>
-  )}
-/> */}
+                       <Autocomplete
+    options={getAllQuestions()}
+    getOptionLabel={(option) => option.text || ""}
+    value={selectedQuestions[index] || null}
+    onChange={(event, newValue) => handleQuestionSelect(newValue, index)}
+    renderInput={(params) => (
+      <TextField
+        {...params}
+        variant="outlined"
+        size="small"
+        margin="normal"
+        placeholder="Question"
+      />
+    )}
+    renderOption={(props, option) => (
+      <li {...props} style={{ margin: "5px", cursor: "pointer" }}>
+        {option.text}
+      </li>
+    )}
+  />
 
-<Autocomplete
-  options={getRadioButtonOptions()}
-  getOptionLabel={(option) => option.text || ""}
-  isOptionEqualToValue={(option, value) => option.id === value.id}
-  value={selectedQuestions[index] || null}
-  onChange={(event, newValue) => handleQuestionSelect(newValue, index)}
-  renderInput={(params) => (
-    <TextField
-      {...params}
-      variant="outlined"
-      size="small"
-      margin="normal"
-      placeholder="Question"
-    />
-  )}
-  renderOption={(props, option) => (
-    <li {...props} style={{ margin: "5px", cursor: "pointer" }}>
-      {option.text}
-    </li>
-  )}
-/>
 
                       </Box>
                       <Box>
@@ -1858,28 +1792,28 @@ setSelectedAnswers(answers);
                           )}
                         /> */}
                         <Autocomplete
-  options={getAnswerOptions(selectedQuestions[index])}
-  value={selectedAnswers[index] || null}
-  onChange={(event, newValue) => {
-    const updatedAnswers = [...selectedAnswers];
-    updatedAnswers[index] = newValue;
-    setSelectedAnswers(updatedAnswers);
-  }}
-  renderInput={(params) => (
-    <TextField
-      {...params}
-      variant="outlined"
-      size="small"
-      margin="normal"
-      placeholder="Answer"
-    />
-  )}
-  renderOption={(props, option) => (
-    <li {...props} style={{ margin: "5px", cursor: "pointer" }}>
-      {option}
-    </li>
-  )}
-/>
+    options={getAnswerOptions(selectedQuestions[index])}
+    value={selectedAnswers[index] || null}
+    onChange={(event, newValue) => {
+      const updatedAnswers = [...selectedAnswers];
+      updatedAnswers[index] = newValue;
+      setSelectedAnswers(updatedAnswers);
+    }}
+    renderInput={(params) => (
+      <TextField
+        {...params}
+        variant="outlined"
+        size="small"
+        margin="normal"
+        placeholder="Answer"
+      />
+    )}
+    renderOption={(props, option) => (
+      <li {...props} style={{ margin: "5px", cursor: "pointer" }}>
+        {option}
+      </li>
+    )}
+  />
                       </Box>
                       <Box mt={5}>
                         <IconButton
