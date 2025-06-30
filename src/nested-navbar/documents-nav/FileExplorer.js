@@ -265,16 +265,54 @@
 
 // export default FileExplorer;
 
-
 import React, { useEffect, useState } from "react";
-
+import { DocusealBuilder } from "@docuseal/react";
+import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
 
-const Folder = ({ name, content, onSelectPath, currentPath = "", onPermissionUpdate }) => {
+const Folder = ({
+  name,
+  content,
+  onSelectPath,
+  currentPath = "",
+  onPermissionUpdate,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const isFile = content.filename;
   const fullPath = currentPath ? `${currentPath}/${name}` : name;
+  const [token, setToken] = useState("");
+  const [showBuilderFor, setShowBuilderFor] = useState(null);
+  const [polling, setPolling] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false); // dialog state
+  // const handlePermissionChange = async (permKey, value) => {
+  //   const updatedPermissions = {
+  //     ...content.permissions,
+  //     [permKey]: value,
+  //   };
 
+  //   try {
+  //     const response = await fetch(
+  //       `${DOCS_MANAGMENTS}/firmDocs/permissions/${content._id}`,
+  //       {
+  //         method: "PATCH",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({ permissions: updatedPermissions }),
+  //       }
+  //     );
+
+  //     if (!response.ok) throw new Error("Failed to update permissions");
+
+  //     // Update local file state
+  //     if (onPermissionUpdate) {
+  //       onPermissionUpdate(content._id, updatedPermissions);
+  //     }
+  //   } catch (err) {
+  //     console.error("Permission update error:", err);
+  //   }
+  // };
   const handlePermissionChange = async (permKey, value) => {
     const updatedPermissions = {
       ...content.permissions,
@@ -295,34 +333,115 @@ const Folder = ({ name, content, onSelectPath, currentPath = "", onPermissionUpd
 
       if (!response.ok) throw new Error("Failed to update permissions");
 
-      // Update local file state
       if (onPermissionUpdate) {
         onPermissionUpdate(content._id, updatedPermissions);
+      }
+
+      // Special logic: if `canUpdate` is checked, fetch token and show builder
+      if (permKey === "canUpdate" && value) {
+        const fileUrl = `https://snptaxes.com/${content.filePath}/${content.filename}`; // Make sure this exists in your file data
+        console.log("url", fileUrl);
+        const fileName = content.filename;
+        const res = await fetch(
+          `http://127.0.0.1:8000/api/generate-token?url=${encodeURIComponent(fileUrl)}&name=${encodeURIComponent(fileName)}`
+        );
+        const data = await res.json();
+        setToken(data.token);
+        setShowBuilderFor(content._id);
+
+        setOpenDialog(true);
+         setPolling(true);
+      } else if (permKey === "canUpdate" && !value) {
+        // Hide builder if unchecked
+        setShowBuilderFor(null);
+        setOpenDialog(false);
       }
     } catch (err) {
       console.error("Permission update error:", err);
     }
   };
+    const [submissions, setSubmissions] = useState([]);
+   // Poll submissions
+  useEffect(() => {
+    if (!polling) return;
 
+    const interval = setInterval(async () => {
+      const res = await fetch("http://localhost:8000/api/submissions");
+      const data = await res.json();
+
+      if (data.submissions && data.submissions.length > 0) {
+        const latest = data.submissions[0];
+
+        // Check by external_id or created_at if needed
+        if (!submissions.find((s) => s.id === latest.id)) {
+          console.log("✅ New Submission Detected:", latest);
+          console.log(latest.submitters[0].slug
+)
+          setSubmissions((prev) => [latest, ...prev]);
+          setPolling(false); // Stop polling after getting one
+        }
+      }
+    }, 5000); // Poll every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [polling, submissions]);
   if (isFile) {
     const { permissions = {} } = content;
+
+    // return (
+    //   <div style={{ paddingLeft: 20, marginBottom: 10 }}>
+    //     📄 <span>{content.filename}</span>
+    //     <div style={{ display: "flex", gap: "10px", marginTop: 5 }}>
+    //       {["canView", "canDownload", "canUpdate", "canDelete"].map((perm) => (
+    //         <label key={perm} style={{cursor:'pointer'}}>
+    //           <input
+    //             type="checkbox"
+    //             checked={permissions[perm]}
+    //             onChange={(e) => handlePermissionChange(perm, e.target.checked)}
+
+    //           />
+    //           {perm.replace("can", "")}
+    //         </label>
+    //       ))}
+    //     </div>
+    //   </div>
+    // );
 
     return (
       <div style={{ paddingLeft: 20, marginBottom: 10 }}>
         📄 <span>{content.filename}</span>
         <div style={{ display: "flex", gap: "10px", marginTop: 5 }}>
           {["canView", "canDownload", "canUpdate", "canDelete"].map((perm) => (
-            <label key={perm} style={{cursor:'pointer'}}>
+            <label key={perm} style={{ cursor: "pointer" }}>
               <input
                 type="checkbox"
                 checked={permissions[perm]}
                 onChange={(e) => handlePermissionChange(perm, e.target.checked)}
-                
               />
               {perm.replace("can", "")}
             </label>
           ))}
         </div>
+        <Dialog
+          open={openDialog && showBuilderFor === content._id}
+          onClose={() => setOpenDialog(false)}
+          fullWidth
+          maxWidth="lg"
+        >
+          <DialogTitle>
+            {content.filename}
+            <IconButton
+              aria-label="close"
+              onClick={() => setOpenDialog(false)}
+              style={{ position: "absolute", right: 8, top: 8 }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent dividers>
+            {token && <DocusealBuilder token={token} />}
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }
@@ -406,7 +525,9 @@ const FileExplorer = ({ onPathSelect, accountId }) => {
   const updateFilePermissionsLocally = (fileId, updatedPermissions) => {
     setFiles((prev) =>
       prev.map((file) =>
-        file._id === fileId ? { ...file, permissions: updatedPermissions } : file
+        file._id === fileId
+          ? { ...file, permissions: updatedPermissions }
+          : file
       )
     );
   };
