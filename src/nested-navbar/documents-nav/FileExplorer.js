@@ -266,11 +266,14 @@
 // export default FileExplorer;
 
 import React, { useEffect, useState } from "react";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { Menu, MenuItem } from "@mui/material";
 import { DocusealBuilder } from "@docuseal/react";
 import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import customCss from "./docuseal-dark-theme.css"
 const DOCS_MANAGMENTS = process.env.REACT_APP_CLIENT_DOCS_MANAGE;
-
+const SIGNATURE_API =process.env.REACT_APP_ESIGNATURE_API
 const Folder = ({
   name,
   content,
@@ -285,34 +288,14 @@ const Folder = ({
   const [showBuilderFor, setShowBuilderFor] = useState(null);
   const [polling, setPolling] = useState(false);
   const [openDialog, setOpenDialog] = useState(false); // dialog state
-  // const handlePermissionChange = async (permKey, value) => {
-  //   const updatedPermissions = {
-  //     ...content.permissions,
-  //     [permKey]: value,
-  //   };
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
-  //   try {
-  //     const response = await fetch(
-  //       `${DOCS_MANAGMENTS}/firmDocs/permissions/${content._id}`,
-  //       {
-  //         method: "PATCH",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({ permissions: updatedPermissions }),
-  //       }
-  //     );
-
-  //     if (!response.ok) throw new Error("Failed to update permissions");
-
-  //     // Update local file state
-  //     if (onPermissionUpdate) {
-  //       onPermissionUpdate(content._id, updatedPermissions);
-  //     }
-  //   } catch (err) {
-  //     console.error("Permission update error:", err);
-  //   }
-  // };
   const handlePermissionChange = async (permKey, value) => {
     const updatedPermissions = {
       ...content.permissions,
@@ -333,40 +316,40 @@ const Folder = ({
 
       if (!response.ok) throw new Error("Failed to update permissions");
 
+      // Update local file state
       if (onPermissionUpdate) {
         onPermissionUpdate(content._id, updatedPermissions);
-      }
-
-      // Special logic: if `canUpdate` is checked, fetch token and show builder
-      if (permKey === "canUpdate" && value) {
-        const fileUrl = `https://snptaxes.com/${content.filePath}/${content.filename}`; // Make sure this exists in your file data
-        console.log("url", fileUrl);
-        const fileName = content.filename;
-        const res = await fetch(
-          `http://127.0.0.1:8000/api/generate-token?url=${encodeURIComponent(fileUrl)}&name=${encodeURIComponent(fileName)}`
-        );
-        const data = await res.json();
-        setToken(data.token);
-        setShowBuilderFor(content._id);
-
-        setOpenDialog(true);
-         setPolling(true);
-      } else if (permKey === "canUpdate" && !value) {
-        // Hide builder if unchecked
-        setShowBuilderFor(null);
-        setOpenDialog(false);
       }
     } catch (err) {
       console.error("Permission update error:", err);
     }
   };
-    const [submissions, setSubmissions] = useState([]);
-   // Poll submissions
+
+
+  const handleRequestSignature = async () => {
+    handleMenuClose();
+    try {
+      const fileUrl = `https://snptaxes.com/${content.filePath}/${content.filename}`;
+      const fileName = content.filename;
+      const res = await fetch(
+        `${SIGNATURE_API}/api/generate-token?url=${encodeURIComponent(fileUrl)}&name=${encodeURIComponent(fileName)}`
+      );
+      const data = await res.json();
+      setToken(data.token);
+      setShowBuilderFor(content._id);
+      setOpenDialog(true);
+      setPolling(true);
+    } catch (err) {
+      console.error("Failed to request signature:", err);
+    }
+  };
+  const [submissions, setSubmissions] = useState([]);
+  // Poll submissions
   useEffect(() => {
     if (!polling) return;
 
     const interval = setInterval(async () => {
-      const res = await fetch("http://localhost:8000/api/submissions");
+      const res = await fetch(`${SIGNATURE_API}/api/submissions`);
       const data = await res.json();
 
       if (data.submissions && data.submissions.length > 0) {
@@ -375,8 +358,7 @@ const Folder = ({
         // Check by external_id or created_at if needed
         if (!submissions.find((s) => s.id === latest.id)) {
           console.log("✅ New Submission Detected:", latest);
-          console.log(latest.submitters[0].slug
-)
+          console.log(latest.submitters[0].slug);
           setSubmissions((prev) => [latest, ...prev]);
           setPolling(false); // Stop polling after getting one
         }
@@ -408,41 +390,74 @@ const Folder = ({
     // );
 
     return (
-      <div style={{ paddingLeft: 20, marginBottom: 10 }}>
-        📄 <span>{content.filename}</span>
-        <div style={{ display: "flex", gap: "10px", marginTop: 5 }}>
-          {["canView", "canDownload", "canUpdate", "canDelete"].map((perm) => (
-            <label key={perm} style={{ cursor: "pointer" }}>
-              <input
-                type="checkbox"
-                checked={permissions[perm]}
-                onChange={(e) => handlePermissionChange(perm, e.target.checked)}
-              />
-              {perm.replace("can", "")}
-            </label>
-          ))}
-        </div>
-        <Dialog
-          open={openDialog && showBuilderFor === content._id}
-          onClose={() => setOpenDialog(false)}
-          fullWidth
-          maxWidth="lg"
-        >
-          <DialogTitle>
-            {content.filename}
-            <IconButton
-              aria-label="close"
-              onClick={() => setOpenDialog(false)}
-              style={{ position: "absolute", right: 8, top: 8 }}
-            >
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent dividers>
-            {token && <DocusealBuilder token={token} />}
-          </DialogContent>
-        </Dialog>
-      </div>
+
+      <div
+  style={{
+    paddingLeft: 20,
+    marginBottom: 10,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+  }}
+>
+  {/* Left side: filename + permissions */}
+  <div style={{ display: "flex", flexDirection: "column" }}>
+    <div>📄 <span>{content.filename}</span></div>
+    <div style={{ display: "flex", gap: "10px", marginTop: 5 }}>
+      {["canView", "canDownload", "canUpdate", "canDelete"].map((perm) => (
+        <label key={perm} style={{ cursor: "pointer" }}>
+          <input
+            type="checkbox"
+            checked={permissions[perm]}
+            onChange={(e) => handlePermissionChange(perm, e.target.checked)}
+          />
+          {perm.replace("can", "")}
+        </label>
+      ))}
+    </div>
+  </div>
+
+  {/* Right side: three-dot icon */}
+  <div>
+    <IconButton onClick={handleMenuOpen}>
+      <MoreVertIcon />
+    </IconButton>
+    <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+      {content.filename.toLowerCase().endsWith(".pdf") && (
+        <MenuItem onClick={handleRequestSignature}>Request Signature</MenuItem>
+      )}
+      <MenuItem onClick={handleMenuClose}>Rename</MenuItem>
+      <MenuItem onClick={handleMenuClose}>Download</MenuItem>
+      <MenuItem onClick={handleMenuClose}>Delete</MenuItem>
+    </Menu>
+  </div>
+
+  {/* Dialog remains unchanged */}
+  <Dialog
+    open={openDialog && showBuilderFor === content._id}
+    onClose={() => setOpenDialog(false)}
+    fullWidth
+    maxWidth="lg"
+  >
+    <DialogTitle>
+      {content.filename}
+      <IconButton
+        aria-label="close"
+        onClick={() => setOpenDialog(false)}
+        style={{ position: "absolute", right: 8, top: 8 }}
+      >
+        <CloseIcon />
+      </IconButton>
+    </DialogTitle>
+    <DialogContent dividers>
+      {token && <div className="app">
+      <DocusealBuilder token={token} customCss={customCss}  />
+    </div>}
+    </DialogContent>
+  </Dialog>
+</div>
+
     );
   }
 

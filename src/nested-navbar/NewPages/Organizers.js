@@ -471,7 +471,7 @@ const handleOpenDialog = (organizer) => {
                       cursor: "pointer",
                     }}
                   >
-                    {row.organizertemplateid.sections.length}
+                    {row.sections.length}
                   </TableCell>{" "}
                   {/* Show the number of sections */}
                   <TableCell

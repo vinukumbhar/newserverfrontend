@@ -1,17 +1,28 @@
-import React from "react";
-import { DocusealForm } from '@docuseal/react';
+// import React from "react";
+// import { DocusealForm } from '@docuseal/react';
 
-function App() {
+// function App() {
  
+//   return (
+//     <div className="app">
+//      <DocusealForm 
+//   src="https://docuseal.com/s/7aGybwmnhLQLbC"
+//   email="vinayak.intcon@gmail.com"
+//   onComplete={(data) => console.log("Form signed", data)}
+// />
+
+//     </div>
+//   );
+// }
+
+// export default App;
+
+import React from 'react'
+
+const Signatures = () => {
   return (
-    <div className="app">
-      <DocusealForm
-        src="https://docuseal.com/s/ox2fuCCRS3mGt1" // <-- Replace with your actual template URL
-        email="janavijpatil0406+test@gmail.com"     // Optional: prefill signer email
-        onComplete={(data) => console.log("Form signed", data)}
-      />
-    </div>
-  );
+    <div>Signatures</div>
+  )
 }
 
-export default App;
+export default Signatures
