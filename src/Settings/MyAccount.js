@@ -1268,7 +1268,7 @@ console.log("target", targetEmail)
 
       if (res.data.exists) {
         console.log("User exists, using token login.");
-        setEmail(emailsync);
+        // setEmail(emailsync);
         await handleTokenLogin();
       } else {
         console.log("User not found, redirecting to Google login.");

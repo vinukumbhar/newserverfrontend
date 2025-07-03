@@ -934,6 +934,7 @@ const Inboxplus = () => {
           `${EMAIL_SYNC}/emailsync/user/login-with-token/${savedEmail}`
         );
         setEmailList(res.data.emails || []);
+        console.log("emails",res.data.emails)
       } else if (userRole === 'TeamMember' && accountIds.length > 0) {
         // TeamMember can only see emails related to their accounts
         const res = await axios.get(
