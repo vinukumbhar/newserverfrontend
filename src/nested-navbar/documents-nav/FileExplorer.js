@@ -325,6 +325,36 @@ const Folder = ({
     }
   };
 
+const handleDeleteFile = async () => {
+  handleMenuClose();
+
+  if (!content.permissions?.canDelete) {
+    alert("You don't have permission to delete this file.");
+    return;
+  }
+
+  const confirmDelete = window.confirm(`Are you sure you want to delete "${content.filename}"?`);
+  if (!confirmDelete) return;
+
+  try {
+    const res = await fetch(`${DOCS_MANAGMENTS}/firmDocs/delete/${content.accountId}/${content.filename}`, {
+      method: "DELETE",
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to delete the file.");
+    }
+
+    alert("File deleted successfully!");
+
+    // Optionally trigger re-fetch or update file list in parent
+    // e.g., call a prop method like onFileDeleted(content._id)
+    // window.location.reload(); // or refetch files if you prefer
+  } catch (err) {
+    console.error("File deletion failed:", err);
+    alert("Failed to delete the file.");
+  }
+};
 
   const handleRequestSignature = async () => {
     handleMenuClose();
@@ -429,7 +459,10 @@ const Folder = ({
       )}
       <MenuItem onClick={handleMenuClose}>Rename</MenuItem>
       <MenuItem onClick={handleMenuClose}>Download</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Delete</MenuItem>
+  {permissions.canDelete && (
+  <MenuItem onClick={handleDeleteFile}>Delete</MenuItem>
+)}
+
     </Menu>
   </div>
 
