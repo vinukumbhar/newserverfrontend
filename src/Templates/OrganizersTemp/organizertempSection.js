@@ -84,13 +84,16 @@ const Section = ({
             answer: selectedSectionAnswers[index] || "",
             optionvalue: false,
           }))
+          
         : [],
+
+        
       // conditions: conditionButton ? questionAnswers : [], // assuming questionAnswers is an array of {question, answer} objects
     };
 
     if (onSaveSectionData) {
       onSaveSectionData(sectionsettings);
-      console.log("Section Settings:", sectionsettings);
+      console.log("updated Section Settings:", sectionsettings);
       setSectionConditionBadge(sectionsettings.conditional);
       // console.log(sectionsettings.conditional)
       toggleDrawer(false);
@@ -314,6 +317,7 @@ const Section = ({
 
       setSelectedSectionQuestions(questions);
       setSelectedSectionAnswers(answers);
+      console.log("answers",answers)
     }
   };
 
@@ -1114,10 +1118,20 @@ const handleQuestionSelect = (value, index) => {
   //   updatedAnswers[index] = null; // Reset answer for the new selected question
   //   setSelectedSectionAnswers(updatedAnswers);
   // };
- 
-  const handleSectionQuestionSelect = (newValue, index) => {
-    const allQuestions = getAllQuestions();
-    const selectedQuestion = allQuestions.find(q => q.id === newValue?.id);
+  // const allQuestions = getAllQuestions();
+    // const selectedQuestion = allQuestions.find(q => q.id === newValue?.id);
+    
+    // const updatedQuestions = [...selectedSectionQuestions];
+    // updatedQuestions[index] = selectedQuestion;
+    // setSelectedSectionQuestions(updatedQuestions);
+
+    // const updatedAnswers = [...selectedSectionAnswers];
+    // updatedAnswers[index] = null;
+    // setSelectedSectionAnswers(updatedAnswers);
+  const handleSectionQuestionSelect = (value, index) => {
+   
+     const allQuestions = getAllQuestions();
+    const selectedQuestion = allQuestions.find(q => q.id === value?.id);
     
     const updatedQuestions = [...selectedSectionQuestions];
     updatedQuestions[index] = selectedQuestion;
@@ -1157,6 +1171,7 @@ const handleQuestionSelect = (value, index) => {
       
       setQuestionAnswers(conditions);
       setSelectedQuestions(questions);
+      console.log("selectedquestion",questions)
       setSelectedAnswers(answers);
     }
   }, [selectedElement]);
@@ -1466,7 +1481,7 @@ const handleQuestionSelect = (value, index) => {
   />
                     </Box>
                     <Box>
-                      <Typography>Answer</Typography>
+                      <Typography>sectionAnswer</Typography>
                       {/* <Autocomplete
                         options={getAnswerOptions(
                           selectedSectionQuestions[index]
@@ -1496,12 +1511,12 @@ const handleQuestionSelect = (value, index) => {
                         )}
                       /> */}
                        <Autocomplete
-    options={getAnswerOptions(selectedQuestions[index])}
-    value={selectedAnswers[index] || null}
+    options={getAnswerOptions(selectedSectionQuestions[index])}
+    value={selectedSectionAnswers[index] || null}
     onChange={(event, newValue) => {
-      const updatedAnswers = [...selectedAnswers];
+      const updatedAnswers = [...selectedSectionAnswers];
       updatedAnswers[index] = newValue;
-      setSelectedAnswers(updatedAnswers);
+      setSelectedSectionAnswers(updatedAnswers);
     }}
     renderInput={(params) => (
       <TextField
