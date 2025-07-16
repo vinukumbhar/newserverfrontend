@@ -243,14 +243,14 @@ const TeamMember = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEMail] = useState("");
   const handleFirstName = (event) => {
-    setFirstName(event.target.value);
+    setFirstName(event.target.value.trim());
   };
 
   const handleMiddleName = (event) => {
-    setMiddleName(event.target.value);
+    setMiddleName(event.target.value.trim());
   };
   const handleLastName = (event) => {
-    setLastName(event.target.value);
+    setLastName(event.target.value.trim());
   };
 
   // Function to check if email exists

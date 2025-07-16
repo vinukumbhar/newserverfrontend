@@ -117,6 +117,50 @@ const PendingTasks = () => {
     }
   };
 
+ const handleMarkComplete = async () => {
+  const tasksToComplete = taskData.filter(
+    (task) => selected.includes(task.id || task.id) && task.Status !== "Completed"
+  );
+
+  if (tasksToComplete.length === 0) {
+    toast.info("All selected tasks are already complete.");
+    return;
+  }
+
+  const confirm = window.confirm(
+    `Mark ${tasksToComplete.length} task(s) as Completed?`
+  );
+  if (!confirm) return;
+
+  try {
+    const taskIds = tasksToComplete.map((task) => task.id);
+console.log("taskIds",taskIds)
+    const response = await fetch(`${ACCOUNT_TASKS_API}/accountstasks/tasks/updatestatus`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        taskIds: taskIds,
+        status: "Completed",
+      }),
+    });
+
+    const result = await response.json();
+    console.log("API response:", result);
+
+    if (!response.ok) throw new Error(result.message || "Update failed");
+
+    toast.success("Tasks marked as completed!");
+    setSelected([]);
+    fetchTasksData(); // Refresh updated task list
+  } catch (err) {
+    console.error("Mark Complete Error:", err);
+    toast.error("Failed to mark tasks as completed.");
+  }
+};
+
+
   const statusOptions = [
     { value: "No status", label: "No status", color: "#C4AEAD" },
     { value: "Planned", label: "Planned", color: "#4169E1" },
@@ -183,6 +227,27 @@ const PendingTasks = () => {
 
 
       <Box mt={2}>
+
+        {selected.length > 0 && (
+  <Box display="flex" gap={2} mb={2}>
+    <Button
+      variant="contained"
+      color="success"
+      onClick={handleMarkComplete}
+    >
+      Mark as Complete
+    </Button>
+
+    <Button
+      variant="contained"
+      color="error"
+      onClick={handleDeleteTask}
+    >
+      Delete Selected
+    </Button>
+  </Box>
+)}
+
       <TableContainer component={Paper}>
         <Table style={{ tableLayout: "fixed", width: "100%" }}>
           <TableHead>
@@ -468,13 +533,7 @@ const PendingTasks = () => {
                       </span>
                     )}
                   </TableCell>
-                  {/* <TableCell
-                    style={{
-                      fontSize: "12px",
-                      padding: "4px 8px",
-                      lineHeight: "1",
-                    }}
-                  >{row.Priority}</TableCell> */}
+                  
                   <TableCell
                     style={{
                       fontSize: "12px",
@@ -555,90 +614,7 @@ const PendingTasks = () => {
                   >
                     {row.StageNames}
                   </TableCell>
-                  {/* <TableCell
-                    style={{
-                      fontSize: "12px",
-                      padding: "4px 8px",
-                      lineHeight: "1",
-                    }}
-                  >
-                  {row.TaskTags && row.TaskTags.length > 0 ? (
-                    row.TaskTags.map((tag) => (
-                      <span
-                        key={tag.id}
-                        style={{
-                          display: "inline-block",
-                          backgroundColor: tag.tagColour,
-                          color: "#fff",
-                          padding: "4px 8px",
-                          borderRadius: "8px",
-                          marginRight: "4px",
-                          fontSize: "10px",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {tag.tagName}
-                      </span>
-                    ))
-                  ) : (
-                    <span style={{ color: "#888" }}>No Tags</span>
-                  )}
-                </TableCell> */}
-                  {/* <TableCell
-  style={{
-    fontSize: "12px",
-    padding: "4px 8px",
-    lineHeight: "1",
-  }}
->
-  {row.TaskTags && row.TaskTags.length > 0 ? (
-    <>
-      <span
-        key={row.TaskTags[0].id}
-        style={{
-          display: "inline-block",
-          backgroundColor: row.TaskTags[0].tagColour,
-          color: "#fff",
-          padding: "4px 8px",
-          borderRadius: "8px",
-          marginRight: "4px",
-          fontSize: "10px",
-          fontWeight: "bold",
-        }}
-      >
-        {row.TaskTags[0].tagName}
-      </span>
-
-      {row.TaskTags.length > 1 && (
-        <Tooltip
-          title={row.TaskTags
-            .slice(1)
-            .map((tag) => tag.tagName)
-            .join(", ")}
-          arrow
-          placement="top"
-        >
-          <span
-            style={{
-              display: "inline-block",
-              backgroundColor: "#ddd",
-              color: "#333",
-              padding: "4px 8px",
-              borderRadius: "8px",
-              fontSize: "10px",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
-          >
-            +{row.TaskTags.length - 1}
-          </span>
-        </Tooltip>
-      )}
-    </>
-  ) : (
-    <span style={{ color: "#888" }}>No Tags</span>
-  )}
-</TableCell> */}
+              
                   <TableCell
                     style={{
                       fontSize: "12px",

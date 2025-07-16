@@ -738,35 +738,48 @@ const AccountForm = ({ handleNewDrawerClose, handleDrawerClose }) => {
 
   const handleContactInputChange = (index, event) => {
     const { name, value } = event.target;
+    const trimmedValue = value.trim();
     const updatedContacts = [...contacts];
-    updatedContacts[index] = { ...updatedContacts[index], [name]: value };
+    updatedContacts[index] = { ...updatedContacts[index], [name]: trimmedValue };
 
     // Automatically update the contact name based on first, middle, and last names
     const firstName = updatedContacts[index].firstName || "";
     const middleName = updatedContacts[index].middleName || "";
     const lastName = updatedContacts[index].lastName || "";
-    updatedContacts[index].contactName =
-      `${firstName} ${middleName} ${lastName}`.trim();
+    // updatedContacts[index].contactName =
+      // `${firstName} ${middleName} ${lastName}`.trim();
+        updatedContacts[index].contactName = `${firstName} ${middleName} ${lastName}`.trim();
 
     setContacts(updatedContacts);
 
     // Dynamically validate first name and last name
-    if (name === "firstName" && !value.trim()) {
-      setFirstNameError("First name is required.");
-    } else if (name === "firstName") {
-      setFirstNameError("");
-    }
+    // if (name === "firstName" && !value.trim()) {
+    //   setFirstNameError("First name is required.");
+    // } else if (name === "firstName") {
+    //   setFirstNameError("");
+    // }
 
-    if (name === "lastName" && !value.trim()) {
-      setLastNameError("Last name is required.");
-    } else if (name === "lastName") {
-      setLastNameError("");
-    }
-    if (name === "email" && !value.trim()) {
-      setEmaileError("Email is required.");
-    } else if (name === "email") {
-      setEmaileError("");
-    }
+    // if (name === "lastName" && !value.trim()) {
+    //   setLastNameError("Last name is required.");
+    // } else if (name === "lastName") {
+    //   setLastNameError("");
+    // }
+    // if (name === "email" && !value.trim()) {
+    //   setEmaileError("Email is required.");
+    // } else if (name === "email") {
+    //   setEmaileError("");
+    // }
+    if (name === "firstName") {
+    setFirstNameError(trimmedValue ? "" : "First name is required.");
+  }
+
+  if (name === "lastName") {
+    setLastNameError(trimmedValue ? "" : "Last name is required.");
+  }
+
+  if (name === "email") {
+    setEmaileError(trimmedValue ? "" : "Email is required.");
+  }
   };
 
   const handleContactSwitchChange = (index, fieldName, checked) => {
